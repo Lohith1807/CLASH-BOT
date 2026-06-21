@@ -1,0 +1,454 @@
+const cheerio = require("cheerio");
+const proxyFetch = require("./proxyFetch");
+const fs = require("fs");
+const path = require("path");
+
+async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild }) {
+    const url = `https://fwastats.com/Clan/${tag.replace("#", "")}/Members.json`;
+    const url2 = `https://fwastats.com/Clan/${tag.replace("#", "")}/Weight`;
+
+    const fwaHeaders = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cookie": process.env.FWA_COOKIE || ""
+    };
+
+    const statsWorkerBase = process.env.FWASTATS_WORKER_URL;
+
+    let clanData;
+    try {
+        if (statsWorkerBase) {
+            const res = await fetch(`${statsWorkerBase}?url=${encodeURIComponent(url)}`, {
+                headers: { "Fwa-Cookie": process.env.FWA_COOKIE || "" }
+            }).catch(() => null);
+            if (res && res.ok) {
+                const resData = await res.json();
+                clanData = typeof resData === "string" ? JSON.parse(resData) : resData;
+            }
+        }
+        if (!clanData) {
+            const res1Data = await proxyFetch(url);
+            clanData = typeof res1Data === "string" ? JSON.parse(res1Data) : res1Data;
+        }
+    } catch (err) {
+        const res1 = await fetch(url, { headers: fwaHeaders });
+        if (!res1.ok) throw new Error("Failed to fetch FWA members JSON");
+        const res1Data = await res1.json();
+        clanData = typeof res1Data === "string" ? JSON.parse(res1Data) : res1Data;
+    }
+
+    let html;
+    try {
+        if (statsWorkerBase) {
+            const res = await fetch(`${statsWorkerBase}?url=${encodeURIComponent(url2)}`, {
+                headers: { "Fwa-Cookie": process.env.FWA_COOKIE || "" }
+            }).catch(() => null);
+            if (res && res.ok) {
+                html = await res.text();
+            }
+        }
+        if (!html) {
+            html = await proxyFetch(url2);
+        }
+    } catch (err) {
+        const res2 = await fetch(url2, { headers: fwaHeaders });
+        if (!res2.ok) throw new Error("Failed to fetch FWA weight page");
+        html = await res2.text();
+    }
+    const $ = cheerio.load(html);
+
+    let clanName = "";
+    if (coc) {
+        const cocClan = await coc.getClan(tag).catch(() => null);
+        if (cocClan) {
+            clanName = cocClan.name;
+        }
+    }
+    if (!clanName) {
+        clanName = $("body > div.container.body-content.fill > div.well > div > div > h3").text().trim();
+    }
+    if (!clanName) {
+        clanName = tag;
+    }
+
+    let lastDate = "";
+
+    const clanRolesPath = path.join(__dirname, "../data/clanrole.json");
+    const wwPath = path.join(__dirname, "../data/ww.json");
+
+    let trackingPlayers = null;
+    let wwData = {};
+    if (fs.existsSync(wwPath)) {
+        try {
+            wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
+            if (wwData[tag]) {
+                if (wwData[tag].playerTag && !wwData[tag].players) {
+                    wwData[tag].players = {};
+                    wwData[tag].players[wwData[tag].playerTag] = wwData[tag].weight || 0;
+                }
+                trackingPlayers = wwData[tag].players;
+            }
+        } catch (err) {
+            console.error("Error parsing ww.json:", err);
+        }
+    }
+
+    if (trackingPlayers && Object.keys(trackingPlayers).length > 0 && clanData && Array.isArray(clanData)) {
+        let changed = false;
+        
+        for (const [pTag, savedWeight] of Object.entries(trackingPlayers)) {
+            const formattedTag = pTag.toUpperCase().trim();
+            const playerObj = clanData.find(p => p.tag && p.tag.toUpperCase().trim() === formattedTag);
+            if (playerObj) {
+                const currentWeight = parseInt(playerObj.weight, 10);
+                if (currentWeight !== savedWeight) {
+                    changed = true;
+                    trackingPlayers[pTag] = currentWeight;
+                }
+            }
+        }
+
+        if (changed) {
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const todayStr = `${day}/${month}/${year}`;
+
+            wwData[tag].players = trackingPlayers;
+            wwData[tag].lastUpdated = todayStr;
+            try {
+                fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
+            } catch (err) {
+                console.error("Error writing ww.json:", err);
+            }
+            lastDate = todayStr;
+
+            // Log update to WW log channel
+            const client = guild?.client;
+            if (client) {
+                client.channels.fetch("1516719047348326493").then(logChannel => {
+                    if (logChannel) {
+                        logChannel.send(`📢 **FWA Weight Update Detected!**\nClan: **${clanName}** (${tag})\nNew weight update submitted on: **${todayStr}**`).catch(() => {});
+                    }
+                }).catch(() => {});
+            }
+        } else {
+            lastDate = wwData[tag].lastUpdated;
+        }
+    } else if (wwData[tag]) {
+        lastDate = wwData[tag].lastUpdated;
+    }
+
+    if (!lastDate) {
+        lastDate = "Requires FWA_COOKIE or submission too long ago";
+        $(".alert").each((i, el) => {
+            const txt = $(el).text().trim();
+            if (txt.toLowerCase().includes("ago") || txt.toLowerCase().includes("submit")) {
+                const strongText = $(el).find("strong").text().trim() || $(el).find("b").text().trim();
+                if (strongText) {
+                    lastDate = strongText;
+                } else {
+                    const html = $(el).html() || "";
+                    const firstPart = html.split(/<br\s*\/?>/i)[0];
+                    lastDate = cheerio.load(firstPart).text().trim() || txt.split('\n')[0].trim();
+                }
+            }
+        });
+    }
+
+    const thEmojiMap = {
+        18: emojiUtils.getEmoji("th18"),
+        17: emojiUtils.getEmoji("th17"),
+        16: emojiUtils.getEmoji("th16"),
+        15: emojiUtils.getEmoji("th15"),
+        14: emojiUtils.getEmoji("th14"),
+        13: emojiUtils.getEmoji("th13"),
+        12: emojiUtils.getEmoji("th12"),
+        11: emojiUtils.getEmoji("th11"),
+    };
+
+    const clanWeight = {};
+    for (const member of clanData) {
+        try {
+            const playerName = member.name;
+            const townHallLevel = member.townHall;
+            const weight = parseInt(member.weight, 10);
+
+            let equivalent;
+            if (weight > 170000 && weight <= 179000) equivalent = 18;
+            else if (weight > 160000 && weight <= 169000) equivalent = 17;
+            else if (weight > 150000 && weight <= 160000) equivalent = 16;
+            else if (weight > 140000 && weight <= 150000) equivalent = 15;
+            else if (weight > 130000 && weight <= 140000) equivalent = 14;
+            else if (weight > 120000 && weight <= 130000) equivalent = 13;
+            else if (weight > 110000 && weight <= 120000) equivalent = 12;
+            else if (weight > 90000 && weight <= 110000) equivalent = 11;
+            else equivalent = townHallLevel;
+
+            clanWeight[playerName] = {
+                townHall: townHallLevel,
+                weight,
+                eqvweight: equivalent
+            };
+        } catch {
+        }
+    }
+
+    const sortedClanWeight = Object.entries(clanWeight)
+        .sort((a, b) => b[1].weight - a[1].weight);
+
+    let formattedLastDate = lastDate;
+    if (lastDate) {
+        const match = lastDate.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+        if (match) {
+            const [_, dayStr, monthStr, yearStr] = match;
+            const d = parseInt(dayStr, 10);
+            const m = parseInt(monthStr, 10);
+            const y = parseInt(yearStr, 10);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const subDate = new Date(y, m - 1, d);
+            subDate.setHours(0, 0, 0, 0);
+            const diffMs = today.getTime() - subDate.getTime();
+            const diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+            
+            let suffix = "";
+            if (diffDays === 0) {
+                suffix = " (today)";
+            } else if (diffDays === 1) {
+                suffix = " (1 day ago)";
+            } else if (diffDays > 1) {
+                suffix = ` (${diffDays} days ago)`;
+            } else if (diffDays === -1) {
+                suffix = " (tomorrow)";
+            } else if (diffDays < -1) {
+                suffix = ` (in ${Math.abs(diffDays)} days)`;
+            }
+            
+            formattedLastDate = lastDate.replace(`${dayStr}/${monthStr}/${yearStr}`, `${dayStr}/${monthStr}/${yearStr}${suffix}`);
+        }
+    }
+
+    const perPage = 20;
+    const pages = [];
+    const totalPages = Math.ceil(sortedClanWeight.length / perPage);
+
+    for (let page = 0; page < totalPages; page++) {
+        const fields = sortedClanWeight.slice(page * perPage, (page + 1) * perPage).map(([player, data], index) => ({
+            name: `${page * perPage + index + 1}. ${player}`,
+            value: `${thEmojiMap[data.townHall] || `TH${data.townHall}`} | ⚖ ${data.weight.toLocaleString()} | Real Weight: ${thEmojiMap[data.eqvweight] || `TH${data.eqvweight}`}`,
+            inline: false
+        }));
+
+        const embed = new EmbedBuilder()
+            .setTitle(`${emojiUtils.getEmoji("clancastle")} ${clanName} — FWA Weight Report`)
+            .setDescription(`Last Submission: **${formattedLastDate}**\n📄 Page ${page + 1} of ${totalPages}`)
+            .setColor("Random")
+            .addFields(fields)
+            .setFooter({ text: "Blood alliance", iconURL: (guild && guild.iconURL({ size: 128 })) || undefined })
+            .setTimestamp();
+
+        pages.push(embed);
+    }
+
+    return pages;
+}
+
+async function checkFWAWeights(client) {
+    if (!client) {
+        console.error("checkFWAWeights: client is not defined");
+        return;
+    }
+    const wwPath = path.join(__dirname, "../data/ww.json");
+    if (!fs.existsSync(wwPath)) return;
+
+    let wwData;
+    try {
+        wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
+    } catch (err) {
+        console.error("checkFWAWeights read error:", err);
+        return;
+    }
+
+    const { EmbedBuilder } = require("discord.js");
+    const emojiUtils = require("./emoji.js");
+
+    const clanRolesPath = path.join(__dirname, "../data/clanrole.json");
+    let clanRoles = {};
+    if (fs.existsSync(clanRolesPath)) {
+        try {
+            clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf8"));
+        } catch (err) {
+            console.error("Error reading clanrole.json:", err);
+        }
+    }
+
+    const lastCheckPath = path.join(__dirname, "../data/ww_last_check.json");
+    let lastCheckData = {};
+    if (fs.existsSync(lastCheckPath)) {
+        try {
+            lastCheckData = JSON.parse(fs.readFileSync(lastCheckPath, "utf8"));
+        } catch (err) {
+            console.error("Error reading ww_last_check.json:", err);
+        }
+    }
+
+    const statsWorkerBase = process.env.FWASTATS_WORKER_URL;
+    const fwaHeaders = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+        "Accept-Language": "en-US,en;q=0.9",
+        "Cookie": process.env.FWA_COOKIE || ""
+    };
+
+    let updated = false;
+    let lastCheckUpdated = false;
+    const now = new Date();
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const year = now.getFullYear();
+    const todayStr = `${day}/${month}/${year}`;
+
+    const keysToCheck = new Set(Object.keys(wwData));
+
+    for (const clanTag of keysToCheck) {
+        if (lastCheckData[clanTag] === todayStr) {
+            continue;
+        }
+
+        const record = wwData[clanTag];
+
+        // Check FWA Weight Reminder (25 days ago)
+        if (record && record.lastUpdated) {
+            let diffDays = -1;
+            const match = record.lastUpdated.match(/(\d{2})\/(\d{2})\/(\d{4})/);
+            if (match) {
+                const [_, dayStr, monthStr, yearStr] = match;
+                const d = parseInt(dayStr, 10);
+                const m = parseInt(monthStr, 10);
+                const y = parseInt(yearStr, 10);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const subDate = new Date(y, m - 1, d);
+                subDate.setHours(0, 0, 0, 0);
+                const diffMs = today.getTime() - subDate.getTime();
+                diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+            }
+
+            if (diffDays === 25) {
+                const roleData = clanRoles[clanTag];
+                if (roleData) {
+                    const targetChannelId = roleData.leadChannelId && roleData.leadChannelId.trim() !== ""
+                        ? roleData.leadChannelId
+                        : roleData.channelId;
+                    if (targetChannelId) {
+                        try {
+                            const channel = await client.channels.fetch(targetChannelId).catch(() => null);
+                            if (channel) {
+                                const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
+                                const cleanTag = clanTag.replace("#", "");
+                                const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
+
+                                const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
+                                const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡️";
+                                const heartEmoji = emojiUtils.getEmoji("heart") || "❤️";
+
+                                const reminderEmbed = new EmbedBuilder()
+                                    .setTitle(`${alaramEmoji} **War Weight Submission Reminder**`)
+                                    .setDescription(
+                                        `Hey Cheif ,\n` +
+                                        `the war weight submission done before 25 days  this is just a reminder , make sure submit it on time \n\n` +
+                                        `**Submission Link :** ${arrowEmoji} [Click here](${submissionUrl})\n\n` +
+                                        `Yours Truly\n` +
+                                        `${heartEmoji} **Blood Team**`
+                                    )
+                                    .setColor("Orange")
+                                    .setTimestamp();
+
+                                await channel.send({
+                                    content: leaderRolePing,
+                                    embeds: [reminderEmbed]
+                                });
+                            }
+                        } catch (sendErr) {
+                            console.error(`Failed to send reminder for ${clanTag}:`, sendErr);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Mark as checked today
+        lastCheckData[clanTag] = todayStr;
+        lastCheckUpdated = true;
+
+        if (!record) continue;
+
+        if (record.playerTag && !record.players) {
+            record.players = {};
+            record.players[record.playerTag] = record.weight || 0;
+        }
+
+        if (!record.players || Object.keys(record.players).length === 0) continue;
+
+        const url = `https://fwastats.com/Clan/${clanTag.replace("#", "")}/Members.json`;
+        let clanData = null;
+
+        try {
+            let res;
+            if (statsWorkerBase) {
+                res = await fetch(`${statsWorkerBase}?url=${encodeURIComponent(url)}`, {
+                    headers: { "Fwa-Cookie": process.env.FWA_COOKIE || "" }
+                });
+            } else {
+                res = await fetch(url, { headers: fwaHeaders });
+            }
+            if (res.ok) {
+                clanData = await res.json();
+            }
+        } catch (err) {
+            console.error(`checkFWAWeights fetch failed for ${clanTag}:`, err);
+        }
+
+        if (clanData && Array.isArray(clanData)) {
+            let clanChanged = false;
+            for (const [pTag, savedWeight] of Object.entries(record.players)) {
+                const formattedTag = pTag.toUpperCase().trim();
+                const playerObj = clanData.find(p => p.tag && p.tag.toUpperCase().trim() === formattedTag);
+                if (playerObj) {
+                    const currentWeight = parseInt(playerObj.weight, 10);
+                    if (currentWeight !== savedWeight) {
+                        record.players[pTag] = currentWeight;
+                        clanChanged = true;
+                    }
+                }
+            }
+
+            if (clanChanged) {
+                record.lastUpdated = todayStr;
+                updated = true;
+            }
+        }
+    }
+
+    if (updated) {
+        try {
+            fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
+        } catch (err) {
+            console.error("checkFWAWeights write error:", err);
+        }
+    }
+
+    if (lastCheckUpdated) {
+        try {
+            fs.writeFileSync(lastCheckPath, JSON.stringify(lastCheckData, null, 2), "utf8");
+        } catch (err) {
+            console.error("checkFWAWeights lastCheck write error:", err);
+        }
+    }
+}
+
+fwaClanData.checkFWAWeights = checkFWAWeights;
+module.exports = fwaClanData;

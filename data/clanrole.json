@@ -1,0 +1,196 @@
+{
+  "#CYQVL002": {
+    "roleId": "1154279073086971976",
+    "leaderRoleId": "1154278231881560154",
+    "channelId": "1154276518957174805",
+    "mailChannelId": "1154283332427853854",
+    "leadChannelId":"1155155133404029078",
+    "nickName": "BB",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "autoRole": true,
+    "leaders": [
+      "<@562951110562938880>"
+    ],
+    "coLeaders": [
+      "<@1256130360329371664>",
+      "<@599555022807891978>"
+    ]
+  },
+  "#2L80RLGJ8": {
+    "roleId": "1394697516313739404",
+    "leaderRoleId": "1394697320842399905",
+    "channelId": "1394699900578697276",
+    "mailChannelId": "1394699393461911663",
+    "leadChannelId": "1394700477748346930",
+    "nickName": "TL",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "autoRole": true,
+    "leaders": [
+      "<@667011170229682201>"
+    ],
+    "coLeaders": [
+      "<@712700922807189504>",
+      "<@1315947502226247692>",
+      "<@1345003406409994310>"
+    ]
+  },
+  "#YQGQQYGV": {
+    "roleId": "1406853909258965012",
+    "leaderRoleId": "1406854080437161994",
+    "channelId": "1406855530806251523",
+    "mailChannelId": "1406855529854402672",
+	"leadChannelId": "1406855528554172528",
+    "nickName": "SU",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "autoRole": true,
+    "leaders": [
+      "<@389262993147428867>"
+    ],
+    "coLeaders": [
+      "<@1351471003888386061>"
+    ]
+  },
+  "#2Y9G28C9Q": {
+    "roleId": "1408284979590467655",
+    "leaderRoleId": "1408285082082476102",
+    "channelId": "1408407081563848814",
+    "mailChannelId": "1408407079915360360",
+	"leadChannelId": "1408407078053220395",
+    "nickName": "IK",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "autoRole": true,
+    "leaders": [
+      "<@667011170229682201>"
+    ],
+    "coLeaders": [
+      "<@712700922807189504>",
+      "<@1299282477076058156>"
+    ]
+  },
+  "#2YUPCY9GV": {
+    "roleId": "1420294321055203380",
+    "leaderRoleId": "1420294699570303016",
+    "channelId": "1420295077028302909",
+    "mailChannelId": "1420295070602756136",
+    "leadChannelId": "1420295069608710216",
+    "nickName": "DW",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "autoRole": true,
+    "leaders": [
+      "<@599555022807891978>"
+    ],
+    "coLeaders": [
+      "<@397039777162985472>",
+      "<@1299282477076058156>"
+    ]
+  },
+  "#2L80LY0CP": {
+    "roleId": "1429740872614023309",
+    "leaderRoleId": "1429740775918407840",
+    "channelId": "1429783311529545810",
+    "mailChannelId": "1429783310653198336",
+    "leadChannelId": "1429783309382189219",
+    "nickName": "CC",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "autoRole": true,
+    "leaders": [
+      "<@895919742563545118>"
+    ],
+    "coLeaders": [
+      "<@1405855635894960291>",
+      "<@855449588228161548>",
+      "<@976081743859822612>"
+    ]
+  },
+  "#2PRJYL99P": {
+    "roleId": "1492398681226346607",
+    "leaderRoleId": "1492398339055030382",
+    "channelId": "1381613807490564096",
+    "mailChannelId": "1381613477331992676",
+    "leadChannelId": "1381611966698750023",
+    "nickName": "BL",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "autoRole": true,
+    "leaders": [
+      "<@1256130360329371664>"
+    ],
+    "coLeaders": [
+      "<@1224074121743437945>",
+      "<@895919742563545118>"
+    ]
+  },
+  "#2LRGQ2L9L": {
+    "roleId": "1500908965196730480",
+    "leaderRoleId": "1500908705057865798",
+    "channelId": "1500909778640310352",
+    "mailChannelId": "1500909777058795546",
+    "leadChannelId": "1500909776031191180",
+    "nickName": "ASR",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "autoRole": true,
+    "leaders": [
+      "<@965295354805383228>"
+    ],
+    "coLeaders": [
+      "<@1454102900631666815>",
+      "<@329730905159630849>"
+    ]
+  },
+  "#VYPQC9YP": {
+    "roleId": "1504511520971952198",
+    "leaderRoleId": "1504511595106144277",
+    "channelId": "1504511880910213331",
+    "mailChannelId": "1504511879681413230",
+    "leadChannelId": "1504511878204887040",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "nickName": "KC",
+    "leaders": [
+      "<@1315947502226247692>"
+    ],
+    "coLeaders": [
+      "<@562951110562938880>"
+    ],
+    "autoRole": true
+  },
+  "#2G2PR2YYQ": {
+    "roleId": "1510263557999169627",
+    "leaderRoleId": "1510263555986034791",
+    "channelId": "1510263569936154776",
+    "mailChannelId": "1510263568229204051",
+    "leadChannelId": "1510263566438236181",
+    "clanType": "war",
+    "autoPostRecruitment": false,
+    "nickName": "BWC",
+    "leaders": [
+      "<@900404315619999805>"
+    ],
+    "coLeaders": [
+      "<@1510236564813385859>"
+    ]
+  },
+  "#2G0Y0QQL2": {
+    "roleId": "1513223718728630343",
+    "leaderRoleId": "1513223717755555960",
+    "channelId": "1513223732171112578",
+    "mailChannelId": "1513223730871009511",
+    "leadChannelId": "1513223729424105623",
+    "clanType": "fwa",
+    "autoPostRecruitment": false,
+    "nickName": "QG",
+    "leaders": [
+      "<@1110227979189100604>"
+    ],
+    "coLeaders": [
+      "<@1488241132188991558>"
+    ]
+  }
+}
