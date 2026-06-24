@@ -1,100 +1,118 @@
-const { SlashCommandBuilder, ActionRowBuilder, StringSelectMenuBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { getEmoji } = require('../../../utils/emoji.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('strikeremove')
+        .setName('strike-remove')
         .setDescription('Remove a strike from a player')
-        .addIntegerOption(option =>
-            option.setName('count')
-                .setDescription('Number of strikes to remove')
-                .setRequired(true)
-                .setMinValue(1)
-        )
-        .addUserOption(option =>
-            option.setName('member')
-                .setDescription('The discord member to remove strike from')
-                .setRequired(false)
-        )
         .addStringOption(option =>
             option.setName('tag')
                 .setDescription('The player tag to remove strike from')
-                .setRequired(false)
+                .setRequired(true)
+        )
+        .addIntegerOption(option =>
+            option.setName('count')
+                .setDescription('Number of strike weight to remove')
+                .setRequired(true)
+                .setMinValue(1)
+        )
+        .addStringOption(option =>
+            option.setName('dm')
+                .setDescription('Send DM to user?')
+                .addChoices(
+                    { name: 'Yes', value: 'yes' },
+                    { name: 'No', value: 'no' }
+                )
+                .setRequired(true)
         ),
 
     async execute(interaction, context) {
-        const { data: dataManager, config } = context;
+        const { data: dataManager, config, coc } = context;
 
         const ALLOWED_ROLES = [...config.ADMIN_ROLE_IDS, ...config.STAFF_ROLE_IDS].filter(id => id.trim() !== "");
         if (!interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) {
-            return interaction.reply({
-                content: "❌ You do not have permission to use this command.",
-                ephemeral: true
-            });
+            return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
         }
 
-        const targetUser = interaction.options.getUser('member');
+        await interaction.deferReply();
+
         const playerTagInput = interaction.options.getString('tag');
         const count = interaction.options.getInteger('count');
+        const dmOption = interaction.options.getString('dm');
 
-        if (!targetUser && !playerTagInput) {
-            return interaction.reply({
-                content: "❌ You must provide either a **member** or a **player tag**.",
-                ephemeral: true
-            });
+        const tag = playerTagInput.startsWith("#") ? playerTagInput.toUpperCase() : `#${playerTagInput.toUpperCase()}`;
+
+        // Fetch live CoC data
+        let cocData = null;
+        try {
+            cocData = await coc.getPlayer(tag);
+        } catch (err) {
+            return interaction.editReply({ content: `❌ Could not find player with tag \`${tag}\`.` });
         }
 
-        if (targetUser) {
-            const userData = dataManager.getUserData();
-            const linkedAccounts = userData[targetUser.id];
+        const playerName = cocData.name;
+        const clanName = cocData.clan ? cocData.clan.name : "No Clan";
+        const clanTag = cocData.clan ? cocData.clan.tag : null;
 
-            if (!linkedAccounts || linkedAccounts.length === 0) {
-                return interaction.reply({
-                    content: `❌ <@${targetUser.id}> does not have any linked Clash of Clans accounts.`,
-                    ephemeral: true
-                });
+        const userData = dataManager.getUserData();
+        const strikePlayers = dataManager.getStrikePlayers();
+
+        // Find if the player is linked to a Discord user
+        let targetUserId = null;
+        let targetAccount = null;
+        for (const [uId, accounts] of Object.entries(userData)) {
+            const acc = accounts.find(a => a.tag === tag);
+            if (acc) {
+                targetUserId = uId;
+                targetAccount = acc;
+                break;
             }
-
-            const accountsWithStrikes = linkedAccounts.filter(acc => (acc.totalStrikes || acc.strikes || 0) > 0);
-
-            if (accountsWithStrikes.length === 0) {
-                return interaction.reply({
-                    content: `⚠️ <@${targetUser.id}> has no accounts with strikes.`,
-                    ephemeral: true
-                });
-            }
-
-            const selectMenu = new StringSelectMenuBuilder()
-                .setCustomId(`strikeremove_select_${targetUser.id}_${count}`)
-                .setPlaceholder(`Select an account to remove ${count} strike(s)`)
-                .addOptions(accountsWithStrikes.map(acc => ({
-                    label: `${acc.name} (${acc.tag})`,
-                    description: `Current strikes: ${acc.totalStrikes || acc.strikes || 0}`,
-                    value: acc.tag
-                })));
-
-            const row = new ActionRowBuilder().addComponents(selectMenu);
-
-            return interaction.reply({
-                content: `Please select which account of **${targetUser.username}** to remove **${count}** strike(s) from:`,
-                components: [row],
-                ephemeral: true
-            });
         }
 
-        if (playerTagInput) {
-            const tag = playerTagInput.startsWith("#") ? playerTagInput.toUpperCase() : `#${playerTagInput.toUpperCase()}`;
-            const strikePlayers = dataManager.getStrikePlayers();
-            
-            if (!strikePlayers[tag]) {
-                return interaction.reply({ content: `❌ No strike records found for player tag \`${tag}\`.`, ephemeral: true });
+        let previousStrikes = 0;
+        let newStrikes = 0;
+        let actualRemove = 0;
+
+        if (targetAccount) {
+            // --- Linked player ---
+            if (targetAccount.totalStrikes === undefined) targetAccount.totalStrikes = targetAccount.strikes || 0;
+            if (!targetAccount.strikeHistory) targetAccount.strikeHistory = [];
+
+            if (targetAccount.totalStrikes <= 0) {
+                return interaction.editReply({ content: `⚠️ **${playerName}** currently has 0 strikes.` });
             }
 
+            previousStrikes = targetAccount.totalStrikes;
+            actualRemove = Math.min(count, previousStrikes);
+            let remainingToRemove = actualRemove;
+
+            while (remainingToRemove > 0 && targetAccount.strikeHistory.length > 0) {
+                const lastStrike = targetAccount.strikeHistory[targetAccount.strikeHistory.length - 1];
+                if (lastStrike.weight <= remainingToRemove) {
+                    remainingToRemove -= lastStrike.weight;
+                    targetAccount.strikeHistory.pop();
+                } else {
+                    lastStrike.weight -= remainingToRemove;
+                    lastStrike.strikeCountAdded = lastStrike.weight;
+                    remainingToRemove = 0;
+                }
+            }
+
+            targetAccount.totalStrikes -= actualRemove;
+            targetAccount.strikes = targetAccount.totalStrikes;
+            if (targetAccount.totalStrikes < 6) targetAccount.sixStrikeAlertSent = false;
+            newStrikes = targetAccount.totalStrikes;
+            dataManager.saveUserData(userData);
+
+        } else if (strikePlayers[tag]) {
+            // --- Unlinked player ---
             const account = strikePlayers[tag];
             if (account.totalStrikes <= 0) {
-                return interaction.reply({ content: `⚠️ Player **${account.name}** (${tag}) currently has 0 strikes.`, ephemeral: true });
+                return interaction.editReply({ content: `⚠️ Player **${playerName}** currently has 0 strikes.` });
             }
 
-            const actualRemove = Math.min(count, account.totalStrikes);
+            previousStrikes = account.totalStrikes;
+            actualRemove = Math.min(count, previousStrikes);
             let remainingToRemove = actualRemove;
 
             if (account.strikeHistory && account.strikeHistory.length > 0) {
@@ -112,12 +130,75 @@ module.exports = {
             }
 
             account.totalStrikes -= actualRemove;
+            newStrikes = account.totalStrikes;
             dataManager.saveStrikePlayers(strikePlayers);
 
-            return interaction.reply({
-                content: `✅ Removed **${actualRemove}** strike(s) from unlinked player **${account.name}** (${tag}). Current strikes: **${account.totalStrikes}**`,
-                ephemeral: true
-            });
+        } else {
+            return interaction.editReply({ content: `❌ No strike records found for player tag \`${tag}\`.` });
         }
+
+        // --- DM ---
+        let dmStatus = "Not Notified in DM";
+        if (dmOption === 'yes' && targetUserId) {
+            const discordUser = await interaction.client.users.fetch(targetUserId).catch(() => null);
+            if (discordUser) {
+                const dmEmbed = new EmbedBuilder()
+                    .setTitle("✅ Strike Removed")
+                    .setColor(0x2ECC71)
+                    .setDescription(
+                        `${getEmoji('rarroww')} **Strikes Removed:** ${actualRemove}\n` +
+                        `${getEmoji('yarrow')} **Previous Strikes:** ${previousStrikes}\n` +
+                        `${getEmoji('parrow')} **Current Strikes:** ${newStrikes}\n` +
+                        `${getEmoji('rarrow')} **Date:** ${new Date().toLocaleDateString('en-GB').replace(/\//g, '-')}`
+                    )
+                    .setTimestamp();
+                const sent = await discordUser.send({ embeds: [dmEmbed] }).catch(() => null);
+                dmStatus = sent ? "Notified in DM" : "DM Failed (Closed DMs)";
+            } else {
+                dmStatus = "DM Failed (User not found)";
+            }
+        } else if (dmOption === 'yes' && !targetUserId) {
+            dmStatus = "DM Failed (Unlinked Player)";
+        }
+
+        // --- Clan mail channel notification ---
+        if (clanTag) {
+            const clanRoles = dataManager.getClanRoles();
+            const clanConfig = clanRoles[clanTag];
+            if (clanConfig && clanConfig.mailChannelId) {
+                const mailChannel = await interaction.client.channels.fetch(clanConfig.mailChannelId).catch(() => null);
+                if (mailChannel) {
+                    const leaderRole = interaction.guild.roles.cache.find(r => r.name.toLowerCase() === "leader") ||
+                                       interaction.guild.roles.cache.find(r => r.name.toLowerCase().includes("leader"));
+                    const mention = leaderRole ? `<@&${leaderRole.id}>` : "@Leader";
+                    const alertEmbed = new EmbedBuilder()
+                        .setTitle("🟢 Strike Removed")
+                        .setColor(0x2ECC71)
+                        .setDescription(
+                            `${mention}\n\n` +
+                            `${getEmoji('rarroww')} **Player:** ${playerName} (${tag})\n` +
+                            `${getEmoji('yarrow')} **Clan:** ${clanName}\n` +
+                            `${getEmoji('parrow')} **Removed By:** ${interaction.user}\n` +
+                            `${getEmoji('uparrow')} **Strikes Removed:** ${actualRemove}\n` +
+                            `${getEmoji('downarrow')} **Current Strikes:** ${newStrikes}`
+                        )
+                        .setTimestamp();
+                    await mailChannel.send({ content: mention, embeds: [alertEmbed] }).catch(() => null);
+                }
+            }
+        }
+
+        // --- Final reply ---
+        const playerLink = `[${playerName}](https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${tag.replace('#', '')})`;
+        const embed = new EmbedBuilder()
+            .setColor(0x2ECC71)
+            .setDescription(
+                `${getEmoji('rarroww')} **Strike removed from ${playerLink} [${clanName}] by ${interaction.user}.**\n` +
+                `${getEmoji('yarrow')} Removed: ${actualRemove}, Current Strikes: ${newStrikes}`
+            )
+            .setFooter({ text: `${dmStatus}` })
+            .setTimestamp();
+
+        return interaction.editReply({ embeds: [embed] });
     }
 };

@@ -279,7 +279,15 @@ async function sendWarNotification(client, coc, emojiUtils, clanTag, roleData, a
                         `• Result: **${isWin ? "We Win" : "Opponent Wins"}** based on Tag Comparison!`;
                 }
 
-                return await dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clanData, currentWar, matchType, isWin, fwaData, apiLogger);
+                const success = await dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clanData, currentWar, matchType, isWin, fwaData, apiLogger);
+                if (success) {
+                    const STATE_PATH = path.join(__dirname, "../../../data/warState.json");
+                    const warState = fs.existsSync(STATE_PATH) ? JSON.parse(fs.readFileSync(STATE_PATH, "utf-8")) : {};
+                    const warUniqueId = `${currentWar.opponent?.tag || opponentTagFromApi || "N/A"}_${currentWar?.preparationStartTime || "N/A"}`;
+                    warState[clanTag] = warUniqueId;
+                    fs.writeFileSync(STATE_PATH, JSON.stringify(warState, null, 2));
+                }
+                return success;
             } catch (fetchErr) {
                 scrapeError = fetchErr;
             }
@@ -347,6 +355,13 @@ async function sendWarNotification(client, coc, emojiUtils, clanTag, roleData, a
             const ping = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
             const promptMsg = await channel.send({ content: ping, embeds: [embed], components: [row] });
 
+            // Update warState.json immediately so background monitoring doesn't prompt again
+            const STATE_PATH = path.join(__dirname, "../../../data/warState.json");
+            const warState = fs.existsSync(STATE_PATH) ? JSON.parse(fs.readFileSync(STATE_PATH, "utf-8")) : {};
+            const warUniqueId = `${currentWar.opponent?.tag || opponentTagFromApi || "N/A"}_${currentWar?.preparationStartTime || "N/A"}`;
+            warState[clanTag] = warUniqueId;
+            fs.writeFileSync(STATE_PATH, JSON.stringify(warState, null, 2));
+
             const filter = i => i.customId.startsWith('manwar_');
             const collector = promptMsg.createMessageComponentCollector({ filter, time: 24 * 60 * 60 * 1000 });
 
@@ -408,16 +423,8 @@ async function sendWarNotification(client, coc, emojiUtils, clanTag, roleData, a
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("check")
-        .setDescription("War related checks")
-        .addSubcommandGroup(group =>
-            group.setName("all")
-                .setDescription("Perform a check on all clans")
-                .addSubcommand(subcommand =>
-                    subcommand.setName("wars")
-                        .setDescription("Check the latest war results and send to clan channels")
-                )
-        ),
+        .setName("send-fwamails")
+        .setDescription("Check the latest war results and send to clan channels"),
 
     async execute(interaction, context) {
         const { coc, emoji: emojiUtils, client } = context;
@@ -483,17 +490,6 @@ module.exports = {
                     try {
                         const currentWar = await coc.getCurrentWar(tag);
                         if (!currentWar || currentWar.state === "notInWar") {
-                            if (warState[tag]) {
-                                delete warState[tag];
-                                fs.writeFileSync(STATE_PATH, JSON.stringify(warState, null, 2));
-
-                                const dataManager = require("../../../utils/dataManager.js");
-                                const warTypeData = dataManager.getWarType();
-                                if (warTypeData[tag]) {
-                                    delete warTypeData[tag];
-                                    dataManager.saveWarType(warTypeData);
-                                }
-                            }
                             continue;
                         }
 

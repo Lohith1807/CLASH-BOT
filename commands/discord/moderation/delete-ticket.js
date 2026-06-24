@@ -1,13 +1,14 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const transcripts = require('discord-html-transcripts');
 
-async function sendLog(guild, embed, config, file = null) {
+async function sendLog(guild, embed, config, file = null, content = null) {
     const logChannelId = config.TICKET_LOG_CHANNEL_ID || config.LOG_CHANNEL_ID;
     if (!logChannelId) return;
     const logChannel = guild.channels.cache.get(logChannelId);
     if (!logChannel) return;
 
     const payload = { embeds: [embed] };
+    if (content) payload.content = content;
     if (file) payload.files = [file];
 
     await logChannel.send(payload).catch(err => console.error('Log Error:', err));
@@ -63,19 +64,38 @@ module.exports = {
             console.error('Transcript Generation Error:', err);
         }
 
+        let ticketOwnerId = channel.topic;
+        let ownerMention = '';
+        if (ticketOwnerId && /^\d+$/.test(ticketOwnerId)) {
+            const owner = await guild.members.fetch(ticketOwnerId).catch(() => null);
+            if (owner) {
+                ownerMention = `<@${ticketOwnerId}>(${owner.user.username})`;
+            } else {
+                ownerMention = `<@${ticketOwnerId}>`;
+            }
+        } else if (ticketOwnerId) {
+            ownerMention = `<@${ticketOwnerId}>`;
+        } else {
+            ownerMention = `Unknown User`;
+        }
+
+        const now = Math.floor(Date.now() / 1000);
+        
+        const closeContent = `Ticket Closed - By: ${user} | ${user.username} - Ticket: ${channel.name}, ${ownerMention} - Time: <t:${now}:F> -`;
+
         const closeEmbed = new EmbedBuilder()
             .setAuthor({ name: user.username, iconURL: user.displayAvatarURL() })
-            .setTitle('Ticket Deleted via Command')
+            .setTitle('Ticket Closed')
             .setDescription(
-                `• **By:** ${user} (${user.username})\n` +
-                `• **Ticket:** ${channel.name}\n` +
-                `• **Created:** <t:${Math.floor(creationTime.getTime() / 1000)}:R>\n` +
-                `• **Deleted:** <t:${Math.floor(Date.now() / 1000)}:f>`
+                `• By: ${user} | ${user.username}\n` +
+                `• Ticket: ${channel.name}, ${ownerMention}\n` +
+                `• Time: <t:${now}:F>\n` +
+                `• Ticket Creation: <t:${Math.floor(creationTime.getTime() / 1000)}:F>`
             )
             .setColor(0x2b2d31);
 
         try {
-            await sendLog(guild, closeEmbed, config, attachment);
+            await sendLog(guild, closeEmbed, config, attachment, closeContent);
         } catch (err) {
             console.error('Failed to send log with attachment:', err);
             await sendLog(guild, closeEmbed, config).catch(e => console.error('Final Log Error:', e));

@@ -63,6 +63,8 @@ async function buildClanCCEmbeds(clanTag, coc, dataManager, emoji) {
     const linkedLines = buildLinesByRole(linkedMembers, true);
     const unlinkedLines = buildLinesByRole(unlinkedMembers, false);
 
+    const footerText = `👥 ${members.length} | ✅ ${linkedMembers.length} | ❌ ${unlinkedMembers.length}`;
+
     const linkedChunks = [];
     const headerLinked = `💬 \`${headerName}\` **CC Link**\n`;
     
@@ -102,7 +104,7 @@ async function buildClanCCEmbeds(clanTag, coc, dataManager, emoji) {
             .setThumbnail(i === 0 ? (clan.badgeUrls?.large || clan.badgeUrls?.medium) : null)
             .setColor(titleColor)
             .setDescription(linkedChunks[i])
-            .setFooter({ text: "FWA Chocolate Clash Links" })
+            .setFooter({ text: footerText })
             .setTimestamp();
         allEmbeds.push(embed);
     }
@@ -113,7 +115,7 @@ async function buildClanCCEmbeds(clanTag, coc, dataManager, emoji) {
             .setTitle(`Non-Linked Players${titleSuffix}`)
             .setColor(0xE74C3C)
             .setDescription(unlinkedChunks[i])
-            .setFooter({ text: "FWA Chocolate Clash Links" })
+            .setFooter({ text: footerText })
             .setTimestamp();
         allEmbeds.push(embed);
     }

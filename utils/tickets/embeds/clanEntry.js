@@ -13,11 +13,8 @@ module.exports = {
             .setDescription(
                 'Please complete all steps below carefully before applying.\n\n' +
                 '━━━━━━━━━━━━━━\n' +
-                `${getEmoji('bluedot')} **Link Your Account**\n` +
-                'Use the command:\n' +
-                '`;link #PlayerTag`\n\n' +
-                'Example:\n' +
-                '`;link #ABC123XYZ`\n\n' +
+                `${getEmoji('parrow')} **Where did you find Blood Alliance?**\n` +
+                'Please tell us where you found/heard about us.\n\n' +
                 '━━━━━━━━━━━━━━\n' +
                 `${getEmoji('orangedot')} **Share Your FWA Base**\n` +
                 'Upload a screenshot of your current FWA base.\n\n' +
@@ -31,8 +28,7 @@ module.exports = {
                 '📌 **Important**\n' +
                 '• First time joining FWA? Read all FWA & clan rules.\n' +
                 '• Mention how long you plan to stay.\n' +
-                '• Make sure your account matches clan requirements.\n' +
-                `• ${getEmoji('parrow')} Where you found Blood Alliance\n\n` +
+                '• Make sure your account matches clan requirements.\n\n' +
                 '━━━━━━━━━━━━━━\n' +
                 `${getEmoji('tickred')} **After completing everything,**\n` +
                 `ping the <@&${config.STAFF_ROLE_IDS[2]}> to proceed.`

@@ -98,7 +98,7 @@ module.exports = {
         { name: 'Approved At', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true }
     );
 
-    // Emojis spelling "welcome" + "blood alliance"
+    // Emojis spelling "blood alliance" — placed inside embed so they render at smaller inline size
     const welEmoji = getEmoji('wel');
     const darrowEmoji = getEmoji('darrow');
     const bloodAllianceEmojis = [
@@ -118,10 +118,12 @@ module.exports = {
         getEmoji('lettere')
     ].join('');
 
-    const approveHeader = `${welEmoji} ${darrowEmoji}\n${bloodAllianceEmojis}`;
+    // Prepend the header emojis into the embed description so they render smaller (inline)
+    const currentDesc = embed.data.description || '';
+    embed.setDescription(`${welEmoji} ${darrowEmoji}\n${bloodAllianceEmojis}\n\n${currentDesc}`);
 
     await interaction.editReply({
-        content: approveHeader,
+        content: '',
         embeds: [embed]
     });
   }

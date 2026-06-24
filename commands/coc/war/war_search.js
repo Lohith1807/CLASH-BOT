@@ -194,48 +194,59 @@ module.exports = {
             const rarroww = emoji.getEmoji('rarroww') || '➡️';
             const cocfight = emoji.getEmoji('cocfight') || '⚔️';
             
-            let description = "";
+            let descriptionChunks = [""];
+            let chunkIndex = 0;
+            
             results.forEach(res => {
                 const { tag, war, clanData, matchType } = res;
                 const clanNick = clanRoles[tag]?.nickName?.toLowerCase() || "";
                 const clanBadge = emoji.getEmoji(clanNick) || "";
                 const ourLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${tag.replace("#", "")}`;
                 
+                let block = "";
+                
                 if (!war || war.state === "notInWar") {
-                    description += `${parroww} ${clanBadge} **[${clanData.name}](${ourLink})** vs **NO WAR ONGOING**\n`;
-                    description += `${yarrow} **Match type :** ${matchType}\n\n`;
-                    return;
+                    block += `${parroww} ${clanBadge} **[${clanData.name}](${ourLink})** vs **NO WAR ONGOING**\n`;
+                    block += `${yarrow} **Match type :** ${matchType}\n\n`;
+                } else {
+                    const state = war.state;
+                    const timeStr = state === "preparation" ? "Starts in:" : "End time:";
+                    const timeVal = getDuration(state === "preparation" ? war.startTime : war.endTime);
+                    
+                    const oppClanNick = clanRoles[war.opponent.tag]?.nickName?.toLowerCase() || "";
+                    const oppBadge = emoji.getEmoji(oppClanNick) || "";
+                    const oppLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${war.opponent.tag.replace("#", "")}`;
+                    
+                    const savedTypes = dataManager.getWarType();
+                    const savedData = savedTypes[tag];
+                    let mailText = "Leaders Selection";
+                    if (matchType === "FWA Match") {
+                        const result = savedData?.result || "Unknown";
+                        const dot = result === "win" ? (emoji.getEmoji('greendot') || '🟢') : (result === "lose" ? (emoji.getEmoji('reddot') || '🔴') : "");
+                        mailText = result === "win" ? `Win ${dot}` : (result === "lose" ? `Lose ${dot}` : "Unknown");
+                    }
+                    
+                    block += `${parroww} ${clanBadge} **[${clanData.name}](${ourLink})** vs ${oppBadge} **[${war.opponent.name}](${oppLink})**\n`;
+                    block += `${yarrow} **Match type :** ${matchType}\n`;
+                    block += `${rarroww} **War :** ${mailText}\n`;
+                    block += `${cocfight} **${timeStr}** ${timeVal}\n\n`;
                 }
                 
-                const state = war.state;
-                const timeStr = state === "preparation" ? "Starts in:" : "End time:";
-                const timeVal = getDuration(state === "preparation" ? war.startTime : war.endTime);
-                
-                const oppClanNick = clanRoles[war.opponent.tag]?.nickName?.toLowerCase() || "";
-                const oppBadge = emoji.getEmoji(oppClanNick) || "";
-                const oppLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${war.opponent.tag.replace("#", "")}`;
-                
-                const savedTypes = dataManager.getWarType();
-                const savedData = savedTypes[tag];
-                let mailText = "Leaders Selection";
-                if (matchType === "FWA Match") {
-                    const result = savedData?.result || "Unknown";
-                    const dot = result === "win" ? (emoji.getEmoji('greendot') || '🟢') : (result === "lose" ? (emoji.getEmoji('reddot') || '🔴') : "");
-                    mailText = result === "win" ? `Win ${dot}` : (result === "lose" ? `Lose ${dot}` : "Unknown");
+                if (descriptionChunks[chunkIndex].length + block.length > 4000) {
+                    descriptionChunks.push("");
+                    chunkIndex++;
                 }
-                
-                description += `${parroww} ${clanBadge} **[${clanData.name}](${ourLink})** vs ${oppBadge} **[${war.opponent.name}](${oppLink})**\n`;
-                
-                description += `${yarrow} **Match type :** ${matchType}\n`;
-                description += `${rarroww} **War :** ${mailText}\n`;
-                description += `${cocfight} **${timeStr}** ${timeVal}\n\n`;
+                descriptionChunks[chunkIndex] += block;
             });
             
-            const allEmbed = new EmbedBuilder()
-                .setTitle("Alliance Wars")
-                .setDescription(description.trim())
-                .setColor(0x00FF00)
-                .setTimestamp();
+            const allEmbeds = descriptionChunks.map((desc, i) => {
+                const embed = new EmbedBuilder()
+                    .setTitle(i === 0 ? "Alliance Wars" : "Alliance Wars (Cont.)")
+                    .setDescription(desc.trim() || "No data")
+                    .setColor(0x00FF00);
+                if (i === descriptionChunks.length - 1) embed.setTimestamp();
+                return embed;
+            });
                 
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
@@ -245,7 +256,7 @@ module.exports = {
             );
                 
             clearInterval(animationInterval);
-            return await interaction.editReply({ embeds: [allEmbed], components: [row] });
+            return await interaction.editReply({ embeds: allEmbeds, components: [row] });
             
         } else {
             // Specific Clan logic

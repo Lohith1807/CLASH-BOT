@@ -26,12 +26,36 @@ module.exports = {
             return message.channel.send("❌ You do not have permission to use this command.");
         }
 
+        const errorEmbed = new EmbedBuilder()
+            .setColor(getRandomColor())
+            .setDescription(`<a:bluex:1410137736765243432> ❌ Kid try to utilize commands properly or learn how to use`);
+
         if (!args[0] && !message.mentions.users.first()) {
-            return message.channel.send("❌ Please provide a tag or mention a user.");
+            return message.channel.send({ content: `${message.author}`, embeds: [errorEmbed] });
+        }
+
+        const mentionedUser = message.mentions.users.first();
+        if (!mentionedUser) {
+            let isValidTag = false;
+            const tagRegex = /^#?[a-zA-Z0-9]{3,15}$/;
+            if (tagRegex.test(args[0])) {
+                try {
+                    const tagToCheck = args[0].startsWith("#") ? args[0] : `#${args[0]}`;
+                    const playerData = await coc.getPlayer(tagToCheck);
+                    if (playerData && playerData.tag) {
+                        isValidTag = true;
+                    }
+                } catch (e) {
+                    isValidTag = false;
+                }
+            }
+
+            if (!isValidTag) {
+                return message.channel.send({ content: `${message.author}`, embeds: [errorEmbed] });
+            }
         }
 
         let cleanTag, playerName;
-        const mentionedUser = message.mentions.users.first();
         const targetUser = mentionedUser || message.author;
         const userdata = data.getUserData();
         const clanroles = data.getClanRoles();
@@ -212,8 +236,20 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                 return;
             }
 
-            const playerData = await coc.getPlayer(`#${cleanTag}`);
+            let playerData;
             let results = [];
+            try {
+                playerData = await coc.getPlayer(`#${cleanTag}`);
+            } catch (error) {
+                results.push(`❌ Could not fetch player data for \`#${cleanTag}\`. Make sure the tag is valid Noob.`);
+                const errorEmbed = EmbedBuilder.from(embed)
+                    .spliceFields(2, 1, { name: "Actions", value: results.join("\n"), inline: false })
+                    .setColor(0xFF0000)
+                    .setTimestamp();
+                await sentMessage.edit({ embeds: [errorEmbed], components: [] });
+                collector.stop();
+                return;
+            }
 
             if (!playerData.clan) {
                 results.push("⚠ Player is not in any clan.");

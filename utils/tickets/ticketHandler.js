@@ -192,8 +192,12 @@ async function handleTicketInteraction(interaction, context) {
 
             const mentionContent = Array.from(new Set(mentionRoles)).join(" | ");
 
+            // Ghost ping Server Moderator (STAFF_ROLE_IDS[0]) at the end
+            const serverModRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? config.STAFF_ROLE_IDS[0].trim() : null;
+            const ghostPing = serverModRoleId ? ` ||<@&${serverModRoleId}>||` : "";
+
             await channel.send({
-                content: mentionContent,
+                content: mentionContent + ghostPing,
                 embeds: [welcomeEmbed],
                 components: [actionRow1, actionRow2]
             });
@@ -244,7 +248,21 @@ async function handleTicketInteraction(interaction, context) {
 
             if (!clan) {
                 if (animationInterval) clearInterval(animationInterval);
-                const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ Could not fetch clan from Clash of Clans API.");
+                
+                try {
+                    const player = await coc.getPlayer(clanTag);
+                    if (player && player.name) {
+                        const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription(`❌ No Clan found with this tag, This Tag is found as player tag`);
+                        const showPlayerBtn = new ButtonBuilder()
+                            .setCustomId(`show_player_ticket:${clanTag}`)
+                            .setLabel('Show Player')
+                            .setStyle(ButtonStyle.Primary);
+                        const row = new ActionRowBuilder().addComponents(showPlayerBtn);
+                        return await interaction.editReply({ embeds: [errEmbed], components: [row] }).catch(() => { });
+                    }
+                } catch (err) {}
+
+                const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ Invaild tag check once again");
                 return await interaction.editReply({ embeds: [errEmbed] }).catch(() => { });
             }
 
@@ -259,6 +277,31 @@ async function handleTicketInteraction(interaction, context) {
             console.error("❌ Error fetching clan details in ticket:", err);
             const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ An error occurred while fetching clan info.");
             await interaction.editReply({ embeds: [errEmbed] }).catch(() => { });
+        }
+        return true;
+    }
+
+    if (customId && customId.startsWith('show_player_ticket:')) {
+        await interaction.deferReply();
+        const playerTag = customId.split(':')[1];
+        
+        try {
+            const profileCmd = require('../../commands/coc/profile/profile.js');
+            const mockMessage = {
+                author: user,
+                mentions: { users: new Map() },
+                delete: async () => {},
+                channel: {
+                    send: async (payload) => {
+                        return interaction.editReply(payload).catch(() => {});
+                    }
+                }
+            };
+            await profileCmd.execute(mockMessage, [playerTag], context);
+        } catch (err) {
+            console.error("❌ Error showing player profile:", err);
+            const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ An error occurred while fetching player info.");
+            await interaction.editReply({ embeds: [errEmbed] }).catch(() => {});
         }
         return true;
     }
@@ -947,8 +990,12 @@ async function handleTicketInteraction(interaction, context) {
 
         const mentionContent = Array.from(new Set(mentionRoles)).join(" | ");
 
+        // Ghost ping Server Moderator (STAFF_ROLE_IDS[0]) for all ticket types
+        const serverModRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? config.STAFF_ROLE_IDS[0].trim() : null;
+        const ghostPing = serverModRoleId ? ` ||<@&${serverModRoleId}>||` : "";
+
         await channel.send({
-            content: mentionContent,
+            content: mentionContent + ghostPing,
             embeds: [welcomeEmbed],
             components: [actionRow]
         });

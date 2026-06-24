@@ -13,6 +13,9 @@ module.exports = {
             .setDescription(
                 'Please complete all steps below carefully before applying.\n\n' +
                 '━━━━━━━━━━━━━━\n' +
+                `${getEmoji('parrow')} **Where did you find Blood Alliance?**\n` +
+                'Please tell us where you found/heard about us.\n\n' +
+                '━━━━━━━━━━━━━━\n' +
                 `${getEmoji('bluedot')} **Share Your War Base**\n` +
                 'Upload a screenshot of your current War base design.\n\n' +
                 '━━━━━━━━━━━━━━\n' +
@@ -25,8 +28,7 @@ module.exports = {
                 '📌 **Important**\n' +
                 '• Our War Clans are highly competitive.\n' +
                 '• Be prepared for strategic planning.\n' +
-                '• Full hero availability is strictly required.\n' +
-                `• ${getEmoji('parrow')} Where you found Blood Alliance\n\n` +
+                '• Full hero availability is strictly required.\n\n' +
                 '━━━━━━━━━━━━━━\n' +
                 `${getEmoji('tickred')} **After completing everything,**\n` +
                 `ping the <@&${config.STAFF_ROLE_IDS[2]}> to proceed.`

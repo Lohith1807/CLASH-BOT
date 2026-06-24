@@ -694,6 +694,70 @@ async function handleInteraction(interaction, context) {
 
             return interaction.showModal(modal);
         }
+
+        if (id.startsWith("scanclan_refresh_")) {
+            if (interaction.replied || interaction.deferred) return;
+            const clanTag = "#" + id.replace("scanclan_refresh_", "");
+
+            try { await interaction.deferUpdate(); } catch(e) { return; }
+
+            try {
+                const scanClanCmd = require("../commands/coc/war/scan-clan.js");
+                const result = await scanClanCmd.buildScanClanEmbeds(clanTag, coc, dataManager, emoji);
+                if (result && result.embeds) {
+                    await interaction.editReply({ embeds: result.embeds });
+                } else {
+                    await interaction.followUp({ content: "❌ Error refreshing war roster.", ephemeral: true }).catch(() => {});
+                }
+            } catch (err) {
+                console.error(err);
+                try { await interaction.followUp({ content: "❌ Error refreshing war roster.", ephemeral: true }); } catch(e) {}
+            }
+            return;
+        }
+
+        if (id.startsWith("scanclan_lastwars_")) {
+            if (interaction.replied || interaction.deferred) return;
+            const cleanTag = id.replace("scanclan_lastwars_", "");
+            const clanTag = "#" + cleanTag;
+
+            try { await interaction.deferReply({ ephemeral: true }); } catch(e) { return; }
+
+            try {
+                const scanClanCmd = require("../commands/coc/war/scan-clan.js");
+                const scanData = dataManager.getScanWar();
+                const wars = scanData[clanTag] || [];
+
+                if (wars.length === 0) {
+                    return interaction.editReply({ content: "📜 No stored wars found for this clan." });
+                }
+
+                const options = wars.map((w, i) => {
+                    const timeAgo = scanClanCmd.getTimeAgo(w.endTime);
+                    const label = `${w.opponentName}`.slice(0, 50);
+                    const desc = `${timeAgo} | ${w.opponentTag}`.slice(0, 100);
+                    return {
+                        label: label,
+                        description: desc,
+                        value: `${cleanTag}_${i}`
+                    };
+                }).slice(0, 25);
+
+                const { StringSelectMenuBuilder: SSM, ActionRowBuilder: ARB } = require('discord.js');
+                const selectRow = new ARB().addComponents(
+                    new SSM()
+                        .setCustomId(`scanclan_warselect_${cleanTag}`)
+                        .setPlaceholder("Select a past war to view...")
+                        .addOptions(options)
+                );
+
+                await interaction.editReply({ content: "📜 **Select a past war to view the roster:**", components: [selectRow] });
+            } catch (err) {
+                console.error(err);
+                try { await interaction.editReply({ content: "❌ Error loading past wars." }); } catch(e) {}
+            }
+            return;
+        }
     }
 
     if (interaction.isStringSelectMenu()) {
@@ -757,6 +821,45 @@ async function handleInteraction(interaction, context) {
             } catch(err) {
                 console.error("Error in clans10 select menu:", err);
                 try { await interaction.editReply({ content: "❌ Error fetching clan data.", embeds: [], components: [] }); } catch(e) {}
+            }
+            return;
+        }
+
+        if (id.startsWith("scanclan_warselect_")) {
+            if (interaction.replied || interaction.deferred) return;
+            const selectedValue = interaction.values[0];
+            const parts = selectedValue.split("_");
+            const warIndex = parseInt(parts[parts.length - 1]);
+            const cleanTag = selectedValue.replace(`_${warIndex}`, "");
+            const clanTag = "#" + cleanTag;
+
+            try { await interaction.deferUpdate(); } catch(e) { return; }
+
+            try {
+                const scanClanCmd = require("../commands/coc/war/scan-clan.js");
+                const scanData = dataManager.getScanWar();
+                const wars = scanData[clanTag] || [];
+
+                if (isNaN(warIndex) || warIndex < 0 || warIndex >= wars.length) {
+                    return interaction.editReply({ content: "❌ War data not found.", components: [] });
+                }
+
+                const storedWar = wars[warIndex];
+                let clanName = clanTag;
+                let clanBadgeUrl = null;
+                let liveClan = null;
+                try {
+                    liveClan = await coc.getClan(clanTag);
+                    clanName = liveClan.name;
+                    clanBadgeUrl = liveClan.badgeUrls?.large || liveClan.badgeUrls?.medium;
+                } catch(e) {}
+
+                const pastWar = warIndex < wars.length - 1 ? wars[warIndex + 1] : null;
+                const result = await scanClanCmd.buildStoredWarEmbeds(clanTag, clanName, clanBadgeUrl, storedWar, pastWar, liveClan, dataManager, emoji);
+                await interaction.editReply({ embeds: result.embeds, components: [] });
+            } catch (err) {
+                console.error(err);
+                try { await interaction.editReply({ content: "❌ Error loading past war data.", components: [] }); } catch(e) {}
             }
             return;
         }

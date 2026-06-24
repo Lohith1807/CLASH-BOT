@@ -145,6 +145,27 @@ module.exports = {
             let currentRoles = dataManager.getClanRoles();
             let currentClan = currentRoles[clanTag];
 
+            const logChange = async (action, details) => {
+                const syncChannelId = context.config?.SYNC_LOG_ID || process.env.SYNC_LOG_ID;
+                if (!syncChannelId) return;
+                try {
+                    const logChannel = await i.client.channels.fetch(syncChannelId).catch(() => null);
+                    if (logChannel) {
+                        const embed = new EmbedBuilder()
+                            .setTitle("Clan Leadership Update")
+                            .setColor(0x3498db)
+                            .addFields(
+                                { name: "Clan", value: `${currentClan.nickName || clanTag} (${clanTag})`, inline: false },
+                                { name: "Action", value: action, inline: false },
+                                { name: "Details", value: details, inline: false }
+                            )
+                            .setFooter({ text: `Updated by ${i.user.username}`, iconURL: i.user.displayAvatarURL() })
+                            .setTimestamp();
+                        await logChannel.send({ embeds: [embed] }).catch(() => null);
+                    }
+                } catch (err) {}
+            };
+
             if (i.customId === "select_position") {
                 const position = i.values[0];
                 
@@ -186,17 +207,22 @@ module.exports = {
 
             } else if (i.customId.startsWith("pos_clear_")) {
                 const position = i.customId.replace("pos_clear_", "");
+                let removedUser = "None";
+                let posName = position === "leader" ? "Leader" : `Co-Leader ${parseInt(position.split("_")[1]) + 1}`;
                 
                 if (position === "leader") {
+                    removedUser = currentClan.leaders && currentClan.leaders.length > 0 ? currentClan.leaders[0] : "None";
                     currentClan.leaders = [];
                 } else {
                     const idx = parseInt(position.split("_")[1]);
-                    if (currentClan.coLeaders) {
+                    if (currentClan.coLeaders && currentClan.coLeaders[idx]) {
+                        removedUser = currentClan.coLeaders[idx];
                         currentClan.coLeaders.splice(idx, 1);
                     }
                 }
 
                 dataManager.saveClanRoles(currentRoles);
+                await logChange("Position Cleared", `Removed **${removedUser}** from the **${posName}** position.`);
                 await i.update({
                     content: "✅ Position cleared and changes saved.",
                     embeds: [buildMainEmbed()],
@@ -206,16 +232,21 @@ module.exports = {
             } else if (i.customId.startsWith("set_user_")) {
                 const position = i.customId.replace("set_user_", "");
                 const newUserMention = `<@${i.values[0]}>`;
+                let oldUser = "None";
+                let posName = position === "leader" ? "Leader" : `Co-Leader ${parseInt(position.split("_")[1]) + 1}`;
 
                 if (position === "leader") {
+                    oldUser = currentClan.leaders && currentClan.leaders.length > 0 ? currentClan.leaders[0] : "None";
                     currentClan.leaders = [newUserMention];
                 } else {
                     const idx = parseInt(position.split("_")[1]);
                     if (!currentClan.coLeaders) currentClan.coLeaders = [];
+                    oldUser = currentClan.coLeaders[idx] || "None";
                     currentClan.coLeaders[idx] = newUserMention;
                 }
 
                 dataManager.saveClanRoles(currentRoles);
+                await logChange("User Replaced/Set", `Changed **${posName}** from ${oldUser} to ${newUserMention}.`);
                 await i.update({
                     content: "✅ Leadership updated and changes saved.",
                     embeds: [buildMainEmbed()],
@@ -226,13 +257,18 @@ module.exports = {
                 const newMentions = i.values.map(id => `<@${id}>`);
                 if (!currentClan.coLeaders) currentClan.coLeaders = [];
                 
+                let addedMentions = [];
                 newMentions.forEach(mention => {
                     if (!currentClan.coLeaders.includes(mention) && currentClan.coLeaders.length < 4) {
                         currentClan.coLeaders.push(mention);
+                        addedMentions.push(mention);
                     }
                 });
 
                 dataManager.saveClanRoles(currentRoles);
+                if (addedMentions.length > 0) {
+                    await logChange("Added Co-Leaders", `Added ${addedMentions.join(", ")} as new Co-Leader(s).`);
+                }
                 await i.update({
                     content: `✅ Added ${newMentions.length} Co-Leader(s) and changes saved.`,
                     embeds: [buildMainEmbed()],

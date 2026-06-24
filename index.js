@@ -222,16 +222,7 @@ client.on("messageCreate", async (message) => {
       const command = require("./commands/coc/clan/claninfo.js");
       await command.execute(message, args, context);
 
-    } else if (commandName === "ahelp") {
-      const { ahelp } = require("./commands/info/help.js");
-      await ahelp.execute(message, args, context);
-
-    } else if (commandName === "help") {
-      const { help } = require("./commands/info/help.js");
-      await help.execute(message, args, context);
-
-
-    } else if (commandName === "delc") {
+    }  else if (commandName === "delc") {
       const command = require("./commands/discord/channel/delc.js");
       await command.run(message, args, context);
 

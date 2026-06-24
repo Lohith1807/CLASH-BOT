@@ -322,6 +322,52 @@ async function cleanSyncChannel(context) {
     }
 }
 
+async function storeAllFwaWarRosters(context) {
+    const { coc } = context;
+    const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
+    const scanClanCmd = require("./scan-clan.js");
+
+    try {
+        if (!fs.existsSync(clanRolesPath)) return;
+        const clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf8"));
+        
+        const fwaClans = Object.entries(clanRoles).filter(([t, d]) => d.clanType && d.clanType.toLowerCase() === "fwa");
+        
+        const storedClans = [];
+        const errorClans = [];
+
+        for (const [tag, data] of fwaClans) {
+            try {
+                const war = await coc.getCurrentWar(tag);
+                if (war && (war.state === "preparation" || war.state === "inWar")) {
+                    const warMembers = (war.clan && war.clan.members) ? war.clan.members : [];
+                    const saved = scanClanCmd.storeWarSnapshot(tag, war, warMembers);
+                    if (saved) {
+                        const clanName = data.nickName || war.clan?.name || tag;
+                        storedClans.push(`${clanName} (\`${tag}\`)`);
+                    }
+                }
+            } catch (e) {
+                const clanName = data.nickName || tag;
+                errorClans.push(`${clanName} (\`${tag}\`): ${e.message}`);
+            }
+        }
+
+        if (storedClans.length > 0) {
+            const msg = `✅ **Stored new war rosters for ${storedClans.length} clan(s):**\n${storedClans.map(n => `• ${n}`).join("\n")}`;
+            await logToChannel(context, msg);
+        }
+
+        if (errorClans.length > 0) {
+            const errMsg = `⚠️ **Failed to fetch war data for ${errorClans.length} clan(s):**\n${errorClans.map(n => `• ${n}`).join("\n")}`;
+            await logToChannel(context, errMsg);
+        }
+    } catch (err) {
+        console.error("Error storing FWA war rosters:", err);
+        await logToChannel(context, `❌ Error in storeAllFwaWarRosters: ${err.message}`);
+    }
+}
+
 async function checkWarStatus(context) {
     const { coc, config, client } = context;
     const CLAN_TAG = "#CYQVL002";
@@ -357,8 +403,9 @@ async function checkWarStatus(context) {
             if (syncState.prepCleanId !== prepId) {
                 syncState.prepCleanId = prepId;
                 fs.writeFileSync(syncStatePath, JSON.stringify(syncState, null, 2));
-                await logToChannel(context, "📋 Preparation day detected! Clearing sync channel messages...");
+                await logToChannel(context, "📋 Preparation day detected! Clearing sync channel messages and storing war rosters...");
                 await cleanSyncMessages(context);
+                // Preparation day message handling
             }
         }
 
@@ -409,7 +456,10 @@ module.exports = {
     },
     setupWarChecker(client, config, coc, emojiUtils, EmbedBuilder) {
         const context = { client, config, coc, emoji: emojiUtils, EmbedBuilder };
-        setInterval(() => checkWarStatus(context), 5 * 60 * 1000);
+        setInterval(() => {
+            checkWarStatus(context);
+            storeAllFwaWarRosters(context);
+        }, 1 * 60 * 1000);
     },
     async handleSyncButton(interaction, context) {
         const fs = require("fs");

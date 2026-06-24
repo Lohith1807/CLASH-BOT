@@ -17,7 +17,9 @@ const PATHS = {
     helpData: path.join(DATA_DIR, "helpData.json"),
     ticketTimers: path.join(DATA_DIR, "ticketTimers.json"),
     wartype: path.join(DATA_DIR, "wartype.json"),
-    recruitingths: path.join(DATA_DIR, "recruitingths.json")
+    recruitingths: path.join(DATA_DIR, "recruitingths.json"),
+    scanwar: path.join(DATA_DIR, "scanwar.json"),
+    strikecounters: path.join(DATA_DIR, "strikecounters.json")
 };
 
 
@@ -254,6 +256,62 @@ function saveRecruitingTHs(data) {
 }
 
 
+/**
+ * Get scan war data (war history for /scan-clan)
+ * @returns {Object} Scan war data object
+ */
+function getScanWar() {
+    try {
+        if (!fs.existsSync(PATHS.scanwar)) return {};
+        const raw = fs.readFileSync(PATHS.scanwar, "utf8");
+        return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+        console.error("Error reading scanwar.json:", err.message);
+        return {};
+    }
+}
+
+/**
+ * Save scan war data
+ * @param {Object} data - Scan war data to save
+ */
+function saveScanWar(data) {
+    try {
+        fs.writeFileSync(PATHS.scanwar, JSON.stringify(data, null, 2));
+    } catch (err) {
+        console.error("Error writing scanwar.json:", err.message);
+        throw err;
+    }
+}
+
+/**
+ * Get strike counters data
+ * @returns {Object} Strike counters object
+ */
+function getStrikeCounters() {
+    try {
+        if (!fs.existsSync(PATHS.strikecounters)) return {};
+        const raw = fs.readFileSync(PATHS.strikecounters, "utf8");
+        return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+        console.error("Error reading strikecounters.json:", err.message);
+        return {};
+    }
+}
+
+/**
+ * Save strike counters data
+ * @param {Object} data - Strike counters data to save
+ */
+function saveStrikeCounters(data) {
+    try {
+        fs.writeFileSync(PATHS.strikecounters, JSON.stringify(data, null, 2));
+    } catch (err) {
+        console.error("Error writing strikecounters.json:", err.message);
+        throw err;
+    }
+}
+
 module.exports = {
     getUserData,
     getClanRoles,
@@ -263,6 +321,8 @@ module.exports = {
     getTicketTimers,
     getWarType,
     getRecruitingTHs,
+    getScanWar,
+    getStrikeCounters,
 
     saveUserData,
     saveClanRoles,
@@ -272,6 +332,8 @@ module.exports = {
     saveTicketTimers,
     saveWarType,
     saveRecruitingTHs,
+    saveScanWar,
+    saveStrikeCounters,
 
     PATHS
 };

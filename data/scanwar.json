@@ -1,0 +1,2482 @@
+{
+  "#CYQVL002": [
+    {
+      "opponentName": "Malaya Farm",
+      "opponentTag": "#Y0UR2J28",
+      "endTime": "20260622T120541.000Z",
+      "teamSize": 50,
+      "members": [
+        {
+          "tag": "#QCRRC9YUU",
+          "name": "feli",
+          "townhallLevel": 15,
+          "mapPosition": 41
+        },
+        {
+          "tag": "#VQ99CQUL",
+          "name": "Onajs",
+          "townhallLevel": 18,
+          "mapPosition": 3
+        },
+        {
+          "tag": "#8U0C9JRY",
+          "name": "ShadowBl4d3",
+          "townhallLevel": 16,
+          "mapPosition": 24
+        },
+        {
+          "tag": "#LLGQCYLP",
+          "name": "Kaserbeam",
+          "townhallLevel": 18,
+          "mapPosition": 15
+        },
+        {
+          "tag": "#GGJYV0C9",
+          "name": "ManOfSun",
+          "townhallLevel": 18,
+          "mapPosition": 9
+        },
+        {
+          "tag": "#Y2G0R99RP",
+          "name": "Domínguez [⚜️]",
+          "townhallLevel": 18,
+          "mapPosition": 4
+        },
+        {
+          "tag": "#Q9RQ9909",
+          "name": "111111111111111",
+          "townhallLevel": 18,
+          "mapPosition": 11
+        },
+        {
+          "tag": "#R9ULP9VQ",
+          "name": "⚡️FlasH⚡️",
+          "townhallLevel": 18,
+          "mapPosition": 8
+        },
+        {
+          "tag": "#GR2RL0R8R",
+          "name": "Kaser2",
+          "townhallLevel": 18,
+          "mapPosition": 35
+        },
+        {
+          "tag": "#8GVLYC0YV",
+          "name": "mritunjay",
+          "townhallLevel": 15,
+          "mapPosition": 31
+        },
+        {
+          "tag": "#9CQUC8RYP",
+          "name": "Isaac",
+          "townhallLevel": 13,
+          "mapPosition": 43
+        },
+        {
+          "tag": "#29LJRUJGQ",
+          "name": "Domínguez [⚜️]",
+          "townhallLevel": 17,
+          "mapPosition": 32
+        },
+        {
+          "tag": "#R2JLYVCV",
+          "name": "frob28",
+          "townhallLevel": 18,
+          "mapPosition": 2
+        },
+        {
+          "tag": "#G9LRRGLYV",
+          "name": "pratik",
+          "townhallLevel": 16,
+          "mapPosition": 39
+        },
+        {
+          "tag": "#QCJLJPU9P",
+          "name": "SHIHAB MAHMUD",
+          "townhallLevel": 17,
+          "mapPosition": 27
+        },
+        {
+          "tag": "#PU9GYRQP9",
+          "name": "Clasher",
+          "townhallLevel": 15,
+          "mapPosition": 30
+        },
+        {
+          "tag": "#GJL9QVYQ8",
+          "name": "Jon Snow ❄️",
+          "townhallLevel": 8,
+          "mapPosition": 50
+        },
+        {
+          "tag": "#9L8YJ0GR9",
+          "name": "Code: GALADON",
+          "townhallLevel": 15,
+          "mapPosition": 28
+        },
+        {
+          "tag": "#PG00Q2V0Y",
+          "name": "Domínguez [⚜️]",
+          "townhallLevel": 18,
+          "mapPosition": 21
+        },
+        {
+          "tag": "#QGV8G2CP",
+          "name": "Goudse Mocro",
+          "townhallLevel": 12,
+          "mapPosition": 48
+        },
+        {
+          "tag": "#GVR0R8GPJ",
+          "name": "Lucifer",
+          "townhallLevel": 15,
+          "mapPosition": 46
+        },
+        {
+          "tag": "#Q92QG0CL9",
+          "name": "ORËO",
+          "townhallLevel": 16,
+          "mapPosition": 34
+        },
+        {
+          "tag": "#2RLCULPQL",
+          "name": "Pakcik V",
+          "townhallLevel": 13,
+          "mapPosition": 42
+        },
+        {
+          "tag": "#GCV28GCPG",
+          "name": "TK.麒麟",
+          "townhallLevel": 16,
+          "mapPosition": 33
+        },
+        {
+          "tag": "#9LULR2L22",
+          "name": "Chamberbane",
+          "townhallLevel": 18,
+          "mapPosition": 1
+        },
+        {
+          "tag": "#2LJGR8PU9",
+          "name": "⚡Boruto⚡",
+          "townhallLevel": 13,
+          "mapPosition": 40
+        },
+        {
+          "tag": "#2GQULRRPQ",
+          "name": "Lord Avitus",
+          "townhallLevel": 13,
+          "mapPosition": 45
+        },
+        {
+          "tag": "#L9YVVJ8JJ",
+          "name": "Büďđhą",
+          "townhallLevel": 18,
+          "mapPosition": 6
+        },
+        {
+          "tag": "#8V2RJVCPP",
+          "name": "Domínguez [⚜️]",
+          "townhallLevel": 18,
+          "mapPosition": 5
+        },
+        {
+          "tag": "#CP2GV8R9",
+          "name": "david",
+          "townhallLevel": 16,
+          "mapPosition": 25
+        },
+        {
+          "tag": "#8GJG99PLL",
+          "name": "DeViL ®eBoRn",
+          "townhallLevel": 14,
+          "mapPosition": 36
+        },
+        {
+          "tag": "#G8QPLY00C",
+          "name": "badri007",
+          "townhallLevel": 11,
+          "mapPosition": 49
+        },
+        {
+          "tag": "#VYYGYV2J",
+          "name": "Domínguez [⚜️]",
+          "townhallLevel": 18,
+          "mapPosition": 17
+        },
+        {
+          "tag": "#2LCRVR0LG",
+          "name": "Ansiru!_",
+          "townhallLevel": 17,
+          "mapPosition": 19
+        },
+        {
+          "tag": "#JGGCPYQ",
+          "name": "ɢʀᴏᴍ_ʜᴇʟʟꜱᴄʀᴇᴀᴍ",
+          "townhallLevel": 14,
+          "mapPosition": 37
+        },
+        {
+          "tag": "#9Q2VGQP2",
+          "name": "vaibhav",
+          "townhallLevel": 17,
+          "mapPosition": 20
+        },
+        {
+          "tag": "#8VJP2R8UV",
+          "name": "Aryman",
+          "townhallLevel": 15,
+          "mapPosition": 29
+        },
+        {
+          "tag": "#9YRJPPGRQ",
+          "name": "DD✨Mr_Puneet✨™",
+          "townhallLevel": 18,
+          "mapPosition": 12
+        },
+        {
+          "tag": "#220Q90992",
+          "name": "MADARA",
+          "townhallLevel": 18,
+          "mapPosition": 13
+        },
+        {
+          "tag": "#GLGCCC8RJ",
+          "name": "LEGION 9",
+          "townhallLevel": 13,
+          "mapPosition": 47
+        },
+        {
+          "tag": "#L80JJ8VRC",
+          "name": "THE PEKKACHEW",
+          "townhallLevel": 16,
+          "mapPosition": 26
+        },
+        {
+          "tag": "#9LR0VVQRU",
+          "name": "karthick",
+          "townhallLevel": 18,
+          "mapPosition": 16
+        },
+        {
+          "tag": "#902VVGUY",
+          "name": "Zylem",
+          "townhallLevel": 18,
+          "mapPosition": 14
+        },
+        {
+          "tag": "#2GJC22PLR",
+          "name": "el rey de ck",
+          "townhallLevel": 18,
+          "mapPosition": 7
+        },
+        {
+          "tag": "#9G99LCYQ",
+          "name": "Biplob khan",
+          "townhallLevel": 16,
+          "mapPosition": 23
+        },
+        {
+          "tag": "#92UQLYQQ9",
+          "name": "$AHA`",
+          "townhallLevel": 17,
+          "mapPosition": 22
+        },
+        {
+          "tag": "#PQRQLP8UJ",
+          "name": "MD:Riaz of BD",
+          "townhallLevel": 18,
+          "mapPosition": 18
+        },
+        {
+          "tag": "#Y08209QGL",
+          "name": "Koushik™",
+          "townhallLevel": 13,
+          "mapPosition": 44
+        },
+        {
+          "tag": "#GYYPRRP09",
+          "name": "Darkness",
+          "townhallLevel": 16,
+          "mapPosition": 38
+        },
+        {
+          "tag": "#9CVV0QLC8",
+          "name": "SLAYER",
+          "townhallLevel": 18,
+          "mapPosition": 10
+        }
+      ]
+    }
+  ],
+  "#2L80RLGJ8": [
+    {
+      "opponentName": "Edrag Rush",
+      "opponentTag": "#2PPCL2GYP",
+      "endTime": "20260622T120121.000Z",
+      "teamSize": 50,
+      "members": [
+        {
+          "tag": "#2P90RCL9Q",
+          "name": "PUTRA™",
+          "townhallLevel": 18,
+          "mapPosition": 2
+        },
+        {
+          "tag": "#RRC89920",
+          "name": "Dripping Wet™",
+          "townhallLevel": 17,
+          "mapPosition": 17
+        },
+        {
+          "tag": "#9JUJGRPR",
+          "name": "Nick",
+          "townhallLevel": 17,
+          "mapPosition": 16
+        },
+        {
+          "tag": "#9QG00Q2V9",
+          "name": "dFuZe 4",
+          "townhallLevel": 17,
+          "mapPosition": 24
+        },
+        {
+          "tag": "#90UQ2QUCY",
+          "name": "dFuZe 2",
+          "townhallLevel": 17,
+          "mapPosition": 18
+        },
+        {
+          "tag": "#G0CG2CG9Y",
+          "name": "Mini Bana",
+          "townhallLevel": 18,
+          "mapPosition": 34
+        },
+        {
+          "tag": "#LGQLPRPPG",
+          "name": "Racer",
+          "townhallLevel": 18,
+          "mapPosition": 25
+        },
+        {
+          "tag": "#8CCLCP9UL",
+          "name": "dFuZe",
+          "townhallLevel": 18,
+          "mapPosition": 3
+        },
+        {
+          "tag": "#GC2Q9Q9U2",
+          "name": "Good Morty",
+          "townhallLevel": 18,
+          "mapPosition": 38
+        },
+        {
+          "tag": "#V9LY8PVG",
+          "name": "Anonymous",
+          "townhallLevel": 17,
+          "mapPosition": 23
+        },
+        {
+          "tag": "#L0LYPLVU8",
+          "name": "GothG1rlLov3r",
+          "townhallLevel": 14,
+          "mapPosition": 42
+        },
+        {
+          "tag": "#GYGG08QVU",
+          "name": "TSP.冰",
+          "townhallLevel": 17,
+          "mapPosition": 32
+        },
+        {
+          "tag": "#GC9RUJJL8",
+          "name": "dFuZe 5",
+          "townhallLevel": 15,
+          "mapPosition": 41
+        },
+        {
+          "tag": "#GUVR9JC8L",
+          "name": "Sectumsempra",
+          "townhallLevel": 17,
+          "mapPosition": 40
+        },
+        {
+          "tag": "#PP0LLQ0Y",
+          "name": "pavan",
+          "townhallLevel": 15,
+          "mapPosition": 36
+        },
+        {
+          "tag": "#90RGP8CUV",
+          "name": "فايز هندم",
+          "townhallLevel": 18,
+          "mapPosition": 5
+        },
+        {
+          "tag": "#GU9LQU2PQ",
+          "name": "Arcon",
+          "townhallLevel": 16,
+          "mapPosition": 48
+        },
+        {
+          "tag": "#YRCJ02G",
+          "name": "Lasero9000",
+          "townhallLevel": 15,
+          "mapPosition": 39
+        },
+        {
+          "tag": "#GYYC282G8",
+          "name": "TheDarkLord",
+          "townhallLevel": 18,
+          "mapPosition": 13
+        },
+        {
+          "tag": "#22QVLJG9",
+          "name": "Soaking Wet™",
+          "townhallLevel": 16,
+          "mapPosition": 31
+        },
+        {
+          "tag": "#8YYJVCJPY",
+          "name": "Siyam",
+          "townhallLevel": 18,
+          "mapPosition": 14
+        },
+        {
+          "tag": "#8LCCPCGGY",
+          "name": "hello",
+          "townhallLevel": 17,
+          "mapPosition": 27
+        },
+        {
+          "tag": "#QCPRJ9YU",
+          "name": "Shadyguy31",
+          "townhallLevel": 18,
+          "mapPosition": 11
+        },
+        {
+          "tag": "#9G00UR2V",
+          "name": "⚡∆∆RON⚡",
+          "townhallLevel": 18,
+          "mapPosition": 7
+        },
+        {
+          "tag": "#2URJRUJYP",
+          "name": "أبو هاشم هندم",
+          "townhallLevel": 18,
+          "mapPosition": 6
+        },
+        {
+          "tag": "#9GPYYP80C",
+          "name": "Qz",
+          "townhallLevel": 17,
+          "mapPosition": 22
+        },
+        {
+          "tag": "#89VUGRCRP",
+          "name": "Yogesh Chhetri",
+          "townhallLevel": 16,
+          "mapPosition": 33
+        },
+        {
+          "tag": "#YV2L922R2",
+          "name": "PlAtInAx K!NG",
+          "townhallLevel": 16,
+          "mapPosition": 30
+        },
+        {
+          "tag": "#9VP0LLY8U",
+          "name": "SIYAM NCR♨️17",
+          "townhallLevel": 17,
+          "mapPosition": 26
+        },
+        {
+          "tag": "#GYGGL8QRY",
+          "name": "INTELLIGENT",
+          "townhallLevel": 17,
+          "mapPosition": 47
+        },
+        {
+          "tag": "#GV0RPQQ99",
+          "name": "Forsaken",
+          "townhallLevel": 16,
+          "mapPosition": 43
+        },
+        {
+          "tag": "#PLCJ9JYR2",
+          "name": "Clasher",
+          "townhallLevel": 18,
+          "mapPosition": 21
+        },
+        {
+          "tag": "#9J2UGCCCL",
+          "name": "『I.L』™•Øñ£pï€ç£",
+          "townhallLevel": 18,
+          "mapPosition": 4
+        },
+        {
+          "tag": "#PGLVGPR2P",
+          "name": "Clasher",
+          "townhallLevel": 18,
+          "mapPosition": 15
+        },
+        {
+          "tag": "#JVLLRGVR",
+          "name": "Janit",
+          "townhallLevel": 18,
+          "mapPosition": 1
+        },
+        {
+          "tag": "#QQ9GVQ08Y",
+          "name": "M16Trident",
+          "townhallLevel": 18,
+          "mapPosition": 19
+        },
+        {
+          "tag": "#PYJQP90UU",
+          "name": "ETHAN",
+          "townhallLevel": 14,
+          "mapPosition": 46
+        },
+        {
+          "tag": "#GJRULGYRJ",
+          "name": "Itachis crow",
+          "townhallLevel": 13,
+          "mapPosition": 50
+        },
+        {
+          "tag": "#PPLJ9LC2J",
+          "name": "dFuZe 7",
+          "townhallLevel": 16,
+          "mapPosition": 37
+        },
+        {
+          "tag": "#8JGQQ0URQ",
+          "name": "Alpha",
+          "townhallLevel": 18,
+          "mapPosition": 8
+        },
+        {
+          "tag": "#Y8L0GYGP",
+          "name": "SAJID",
+          "townhallLevel": 18,
+          "mapPosition": 10
+        },
+        {
+          "tag": "#QUVG8RJR",
+          "name": "Deadmau5✌️",
+          "townhallLevel": 16,
+          "mapPosition": 28
+        },
+        {
+          "tag": "#QVQ2U9P9R",
+          "name": "SAHIL ⚡",
+          "townhallLevel": 18,
+          "mapPosition": 12
+        },
+        {
+          "tag": "#2L099V8CY",
+          "name": "Harry Sandhu",
+          "townhallLevel": 18,
+          "mapPosition": 9
+        },
+        {
+          "tag": "#QJ9LJYR9J",
+          "name": "w00sla",
+          "townhallLevel": 15,
+          "mapPosition": 45
+        },
+        {
+          "tag": "#QUP2L2U8U",
+          "name": "visper",
+          "townhallLevel": 14,
+          "mapPosition": 44
+        },
+        {
+          "tag": "#80V9UYCUY",
+          "name": "PHANTOM",
+          "townhallLevel": 15,
+          "mapPosition": 35
+        },
+        {
+          "tag": "#98UUUV0V9",
+          "name": "dFuze 3",
+          "townhallLevel": 16,
+          "mapPosition": 29
+        },
+        {
+          "tag": "#LR8GPLCLR",
+          "name": "PlAtInAx 3.0",
+          "townhallLevel": 18,
+          "mapPosition": 20
+        },
+        {
+          "tag": "#YG98PQC8C",
+          "name": "LEADER LEGEND",
+          "townhallLevel": 13,
+          "mapPosition": 49
+        }
+      ]
+    }
+  ],
+  "#2Y9G28C9Q": [
+    {
+      "opponentName": "Global Farmers",
+      "opponentTag": "#2G2VUGYPC",
+      "endTime": "20260622T120511.000Z",
+      "teamSize": 50,
+      "members": [
+        {
+          "tag": "#QLRYPYQ98",
+          "name": "plzplaypubg",
+          "townhallLevel": 15,
+          "mapPosition": 24
+        },
+        {
+          "tag": "#PUVL98LY9",
+          "name": "koushik",
+          "townhallLevel": 16,
+          "mapPosition": 32
+        },
+        {
+          "tag": "#8RGUYGYP",
+          "name": "Ohcay",
+          "townhallLevel": 13,
+          "mapPosition": 40
+        },
+        {
+          "tag": "#LLCPLGPJG",
+          "name": "PRINCE",
+          "townhallLevel": 17,
+          "mapPosition": 16
+        },
+        {
+          "tag": "#LJUGY8VYV",
+          "name": "kingplayscoc",
+          "townhallLevel": 16,
+          "mapPosition": 29
+        },
+        {
+          "tag": "#P9LC0LVJ",
+          "name": "poyang",
+          "townhallLevel": 18,
+          "mapPosition": 5
+        },
+        {
+          "tag": "#2UL89V8V9",
+          "name": "AnuPam",
+          "townhallLevel": 17,
+          "mapPosition": 17
+        },
+        {
+          "tag": "#LV8L98V9U",
+          "name": "arya",
+          "townhallLevel": 13,
+          "mapPosition": 49
+        },
+        {
+          "tag": "#90VL2CPRY",
+          "name": "RushClasherMAX",
+          "townhallLevel": 15,
+          "mapPosition": 28
+        },
+        {
+          "tag": "#882VY80UY",
+          "name": "SkYLanD",
+          "townhallLevel": 18,
+          "mapPosition": 3
+        },
+        {
+          "tag": "#LG8JYPUQC",
+          "name": "Janit™",
+          "townhallLevel": 13,
+          "mapPosition": 41
+        },
+        {
+          "tag": "#2Y2QPLQPC",
+          "name": "Htet",
+          "townhallLevel": 15,
+          "mapPosition": 27
+        },
+        {
+          "tag": "#Q0V922YJQ",
+          "name": "SHADOW LEGEND",
+          "townhallLevel": 17,
+          "mapPosition": 13
+        },
+        {
+          "tag": "#P8PJ90YY",
+          "name": "ayush",
+          "townhallLevel": 18,
+          "mapPosition": 9
+        },
+        {
+          "tag": "#GCP82CUUL",
+          "name": "muscles",
+          "townhallLevel": 13,
+          "mapPosition": 39
+        },
+        {
+          "tag": "#R00YU08QU",
+          "name": "zen",
+          "townhallLevel": 15,
+          "mapPosition": 42
+        },
+        {
+          "tag": "#GC0JC22U9",
+          "name": "DonAK",
+          "townhallLevel": 18,
+          "mapPosition": 21
+        },
+        {
+          "tag": "#LC9L2PUGJ",
+          "name": "ROHIT⚡",
+          "townhallLevel": 15,
+          "mapPosition": 35
+        },
+        {
+          "tag": "#GCUPCVJQV",
+          "name": "ChiefAK",
+          "townhallLevel": 18,
+          "mapPosition": 20
+        },
+        {
+          "tag": "#Y98RPJQGY",
+          "name": "SK EMON AHMED 2",
+          "townhallLevel": 14,
+          "mapPosition": 33
+        },
+        {
+          "tag": "#9L2JGGVU",
+          "name": "Allen",
+          "townhallLevel": 17,
+          "mapPosition": 15
+        },
+        {
+          "tag": "#9QGPQVGP9",
+          "name": "ANAS R Master",
+          "townhallLevel": 15,
+          "mapPosition": 37
+        },
+        {
+          "tag": "#8V9GRLUU",
+          "name": "#AzisVerdian17",
+          "townhallLevel": 18,
+          "mapPosition": 2
+        },
+        {
+          "tag": "#8JGGJJ2JP",
+          "name": "Biplob w",
+          "townhallLevel": 14,
+          "mapPosition": 36
+        },
+        {
+          "tag": "#P8VUUQGR0",
+          "name": "Brang",
+          "townhallLevel": 15,
+          "mapPosition": 25
+        },
+        {
+          "tag": "#GUP8PRVVL",
+          "name": "ʟᴏʀᴅ ɪɴᴏꜱᴜᴋᴇ",
+          "townhallLevel": 13,
+          "mapPosition": 48
+        },
+        {
+          "tag": "#GQLP8LVY2",
+          "name": "mars",
+          "townhallLevel": 13,
+          "mapPosition": 47
+        },
+        {
+          "tag": "#LJJG9R00P",
+          "name": "Eddie Vedder",
+          "townhallLevel": 13,
+          "mapPosition": 43
+        },
+        {
+          "tag": "#80QQJQ0CV",
+          "name": "CULDESACK23",
+          "townhallLevel": 18,
+          "mapPosition": 10
+        },
+        {
+          "tag": "#Y2V209Q0C",
+          "name": "Gilgamesh",
+          "townhallLevel": 15,
+          "mapPosition": 31
+        },
+        {
+          "tag": "#QLCUQJYGU",
+          "name": "Limbo",
+          "townhallLevel": 17,
+          "mapPosition": 14
+        },
+        {
+          "tag": "#G2YGVYV80",
+          "name": "l luv rushing",
+          "townhallLevel": 16,
+          "mapPosition": 26
+        },
+        {
+          "tag": "#8QQGQL0P2",
+          "name": "YOGIRAJ",
+          "townhallLevel": 14,
+          "mapPosition": 34
+        },
+        {
+          "tag": "#YGYVR9UUR",
+          "name": "VenomVortex",
+          "townhallLevel": 18,
+          "mapPosition": 11
+        },
+        {
+          "tag": "#9LJLYQG08",
+          "name": "PANDIT",
+          "townhallLevel": 18,
+          "mapPosition": 4
+        },
+        {
+          "tag": "#GV0P8RC9V",
+          "name": "YOGESH",
+          "townhallLevel": 18,
+          "mapPosition": 18
+        },
+        {
+          "tag": "#2UCV8PJGY",
+          "name": "Naresh",
+          "townhallLevel": 18,
+          "mapPosition": 6
+        },
+        {
+          "tag": "#9VU9LCUUR",
+          "name": "crazy pV",
+          "townhallLevel": 18,
+          "mapPosition": 8
+        },
+        {
+          "tag": "#LGJ0QLLG9",
+          "name": "Naman",
+          "townhallLevel": 15,
+          "mapPosition": 30
+        },
+        {
+          "tag": "#GYQRRLJCJ",
+          "name": "Arun",
+          "townhallLevel": 13,
+          "mapPosition": 45
+        },
+        {
+          "tag": "#C0V8CRRY",
+          "name": "Šhãďõw Mãšťëř",
+          "townhallLevel": 18,
+          "mapPosition": 12
+        },
+        {
+          "tag": "#9LG0PVQLQ",
+          "name": "KMN2",
+          "townhallLevel": 18,
+          "mapPosition": 19
+        },
+        {
+          "tag": "#GRY9RQU8U",
+          "name": "mini abood",
+          "townhallLevel": 14,
+          "mapPosition": 44
+        },
+        {
+          "tag": "#GCCLVR0RC",
+          "name": "sss",
+          "townhallLevel": 12,
+          "mapPosition": 46
+        },
+        {
+          "tag": "#99U2LPCY2",
+          "name": "MOGEMBO",
+          "townhallLevel": 18,
+          "mapPosition": 7
+        },
+        {
+          "tag": "#Y89RLRCG0",
+          "name": "ArUp..",
+          "townhallLevel": 16,
+          "mapPosition": 23
+        },
+        {
+          "tag": "#GGV0LLYJY",
+          "name": "dal churma",
+          "townhallLevel": 13,
+          "mapPosition": 50
+        },
+        {
+          "tag": "#Q98JQJ0L",
+          "name": "lolo",
+          "townhallLevel": 18,
+          "mapPosition": 1
+        },
+        {
+          "tag": "#80YL02YYQ",
+          "name": "Leo light",
+          "townhallLevel": 15,
+          "mapPosition": 38
+        },
+        {
+          "tag": "#GV2P9QGG",
+          "name": "Janit©",
+          "townhallLevel": 16,
+          "mapPosition": 22
+        }
+      ]
+    }
+  ],
+  "#2YUPCY9GV": [
+    {
+      "opponentName": "Mad Serbian's",
+      "opponentTag": "#U8J0LP0",
+      "endTime": "20260622T132651.000Z",
+      "teamSize": 50,
+      "members": [
+        {
+          "tag": "#Y9L99009R",
+          "name": "sk kapil",
+          "townhallLevel": 18,
+          "mapPosition": 5
+        },
+        {
+          "tag": "#P988QVQL",
+          "name": "Zirocco",
+          "townhallLevel": 18,
+          "mapPosition": 1
+        },
+        {
+          "tag": "#QJ9VQCGQJ",
+          "name": "BATTEL KING",
+          "townhallLevel": 15,
+          "mapPosition": 36
+        },
+        {
+          "tag": "#GQ22CPY00",
+          "name": "Revenant",
+          "townhallLevel": 17,
+          "mapPosition": 33
+        },
+        {
+          "tag": "#LGGYJGP9V",
+          "name": "ABU AROSH",
+          "townhallLevel": 15,
+          "mapPosition": 22
+        },
+        {
+          "tag": "#QYULCC9Q2",
+          "name": "OM12@",
+          "townhallLevel": 15,
+          "mapPosition": 38
+        },
+        {
+          "tag": "#LLLLVYUUG",
+          "name": "BATTEL KING",
+          "townhallLevel": 18,
+          "mapPosition": 6
+        },
+        {
+          "tag": "#Q9Y8RQ8QL",
+          "name": "HAKU @",
+          "townhallLevel": 18,
+          "mapPosition": 3
+        },
+        {
+          "tag": "#UQJ9JRPV",
+          "name": "your mum",
+          "townhallLevel": 18,
+          "mapPosition": 4
+        },
+        {
+          "tag": "#Q0LQ9VJP8",
+          "name": "RAY",
+          "townhallLevel": 15,
+          "mapPosition": 30
+        },
+        {
+          "tag": "#292YGQ2",
+          "name": "Suddenimpact04",
+          "townhallLevel": 15,
+          "mapPosition": 37
+        },
+        {
+          "tag": "#PQ99V8CR2",
+          "name": "Aichi_Kun",
+          "townhallLevel": 14,
+          "mapPosition": 35
+        },
+        {
+          "tag": "#2C9PUGUCL",
+          "name": "johan",
+          "townhallLevel": 15,
+          "mapPosition": 31
+        },
+        {
+          "tag": "#9U8QY2Q0V",
+          "name": "BATTEL KING",
+          "townhallLevel": 15,
+          "mapPosition": 32
+        },
+        {
+          "tag": "#P99U8U80U",
+          "name": "Dynamic//Protap",
+          "townhallLevel": 13,
+          "mapPosition": 45
+        },
+        {
+          "tag": "#G2P2J2JUU",
+          "name": "Dark",
+          "townhallLevel": 15,
+          "mapPosition": 18
+        },
+        {
+          "tag": "#QVU09QU9L",
+          "name": "BATTEL KING",
+          "townhallLevel": 17,
+          "mapPosition": 21
+        },
+        {
+          "tag": "#GRGQPYPJP",
+          "name": "ego4u",
+          "townhallLevel": 13,
+          "mapPosition": 43
+        },
+        {
+          "tag": "#P2R9PG0V9",
+          "name": "⚡N⚡LIGHTNING⚡Y⚡",
+          "townhallLevel": 18,
+          "mapPosition": 15
+        },
+        {
+          "tag": "#P90C8J88G",
+          "name": "BATTEL KING",
+          "townhallLevel": 15,
+          "mapPosition": 23
+        },
+        {
+          "tag": "#GY2QJ9RJY",
+          "name": "Ｒ  Σ  ＮＧＯＫＵ",
+          "townhallLevel": 12,
+          "mapPosition": 48
+        },
+        {
+          "tag": "#PCL8QGLJC",
+          "name": "swarup",
+          "townhallLevel": 15,
+          "mapPosition": 19
+        },
+        {
+          "tag": "#G9Y9Y2PU0",
+          "name": "LEGION 8",
+          "townhallLevel": 14,
+          "mapPosition": 47
+        },
+        {
+          "tag": "#82YJGC2GQ",
+          "name": "ဘုရင့္ေနာင္",
+          "townhallLevel": 15,
+          "mapPosition": 28
+        },
+        {
+          "tag": "#GR0CG0Q8C",
+          "name": "noir4u",
+          "townhallLevel": 15,
+          "mapPosition": 39
+        },
+        {
+          "tag": "#LJRV2P80V",
+          "name": "BATTEL KING",
+          "townhallLevel": 14,
+          "mapPosition": 41
+        },
+        {
+          "tag": "#9YLYLYV8",
+          "name": "danial",
+          "townhallLevel": 15,
+          "mapPosition": 25
+        },
+        {
+          "tag": "#9PG9RYGPU",
+          "name": "TITANIC KING",
+          "townhallLevel": 17,
+          "mapPosition": 9
+        },
+        {
+          "tag": "#209P9VPL2",
+          "name": "Murtuza T",
+          "townhallLevel": 17,
+          "mapPosition": 13
+        },
+        {
+          "tag": "#Q0QGVU8GL",
+          "name": "GODX FURY",
+          "townhallLevel": 16,
+          "mapPosition": 17
+        },
+        {
+          "tag": "#92RP2YG8U",
+          "name": "BATTEL KING",
+          "townhallLevel": 14,
+          "mapPosition": 40
+        },
+        {
+          "tag": "#G99LPJLU9",
+          "name": "Kuttusan",
+          "townhallLevel": 15,
+          "mapPosition": 20
+        },
+        {
+          "tag": "#R292PJPJR",
+          "name": "ronaldo",
+          "townhallLevel": 12,
+          "mapPosition": 50
+        },
+        {
+          "tag": "#R2CVL9R9P",
+          "name": "⚡N⚡LIGHTNING⚡Y⚡",
+          "townhallLevel": 16,
+          "mapPosition": 42
+        },
+        {
+          "tag": "#9JCV8R9P0",
+          "name": "SS VENOM",
+          "townhallLevel": 17,
+          "mapPosition": 12
+        },
+        {
+          "tag": "#YY2QVU8Q8",
+          "name": "shiv",
+          "townhallLevel": 18,
+          "mapPosition": 7
+        },
+        {
+          "tag": "#P0YGVGUPL",
+          "name": "Dynamic//Protap",
+          "townhallLevel": 17,
+          "mapPosition": 8
+        },
+        {
+          "tag": "#YCC9R8VG0",
+          "name": "Zirocco 2.0",
+          "townhallLevel": 16,
+          "mapPosition": 27
+        },
+        {
+          "tag": "#GQP0G8VQ",
+          "name": "zBlackPanda_",
+          "townhallLevel": 18,
+          "mapPosition": 2
+        },
+        {
+          "tag": "#YQL8LJQC0",
+          "name": "luca",
+          "townhallLevel": 17,
+          "mapPosition": 11
+        },
+        {
+          "tag": "#QULCUVYPY",
+          "name": "L8THAL",
+          "townhallLevel": 17,
+          "mapPosition": 10
+        },
+        {
+          "tag": "#PU0V0LGGV",
+          "name": "2o3.Pirata",
+          "townhallLevel": 15,
+          "mapPosition": 29
+        },
+        {
+          "tag": "#9RC08PLGQ",
+          "name": "Flashy Shades",
+          "townhallLevel": 15,
+          "mapPosition": 26
+        },
+        {
+          "tag": "#GLPY0JJ2U",
+          "name": "Battel king",
+          "townhallLevel": 15,
+          "mapPosition": 44
+        },
+        {
+          "tag": "#GJY0PVQ88",
+          "name": "TK.蚂蚁",
+          "townhallLevel": 15,
+          "mapPosition": 34
+        },
+        {
+          "tag": "#8CCVPP9Y2",
+          "name": "Rave",
+          "townhallLevel": 16,
+          "mapPosition": 16
+        },
+        {
+          "tag": "#9Q9LLYJ9U",
+          "name": "Rock Sayan",
+          "townhallLevel": 13,
+          "mapPosition": 46
+        },
+        {
+          "tag": "#G9P909V2U",
+          "name": "1234",
+          "townhallLevel": 15,
+          "mapPosition": 24
+        },
+        {
+          "tag": "#GLYLGPYCG",
+          "name": "viper4u",
+          "townhallLevel": 12,
+          "mapPosition": 49
+        },
+        {
+          "tag": "#ULYQ0JQ8",
+          "name": "myself RÕHÎT✔✔✔",
+          "townhallLevel": 17,
+          "mapPosition": 14
+        }
+      ]
+    }
+  ],
+  "#2L80LY0CP": [
+    {
+      "opponentName": "铁面无私公平部落",
+      "opponentTag": "#2YPY92GYY",
+      "endTime": "20260622T120101.000Z",
+      "teamSize": 50,
+      "members": [
+        {
+          "tag": "#GLV998PG",
+          "name": "Themostawesome",
+          "townhallLevel": 18,
+          "mapPosition": 3
+        },
+        {
+          "tag": "#Y90CUUC2G",
+          "name": "N£®®¥™",
+          "townhallLevel": 17,
+          "mapPosition": 32
+        },
+        {
+          "tag": "#LP0RV8LYP",
+          "name": "Lv.21 lashon™",
+          "townhallLevel": 17,
+          "mapPosition": 34
+        },
+        {
+          "tag": "#9Y8CYQ00V",
+          "name": "HUSAM",
+          "townhallLevel": 16,
+          "mapPosition": 46
+        },
+        {
+          "tag": "#YV8UGPCV9",
+          "name": "Sapphire",
+          "townhallLevel": 15,
+          "mapPosition": 45
+        },
+        {
+          "tag": "#LYPPQYR2C",
+          "name": "Ｄｉｌｗａｌｅ♡",
+          "townhallLevel": 18,
+          "mapPosition": 22
+        },
+        {
+          "tag": "#9J208Y022",
+          "name": "☣️Lazykiller☣️",
+          "townhallLevel": 18,
+          "mapPosition": 8
+        },
+        {
+          "tag": "#9R0L2LUVJ",
+          "name": "JÄ§MÄÑ F'ĐËZ",
+          "townhallLevel": 17,
+          "mapPosition": 31
+        },
+        {
+          "tag": "#YY8G209VL",
+          "name": "ALBION 2",
+          "townhallLevel": 18,
+          "mapPosition": 26
+        },
+        {
+          "tag": "#PPJYCCRVC",
+          "name": "Super Clasher",
+          "townhallLevel": 18,
+          "mapPosition": 7
+        },
+        {
+          "tag": "#L0YRLR08R",
+          "name": "DILWALE❤",
+          "townhallLevel": 18,
+          "mapPosition": 1
+        },
+        {
+          "tag": "#PV98VP2U9",
+          "name": "KaiDranzer15",
+          "townhallLevel": 18,
+          "mapPosition": 11
+        },
+        {
+          "tag": "#8UQPG0VQC",
+          "name": "NERRY™",
+          "townhallLevel": 18,
+          "mapPosition": 2
+        },
+        {
+          "tag": "#9YJUY0G9Q",
+          "name": "NERRY",
+          "townhallLevel": 18,
+          "mapPosition": 19
+        },
+        {
+          "tag": "#YY00Q88P9",
+          "name": "Lv.2 lashon™",
+          "townhallLevel": 16,
+          "mapPosition": 44
+        },
+        {
+          "tag": "#LVQY88Y8L",
+          "name": "Nasty",
+          "townhallLevel": 15,
+          "mapPosition": 42
+        },
+        {
+          "tag": "#PJG9CC8R",
+          "name": "ALBION",
+          "townhallLevel": 18,
+          "mapPosition": 21
+        },
+        {
+          "tag": "#22C2GCGR9",
+          "name": "thePUNISHER",
+          "townhallLevel": 18,
+          "mapPosition": 9
+        },
+        {
+          "tag": "#Q0URGVC0Y",
+          "name": "it-wasn't_me",
+          "townhallLevel": 15,
+          "mapPosition": 40
+        },
+        {
+          "tag": "#YR2YYU2LY",
+          "name": "NoISY々2 0 0 2",
+          "townhallLevel": 18,
+          "mapPosition": 18
+        },
+        {
+          "tag": "#99CGPG8QL",
+          "name": "Lv.13 lashon™",
+          "townhallLevel": 15,
+          "mapPosition": 43
+        },
+        {
+          "tag": "#GJRR9J890",
+          "name": "fenix",
+          "townhallLevel": 18,
+          "mapPosition": 16
+        },
+        {
+          "tag": "#P9CULJJP9",
+          "name": "Optimus Prime‿",
+          "townhallLevel": 18,
+          "mapPosition": 25
+        },
+        {
+          "tag": "#9VLP2Q82L",
+          "name": "ANIKET",
+          "townhallLevel": 17,
+          "mapPosition": 33
+        },
+        {
+          "tag": "#L0JLCCQR8",
+          "name": "✨Archer_Queen✨",
+          "townhallLevel": 16,
+          "mapPosition": 36
+        },
+        {
+          "tag": "#Q2RLV29LV",
+          "name": "ɴᴀʜɪʏᴀɴ✔︎",
+          "townhallLevel": 18,
+          "mapPosition": 12
+        },
+        {
+          "tag": "#2PPYR2PR0",
+          "name": "Lv.Max lashon™",
+          "townhallLevel": 18,
+          "mapPosition": 5
+        },
+        {
+          "tag": "#8PJJYP9GJ",
+          "name": "SKS.SUCHITH",
+          "townhallLevel": 18,
+          "mapPosition": 4
+        },
+        {
+          "tag": "#YV899PQ99",
+          "name": "Lv.3 lashon™",
+          "townhallLevel": 15,
+          "mapPosition": 47
+        },
+        {
+          "tag": "#98JR0R0Q",
+          "name": "NERRY..Max™",
+          "townhallLevel": 18,
+          "mapPosition": 13
+        },
+        {
+          "tag": "#PL2VG9UVV",
+          "name": "Lv.4 lashon™",
+          "townhallLevel": 16,
+          "mapPosition": 38
+        },
+        {
+          "tag": "#LYR8CPRY9",
+          "name": "ÃNgLE_283",
+          "townhallLevel": 16,
+          "mapPosition": 35
+        },
+        {
+          "tag": "#P9R9L2L9P",
+          "name": "Lv.5 lashon™",
+          "townhallLevel": 13,
+          "mapPosition": 50
+        },
+        {
+          "tag": "#YG9PQJJV2",
+          "name": "saravana",
+          "townhallLevel": 18,
+          "mapPosition": 10
+        },
+        {
+          "tag": "#PGYPC8PYV",
+          "name": "Lv.69 lashon™",
+          "townhallLevel": 16,
+          "mapPosition": 37
+        },
+        {
+          "tag": "#PVV9UR9LV",
+          "name": "Lv.0 lashon™",
+          "townhallLevel": 18,
+          "mapPosition": 27
+        },
+        {
+          "tag": "#2LVUC9L2J",
+          "name": "Officially_Veer",
+          "townhallLevel": 16,
+          "mapPosition": 39
+        },
+        {
+          "tag": "#QQJL8CV0U",
+          "name": "Dracula",
+          "townhallLevel": 14,
+          "mapPosition": 49
+        },
+        {
+          "tag": "#9VV2URQ2G",
+          "name": "N€RR¥ F€RNAND€$",
+          "townhallLevel": 15,
+          "mapPosition": 41
+        },
+        {
+          "tag": "#Y9Y2UYG9R",
+          "name": "CLASTON",
+          "townhallLevel": 18,
+          "mapPosition": 23
+        },
+        {
+          "tag": "#9VC8GLPQJ",
+          "name": "shrajan",
+          "townhallLevel": 18,
+          "mapPosition": 6
+        },
+        {
+          "tag": "#G0J92V200",
+          "name": "ALBION 14",
+          "townhallLevel": 18,
+          "mapPosition": 29
+        },
+        {
+          "tag": "#L0QV92YG9",
+          "name": "Rusher ✅",
+          "townhallLevel": 17,
+          "mapPosition": 30
+        },
+        {
+          "tag": "#9JP9RUGLU",
+          "name": "R MADRID BOY",
+          "townhallLevel": 14,
+          "mapPosition": 48
+        },
+        {
+          "tag": "#QVCJ2YQYQ",
+          "name": "BreadRushed",
+          "townhallLevel": 18,
+          "mapPosition": 14
+        },
+        {
+          "tag": "#YLR0C2VV0",
+          "name": "m m the great",
+          "townhallLevel": 18,
+          "mapPosition": 20
+        },
+        {
+          "tag": "#92LQGC20Q",
+          "name": "ALBION 15",
+          "townhallLevel": 18,
+          "mapPosition": 24
+        },
+        {
+          "tag": "#LY0Y88JPP",
+          "name": "N€®®¥™",
+          "townhallLevel": 18,
+          "mapPosition": 17
+        },
+        {
+          "tag": "#Q0R29PLJ8",
+          "name": "ALBION 13",
+          "townhallLevel": 18,
+          "mapPosition": 15
+        },
+        {
+          "tag": "#LUQUQ0VUV",
+          "name": "ALBION 17",
+          "townhallLevel": 18,
+          "mapPosition": 28
+        }
+      ]
+    }
+  ],
+  "#2PRJYL99P": [
+    {
+      "opponentName": "outlander club",
+      "opponentTag": "#9GP2YGQG",
+      "endTime": "20260622T120151.000Z",
+      "teamSize": 50,
+      "members": [
+        {
+          "tag": "#8QV89828",
+          "name": "DaraD 99",
+          "townhallLevel": 18,
+          "mapPosition": 8
+        },
+        {
+          "tag": "#V2UGYJ08",
+          "name": "Flip",
+          "townhallLevel": 18,
+          "mapPosition": 3
+        },
+        {
+          "tag": "#208PLQQPQ",
+          "name": "pls dont touch",
+          "townhallLevel": 18,
+          "mapPosition": 13
+        },
+        {
+          "tag": "#9YR2GQUUL",
+          "name": "vivek",
+          "townhallLevel": 18,
+          "mapPosition": 21
+        },
+        {
+          "tag": "#LYURJVJ0L",
+          "name": "ALBION 6",
+          "townhallLevel": 18,
+          "mapPosition": 22
+        },
+        {
+          "tag": "#9UUL0CCGL",
+          "name": "MimiKyu",
+          "townhallLevel": 18,
+          "mapPosition": 17
+        },
+        {
+          "tag": "#P92C8VJRU",
+          "name": "⚡⚡KRISHNA⚡⚡",
+          "townhallLevel": 17,
+          "mapPosition": 18
+        },
+        {
+          "tag": "#2R8Y8JU92",
+          "name": "To Mega Therion",
+          "townhallLevel": 18,
+          "mapPosition": 4
+        },
+        {
+          "tag": "#GLJUVR200",
+          "name": "Lv.6 lashon™",
+          "townhallLevel": 17,
+          "mapPosition": 37
+        },
+        {
+          "tag": "#8CC8QVRQ2",
+          "name": "CRAZY❤️VISHAL 2",
+          "townhallLevel": 13,
+          "mapPosition": 46
+        },
+        {
+          "tag": "#PYL298",
+          "name": "Benjamin Soo",
+          "townhallLevel": 18,
+          "mapPosition": 5
+        },
+        {
+          "tag": "#PVQRQ82YL",
+          "name": "Diarmaid",
+          "townhallLevel": 13,
+          "mapPosition": 47
+        },
+        {
+          "tag": "#9QJCUUJL",
+          "name": "ATEK",
+          "townhallLevel": 18,
+          "mapPosition": 12
+        },
+        {
+          "tag": "#R02QRQQU",
+          "name": "Wumb0",
+          "townhallLevel": 18,
+          "mapPosition": 14
+        },
+        {
+          "tag": "#CGC0RC20",
+          "name": "TheArtOfMotion",
+          "townhallLevel": 18,
+          "mapPosition": 9
+        },
+        {
+          "tag": "#2UPQQPC9U",
+          "name": "Noobie",
+          "townhallLevel": 18,
+          "mapPosition": 15
+        },
+        {
+          "tag": "#9RVUCY9PG",
+          "name": "CHE",
+          "townhallLevel": 17,
+          "mapPosition": 30
+        },
+        {
+          "tag": "#QV88JVPYQ",
+          "name": "Lv.11 lashon™",
+          "townhallLevel": 12,
+          "mapPosition": 49
+        },
+        {
+          "tag": "#PJGCY0LJ8",
+          "name": "ravinshu",
+          "townhallLevel": 16,
+          "mapPosition": 27
+        },
+        {
+          "tag": "#V8RLVPV",
+          "name": "man123",
+          "townhallLevel": 17,
+          "mapPosition": 20
+        },
+        {
+          "tag": "#G82VPR0VC",
+          "name": "Toxxiik",
+          "townhallLevel": 18,
+          "mapPosition": 10
+        },
+        {
+          "tag": "#GYY9Y9VYR",
+          "name": "⚡ GAURANG⚡",
+          "townhallLevel": 17,
+          "mapPosition": 24
+        },
+        {
+          "tag": "#GQLJLVUGL",
+          "name": "Venom",
+          "townhallLevel": 15,
+          "mapPosition": 45
+        },
+        {
+          "tag": "#QQLQJPGLU",
+          "name": "Kurumi",
+          "townhallLevel": 18,
+          "mapPosition": 7
+        },
+        {
+          "tag": "#PQUCCYGY",
+          "name": "hidden doom",
+          "townhallLevel": 14,
+          "mapPosition": 43
+        },
+        {
+          "tag": "#2VP2QV29U",
+          "name": "niel",
+          "townhallLevel": 16,
+          "mapPosition": 32
+        },
+        {
+          "tag": "#LJ9229U2U",
+          "name": "it's me sourav",
+          "townhallLevel": 16,
+          "mapPosition": 34
+        },
+        {
+          "tag": "#PJYPJYVP2",
+          "name": "Squi",
+          "townhallLevel": 15,
+          "mapPosition": 39
+        },
+        {
+          "tag": "#P8YUYUUY2",
+          "name": "msett_28",
+          "townhallLevel": 16,
+          "mapPosition": 38
+        },
+        {
+          "tag": "#L9L2JCGU",
+          "name": "Ziqq",
+          "townhallLevel": 16,
+          "mapPosition": 28
+        },
+        {
+          "tag": "#2LGQLJ9",
+          "name": "Dark Prince",
+          "townhallLevel": 15,
+          "mapPosition": 42
+        },
+        {
+          "tag": "#9LCQCG9JG",
+          "name": "Korlag",
+          "townhallLevel": 18,
+          "mapPosition": 26
+        },
+        {
+          "tag": "#Q90VRVPLQ",
+          "name": "Rocky wyte",
+          "townhallLevel": 14,
+          "mapPosition": 44
+        },
+        {
+          "tag": "#PPUL0YJV0",
+          "name": "Pratyaksh",
+          "townhallLevel": 16,
+          "mapPosition": 35
+        },
+        {
+          "tag": "#Q9YCQLY9",
+          "name": "REXD",
+          "townhallLevel": 18,
+          "mapPosition": 6
+        },
+        {
+          "tag": "#UP0U9G9U",
+          "name": "dudayxd",
+          "townhallLevel": 15,
+          "mapPosition": 40
+        },
+        {
+          "tag": "#PPG8CYVPC",
+          "name": "ALBION 9",
+          "townhallLevel": 18,
+          "mapPosition": 16
+        },
+        {
+          "tag": "#JPY0JCY8",
+          "name": "Rocky Wyte",
+          "townhallLevel": 18,
+          "mapPosition": 2
+        },
+        {
+          "tag": "#PPQJRJ9VL",
+          "name": "Heaven King",
+          "townhallLevel": 16,
+          "mapPosition": 29
+        },
+        {
+          "tag": "#PQPPJJ0GR",
+          "name": "⭐FROWNY 2017⭐",
+          "townhallLevel": 16,
+          "mapPosition": 36
+        },
+        {
+          "tag": "#GY9LVCP02",
+          "name": "Praz",
+          "townhallLevel": 17,
+          "mapPosition": 25
+        },
+        {
+          "tag": "#R00VUYC8J",
+          "name": "Pitouu.",
+          "townhallLevel": 12,
+          "mapPosition": 48
+        },
+        {
+          "tag": "#LYYL0L9UQ",
+          "name": "Champion",
+          "townhallLevel": 16,
+          "mapPosition": 33
+        },
+        {
+          "tag": "#2JVPPVJYQ",
+          "name": "⚡✨乙คՇƙ✨⚡",
+          "townhallLevel": 18,
+          "mapPosition": 1
+        },
+        {
+          "tag": "#LG9VGG0L",
+          "name": "Ķinģ Ňieł",
+          "townhallLevel": 16,
+          "mapPosition": 31
+        },
+        {
+          "tag": "#2PU82VRYP",
+          "name": "Narendra",
+          "townhallLevel": 17,
+          "mapPosition": 19
+        },
+        {
+          "tag": "#99Q9GJCLL",
+          "name": "Yoshi",
+          "townhallLevel": 11,
+          "mapPosition": 50
+        },
+        {
+          "tag": "#G2JRGQY80",
+          "name": "☠️ GODFATHER ☠️",
+          "townhallLevel": 15,
+          "mapPosition": 41
+        },
+        {
+          "tag": "#YRPGJ2C2Q",
+          "name": "HAtaRSnyHa",
+          "townhallLevel": 18,
+          "mapPosition": 11
+        },
+        {
+          "tag": "#822V08PVQ",
+          "name": "Alexvilde",
+          "townhallLevel": 17,
+          "mapPosition": 23
+        }
+      ]
+    }
+  ],
+  "#VYPQC9YP": [
+    {
+      "opponentName": "ZERO GRAVITY",
+      "opponentTag": "#LQQ99UV8",
+      "endTime": "20260622T120541.000Z",
+      "teamSize": 50,
+      "members": [
+        {
+          "tag": "#LQQL9UQV",
+          "name": "EVIL WITCH",
+          "townhallLevel": 18,
+          "mapPosition": 1
+        },
+        {
+          "tag": "#8V22P0YL0",
+          "name": "RED BULL",
+          "townhallLevel": 13,
+          "mapPosition": 42
+        },
+        {
+          "tag": "#9URPL9202",
+          "name": "LEGEND",
+          "townhallLevel": 18,
+          "mapPosition": 3
+        },
+        {
+          "tag": "#LQQCVJVP9",
+          "name": "Sdl3",
+          "townhallLevel": 14,
+          "mapPosition": 44
+        },
+        {
+          "tag": "#G2RURQRL2",
+          "name": "Pushubha",
+          "townhallLevel": 11,
+          "mapPosition": 49
+        },
+        {
+          "tag": "#PR8YVLVCP",
+          "name": "RIXHI",
+          "townhallLevel": 14,
+          "mapPosition": 37
+        },
+        {
+          "tag": "#QCV2LY2V8",
+          "name": "SAMRAT_747",
+          "townhallLevel": 18,
+          "mapPosition": 12
+        },
+        {
+          "tag": "#QU29YLRUG",
+          "name": "Jhony",
+          "townhallLevel": 17,
+          "mapPosition": 33
+        },
+        {
+          "tag": "#YQ0Q8RUUY",
+          "name": "ROHIT",
+          "townhallLevel": 18,
+          "mapPosition": 10
+        },
+        {
+          "tag": "#LQ8QYU9V9",
+          "name": "trash",
+          "townhallLevel": 17,
+          "mapPosition": 11
+        },
+        {
+          "tag": "#Q889VQV9P",
+          "name": "dani",
+          "townhallLevel": 15,
+          "mapPosition": 39
+        },
+        {
+          "tag": "#GLCQV8R2C",
+          "name": "капуцис",
+          "townhallLevel": 13,
+          "mapPosition": 48
+        },
+        {
+          "tag": "#L82YV02G",
+          "name": "zezodaifoo",
+          "townhallLevel": 15,
+          "mapPosition": 26
+        },
+        {
+          "tag": "#2UCQ0Q8UG",
+          "name": "Dööfënşhmïrtş",
+          "townhallLevel": 17,
+          "mapPosition": 14
+        },
+        {
+          "tag": "#90Q88JJU0",
+          "name": "☆☆$ARNAB$☆☆",
+          "townhallLevel": 17,
+          "mapPosition": 16
+        },
+        {
+          "tag": "#9JQL2928J",
+          "name": "ManOfsun",
+          "townhallLevel": 16,
+          "mapPosition": 20
+        },
+        {
+          "tag": "#LLG02U2UQ",
+          "name": "Little Grand",
+          "townhallLevel": 13,
+          "mapPosition": 41
+        },
+        {
+          "tag": "#LC02RVJP8",
+          "name": "ꜱᴍɪᴛ",
+          "townhallLevel": 16,
+          "mapPosition": 28
+        },
+        {
+          "tag": "#8JGYUQV22",
+          "name": "G H O S T !!",
+          "townhallLevel": 16,
+          "mapPosition": 29
+        },
+        {
+          "tag": "#GUL88J9YR",
+          "name": "Suspicious Man",
+          "townhallLevel": 13,
+          "mapPosition": 47
+        },
+        {
+          "tag": "#P0C2QRUGP",
+          "name": "alien93",
+          "townhallLevel": 18,
+          "mapPosition": 5
+        },
+        {
+          "tag": "#P29C0QG8C",
+          "name": "Hunter 2",
+          "townhallLevel": 17,
+          "mapPosition": 34
+        },
+        {
+          "tag": "#QLURG8RGV",
+          "name": "jhony AS",
+          "townhallLevel": 18,
+          "mapPosition": 15
+        },
+        {
+          "tag": "#229J8LL90",
+          "name": "haider don",
+          "townhallLevel": 18,
+          "mapPosition": 9
+        },
+        {
+          "tag": "#8C92QJQ2G",
+          "name": "RIXHII",
+          "townhallLevel": 14,
+          "mapPosition": 35
+        },
+        {
+          "tag": "#P022C90P9",
+          "name": "VisHavBrar",
+          "townhallLevel": 16,
+          "mapPosition": 36
+        },
+        {
+          "tag": "#P9C99J8QJ",
+          "name": "Miguel",
+          "townhallLevel": 15,
+          "mapPosition": 30
+        },
+        {
+          "tag": "#Y2VPJ2PJ9",
+          "name": "$ DHRUV $",
+          "townhallLevel": 13,
+          "mapPosition": 43
+        },
+        {
+          "tag": "#R8R2L8JCY",
+          "name": "YonniPhantom",
+          "townhallLevel": 10,
+          "mapPosition": 50
+        },
+        {
+          "tag": "#89GPUVCUU",
+          "name": "Nepin",
+          "townhallLevel": 15,
+          "mapPosition": 25
+        },
+        {
+          "tag": "#QQJUC2VQ0",
+          "name": "Tom7363-Filler8",
+          "townhallLevel": 17,
+          "mapPosition": 18
+        },
+        {
+          "tag": "#QVP2VCG0Q",
+          "name": "ADITHYAN ADHI",
+          "townhallLevel": 16,
+          "mapPosition": 23
+        },
+        {
+          "tag": "#GJL2L0GLU",
+          "name": "JoyBoy",
+          "townhallLevel": 15,
+          "mapPosition": 27
+        },
+        {
+          "tag": "#LVQRLG9V0",
+          "name": "Morteza",
+          "townhallLevel": 18,
+          "mapPosition": 6
+        },
+        {
+          "tag": "#QYRLRVLVU",
+          "name": "Wrath ⚡",
+          "townhallLevel": 15,
+          "mapPosition": 24
+        },
+        {
+          "tag": "#8PL0LC99L",
+          "name": "AKSHAR PATEL",
+          "townhallLevel": 14,
+          "mapPosition": 38
+        },
+        {
+          "tag": "#2JQLVGQLY",
+          "name": "wàrlörd",
+          "townhallLevel": 18,
+          "mapPosition": 8
+        },
+        {
+          "tag": "#9QJGYPJQU",
+          "name": "ManOfSun",
+          "townhallLevel": 16,
+          "mapPosition": 19
+        },
+        {
+          "tag": "#22CQ098P8",
+          "name": "Avi",
+          "townhallLevel": 18,
+          "mapPosition": 2
+        },
+        {
+          "tag": "#9G2YPR29P",
+          "name": "☆☆SUMIT☆☆",
+          "townhallLevel": 17,
+          "mapPosition": 13
+        },
+        {
+          "tag": "#QJ2R0JR2C",
+          "name": "BROWN RANG DE",
+          "townhallLevel": 15,
+          "mapPosition": 32
+        },
+        {
+          "tag": "#2RP92LJ8J",
+          "name": "Greenwich",
+          "townhallLevel": 12,
+          "mapPosition": 45
+        },
+        {
+          "tag": "#QUPVPY8JP",
+          "name": "Grand Jr",
+          "townhallLevel": 16,
+          "mapPosition": 22
+        },
+        {
+          "tag": "#LYC9L8PJL",
+          "name": "Grand",
+          "townhallLevel": 18,
+          "mapPosition": 7
+        },
+        {
+          "tag": "#P2228VVY8",
+          "name": "Legendary",
+          "townhallLevel": 18,
+          "mapPosition": 4
+        },
+        {
+          "tag": "#Q009G98RQ",
+          "name": "samrat",
+          "townhallLevel": 17,
+          "mapPosition": 40
+        },
+        {
+          "tag": "#PV2J229VU",
+          "name": "αʍαη ツ ψαδαѵ",
+          "townhallLevel": 16,
+          "mapPosition": 17
+        },
+        {
+          "tag": "#LUV0PJUGQ",
+          "name": "BRIAN",
+          "townhallLevel": 12,
+          "mapPosition": 46
+        },
+        {
+          "tag": "#8QLRQ8PJ0",
+          "name": "HemRockSocity2",
+          "townhallLevel": 15,
+          "mapPosition": 31
+        },
+        {
+          "tag": "#G9Q0VPRRC",
+          "name": "yolocat",
+          "townhallLevel": 18,
+          "mapPosition": 21
+        }
+      ]
+    }
+  ],
+  "#2G0Y0QQL2": [
+    {
+      "opponentName": "One Piece Crew",
+      "opponentTag": "#2JJLJUU0C",
+      "endTime": "20260622T121241.000Z",
+      "teamSize": 50,
+      "members": [
+        {
+          "tag": "#ULJUVJ0",
+          "name": "✖️CALLMEAPEWM✖️",
+          "townhallLevel": 16,
+          "mapPosition": 12
+        },
+        {
+          "tag": "#VGV2P09Q",
+          "name": "Holden",
+          "townhallLevel": 16,
+          "mapPosition": 13
+        },
+        {
+          "tag": "#8P2QL20RC",
+          "name": "IRobot",
+          "townhallLevel": 15,
+          "mapPosition": 28
+        },
+        {
+          "tag": "#PQV9LU9C",
+          "name": "bearwolf 2.0",
+          "townhallLevel": 18,
+          "mapPosition": 2
+        },
+        {
+          "tag": "#Y0Q2YCCVC",
+          "name": "troythejet",
+          "townhallLevel": 16,
+          "mapPosition": 17
+        },
+        {
+          "tag": "#Q0QGQLY2",
+          "name": "XxJoyXRidexX",
+          "townhallLevel": 16,
+          "mapPosition": 15
+        },
+        {
+          "tag": "#LU80J9CYV",
+          "name": "henk 2",
+          "townhallLevel": 13,
+          "mapPosition": 47
+        },
+        {
+          "tag": "#YY9G8Y2YL",
+          "name": "~%RIMON%~",
+          "townhallLevel": 15,
+          "mapPosition": 30
+        },
+        {
+          "tag": "#8C9LV2QCU",
+          "name": "✖️⚡️RYUGA!⚡️✖️",
+          "townhallLevel": 13,
+          "mapPosition": 48
+        },
+        {
+          "tag": "#9CUYL80LC",
+          "name": "Sharma Ankush",
+          "townhallLevel": 13,
+          "mapPosition": 50
+        },
+        {
+          "tag": "#G9J0RYQRV",
+          "name": "okl",
+          "townhallLevel": 14,
+          "mapPosition": 40
+        },
+        {
+          "tag": "#9U2JJCC80",
+          "name": "troythejet",
+          "townhallLevel": 14,
+          "mapPosition": 39
+        },
+        {
+          "tag": "#8RC88Y920",
+          "name": "Royal King",
+          "townhallLevel": 14,
+          "mapPosition": 35
+        },
+        {
+          "tag": "#Q2QYV8RYG",
+          "name": "CocoNut",
+          "townhallLevel": 14,
+          "mapPosition": 33
+        },
+        {
+          "tag": "#LC9QVP2PQ",
+          "name": "Nahid ns",
+          "townhallLevel": 14,
+          "mapPosition": 41
+        },
+        {
+          "tag": "#PJVL0JRR9",
+          "name": "Z E R O !!",
+          "townhallLevel": 16,
+          "mapPosition": 44
+        },
+        {
+          "tag": "#9QLP89PPU",
+          "name": "Cookie",
+          "townhallLevel": 15,
+          "mapPosition": 25
+        },
+        {
+          "tag": "#80UJ0UQQ0",
+          "name": "Fendi",
+          "townhallLevel": 17,
+          "mapPosition": 8
+        },
+        {
+          "tag": "#99J09RUY8",
+          "name": "ANIX",
+          "townhallLevel": 16,
+          "mapPosition": 27
+        },
+        {
+          "tag": "#G2LR222UU",
+          "name": "Clarity’s Den",
+          "townhallLevel": 14,
+          "mapPosition": 42
+        },
+        {
+          "tag": "#202LLP0LV",
+          "name": "bearwolf",
+          "townhallLevel": 17,
+          "mapPosition": 7
+        },
+        {
+          "tag": "#P9292GJY9",
+          "name": "clash mSter",
+          "townhallLevel": 15,
+          "mapPosition": 38
+        },
+        {
+          "tag": "#29289YJ9C",
+          "name": "Clarity",
+          "townhallLevel": 18,
+          "mapPosition": 1
+        },
+        {
+          "tag": "#8QR9LUQQU",
+          "name": "WhyThisGame2",
+          "townhallLevel": 13,
+          "mapPosition": 46
+        },
+        {
+          "tag": "#QJPPP98VP",
+          "name": "Mini Clarity",
+          "townhallLevel": 15,
+          "mapPosition": 22
+        },
+        {
+          "tag": "#Y8R2CQLVY",
+          "name": "sachin singh",
+          "townhallLevel": 16,
+          "mapPosition": 19
+        },
+        {
+          "tag": "#YGJ0PRCRR",
+          "name": "Juliet",
+          "townhallLevel": 17,
+          "mapPosition": 9
+        },
+        {
+          "tag": "#L0GVC8VVY",
+          "name": "FlasH☄️",
+          "townhallLevel": 16,
+          "mapPosition": 18
+        },
+        {
+          "tag": "#L8QYPQ8PQ",
+          "name": "rounit57",
+          "townhallLevel": 15,
+          "mapPosition": 29
+        },
+        {
+          "tag": "#LP9V9208C",
+          "name": "NARWHAL",
+          "townhallLevel": 15,
+          "mapPosition": 31
+        },
+        {
+          "tag": "#LJRCJJ9P0",
+          "name": "⚡SPARK⚡",
+          "townhallLevel": 15,
+          "mapPosition": 45
+        },
+        {
+          "tag": "#R29Y0R2LY",
+          "name": "Clarity’s Void",
+          "townhallLevel": 17,
+          "mapPosition": 43
+        },
+        {
+          "tag": "#Q9LJV89U",
+          "name": "SUCC",
+          "townhallLevel": 14,
+          "mapPosition": 36
+        },
+        {
+          "tag": "#22GJRYCQP",
+          "name": "Chief Matt",
+          "townhallLevel": 16,
+          "mapPosition": 14
+        },
+        {
+          "tag": "#LV000VQ0J",
+          "name": "Clarity Gaming",
+          "townhallLevel": 18,
+          "mapPosition": 3
+        },
+        {
+          "tag": "#QJ0Q8CJQV",
+          "name": "Lover 7",
+          "townhallLevel": 16,
+          "mapPosition": 37
+        },
+        {
+          "tag": "#8QULRLVUP",
+          "name": "yash",
+          "townhallLevel": 14,
+          "mapPosition": 32
+        },
+        {
+          "tag": "#9LQYQJGQ0",
+          "name": "Milkshake",
+          "townhallLevel": 15,
+          "mapPosition": 23
+        },
+        {
+          "tag": "#QCUG2V2JJ",
+          "name": "Dr. Boom",
+          "townhallLevel": 15,
+          "mapPosition": 21
+        },
+        {
+          "tag": "#29JULGRVR",
+          "name": "WhyThisGame",
+          "townhallLevel": 16,
+          "mapPosition": 11
+        },
+        {
+          "tag": "#GP0UYQUP9",
+          "name": "Archimedes",
+          "townhallLevel": 16,
+          "mapPosition": 20
+        },
+        {
+          "tag": "#Y9YLPVL2Q",
+          "name": "♨️AKSHAY™♨️",
+          "townhallLevel": 16,
+          "mapPosition": 16
+        },
+        {
+          "tag": "#LGJ9CY8LQ",
+          "name": "Juan",
+          "townhallLevel": 14,
+          "mapPosition": 49
+        },
+        {
+          "tag": "#PR20Q02LP",
+          "name": "Sky",
+          "townhallLevel": 18,
+          "mapPosition": 4
+        },
+        {
+          "tag": "#PPQG9P0RP",
+          "name": "GLÁDÍÃTØR",
+          "townhallLevel": 18,
+          "mapPosition": 6
+        },
+        {
+          "tag": "#2029C28RY",
+          "name": "Harambe",
+          "townhallLevel": 15,
+          "mapPosition": 24
+        },
+        {
+          "tag": "#VQCCG2PJ",
+          "name": "Coco",
+          "townhallLevel": 18,
+          "mapPosition": 5
+        },
+        {
+          "tag": "#GG2JLGRYV",
+          "name": "Aldrin",
+          "townhallLevel": 15,
+          "mapPosition": 34
+        },
+        {
+          "tag": "#UQL2V298",
+          "name": "free man",
+          "townhallLevel": 16,
+          "mapPosition": 10
+        },
+        {
+          "tag": "#8LGG9CYQC",
+          "name": "AAIX 2",
+          "townhallLevel": 15,
+          "mapPosition": 26
+        }
+      ]
+    }
+  ]
+}
