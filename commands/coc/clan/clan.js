@@ -235,7 +235,9 @@ module.exports = {
           await message.channel.send({ embeds: [embed], components: [btnRow] });
         } catch (err) {
           if (err.response) {
-            console.error(`Error fetching FWA clan info for @user: Clash API returned status ${err.response.status}`);
+            if (err.response.status !== 404) {
+              console.error(`Error fetching FWA clan info for @user: Clash API returned status ${err.response.status}`);
+            }
           } else {
             console.error("Error fetching FWA clan info for @user:", err.message || err);
           }
@@ -259,7 +261,9 @@ module.exports = {
           await message.channel.send({ embeds: [embed], components: [btnRow] });
         } catch (err) {
           if (err.response) {
-            console.error(`Error fetching WAR clan info for @user: Clash API returned status ${err.response.status}`);
+            if (err.response.status !== 404) {
+              console.error(`Error fetching WAR clan info for @user: Clash API returned status ${err.response.status}`);
+            }
           } else {
             console.error("Error fetching WAR clan info for @user:", err.message || err);
           }
@@ -308,7 +312,9 @@ module.exports = {
         return message.channel.send({ embeds: [embed], components: [btnRow] });
       } catch (err) {
         if (err.response) {
-          console.error(`Clash API Error: ${err.config?.method?.toUpperCase()} ${err.config?.url} returned status ${err.response.status}`);
+          if (err.response.status !== 404) {
+            console.error(`Clash API Error: ${err.config?.method?.toUpperCase()} ${err.config?.url} returned status ${err.response.status}`);
+          }
         } else {
           console.error("Error in clan execute:", err.message || err);
         }
@@ -486,7 +492,9 @@ async function showWarClanDetail(message, clanTag, context, originalArg) {
     await message.channel.send({ embeds: [embed], components: [selectRow, buttonRow] });
   } catch (err) {
     if (err.response) {
-      console.error(`Clash API Error: ${err.config?.method?.toUpperCase()} ${err.config?.url} returned status ${err.response.status}`);
+      if (err.response.status !== 404) {
+        console.error(`Clash API Error: ${err.config?.method?.toUpperCase()} ${err.config?.url} returned status ${err.response.status}`);
+      }
     } else {
       console.error("Error in showWarClanDetail:", err.message || err);
     }

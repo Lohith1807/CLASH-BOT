@@ -32,7 +32,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('setcwl-futurefwa')
         .setDescription('Set a clan as CWL or Future FWA')
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
         .addStringOption(option => 
             option.setName('clantag')
                 .setDescription('The clan tag (e.g., #XXXXXX)')
@@ -60,7 +59,11 @@ module.exports = {
         const style = interaction.options.getString('style');
 
         if (type === 'cwl' && !style) {
-            return interaction.reply({ content: "❌ You must select a **style** (Serious/Lazy) when setting a clan as CWL.", ephemeral: true });
+            const errorEmbed = new EmbedBuilder()
+                .setTitle("❌ Missing Style")
+                .setDescription("You must select a **style** (Serious/Lazy) when setting a clan as CWL.")
+                .setColor(0xE74C3C);
+            return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
         }
         
         const coc = context?.coc;
@@ -78,7 +81,11 @@ module.exports = {
                 const clan = await coc.getClan(clanTag);
                 if (clan) clanName = clan.name;
             } catch (err) {
-                return interaction.editReply(`❌ Could not find clan with tag \`${clanTag}\`.`);
+                const errorEmbed = new EmbedBuilder()
+                    .setTitle("❌ Clan Not Found")
+                    .setDescription(`Could not find clan with tag \`${clanTag}\`.`)
+                    .setColor(0xE74C3C);
+                return interaction.editReply({ embeds: [errorEmbed] });
             }
         }
 

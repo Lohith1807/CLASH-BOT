@@ -1,4 +1,4 @@
-const cheerio = require("cheerio");
+﻿const cheerio = require("cheerio");
 const proxyFetch = require("./proxyFetch"); // Assuming it's in utils
 const ticketHandler = require("./tickets/ticketHandler");
 const fs = require("fs");
@@ -26,6 +26,16 @@ async function handleInteraction(interaction, context) {
         const syncCommand = require("../commands/coc/war/sync.js");
         return syncCommand.handleSyncButton(interaction, context);
     }
+
+    // ── /member-replacements handler ─────────────────────────────────────────
+    if (
+        (interaction.isButton() || interaction.isStringSelectMenu()) &&
+        (interaction.customId.startsWith("memreplace_") || interaction.customId.startsWith("mr_"))
+    ) {
+        const memberReplacementsCmd = require("../commands/coc/clan/member-replacements.js");
+        return memberReplacementsCmd.handleMemberReplacements(interaction, context);
+    }
+    // ── end /member-replacements handler ────────────────────────────────────
 
     const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, data: dataManager, coc, config, emoji } = context;
     const { getEmoji, getEmojiObject } = emoji;
@@ -1468,5 +1478,6 @@ function buildRefreshButton(clan, getEmojiObject, ButtonBuilder, ButtonStyle, Ac
 
     return new ActionRowBuilder().addComponents(btn);
 }
+
 
 module.exports = { handleInteraction };

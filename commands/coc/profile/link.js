@@ -1,6 +1,6 @@
 
 
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
 
 module.exports = {
     name: "link",
@@ -81,6 +81,84 @@ module.exports = {
                 return input.channel.send({ embeds: [errorEmbed] });
             }
 
+            if (targetUser.id !== author.id) {
+                const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || '';
+                const confirmEmbed = new EmbedBuilder()
+                    .setTitle(`${thEmoji} ${data.name} | ${data.tag}`)
+                    .setDescription(`Are you sure you want to link <@${targetUser.id}> to ${data.tag}?`)
+                    .setColor(0x2B2D31)
+                    .setFooter({ text: author.displayName || author.username || author.tag, iconURL: author.displayAvatarURL() });
+
+                const confirmButton = new ButtonBuilder()
+                    .setCustomId('confirm_link')
+                    .setLabel('Yes')
+                    .setStyle(ButtonStyle.Success);
+
+                const cancelButton = new ButtonBuilder()
+                    .setCustomId('cancel_link')
+                    .setLabel('No')
+                    .setStyle(ButtonStyle.Danger);
+
+                const row = new ActionRowBuilder().addComponents(confirmButton, cancelButton);
+
+                let response;
+                if (isInteraction) {
+                    response = await input.editReply({ embeds: [confirmEmbed], components: [row] });
+                } else {
+                    response = await input.channel.send({ embeds: [confirmEmbed], components: [row] });
+                }
+
+                const collector = response.createMessageComponentCollector({
+                    componentType: ComponentType.Button,
+                    time: 60000,
+                    filter: i => i.user.id === author.id
+                });
+
+                collector.on('collect', async i => {
+                    if (i.customId === 'confirm_link') {
+                        if (!Array.isArray(userData[targetUser.id])) {
+                            userData[targetUser.id] = [];
+                        }
+
+                        userData[targetUser.id].push({
+                            tag: data.tag,
+                            name: data.name
+                        });
+
+                        dataManager.saveUserData(userData);
+
+                        const tickbox = emojiUtils.getEmoji('tickbox') || '✅';
+                        const successEmbed = new EmbedBuilder()
+                            .setColor('#57F287')
+                            .setDescription(`${tickbox} Player (${data.tag}) force-linked to discord account <@${targetUser.id}>`);
+
+                        await i.update({ embeds: [successEmbed], components: [] });
+                    } else if (i.customId === 'cancel_link') {
+                        const cancelEmbed = new EmbedBuilder()
+                            .setTitle('❌ Action Cancelled')
+                            .setDescription(`Force-linking has been cancelled.`)
+                            .setColor(0xE74C3C);
+                        await i.update({ embeds: [cancelEmbed], components: [] });
+                    }
+                });
+
+                collector.on('end', collected => {
+                    if (collected.size === 0) {
+                        const timeoutEmbed = new EmbedBuilder()
+                            .setTitle('⏳ Timeout')
+                            .setDescription('You did not respond in time.')
+                            .setColor(0x95A5A6);
+                        
+                        if (isInteraction) {
+                            input.editReply({ embeds: [timeoutEmbed], components: [] }).catch(() => {});
+                        } else {
+                            response.edit({ embeds: [timeoutEmbed], components: [] }).catch(() => {});
+                        }
+                    }
+                });
+                return;
+            }
+
             if (!Array.isArray(userData[targetUser.id])) {
                 userData[targetUser.id] = [];
             }
@@ -97,16 +175,9 @@ module.exports = {
             const embed = new EmbedBuilder()
                 .setColor(randomColor)
                 .setFooter({ text: `Done by ${author.tag}`, iconURL: author.displayAvatarURL() })
-                .setTimestamp();
-
-            if (targetUser.id === author.id) {
-                embed.setTitle(`${gtick} Successfully Linked Account`)
-                    .setDescription(`**${data.name}** (${data.tag}) is now linked to your Discord.`);
-            }
-            else {
-                embed.setTitle(`${gtick} Successfully Force-Linked Account`)
-                    .setDescription(`**${data.name}** (${data.tag}) has been force-linked to <@${targetUser.id}>`);
-            }
+                .setTimestamp()
+                .setTitle(`${gtick} Successfully Linked Account`)
+                .setDescription(`**${data.name}** (${data.tag}) is now linked to your Discord.`);
 
             if (isInteraction) return await input.editReply({ embeds: [embed] });
             return input.channel.send({ embeds: [embed] });
