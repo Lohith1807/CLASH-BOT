@@ -161,6 +161,13 @@ client.once("ready", () => {
   autoRoleManager.startAutoRoleManager(client, config, tools.coc, tools.data);
 });
 
+const clanTracker = require("./utils/clanTracker.js");
+client.once("ready", () => {
+  clanTracker.startClanTracker(client, tools.coc, tools.data);
+});
+
+
+
 
 const syncCommand = require("./commands/coc/war/sync.js");
 

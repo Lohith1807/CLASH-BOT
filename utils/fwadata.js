@@ -77,68 +77,16 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
     const clanRolesPath = path.join(__dirname, "../data/clanrole.json");
     const wwPath = path.join(__dirname, "../data/ww.json");
 
-    let trackingPlayers = null;
     let wwData = {};
     if (fs.existsSync(wwPath)) {
         try {
             wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
-            if (wwData[tag]) {
-                if (wwData[tag].playerTag && !wwData[tag].players) {
-                    wwData[tag].players = {};
-                    wwData[tag].players[wwData[tag].playerTag] = wwData[tag].weight || 0;
-                }
-                trackingPlayers = wwData[tag].players;
+            if (wwData[tag] && wwData[tag].lastUpdated) {
+                lastDate = wwData[tag].lastUpdated;
             }
         } catch (err) {
             console.error("Error parsing ww.json:", err);
         }
-    }
-
-    if (trackingPlayers && Object.keys(trackingPlayers).length > 0 && clanData && Array.isArray(clanData)) {
-        let changed = false;
-        
-        for (const [pTag, savedWeight] of Object.entries(trackingPlayers)) {
-            const formattedTag = pTag.toUpperCase().trim();
-            const playerObj = clanData.find(p => p.tag && p.tag.toUpperCase().trim() === formattedTag);
-            if (playerObj) {
-                const currentWeight = parseInt(playerObj.weight, 10);
-                if (currentWeight !== savedWeight) {
-                    changed = true;
-                    trackingPlayers[pTag] = currentWeight;
-                }
-            }
-        }
-
-        if (changed) {
-            const now = new Date();
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0');
-            const year = now.getFullYear();
-            const todayStr = `${day}/${month}/${year}`;
-
-            wwData[tag].players = trackingPlayers;
-            wwData[tag].lastUpdated = todayStr;
-            try {
-                fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
-            } catch (err) {
-                console.error("Error writing ww.json:", err);
-            }
-            lastDate = todayStr;
-
-            // Log update to WW log channel
-            const client = guild?.client;
-            if (client) {
-                client.channels.fetch("1516719047348326493").then(logChannel => {
-                    if (logChannel) {
-                        logChannel.send(`📢 **FWA Weight Update Detected!**\nClan: **${clanName}** (${tag})\nNew weight update submitted on: **${todayStr}**`).catch(() => {});
-                    }
-                }).catch(() => {});
-            }
-        } else {
-            lastDate = wwData[tag].lastUpdated;
-        }
-    } else if (wwData[tag]) {
-        lastDate = wwData[tag].lastUpdated;
     }
 
     if (!lastDate) {
@@ -272,7 +220,7 @@ async function checkFWAWeights(client) {
         return;
     }
 
-    const { EmbedBuilder } = require("discord.js");
+    const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
     const emojiUtils = require("./emoji.js");
 
     const clanRolesPath = path.join(__dirname, "../data/clanrole.json");
@@ -367,13 +315,49 @@ async function checkFWAWeights(client) {
                                     .setColor("Orange")
                                     .setTimestamp();
 
+                                const submittedBtn = new ButtonBuilder()
+                                    .setCustomId(`ww_submit_update_${cleanTag}`)
+                                    .setLabel("Submitted")
+                                    .setStyle(ButtonStyle.Success)
+                                    .setEmoji(emojiUtils.getEmojiObject("gtick") || "✅");
+                                const btnRow = new ActionRowBuilder().addComponents(submittedBtn);
+
                                 await channel.send({
                                     content: leaderRolePing,
-                                    embeds: [reminderEmbed]
+                                    embeds: [reminderEmbed],
+                                    components: [btnRow]
                                 });
                             }
                         } catch (sendErr) {
                             console.error(`Failed to send reminder for ${clanTag}:`, sendErr);
+                        }
+                    }
+                }
+            } else if (diffDays === 27) {
+                const roleData = clanRoles[clanTag];
+                if (roleData) {
+                    const targetChannelId = roleData.leadChannelId && roleData.leadChannelId.trim() !== ""
+                        ? roleData.leadChannelId
+                        : roleData.channelId;
+                    if (targetChannelId) {
+                        try {
+                            const channel = await client.channels.fetch(targetChannelId).catch(() => null);
+                            if (channel) {
+                                const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
+                                
+                                const lazyEmbed = new EmbedBuilder()
+                                    .setTitle(`⚠️ **War Weight Submission Overdue**`)
+                                    .setDescription(`I think you guys are lazy to submit war weight 😭`)
+                                    .setColor("Red")
+                                    .setTimestamp();
+                                    
+                                await channel.send({
+                                    content: leaderRolePing,
+                                    embeds: [lazyEmbed]
+                                });
+                            }
+                        } catch (sendErr) {
+                            console.error(`Failed to send overdue reminder for ${clanTag}:`, sendErr);
                         }
                     }
                 }
@@ -383,62 +367,6 @@ async function checkFWAWeights(client) {
         // Mark as checked today
         lastCheckData[clanTag] = todayStr;
         lastCheckUpdated = true;
-
-        if (!record) continue;
-
-        if (record.playerTag && !record.players) {
-            record.players = {};
-            record.players[record.playerTag] = record.weight || 0;
-        }
-
-        if (!record.players || Object.keys(record.players).length === 0) continue;
-
-        const url = `https://fwastats.com/Clan/${clanTag.replace("#", "")}/Members.json`;
-        let clanData = null;
-
-        try {
-            let res;
-            if (statsWorkerBase) {
-                res = await fetch(`${statsWorkerBase}?url=${encodeURIComponent(url)}`, {
-                    headers: { "Fwa-Cookie": process.env.FWA_COOKIE || "" }
-                });
-            } else {
-                res = await fetch(url, { headers: fwaHeaders });
-            }
-            if (res.ok) {
-                clanData = await res.json();
-            }
-        } catch (err) {
-            console.error(`checkFWAWeights fetch failed for ${clanTag}:`, err);
-        }
-
-        if (clanData && Array.isArray(clanData)) {
-            let clanChanged = false;
-            for (const [pTag, savedWeight] of Object.entries(record.players)) {
-                const formattedTag = pTag.toUpperCase().trim();
-                const playerObj = clanData.find(p => p.tag && p.tag.toUpperCase().trim() === formattedTag);
-                if (playerObj) {
-                    const currentWeight = parseInt(playerObj.weight, 10);
-                    if (currentWeight !== savedWeight) {
-                        record.players[pTag] = currentWeight;
-                        clanChanged = true;
-                    }
-                }
-            }
-
-            if (clanChanged) {
-                record.lastUpdated = todayStr;
-                updated = true;
-            }
-        }
-    }
-
-    if (updated) {
-        try {
-            fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
-        } catch (err) {
-            console.error("checkFWAWeights write error:", err);
-        }
     }
 
     if (lastCheckUpdated) {

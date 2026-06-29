@@ -123,7 +123,7 @@ module.exports = {
 
             await interaction.editReply({ embeds: [statusEmbed] });
 
-            let finalRoleId, finalChannelId, finalMailChannelId, finalLeadChannelId;
+            let finalRoleId, finalChannelId, finalMailChannelId, finalLeadChannelId, finalFeedChannelId;
             let setupWarnings = [];
 
             let leaderRole = await interaction.guild.roles.create({
@@ -274,8 +274,8 @@ module.exports = {
             });
             finalChannelId = membersChan.id;
 
-            await interaction.guild.channels.create({
-                name: "📰│c𝖑𝖆𝖓-𝖋𝖊𝖊𝖉",
+            const feedChan = await interaction.guild.channels.create({
+                name: "〢📰┃𝖈𝖑𝖆𝖓-𝖋𝖊𝖊𝖉",
                 type: ChannelType.GuildText,
                 parent: category.id,
                 permissionOverwrites: [
@@ -303,6 +303,7 @@ module.exports = {
                     }
                 ]
             });
+            finalFeedChannelId = feedChan.id;
 
             let chanMsg = "✅ **Channels created successfully.**";
             if (setupWarnings.length > 0) {
@@ -317,6 +318,7 @@ module.exports = {
                 channelId: finalChannelId,
                 mailChannelId: finalMailChannelId,
                 leadChannelId: finalLeadChannelId,
+                feedChannelId: finalFeedChannelId,
                 clanType: finalType,
                 autoPostRecruitment: autoPost
             };
@@ -334,6 +336,7 @@ module.exports = {
                 "• **Channel:** <#" + finalChannelId + ">\n" +
                 "• **Mail Channel:** <#" + finalMailChannelId + ">\n" +
                 "• **Leadership Chat:** <#" + finalLeadChannelId + ">\n" +
+                "• **Clan Feed:** <#" + finalFeedChannelId + ">\n" +
                 "• **Clan Type:** " + finalType + "\n" +
                 "• **Auto-Post Recruitment:** " + (autoPost ? "✅ Enabled" : "❌ Disabled") + "\n";
 

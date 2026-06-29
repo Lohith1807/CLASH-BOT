@@ -1,43 +1,96 @@
-const fs = require("fs");
+const fs   = require("fs");
 const path = require("path");
 const { EmbedBuilder } = require("discord.js");
+const { getEmoji } = require("./emoji.js");
 
+// ─────────────────────────────────────────────
+//  Constants
+// ─────────────────────────────────────────────
 const LEAVER_TIMESTAMPS_PATH = path.join(__dirname, "../data/leaver_timestamps.json");
+const TWO_DAYS_MS            = 2 * 24 * 60 * 60 * 1000;
 
-const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000;
+// Nickname (lowercase) → emoji key mapping
+const CLAN_EMOJI_MAP = {
+    bb:  "bb",
+    bz:  "bz",
+    bkl: "bkl",
+    tl:  "tl",
+    su:  "su",
+    ik:  "ik",
+    dw:  "dw",
+    cc:  "cc",
+    bl:  "bl",
+    asr: "asr",
+    kc:  "kc",
+    bwc: "bwc",
+    qg:  "qg",
+};
 
-
+// ─────────────────────────────────────────────
+//  Leaver timestamp helpers
+// ─────────────────────────────────────────────
 function getLeaverTimestamps() {
     if (!fs.existsSync(LEAVER_TIMESTAMPS_PATH)) return {};
-    try {
-        return JSON.parse(fs.readFileSync(LEAVER_TIMESTAMPS_PATH, "utf8"));
-    } catch (e) {
-        return {};
-    }
+    try { return JSON.parse(fs.readFileSync(LEAVER_TIMESTAMPS_PATH, "utf8")); }
+    catch { return {}; }
 }
 
 function saveLeaverTimestamps(data) {
-    try {
-        fs.writeFileSync(LEAVER_TIMESTAMPS_PATH, JSON.stringify(data, null, 2));
-    } catch (e) { }
+    try { fs.writeFileSync(LEAVER_TIMESTAMPS_PATH, JSON.stringify(data, null, 2)); }
+    catch { /* silent */ }
 }
 
+// ─────────────────────────────────────────────
+//  Helpers
+// ─────────────────────────────────────────────
 
+/** Returns only clans that have roleId AND autoRole: true */
+function buildMonitoredClans(clanRoles) {
+    const out = {};
+    for (const [tag, info] of Object.entries(clanRoles)) {
+        if (info.roleId && info.autoRole) {
+            out[tag.toUpperCase()] = { ...info, tag: tag.toUpperCase() };
+        }
+    }
+    return out;
+}
+
+/** Returns the clan emoji string for a given nickName, or a fallback shield */
+function clanEmoji(nickName) {
+    if (!nickName) return getEmoji("sheild");
+    const key = CLAN_EMOJI_MAP[nickName.toLowerCase()];
+    return key ? getEmoji(key) : getEmoji("sheild");
+}
+
+/** Format ms remaining as "Xd Yh" */
+function formatTimeLeft(startTs, now) {
+    const left = TWO_DAYS_MS - (now - startTs);
+    if (left <= 0) return "0h";
+    const hours = Math.floor(left / (60 * 60 * 1000));
+    const days  = Math.floor(hours / 24);
+    const remH  = hours % 24;
+    return days > 0 ? `${days}d ${remH}h` : `${remH}h`;
+}
+
+// ─────────────────────────────────────────────
+//  Entry point — called from index.js
+// ─────────────────────────────────────────────
 async function startAutoRoleManager(client, config, coc, dataManager) {
     console.log("🛡️ Auto-Role Manager started (removal-only mode, 2-day grace period)");
 
-    setInterval(async () => {
-        try {
-            await checkAutoRoles(client, config, coc, dataManager);
-        } catch (err) {
-            console.error("AutoRoleManager error:", err);
-        }
-    }, 2 * 60 * 1000);
+    // First run after 20 s (let bot fully boot)
+    setTimeout(() => checkAutoRoles(client, config, coc, dataManager), 20_000);
 
-    setTimeout(() => checkAutoRoles(client, config, coc, dataManager), 20000);
+    // Recurring check every 2 minutes
+    setInterval(async () => {
+        try   { await checkAutoRoles(client, config, coc, dataManager); }
+        catch (err) { console.error("AutoRoleManager error:", err); }
+    }, 2 * 60 * 1000);
 }
 
-
+// ─────────────────────────────────────────────
+//  Main scheduled check
+// ─────────────────────────────────────────────
 async function checkAutoRoles(client, config, coc, dataManager) {
     const LOG_CHANNEL_ID = config.AUTOROLE_LOG_CHANNEL_ID || process.env.AUTOROLE_LOG_CHANNEL_ID;
     if (!LOG_CHANNEL_ID) return;
@@ -45,17 +98,12 @@ async function checkAutoRoles(client, config, coc, dataManager) {
     const logChannel = await client.channels.fetch(LOG_CHANNEL_ID).catch(() => null);
     if (!logChannel) return;
 
-    const clanRoles = dataManager.getClanRoles();
-    const userData = dataManager.getUserData();
+    const clanRoles      = dataManager.getClanRoles();
+    const userData       = dataManager.getUserData();
+    const monitoredClans = buildMonitoredClans(clanRoles);
 
-    const monitoredClans = {};
-    for (const [tag, info] of Object.entries(clanRoles)) {
-        if (info.roleId) {
-            monitoredClans[tag.toUpperCase()] = { ...info, tag: tag.toUpperCase() };
-        }
-    }
-
-    const currentClanMembers = {}; // clanTag -> Set of player tags (uppercase, no #)
+    // Fetch live member lists for every monitored clan (parallel)
+    const currentClanMembers = {}; // clanTag → Set<playerTag> | null (API error)
     await Promise.all(
         Object.keys(monitoredClans).map(async (clanTag) => {
             try {
@@ -63,275 +111,339 @@ async function checkAutoRoles(client, config, coc, dataManager) {
                 currentClanMembers[clanTag] = new Set(
                     (clan.memberList || []).map(m => m.tag.replace("#", "").toUpperCase())
                 );
-            } catch (e) {
-                currentClanMembers[clanTag] = null; // API error, skip this clan
+            } catch {
+                currentClanMembers[clanTag] = null;
             }
         })
     );
 
-    const tagToUser = {};
-    for (const [userId, accounts] of Object.entries(userData)) {
-        if (Array.isArray(accounts)) {
-            accounts.forEach(acc => {
-                if (acc.tag) tagToUser[acc.tag.replace("#", "").toUpperCase()] = userId;
-            });
-        }
-    }
-
     const leaverTimestamps = getLeaverTimestamps();
-    const now = Date.now();
+    const now              = Date.now();
 
+    // Process every registered user
     for (const [userId, accounts] of Object.entries(userData)) {
         if (!Array.isArray(accounts) || accounts.length === 0) continue;
-
         try {
             await processUser({
-                client, config, coc, dataManager,
-                userId, accounts,
+                client, config, userId, accounts,
                 monitoredClans, currentClanMembers,
-                leaverTimestamps, now, logChannel
+                leaverTimestamps, now, logChannel,
             });
-        } catch (err) {
-        }
+        } catch { /* per-user errors are non-fatal */ }
     }
 
-    const allUserIds = new Set(Object.keys(userData));
+    // Remove timestamps for users who are no longer registered
+    const registeredIds = new Set(Object.keys(userData));
     for (const key of Object.keys(leaverTimestamps)) {
-        const uid = key.split(":")[0];
-        if (!allUserIds.has(uid)) delete leaverTimestamps[key];
+        if (!registeredIds.has(key.split(":")[0])) delete leaverTimestamps[key];
     }
 
     saveLeaverTimestamps(leaverTimestamps);
 }
 
-
+// ─────────────────────────────────────────────
+//  Per-user processing (auto cycle)
+// ─────────────────────────────────────────────
 async function processUser({
-    client, config, coc, dataManager,
-    userId, accounts,
+    client, config, userId, accounts,
     monitoredClans, currentClanMembers,
-    leaverTimestamps, now, logChannel
+    leaverTimestamps, now, logChannel,
 }) {
     const GLOBAL_ROLE_ID = config.GLOBAL_ROLE_ID;
-    const guild = await client.guilds.fetch(config.GUILD_ID).catch(() => null);
+    const guild  = await client.guilds.fetch(config.GUILD_ID).catch(() => null);
     if (!guild) return;
 
     const member = await guild.members.fetch(userId).catch(() => null);
-    if (!member) return; // User not in server, skip
+    if (!member) return; // not in server
 
-    const accountClanMap = {}; // playerTag -> clanTag | null
-
+    // ── Step 1: Map each linked account to the clan it's currently in ──────
+    // accountClanMap: playerTag → { clanTag, name, rawTag }
+    const accountClanMap = {};
     for (const acc of accounts) {
         const playerTag = acc.tag.replace("#", "").toUpperCase();
-        let foundClan = null;
-
+        let foundClan   = null;
         for (const [clanTag, members] of Object.entries(currentClanMembers)) {
-            if (members === null) continue; // API error clan, skip
-            if (members.has(playerTag)) {
-                foundClan = clanTag;
-                break;
-            }
+            if (members === null) continue;
+            if (members.has(playerTag)) { foundClan = clanTag; break; }
         }
-        accountClanMap[playerTag] = foundClan;
+        accountClanMap[playerTag] = {
+            clanTag:  foundClan,
+            name:     acc.name || playerTag,   // in-game name stored in userData
+            rawTag:   acc.tag,                 // original tag with #
+        };
     }
 
-    const shouldHaveRoleIds = new Set();
-    for (const clanTag of Object.values(accountClanMap)) {
-        if (clanTag && monitoredClans[clanTag] && monitoredClans[clanTag].roleId) {
+    // ── Step 2: Determine which role IDs the user deserves right now ────────
+    const shouldHaveRoleIds      = new Set();
+    const currentClanTagsForUser = new Set();
+    // Build clanTag → [players] map for quick lookup in the log
+    const clanToPlayers = {}; // clanTag → [{ name, rawTag }]
+    for (const { clanTag, name, rawTag } of Object.values(accountClanMap)) {
+        if (clanTag && monitoredClans[clanTag]?.roleId) {
             shouldHaveRoleIds.add(monitoredClans[clanTag].roleId);
+            currentClanTagsForUser.add(clanTag);
+        }
+        // Track which players belong to which clan (including null = no clan)
+        if (clanTag) {
+            if (!clanToPlayers[clanTag]) clanToPlayers[clanTag] = [];
+            clanToPlayers[clanTag].push({ name, rawTag });
         }
     }
 
+    // Also track players NOT in any monitored clan — they could be the ones who left
+    // We'll attach them to whichever clan role is being stripped
+    const playersNotInAnyClan = Object.values(accountClanMap)
+        .filter(a => !a.clanTag)
+        .map(a => ({ name: a.name, rawTag: a.rawTag }));
+
+    // ── Step 3: Clear grace timers for clans the user has REJOINED ─────────
+    // Do this regardless of whether they currently hold the Discord role.
+    for (const clanTag of currentClanTagsForUser) {
+        delete leaverTimestamps[`${userId}:${clanTag}`];
+    }
+
+    // ── Step 4: Evaluate every managed role ────────────────────────────────
     const allManagedRoleIds = new Set(
         Object.values(monitoredClans).filter(c => c.roleId).map(c => c.roleId)
     );
 
-    const rolesToRemove = [];
-    const rolesToAdd = [];
+    const rolesToRemove = []; // { roleId, clanTag, reason, players: [{ name, rawTag }] }
 
     for (const roleId of allManagedRoleIds) {
-        if (!member.roles.cache.has(roleId)) continue; // They don't have it, skip
-
-        if (shouldHaveRoleIds.has(roleId)) {
-            const clanTag = Object.keys(monitoredClans).find(
-                t => monitoredClans[t].roleId === roleId
-            );
-            if (clanTag) {
-                const key = `${userId}:${clanTag}`;
-                if (leaverTimestamps[key]) {
-                    delete leaverTimestamps[key];
-                }
-            }
-        } else {
-            const clanTag = Object.keys(monitoredClans).find(
-                t => monitoredClans[t].roleId === roleId
-            );
-            if (!clanTag) continue;
-
-            if (currentClanMembers[clanTag] === null) continue;
-
-            const key = `${userId}:${clanTag}`;
-            if (!leaverTimestamps[key]) {
-                leaverTimestamps[key] = now;
-            } else if (now - leaverTimestamps[key] >= TWO_DAYS_MS) {
-                rolesToRemove.push({ roleId, clanTag });
-                delete leaverTimestamps[key]; // Clean up after scheduling removal
-            }
+        if (!member.roles.cache.has(roleId)) {
+            // They don't hold this role — clean up any stale timestamp
+            const clanTag = Object.keys(monitoredClans).find(t => monitoredClans[t].roleId === roleId);
+            if (clanTag) delete leaverTimestamps[`${userId}:${clanTag}`];
+            continue;
         }
+
+        if (shouldHaveRoleIds.has(roleId)) continue; // Still in that clan, keep it
+
+        // They have the role but are no longer in the clan → grace period logic
+        const clanTag = Object.keys(monitoredClans).find(t => monitoredClans[t].roleId === roleId);
+        if (!clanTag) continue;
+        if (currentClanMembers[clanTag] === null) continue; // API error — never penalise on bad data
+
+        const key = `${userId}:${clanTag}`;
+        if (!leaverTimestamps[key]) {
+            // Grace period STARTS now
+            leaverTimestamps[key] = now;
+        } else if (now - leaverTimestamps[key] >= TWO_DAYS_MS) {
+            // Grace period OVER — schedule removal
+            // Attach the accounts that LEFT this clan (not currently in it)
+            const leavingPlayers = playersNotInAnyClan.length > 0
+                ? playersNotInAnyClan
+                : (clanToPlayers[clanTag] || []);
+            rolesToRemove.push({ roleId, clanTag, reason: "2-day grace period elapsed", players: leavingPlayers });
+            delete leaverTimestamps[key];
+        }
+        // else: still within grace, do nothing
     }
 
+    // ── Step 5: Global role logic ──────────────────────────────────────────
+    // Simulate what managed roles the user will have AFTER this cycle
+    const rolesToAdd = [];
     if (GLOBAL_ROLE_ID) {
-        const remainingRoleIds = new Set(
+        const remainingManaged = new Set(
             [...allManagedRoleIds].filter(id => member.roles.cache.has(id))
         );
-        for (const { roleId } of rolesToRemove) remainingRoleIds.delete(roleId);
-        for (const roleId of shouldHaveRoleIds) remainingRoleIds.add(roleId);
+        for (const { roleId } of rolesToRemove) remainingManaged.delete(roleId);
 
-        if (remainingRoleIds.size === 0) {
-            if (!member.roles.cache.has(GLOBAL_ROLE_ID)) {
-                rolesToAdd.push(GLOBAL_ROLE_ID);
-            }
+        if (remainingManaged.size === 0 && shouldHaveRoleIds.size === 0) {
+            // No clan roles at all → give global
+            if (!member.roles.cache.has(GLOBAL_ROLE_ID)) rolesToAdd.push(GLOBAL_ROLE_ID);
         } else {
+            // Has at least one clan role → remove global
             if (member.roles.cache.has(GLOBAL_ROLE_ID)) {
-                rolesToRemove.push({ roleId: GLOBAL_ROLE_ID, clanTag: null });
+                rolesToRemove.push({ roleId: GLOBAL_ROLE_ID, clanTag: null, reason: null });
             }
         }
     }
 
-    const rolesRemovedNames = [];
-    const rolesAddedNames = [];
+    // ── Step 6: Apply changes ──────────────────────────────────────────────
+    const removedClanRoles = []; // only clan roles (not global) — used for logging
 
-    for (const { roleId } of rolesToRemove) {
+    for (const { roleId, clanTag, reason, players } of rolesToRemove) {
         if (member.roles.cache.has(roleId)) {
             await member.roles.remove(roleId).catch(() => null);
-            rolesRemovedNames.push(`<@&${roleId}>`);
+            if (clanTag) removedClanRoles.push({ roleId, clanTag, reason, players: players || [] });
         }
     }
     for (const roleId of rolesToAdd) {
         if (!member.roles.cache.has(roleId)) {
             await member.roles.add(roleId).catch(() => null);
-            rolesAddedNames.push(`<@&${roleId}>`);
         }
     }
 
-    if (rolesRemovedNames.length > 0 || rolesAddedNames.length > 0) {
-        const embed = new EmbedBuilder()
-            .setTitle("🛡️ Auto-Role Removal")
-            .setColor(0xE74C3C)
-            .setDescription(`**User:** <@${userId}> (${member.user.tag})`)
-            .setTimestamp();
-
-        if (rolesRemovedNames.length > 0) {
-            embed.addFields({ name: "Roles Removed", value: rolesRemovedNames.join(", "), inline: true });
-        }
-        if (rolesAddedNames.length > 0) {
-            embed.addFields({ name: "Roles Added (Global)", value: rolesAddedNames.join(", "), inline: true });
-        }
-
-        const clanNames = rolesToRemove
-            .filter(r => r.clanTag)
-            .map(r => monitoredClans[r.clanTag]?.nickName || r.clanTag)
-            .join(", ");
-        if (clanNames) {
-            embed.addFields({ name: "Left Clan(s)", value: clanNames, inline: false });
-        }
-
-        await logChannel.send({ embeds: [embed] }).catch(() => null);
+    // ── Step 7: Log ONLY if a real clan role was removed ──────────────────
+    if (removedClanRoles.length > 0) {
+        await sendAutoRemovalLog(logChannel, member, removedClanRoles, monitoredClans, now, leaverTimestamps);
     }
 }
 
+// ─────────────────────────────────────────────
+//  Log embed — auto removal
+// ─────────────────────────────────────────────
+async function sendAutoRemovalLog(logChannel, member, removedClanRoles, monitoredClans) {
+    const sh   = getEmoji("sheild");
+    const rd   = getEmoji("reddot");
+    const ra   = getEmoji("rarrow");
+    const tick = getEmoji("tickred");
+    const mem  = getEmoji("mem");
 
+    const clanLines = removedClanRoles.map(({ roleId, clanTag, reason, players }) => {
+        const info     = monitoredClans[clanTag];
+        const emoji    = clanEmoji(info?.nickName);
+        const clanName = info?.nickName || clanTag;
+
+        // Player line — show in-game name + tag for each account that left
+        const playerLine = players.length > 0
+            ? players.map(p => `${mem} **${p.name}** (\`${p.rawTag}\`)`).join("\n")
+            : `${mem} Unknown account`;
+
+        return [
+            `${rd} ${emoji} **${clanName}** — <@&${roleId}>`,
+            `${ra} Reason: \`${reason}\``,
+            `${ra} Account(s) that left:\n${playerLine}`,
+        ].join("\n");
+    }).join("\n\n");
+
+    const embed = new EmbedBuilder()
+        .setColor(0xE74C3C)
+        .setAuthor({
+            name: member.user.tag,
+            iconURL: member.user.displayAvatarURL({ dynamic: true }),
+        })
+        .setTitle(`${sh} Auto Role Removal`)
+        .setDescription(
+            `**Member:** <@${member.id}>\n\n` +
+            `${tick} **Clan Role(s) Removed:**\n\n${clanLines}`
+        )
+        .setFooter({ text: "Triggered by: Auto-Role Manager (2-day timer)" })
+        .setTimestamp();
+
+    await logChannel.send({ embeds: [embed] }).catch(() => null);
+}
+
+// ─────────────────────────────────────────────
+//  syncUser — called by /autorolerefresh
+//  (No grace period — immediate sync)
+// ─────────────────────────────────────────────
 async function syncUser(client, config, coc, dataManager, userId, monitoredClans, logChannel) {
     const GLOBAL_ROLE_ID = config.GLOBAL_ROLE_ID;
-    const guild = await client.guilds.fetch(config.GUILD_ID).catch(() => null);
-    if (!guild) return;
+    const guild  = await client.guilds.fetch(config.GUILD_ID).catch(() => null);
+    if (!guild) return null;
+
     const member = await guild.members.fetch(userId).catch(() => null);
-    if (!member) return;
+    if (!member) return null;
 
-    const userData = dataManager.getUserData();
+    const userData     = dataManager.getUserData();
     const userAccounts = userData[userId] || [];
-    if (userAccounts.length === 0) return;
+    if (userAccounts.length === 0) return null;
 
-    const fetchPromises = userAccounts.map(acc => coc.getPlayer(acc.tag).catch(() => null));
-    const players = await Promise.all(fetchPromises);
-    const validPlayers = players.filter(p => p !== null);
-    if (validPlayers.length === 0) return;
+    // Fetch live player data
+    const players      = await Promise.all(userAccounts.map(acc => coc.getPlayer(acc.tag).catch(() => null)));
+    const validPlayers = players.filter(Boolean);
+    if (validPlayers.length === 0) return null;
 
+    // Which monitored clans is the user currently in?
     const inMonitoredClans = validPlayers.filter(p => p.clan && monitoredClans[p.clan.tag.toUpperCase()]);
-    const currentClanTags = [...new Set(inMonitoredClans.map(p => p.clan.tag.toUpperCase()))];
+    const currentClanTags  = [...new Set(inMonitoredClans.map(p => p.clan.tag.toUpperCase()))];
 
-    const shouldHaveRoleIds = new Set();
-    currentClanTags.forEach(tag => {
-        if (monitoredClans[tag]?.roleId) shouldHaveRoleIds.add(monitoredClans[tag].roleId);
-    });
+    const shouldHaveRoleIds = new Set(
+        currentClanTags.flatMap(tag => monitoredClans[tag]?.roleId ? [monitoredClans[tag].roleId] : [])
+    );
 
-    const managedRoleIds = new Set(Object.values(monitoredClans).filter(c => c.roleId).map(c => c.roleId));
-    const rolesToAdd = [];
-    const rolesToRemove = [];
+    const managedRoleIds = new Set(
+        Object.values(monitoredClans).filter(c => c.roleId).map(c => c.roleId)
+    );
 
-    managedRoleIds.forEach(roleId => {
+    const rolesToAdd    = [];
+    const rolesToRemove = []; // { roleId, clanTag }
+
+    for (const roleId of managedRoleIds) {
         if (shouldHaveRoleIds.has(roleId)) {
             rolesToAdd.push(roleId);
         } else {
-            rolesToRemove.push(roleId);
+            const clanTag = Object.keys(monitoredClans).find(t => monitoredClans[t].roleId === roleId);
+            rolesToRemove.push({ roleId, clanTag: clanTag || null });
         }
-    });
+    }
 
     if (GLOBAL_ROLE_ID) {
-        if (currentClanTags.length === 0) {
-            rolesToAdd.push(GLOBAL_ROLE_ID);
-        } else {
-            rolesToRemove.push(GLOBAL_ROLE_ID);
-        }
+        currentClanTags.length === 0
+            ? rolesToAdd.push(GLOBAL_ROLE_ID)
+            : rolesToRemove.push({ roleId: GLOBAL_ROLE_ID, clanTag: null });
     }
 
-    const finalRolesToAdd = [...new Set(rolesToAdd)];
-    const finalRolesToRemove = [...new Set(rolesToRemove)].filter(r => !finalRolesToAdd.includes(r));
+    const finalAdd    = [...new Set(rolesToAdd)];
+    const finalRemove = [...new Set(rolesToRemove.map(r => r.roleId))]
+        .filter(id => !finalAdd.includes(id))
+        .map(id => ({ roleId: id, clanTag: rolesToRemove.find(r => r.roleId === id)?.clanTag || null }));
 
-    const rolesAddedNames = [];
-    const rolesRemovedNames = [];
+    const rolesAdded   = [];
+    const rolesRemoved = [];
 
-    for (const roleId of finalRolesToAdd) {
+    for (const roleId of finalAdd) {
         if (!member.roles.cache.has(roleId)) {
             await member.roles.add(roleId).catch(() => null);
-            rolesAddedNames.push(`<@&${roleId}>`);
+            rolesAdded.push(`<@&${roleId}>`);
         }
     }
-    for (const roleId of finalRolesToRemove) {
+    for (const { roleId } of finalRemove) {
         if (member.roles.cache.has(roleId)) {
             await member.roles.remove(roleId).catch(() => null);
-            rolesRemovedNames.push(`<@&${roleId}>`);
+            rolesRemoved.push(`<@&${roleId}>`);
         }
     }
 
-    const result = {
-        rolesAdded: rolesAddedNames,
-        rolesRemoved: rolesRemovedNames,
-        currentClanTags,
-        hasChanges: rolesAddedNames.length > 0 || rolesRemovedNames.length > 0
-    };
+    const hasChanges = rolesAdded.length > 0 || rolesRemoved.length > 0;
 
-    if (result.hasChanges && logChannel) {
+    // Log only if something actually changed
+    if (hasChanges && logChannel) {
+        const sh  = getEmoji("sheild");
+        const gd  = getEmoji("greendot");
+        const rd  = getEmoji("reddot");
+        const ra  = getEmoji("rarrow");
+        const ref = getEmoji("refresh");
+
+        const fields = [];
+
+        if (rolesAdded.length > 0) {
+            fields.push({ name: `${gd} Roles Added`, value: rolesAdded.join("\n"), inline: true });
+        }
+        if (rolesRemoved.length > 0) {
+            fields.push({ name: `${rd} Roles Removed`, value: rolesRemoved.join("\n"), inline: true });
+        }
+
+        const clanValue = currentClanTags.length > 0
+            ? currentClanTags.map(t => {
+                const info = monitoredClans[t];
+                return `${clanEmoji(info?.nickName)} ${info?.nickName || t}`;
+              }).join("\n")
+            : "No monitored clan";
+
+        fields.push({ name: `${ra} Current Clans`, value: clanValue, inline: false });
+
         const embed = new EmbedBuilder()
-            .setTitle("🛡️ Manual Role Sync")
             .setColor(0x3498DB)
-            .setDescription(`**User:** <@${userId}> (${member.user.tag})`)
-            .addFields({
-                name: "Current Clans",
-                value: currentClanTags.length > 0
-                    ? currentClanTags.map(t => monitoredClans[t]?.nickName || t).join(", ")
-                    : "None (Global)",
-                inline: false
+            .setAuthor({
+                name: `${member.user.tag}`,
+                iconURL: member.user.displayAvatarURL({ dynamic: true }),
             })
+            .setTitle(`${ref} Manual Role Sync`)
+            .setDescription(`**Member:** <@${member.id}>`)
+            .addFields(fields)
+            .setFooter({ text: "Triggered by: /autorolerefresh" })
             .setTimestamp();
 
-        if (rolesAddedNames.length > 0) embed.addFields({ name: "Roles Added", value: rolesAddedNames.join(", "), inline: true });
-        if (rolesRemovedNames.length > 0) embed.addFields({ name: "Roles Removed", value: rolesRemovedNames.join(", "), inline: true });
-
         await logChannel.send({ embeds: [embed] }).catch(() => null);
-        result.embed = embed;
+
+        return { rolesAdded, rolesRemoved, currentClanTags, hasChanges, embed };
     }
 
-    return result;
+    return { rolesAdded, rolesRemoved, currentClanTags, hasChanges };
 }
 
+// ─────────────────────────────────────────────
 module.exports = { startAutoRoleManager, syncUser };

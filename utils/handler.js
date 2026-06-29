@@ -1,4 +1,4 @@
-﻿const cheerio = require("cheerio");
+const cheerio = require("cheerio");
 const proxyFetch = require("./proxyFetch"); // Assuming it's in utils
 const ticketHandler = require("./tickets/ticketHandler");
 const fs = require("fs");
@@ -683,6 +683,61 @@ async function handleInteraction(interaction, context) {
             } catch (err) {
                 console.error(err);
                 try { await interaction.followUp({ content: "❌ Error refreshing compo data.", ephemeral: true }); } catch(e) {}
+            }
+            return;
+        }
+
+        if (id.startsWith("ww_submit_update_")) {
+            const cleanTag = id.replace("ww_submit_update_", "");
+            const clanTag = "#" + cleanTag;
+            
+            try {
+                const wwPath = path.join(__dirname, "../data/ww.json");
+                let wwData = {};
+                if (fs.existsSync(wwPath)) {
+                    try {
+                        wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
+                    } catch (e) {}
+                }
+                
+                if (!wwData[clanTag]) {
+                    wwData[clanTag] = { clanName: clanTag, lastUpdated: "" };
+                }
+
+                const now = new Date();
+                const day = String(now.getDate()).padStart(2, '0');
+                const month = String(now.getMonth() + 1).padStart(2, '0');
+                const year = now.getFullYear();
+                const todayStr = `${day}/${month}/${year}`;
+                
+                wwData[clanTag].lastUpdated = todayStr;
+                
+                fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
+                
+                const disabledBtn = new ButtonBuilder()
+                    .setCustomId(`ww_submit_update_${cleanTag}`)
+                    .setLabel("Submitted")
+                    .setStyle(ButtonStyle.Success)
+                    .setEmoji(getEmojiObject("gtick") || "✅")
+                    .setDisabled(true);
+                const actionRow = new ActionRowBuilder().addComponents(disabledBtn);
+
+                await interaction.update({ components: [actionRow] });
+                await interaction.followUp({ content: `${getEmoji("gtick")} Successfully updated war weight submission time for ${clanTag} to ${todayStr}!`, ephemeral: true });
+
+                try {
+                    const logChannel = await interaction.client.channels.fetch("1516719047348326493").catch(() => null);
+                    if (logChannel) {
+                        await logChannel.send(`📢 **FWA Weight Update Detected!**\nClan: **${wwData[clanTag].clanName || clanTag}** (${clanTag})\nNew weight update submitted on: **${todayStr}**`).catch(() => {});
+                    }
+                } catch (err) {
+                    console.error("Failed to send log message:", err);
+                }
+            } catch (err) {
+                console.error(err);
+                if (!interaction.replied && !interaction.deferred) {
+                    await interaction.reply({ content: "❌ Error updating war weight submission time.", ephemeral: true }).catch(()=>{});
+                }
             }
             return;
         }
