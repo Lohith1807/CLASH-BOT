@@ -143,7 +143,7 @@ async function buildScanClanEmbeds(clanTag, coc, dataManager, emoji) {
     let currentChunk = warHeader + `**War Roster — Linked Members (${linkedMembers.length})**\n`;
     if (linkedLines.length === 0) currentChunk += "No linked players in this war.\n";
     for (const line of linkedLines) {
-        if (currentChunk.length + line.length + 1 > 3500) {
+        if (currentChunk.length + line.length + 1 > 2500) {
             linkedChunks.push(currentChunk);
             currentChunk = line + "\n";
         } else {
@@ -151,6 +151,7 @@ async function buildScanClanEmbeds(clanTag, coc, dataManager, emoji) {
         }
     }
     if (currentChunk.trim()) linkedChunks.push(currentChunk);
+
 
     const badgeUrl = clan.badgeUrls?.large || clan.badgeUrls?.medium;
     for (let i = 0; i < linkedChunks.length; i++) {
@@ -172,7 +173,7 @@ async function buildScanClanEmbeds(clanTag, coc, dataManager, emoji) {
     let currentUnlinked = `**Non-Linked Players (${unlinkedMembers.length})**\n`;
     if (unlinkedLines.length === 0) currentUnlinked += "No unlinked players in this war.\n";
     for (const line of unlinkedLines) {
-        if (currentUnlinked.length + line.length + 1 > 3500) {
+        if (currentUnlinked.length + line.length + 1 > 2500) {
             unlinkedChunks.push(currentUnlinked);
             currentUnlinked = line + "\n";
         } else {
@@ -355,41 +356,60 @@ async function buildStoredWarEmbeds(clanTag, clanName, clanBadgeUrl, storedWar, 
     const titleColor = Math.floor(Math.random() * 0xFFFFFF);
 
     const timeAgo = getTimeAgo(storedWar.endTime);
+    const warHeader = `⚔️ **War vs ${storedWar.opponentName}** (\`${storedWar.opponentTag}\`)\n${emoji.getEmoji("graph") || "📊"} **Ended:** ${timeAgo} | **Size:** ${storedWar.teamSize}v${storedWar.teamSize}\n\n`;
 
-    // Linked embed
-    let linkedDesc = `⚔️ **War vs ${storedWar.opponentName}** (\`${storedWar.opponentTag}\`)\n${emoji.getEmoji("graph") || "📊"} **Ended:** ${timeAgo} | **Size:** ${storedWar.teamSize}v${storedWar.teamSize}\n\n`;
-    linkedDesc += `**War Roster — Linked Members (${linkedMembers.length})**\n`;
-    if (linkedLines.length === 0) linkedDesc += "No linked players in this war.\n";
-    else linkedDesc += linkedLines.join("\n") + "\n";
-
-    if (linkedDesc.length > 4096) linkedDesc = linkedDesc.slice(0, 4093) + "...";
-
-    const linkedEmbed = new EmbedBuilder()
-        .setTitle(`${clanName} — Past War Roster (Linked)`)
-        .setColor(titleColor)
-        .setDescription(linkedDesc)
-        .setFooter({ text: "FWA War Scanner — Historical" })
-        .setTimestamp();
-    if (clanBadgeUrl) {
-        linkedEmbed.setThumbnail(clanBadgeUrl);
+    // Linked embeds
+    const linkedChunks = [];
+    let currentChunk = warHeader + `**War Roster — Linked Members (${linkedMembers.length})**\n`;
+    if (linkedLines.length === 0) currentChunk += "No linked players in this war.\n";
+    for (const line of linkedLines) {
+        if (currentChunk.length + line.length + 1 > 2500) {
+            linkedChunks.push(currentChunk);
+            currentChunk = line + "\n";
+        } else {
+            currentChunk += line + "\n";
+        }
     }
-    allEmbeds.push(linkedEmbed);
+    if (currentChunk.trim()) linkedChunks.push(currentChunk);
 
-    // Unlinked embed
-    let unlinkedDesc = `**Non-Linked Players (${unlinkedMembers.length})**\n`;
-    if (unlinkedLines.length === 0) unlinkedDesc += "No unlinked players in this war.\n";
-    else unlinkedDesc += unlinkedLines.join("\n") + "\n";
-
-    if (unlinkedDesc.length > 4096) unlinkedDesc = unlinkedDesc.slice(0, 4093) + "...";
-
-    allEmbeds.push(
-        new EmbedBuilder()
-            .setTitle(`Non-Linked Players`)
-            .setColor(0xE74C3C)
-            .setDescription(unlinkedDesc)
+    for (let i = 0; i < linkedChunks.length; i++) {
+        const titleSuffix = linkedChunks.length > 1 ? ` (Part ${i + 1}/${linkedChunks.length})` : "";
+        const embed = new EmbedBuilder()
+            .setTitle(`${clanName} — Past War Roster (Linked)${titleSuffix}`)
+            .setColor(titleColor)
+            .setDescription(linkedChunks[i])
             .setFooter({ text: "FWA War Scanner — Historical" })
-            .setTimestamp()
-    );
+            .setTimestamp();
+        if (i === 0 && clanBadgeUrl) {
+            embed.setThumbnail(clanBadgeUrl);
+        }
+        allEmbeds.push(embed);
+    }
+
+    // Unlinked embeds
+    const unlinkedChunks = [];
+    let currentUnlinked = `**Non-Linked Players (${unlinkedMembers.length})**\n`;
+    if (unlinkedLines.length === 0) currentUnlinked += "No unlinked players in this war.\n";
+    for (const line of unlinkedLines) {
+        if (currentUnlinked.length + line.length + 1 > 2500) {
+            unlinkedChunks.push(currentUnlinked);
+            currentUnlinked = line + "\n";
+        } else {
+            currentUnlinked += line + "\n";
+        }
+    }
+    if (currentUnlinked.trim()) unlinkedChunks.push(currentUnlinked);
+
+    for (let i = 0; i < unlinkedChunks.length; i++) {
+        const titleSuffix = unlinkedChunks.length > 1 ? ` (Part ${i + 1}/${unlinkedChunks.length})` : "";
+        const embed = new EmbedBuilder()
+            .setTitle(`Non-Linked Players${titleSuffix}`)
+            .setColor(0xE74C3C)
+            .setDescription(unlinkedChunks[i])
+            .setFooter({ text: "FWA War Scanner — Historical" })
+            .setTimestamp();
+        allEmbeds.push(embed);
+    }
 
     // Comparison Logic for stored wars
     const comparisonEmbed = buildComparisonEmbed(storedWar, pastWar, liveRoles, emoji);
@@ -481,6 +501,49 @@ function noWarEmbed(clan, emoji) {
         embed.setThumbnail(badgeUrl);
     }
     return embed;
+}
+
+/**
+ * Send embeds in batches to avoid Discord's 6000-character-per-message limit.
+ */
+async function sendBatchedEmbeds(interaction, embeds, components = []) {
+    const MAX_TOTAL_CHARS = 5800;
+    const batches = [];
+    let currentBatch = [];
+    let currentLength = 0;
+
+    for (const embed of embeds) {
+        let embedSize = 0;
+        if (embed.data.title) embedSize += embed.data.title.length;
+        if (embed.data.description) embedSize += embed.data.description.length;
+        if (embed.data.footer && embed.data.footer.text) embedSize += embed.data.footer.text.length;
+        if (embed.data.author && embed.data.author.name) embedSize += embed.data.author.name.length;
+        if (embed.data.fields) {
+            for (const f of embed.data.fields) {
+                if (f.name) embedSize += f.name.length;
+                if (f.value) embedSize += f.value.length;
+            }
+        }
+
+        if (currentLength + embedSize > MAX_TOTAL_CHARS || currentBatch.length >= 10) {
+            if (currentBatch.length > 0) batches.push(currentBatch);
+            currentBatch = [embed];
+            currentLength = embedSize;
+        } else {
+            currentBatch.push(embed);
+            currentLength += embedSize;
+        }
+    }
+    if (currentBatch.length > 0) batches.push(currentBatch);
+
+    for (let i = 0; i < batches.length; i++) {
+        const batchComponents = (i === batches.length - 1) ? components : [];
+        if (i === 0) {
+            await interaction.editReply({ embeds: batches[i], components: batchComponents }).catch(e => console.error("EDITREPLY ERROR:", e));
+        } else {
+            await interaction.followUp({ embeds: batches[i], components: batchComponents }).catch(e => console.error("FOLLOWUP ERROR:", e));
+        }
+    }
 }
 
 /**
@@ -604,16 +667,13 @@ module.exports = {
 
         const btnRow = new ActionRowBuilder().addComponents(refreshBtn, lastWarsBtn);
 
-        await interaction.editReply({ embeds: result.embeds, components: [btnRow] })
-            .catch(async (e) => {
-                console.error("EDITREPLY ERROR:", e);
-                await interaction.channel.send(`❌ editReply failed: \`${e.message}\``).catch(() => {});
-            });
+        await sendBatchedEmbeds(interaction, result.embeds, [btnRow]);
     },
 
     // Exported for handler.js and sync.js
     buildScanClanEmbeds,
     buildStoredWarEmbeds,
     getTimeAgo,
-    storeWarSnapshot
+    storeWarSnapshot,
+    sendBatchedEmbeds
 };

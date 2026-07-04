@@ -13,7 +13,8 @@ module.exports = {
   SYNC_CHANNEL_ID: process.env.SYNC_CHANNEL_ID,
   ADMIN_CATEGORY_ID: process.env.ADMIN_CATEGORY_ID,
 
-  ADMIN_ROLE_IDS: (process.env.ADMIN_ROLE_IDS || "").split(","),
+  ADMIN_ROLE_IDS: (process.env.ADMIN_ROLE_IDS || "").split(",").map(id => id.trim()).filter(Boolean),
+  VIP_USER_IDS: (process.env.VIP_USER_IDS || "").split(",").map(id => id.trim()).filter(Boolean),
   STAFF_ROLE_IDS: (process.env.STAFF_ROLE || "").split(","),
   GLOBAL_ROLE_ID: process.env.GLOBAL_ROLE_ID,
   MEMBER_ROLE_IDS: (process.env.MEMBER_ROLE_IDS || "").split(","),

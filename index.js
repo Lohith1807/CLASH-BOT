@@ -94,16 +94,6 @@ client.once(Events.ClientReady, async (c) => {
     });
   }
 
-  try {
-    const avatarPath = path.join(__dirname, 'assets', 'CLASH.gif');
-    if (fs.existsSync(avatarPath)) {
-      await client.user.setAvatar(avatarPath);
-      console.log('✅ Bot avatar updated successfully.');
-    }
-  } catch (error) {
-    console.error('❌ Failed to set avatar (might be rate limited):', error.message);
-  }
-
   client.user.setPresence({
     status: "idle",
     activities: [

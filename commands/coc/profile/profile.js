@@ -131,38 +131,53 @@ module.exports = {
     let page = 0;
 
     const embed = module.exports.buildProfileEmbed(targetUser, accounts, page);
-    const components = module.exports.buildProfileComponents(targetUser.id, page, leftEmoji, rightEmoji);
+    const components = module.exports.buildProfileComponents(targetUser.id, page, leftEmoji, rightEmoji, accounts.length);
 
     await message.channel.send({ embeds: [embed], components: components });
   },
 
   async getProfileAccounts(userId, userData, coc, emojiUtils) {
     const accounts = [];
-    const arrowEmoji = emojiUtils.getEmoji("arrow");
-    const throphyEmoji = emojiUtils.getEmoji("throphy");
+    const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡";
+    const userAccounts = userData[userId] || [];
+    
+    if (userAccounts.length === 0) return [];
+    
+    const mainTag = userAccounts[0].tag;
 
-    for (const account of userData[userId]) {
+    for (const account of userAccounts) {
       try {
         const data = await coc.getPlayer(account.tag);
         const openInGame = `[Open in Game](https://link.clashofclans.com/en/?action=OpenPlayerProfile&tag=${encodeURIComponent(data.tag)})`;
-        const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || emojiUtils.getEmoji('th8') || "";
+        const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || emojiUtils.getEmoji('th8') || "👑";
 
         const leagueName = data.league?.name || "Unranked";
         const leagueEmojiKey = leagueName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-        const leagueEmoji = emojiUtils.getEmoji(leagueEmojiKey) || emojiUtils.getEmoji("sheild") || "🛡️";
+        const leagueEmoji = emojiUtils.getEmoji(leagueEmojiKey) || emojiUtils.getEmoji("throphy") || "🏆";
 
-        const conqueror = data.achievements?.find(a => a.name === "Conqueror");
-        const totalAttacks = conqueror ? conqueror.value : (data.attackWins || 0);
+        const isMain = account.tag === mainTag;
+
+        let formattedText = "";
+        if (isMain) {
+          formattedText = `**══════ Main Account ══════**\n` +
+                          `${thEmoji} **${data.name} • ${data.tag}**\n` +
+                          `▪️ **Clan:** ${data.clan?.name || "None"}\n` +
+                          `▪️ **Role:** ${formatRole(data.role)}\n` +
+                          `▪️ **League:** ${leagueName} ${leagueEmoji}\n` +
+                          `${arrowEmoji} ${openInGame}\n`;
+        } else {
+          formattedText = `${thEmoji} **${data.name} • ${data.tag}**\n` +
+                          `▪️ **Clan:** ${data.clan?.name || "None"}\n` +
+                          `▪️ **Role:** ${formatRole(data.role)}\n` +
+                          `▪️ **League:** ${leagueName} ${leagueEmoji}\n` +
+                          `${arrowEmoji} ${openInGame}\n`;
+        }
 
         accounts.push({
-          name: `${thEmoji} ${data.name} • ${data.tag}`,
-          value:
-            `• **Clan:** ${data.clan?.name || "None"}\n` +
-            `• **Role:** ${formatRole(data.role)}\n` +
-            `• **League:** ${leagueName} ${leagueEmoji}\n` +
-            `• **Attack:** ${totalAttacks} | **War Stars:** ${data.warStars || 0}\n` +
-            `${arrowEmoji} ${openInGame}`,
+          isMain,
+          text: formattedText,
           townHallLevel: data.townHallLevel,
+          tag: data.tag
         });
       } catch (err) {
         let errorMsg = `Error fetching data.`;
@@ -170,14 +185,21 @@ module.exports = {
             errorMsg = `API is currently in maintenance.`;
         }
         accounts.push({
-          name: `❌ Account ${account.tag}`,
-          value: errorMsg,
+          isMain: account.tag === mainTag,
+          text: `❌ **Account ${account.tag}**\n▪️ ${errorMsg}\n`,
           townHallLevel: 0,
+          tag: account.tag
         });
       }
     }
 
-    accounts.sort((a, b) => b.townHallLevel - a.townHallLevel);
+    // Sort: Main account first, then by TH level descending
+    accounts.sort((a, b) => {
+      if (a.isMain) return -1;
+      if (b.isMain) return 1;
+      return b.townHallLevel - a.townHallLevel;
+    });
+
     return accounts;
   },
 
@@ -188,35 +210,63 @@ module.exports = {
     const start = page * perPage;
     const currentAccounts = accounts.slice(start, start + perPage);
 
+    let description = "";
+    
+    currentAccounts.forEach((acc, index) => {
+      // If it's the first 'other' ID on the page (and not the main account), add the header
+      if (!acc.isMain && (index === 0 || currentAccounts[index-1].isMain)) {
+          description += `**══════ Other IDs ══════**\n`;
+      }
+      description += acc.text + "\n";
+    });
+
+    description += `👤 **Linked Discord:** <@${targetUser.id}>`;
+
     return new EmbedBuilder()
-      .setTitle(`Profile of ${targetUser.tag} (Page ${page + 1}/${totalPages})`)
+      .setTitle(`Profile of ${targetUser.username} (Page ${page + 1}/${totalPages})`)
       .setColor(0x5865F2)
-      .addFields(currentAccounts)
-      .addFields([{ name: "👤 Linked Discord", value: `<@${targetUser.id}>` }])
+      .setDescription(description)
       .setFooter({ text: "Use your buttons to change pages." })
       .setTimestamp();
   },
 
-  buildProfileComponents(targetUserId, page, leftEmoji, rightEmoji) {
+  buildProfileComponents(targetUserId, page, leftEmoji, rightEmoji, totalAccounts = 0) {
     const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
     
-    const leftId = leftEmoji ? (leftEmoji.id || "⬅️") : "⬅️";
-    const rightId = rightEmoji ? (rightEmoji.id || "➡️") : "➡️";
+    const perPage = 5;
+    const totalPages = Math.ceil(totalAccounts / perPage) || 1;
 
-    const leftButton = new ButtonBuilder()
-      .setCustomId(`profile_prev:${targetUserId}:${page}`)
-      .setStyle(ButtonStyle.Primary);
-    
-    if (leftId.match(/^\d+$/)) leftButton.setEmoji(leftId);
-    else leftButton.setEmoji("⬅️");
+    const row = new ActionRowBuilder();
 
-    const rightButton = new ButtonBuilder()
-      .setCustomId(`profile_next:${targetUserId}:${page}`)
-      .setStyle(ButtonStyle.Primary);
+    if (totalPages > 1) {
+        const leftId = leftEmoji ? (leftEmoji.id || "⬅️") : "⬅️";
+        const rightId = rightEmoji ? (rightEmoji.id || "➡️") : "➡️";
 
-    if (rightId.match(/^\d+$/)) rightButton.setEmoji(rightId);
-    else rightButton.setEmoji("➡️");
+        const leftButton = new ButtonBuilder()
+          .setCustomId(`profile_prev:${targetUserId}:${page}`)
+          .setStyle(ButtonStyle.Primary);
+        
+        if (leftId.match(/^\d+$/)) leftButton.setEmoji(leftId);
+        else leftButton.setEmoji("⬅️");
 
-    return [new ActionRowBuilder().addComponents(leftButton, rightButton)];
+        const rightButton = new ButtonBuilder()
+          .setCustomId(`profile_next:${targetUserId}:${page}`)
+          .setStyle(ButtonStyle.Primary);
+
+        if (rightId.match(/^\d+$/)) rightButton.setEmoji(rightId);
+        else rightButton.setEmoji("➡️");
+
+        row.addComponents(leftButton, rightButton);
+    }
+
+    const changeMainBtn = new ButtonBuilder()
+      .setCustomId(`change_main:${targetUserId}:${page}`)
+      .setLabel("Change Main ID")
+      .setStyle(ButtonStyle.Success)
+      .setEmoji("🌟");
+
+    row.addComponents(changeMainBtn);
+
+    return [row];
   }
 };

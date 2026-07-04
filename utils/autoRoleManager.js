@@ -244,6 +244,10 @@ async function processUser({
     // Simulate what managed roles the user will have AFTER this cycle
     const rolesToAdd = [];
     if (GLOBAL_ROLE_ID) {
+        const isExemptFromGlobal = 
+            (config.VIP_USER_IDS && config.VIP_USER_IDS.includes(userId)) ||
+            (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id)));
+
         const remainingManaged = new Set(
             [...allManagedRoleIds].filter(id => member.roles.cache.has(id))
         );
@@ -251,7 +255,7 @@ async function processUser({
 
         if (remainingManaged.size === 0 && shouldHaveRoleIds.size === 0) {
             // No clan roles at all → give global
-            if (!member.roles.cache.has(GLOBAL_ROLE_ID)) rolesToAdd.push(GLOBAL_ROLE_ID);
+            if (!isExemptFromGlobal && !member.roles.cache.has(GLOBAL_ROLE_ID)) rolesToAdd.push(GLOBAL_ROLE_ID);
         } else {
             // Has at least one clan role → remove global
             if (member.roles.cache.has(GLOBAL_ROLE_ID)) {
@@ -371,9 +375,15 @@ async function syncUser(client, config, coc, dataManager, userId, monitoredClans
     }
 
     if (GLOBAL_ROLE_ID) {
-        currentClanTags.length === 0
-            ? rolesToAdd.push(GLOBAL_ROLE_ID)
-            : rolesToRemove.push({ roleId: GLOBAL_ROLE_ID, clanTag: null });
+        const isExemptFromGlobal = 
+            (config.VIP_USER_IDS && config.VIP_USER_IDS.includes(userId)) ||
+            (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id)));
+
+        if (currentClanTags.length === 0) {
+            if (!isExemptFromGlobal) rolesToAdd.push(GLOBAL_ROLE_ID);
+        } else {
+            rolesToRemove.push({ roleId: GLOBAL_ROLE_ID, clanTag: null });
+        }
     }
 
     const finalAdd    = [...new Set(rolesToAdd)];

@@ -248,7 +248,7 @@ async function handleTicketInteraction(interaction, context) {
 
             if (!clan) {
                 if (animationInterval) clearInterval(animationInterval);
-                
+
                 try {
                     const player = await coc.getPlayer(clanTag);
                     if (player && player.name) {
@@ -260,7 +260,7 @@ async function handleTicketInteraction(interaction, context) {
                         const row = new ActionRowBuilder().addComponents(showPlayerBtn);
                         return await interaction.editReply({ embeds: [errEmbed], components: [row] }).catch(() => { });
                     }
-                } catch (err) {}
+                } catch (err) { }
 
                 const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ Invaild tag check once again");
                 return await interaction.editReply({ embeds: [errEmbed] }).catch(() => { });
@@ -284,16 +284,16 @@ async function handleTicketInteraction(interaction, context) {
     if (customId && customId.startsWith('show_player_ticket:')) {
         await interaction.deferReply();
         const playerTag = customId.split(':')[1];
-        
+
         try {
             const profileCmd = require('../../commands/coc/profile/profile.js');
             const mockMessage = {
                 author: user,
                 mentions: { users: new Map() },
-                delete: async () => {},
+                delete: async () => { },
                 channel: {
                     send: async (payload) => {
-                        return interaction.editReply(payload).catch(() => {});
+                        return interaction.editReply(payload).catch(() => { });
                     }
                 }
             };
@@ -301,7 +301,7 @@ async function handleTicketInteraction(interaction, context) {
         } catch (err) {
             console.error("❌ Error showing player profile:", err);
             const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ An error occurred while fetching player info.");
-            await interaction.editReply({ embeds: [errEmbed] }).catch(() => {});
+            await interaction.editReply({ embeds: [errEmbed] }).catch(() => { });
         }
         return true;
     }
@@ -415,21 +415,21 @@ async function handleTicketInteraction(interaction, context) {
                 console.error('Transcript Generation Error:', err);
             }
 
-        const closeContent = `Ticket Closed - By: Bot Auto-Close - Ticket: ${channel.name}, ${ticketOwnerMention} - Time: <t:${Math.floor(Date.now() / 1000)}:F> -`;
+            const closeContent = `Ticket Closed - By: Bot Auto-Close - Ticket: ${channel.name}, ${ticketOwnerMention} - Time: <t:${Math.floor(Date.now() / 1000)}:F> -`;
 
-        const closeEmbed = new EmbedBuilder()
-            .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
-            .setTitle('Ticket Closed')
-            .setDescription(
-                `• By: Bot Auto-Close\n` +
-                `• Ticket: ${channel.name}, ${ticketOwnerMention}\n` +
-                `• Time: <t:${Math.floor(Date.now() / 1000)}:F>\n` +
-                `• Ticket Creation: <t:${Math.floor(creationTime.getTime() / 1000)}:F>`
-            )
-            .setColor(0x2b2d31);
+            const closeEmbed = new EmbedBuilder()
+                .setAuthor({ name: client.user.username, iconURL: client.user.displayAvatarURL() })
+                .setTitle('Ticket Closed')
+                .setDescription(
+                    `• By: Bot Auto-Close\n` +
+                    `• Ticket: ${channel.name}, ${ticketOwnerMention}\n` +
+                    `• Time: <t:${Math.floor(Date.now() / 1000)}:F>\n` +
+                    `• Ticket Creation: <t:${Math.floor(creationTime.getTime() / 1000)}:F>`
+                )
+                .setColor(0x2b2d31);
 
-        try {
-            await sendLog(guild, closeEmbed, config, attachment, closeContent);
+            try {
+                await sendLog(guild, closeEmbed, config, attachment, closeContent);
             } catch (err) {
                 console.error('Failed to send log with attachment:', err);
                 await sendLog(guild, closeEmbed, config).catch(e => console.error('Final Log Error:', e));
@@ -527,7 +527,7 @@ async function handleTicketInteraction(interaction, context) {
         }
 
         const now = Math.floor(Date.now() / 1000);
-        
+
         const closeContent = `Ticket Closed - By: ${user} | ${user.username} - Ticket: ${channel.name}, ${ownerMention} - Time: <t:${now}:F> -`;
 
         const closeEmbed = new EmbedBuilder()
@@ -803,7 +803,13 @@ async function handleTicketInteraction(interaction, context) {
         }
     }
 
-    await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+    try {
+        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+    } catch (err) {
+        if (err.code === 10062) return true;
+        console.error(err);
+        return true;
+    }
 
     const openEmbed = new EmbedBuilder()
         .setAuthor({ name: user.username, iconURL: user.displayAvatarURL() })

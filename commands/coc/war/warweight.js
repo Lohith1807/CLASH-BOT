@@ -40,12 +40,14 @@ module.exports = {
             const row = new ActionRowBuilder().addComponents(button);
 
             if (isInteraction) {
-                await input.reply({ embeds: [embed], components: [row] });
+                await input.deferReply();
+                await input.editReply({ embeds: [embed], components: [row] });
             } else {
                 await input.channel.send({ embeds: [embed], components: [row] });
             }
 
         } catch (error) {
+            if (error.code === 10062) return;
             console.error('❌ Error in warweight command:', error);
             const errMsg = '⚠️ Error loading war weight instructions.';
             if (isInteraction && !input.replied && !input.deferred) {

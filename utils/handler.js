@@ -305,7 +305,7 @@ async function handleInteraction(interaction, context) {
                 
                 const accounts = await profileCmd.getProfileAccounts(targetUserId, userData, coc, emoji);
                 const embed = profileCmd.buildProfileEmbed(targetUser, accounts, page);
-                const components = profileCmd.buildProfileComponents(targetUserId, page, emoji.getEmojiObject("larrow"), emoji.getEmojiObject("rarrow"));
+                const components = profileCmd.buildProfileComponents(targetUserId, page, emoji.getEmojiObject("larrow"), emoji.getEmojiObject("rarrow"), accounts.length);
 
                 await interaction.editReply({ embeds: [embed], components: components });
             } catch (err) {
@@ -700,8 +700,18 @@ async function handleInteraction(interaction, context) {
                     } catch (e) {}
                 }
                 
+                let clanName = clanTag;
+                try {
+                    const clan = await coc.getClan(clanTag);
+                    if (clan && clan.name) {
+                        clanName = clan.name;
+                    }
+                } catch (e) {}
+
                 if (!wwData[clanTag]) {
-                    wwData[clanTag] = { clanName: clanTag, lastUpdated: "" };
+                    wwData[clanTag] = { clanName: clanName, lastUpdated: "" };
+                } else {
+                    wwData[clanTag].clanName = clanName;
                 }
 
                 const now = new Date();
@@ -770,7 +780,7 @@ async function handleInteraction(interaction, context) {
                 const scanClanCmd = require("../commands/coc/war/scan-clan.js");
                 const result = await scanClanCmd.buildScanClanEmbeds(clanTag, coc, dataManager, emoji);
                 if (result && result.embeds) {
-                    await interaction.editReply({ embeds: result.embeds });
+                    await scanClanCmd.sendBatchedEmbeds(interaction, result.embeds);
                 } else {
                     await interaction.followUp({ content: "❌ Error refreshing war roster.", ephemeral: true }).catch(() => {});
                 }
@@ -823,10 +833,69 @@ async function handleInteraction(interaction, context) {
             }
             return;
         }
+
+        if (id.startsWith("change_main:")) {
+            const parts = id.split(":");
+            const targetUserId = parts[1];
+            const page = parts[2] || 0;
+            
+            const isOwner = interaction.user.id === targetUserId;
+            const hasAdmin = interaction.member && interaction.member.roles && interaction.member.roles.cache.some(r => config.ADMIN_ROLE_IDS.includes(r.id));
+            const hasStaff = interaction.member && interaction.member.roles && interaction.member.roles.cache.some(r => config.STAFF_ROLE_IDS.includes(r.id));
+            
+            if (!isOwner && !hasAdmin && !hasStaff) {
+                return interaction.reply({ content: "❌ You do not have permission to change this user's main ID.", ephemeral: true });
+            }
+            
+            const userData = dataManager.getUserData();
+            const accounts = userData[targetUserId] || [];
+            if (accounts.length <= 1) {
+                return interaction.reply({ content: "❌ This user doesn't have multiple accounts to choose from.", ephemeral: true });
+            }
+            
+            const options = accounts.map(acc => ({
+                label: (acc.name || acc.tag).substring(0, 100),
+                description: `Tag: ${acc.tag}`,
+                value: acc.tag
+            }));
+            
+            const selectOptions = options.slice(0, 25);
+            
+            const selectRow = new ActionRowBuilder().addComponents(
+                new StringSelectMenuBuilder()
+                    .setCustomId(`select_main:${targetUserId}:${page}`)
+                    .setPlaceholder("Select new main account...")
+                    .addOptions(selectOptions)
+            );
+            
+            return interaction.reply({ content: "Select the account to set as Main:", components: [selectRow], ephemeral: true });
+        }
     }
 
     if (interaction.isStringSelectMenu()) {
         const id = interaction.customId;
+
+        if (id.startsWith("select_main:")) {
+            const parts = id.split(":");
+            const targetUserId = parts[1];
+            const page = parseInt(parts[2]) || 0;
+            const selectedTag = interaction.values[0];
+            
+            const userData = dataManager.getUserData();
+            const accounts = userData[targetUserId] || [];
+            
+            const selectedIndex = accounts.findIndex(a => a.tag === selectedTag);
+            if (selectedIndex > -1) {
+                const selectedAccount = accounts.splice(selectedIndex, 1)[0];
+                accounts.unshift(selectedAccount);
+                dataManager.saveUserData(userData);
+                
+                await interaction.update({ content: `✅ Main account updated to **${selectedTag}**! Please run the \`;p\` command again to see the changes.`, components: [] });
+            } else {
+                await interaction.update({ content: `❌ Could not find account.`, components: [] });
+            }
+            return;
+        }
 
         if (id === "clans10_sel_fwa" || id === "clans10_sel_war" || id === "clans10_sel_cwl") {
             if (interaction.replied || interaction.deferred) return;
@@ -921,7 +990,7 @@ async function handleInteraction(interaction, context) {
 
                 const pastWar = warIndex < wars.length - 1 ? wars[warIndex + 1] : null;
                 const result = await scanClanCmd.buildStoredWarEmbeds(clanTag, clanName, clanBadgeUrl, storedWar, pastWar, liveClan, dataManager, emoji);
-                await interaction.editReply({ embeds: result.embeds, components: [] });
+                await scanClanCmd.sendBatchedEmbeds(interaction, result.embeds, []);
             } catch (err) {
                 console.error(err);
                 try { await interaction.editReply({ content: "❌ Error loading past war data.", components: [] }); } catch(e) {}
