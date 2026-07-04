@@ -39,16 +39,16 @@ const emojis = {
   sheild: "1427653084380794940",
   refresh: "1506184937458630696",
   blood: "1504385401295474758",
-  bb: "1513223898315882556",
-  tl: "1513223906083868913",
-  su: "1513223912035582162",
-  ik: "1513223917634846800",
-  dw: "1513223924631081101",
-  cc: "1513223932143206410",
-  bl: "1513223938224685187",
-  asr: "1513223946034614493",
+  bb: "1520819183372337274",
+  tl: "1520819202942828705",
+  su: "1520819209284620368",
+  ik: "1520819215807025322",
+  dw: "1520819221003767959",
+  cc: "1520819228255457300",
+  bl: "1520819190909374484",
+  asr: "1520819235251687445",
   bbs: "1506991458106736741",
-  kc: "1513223953362063571",
+  kc: "1520819242847567967",
   parrow: "1410131664629272626",
   loading: "1503023363172335826",
   book: "1504385352528297985",
@@ -61,8 +61,8 @@ const emojis = {
   chain: "1504386899723161710",
   tickbox: "1508465148434579517",
   wrongbox: "1508465151182110841",
-  bwc: "1513223964460187909",
-  qg: "1513223970030223380",
+  bwc: "1520819269321887805",
+  qg: "1520819278490632292",
   delete: "1516659340898078751",
   letterd: "1516818700295077968",
   lettern: "1516818716380106802",
@@ -78,7 +78,22 @@ const emojis = {
   bird: "1516830276184051832",
   darrow: "1516837157120118925",
   reddot: "1518164961270960249",
-  greendot: "1518164965884825771"
+  greendot: "1518164965884825771",
+  cfw: "1520819286158086276",
+  bz: "1520819198912106606",
+  bkl: "1520819290817695875",
+  WitchLeague: "1523005474251997394",
+  WizardLeague: "1523005477414506627",
+  ArcherLeague: "1523005546234380298",
+  BarbarianLeague: "1523005549996671056",
+  DragonLeague: "1523005554434380037",
+  ElectroLeague: "1523005557806596170",
+  TitanLeague: "1523005561870745780",
+  GolemLeague: "1523005565566058659",
+  LegendLeague: "1523005569743585481",
+  PEKKALeague: "1523005573652680914",
+  SkeletonLeague: "1523005577251520592",
+  ValkyrieLeague: "1523005580849971371"
 };
 // Function to get animated emoji (with <a:>), else static emoji (<:>)
 const animatedEmojis = new Set([
@@ -140,8 +155,35 @@ const getEmojiObject = (name) => {
     animated: animatedEmojis.has(name)
   };
 };
+
+const getLeagueEmoji = (leagueName, fallback = "throphy") => {
+    if (!leagueName || leagueName === "Unranked") return getEmoji(fallback) || "🏆";
+    const upperLeagueName = leagueName.replace(/[^a-zA-Z]/g, '').toUpperCase();
+    const knownLeagues = ["ELECTRO", "SKELETON", "BARBARIAN", "VALKYRIE", "WIZARD", "ARCHER", "DRAGON", "LEGEND", "TITAN", "GOLEM", "WITCH", "PEKKA"];
+    
+    let matchedBase = null;
+    for (const kl of knownLeagues) {
+        if (upperLeagueName.includes(kl)) {
+            matchedBase = kl;
+            break;
+        }
+    }
+    
+    let leagueEmojiKey = "";
+    if (matchedBase) {
+        leagueEmojiKey = matchedBase === "PEKKA" ? "PEKKALeague" : matchedBase.charAt(0).toUpperCase() + matchedBase.slice(1).toLowerCase() + "League";
+    } else {
+        let base = leagueName.split(" ")[0].replace(/\./g, '');
+        let formattedBase = base.charAt(0).toUpperCase() + base.slice(1).toLowerCase();
+        leagueEmojiKey = formattedBase + "League";
+    }
+    
+    return getEmoji(leagueEmojiKey) || getEmoji(fallback) || "🏆";
+};
+
 module.exports = {
   emojis,
   getEmoji,
-  getEmojiObject
+  getEmojiObject,
+  getLeagueEmoji
 };

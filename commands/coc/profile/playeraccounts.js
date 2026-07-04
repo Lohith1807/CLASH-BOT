@@ -114,8 +114,11 @@ module.exports = {
             const clanRole = p.role ? `(${roleMap[p.role] || p.role})` : "";
             const swordEmoji = emojiUtils.getEmoji('cocfight') || '⚔️';
 
+            const leagueName = p.leagueTier?.name || p.league?.name || "Unranked";
+            const leagueEmoji = emojiUtils.getLeagueEmoji(leagueName, "throphy");
+
             description += `${swordEmoji} [**${p.name}${thLevel}**](${playerLink})\n`;
-            description += `${p.trophies} | ${clanName} ${clanRole}\n\n`;
+            description += `${leagueEmoji} ${p.trophies} | ${clanName} ${clanRole}\n\n`;
         }
 
         embed.setDescription(description || "No accounts found.");

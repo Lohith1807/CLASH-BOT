@@ -39,6 +39,10 @@ async function getPlayerEmbed(tag, context) {
     const sheildEmoji = emojiUtils.getEmoji("sheild");
 
     const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || "🏰";
+    
+    const leagueName = data.leagueTier?.name || data.league?.name || "Unranked";
+    const dynLeagueEmoji = emojiUtils.getLeagueEmoji(leagueName, "throphy");
+
     const openInGame = `[Open in Game](https://link.clashofclans.com/en/?action=OpenPlayerProfile&tag=${encodeURIComponent(data.tag)})`;
     const fwaLink = `[Chocolate Clash](https://cc.fwafarm.com/cc_n/member.php?tag=${encodeURIComponent(data.tag)})`;
 
@@ -65,6 +69,7 @@ async function getPlayerEmbed(tag, context) {
             `**Tag:** \`${data.tag}\`\n` +
             `**Clan:** ${data.clan?.name || "None"} ${data.clan?.tag ? `(\`${data.clan.tag}\`)` : ""}\n` +
             `**Role:** ${formatRole(data.role)}\n` +
+            `**League:** ${leagueName} ${dynLeagueEmoji}\n` +
             `**Linked to:** ${linkedUserText}\n` +
             `${thEmoji}:${data.townHallLevel}\t\t ${xpEmoji}:${data.expLevel}\t\t\n\n` +
 

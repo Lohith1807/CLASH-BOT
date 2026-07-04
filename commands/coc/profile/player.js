@@ -112,9 +112,8 @@ module.exports = {
             const starEmoji = emojiUtils.getEmoji("bluestar") || "⚔️";
             const cocwarEmoji = emojiUtils.getEmoji("cocfight") || "⚔️";
             
-            const leagueName = p.league ? p.league.name : "Unranked";
-            const leagueEmojiKey = leagueName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-            const dynLeagueEmoji = emojiUtils.getEmoji(leagueEmojiKey) || emojiUtils.getEmoji("sheild") || "🛡️";
+            const leagueName = p.leagueTier?.name || p.league?.name || "Unranked";
+            const dynLeagueEmoji = emojiUtils.getLeagueEmoji(leagueName, "sheild");
 
             const conqueror = p.achievements?.find(a => a.name === "Conqueror");
             const totalAttacks = conqueror ? conqueror.value : (p.attackWins || 0);
@@ -167,9 +166,8 @@ module.exports = {
                     const freshBuffer = await freshGenerate(freshP);
                     const freshAttachment = new AttachmentBuilder(freshBuffer, { name: "player-card.png" });
 
-                    const freshLeagueName = freshP.league ? freshP.league.name : "Unranked";
-                    const freshLeagueEmojiKey = freshLeagueName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-                    const freshDynLeagueEmoji = emojiUtils.getEmoji(freshLeagueEmojiKey) || emojiUtils.getEmoji("sheild") || "🛡️";
+                    const freshLeagueName = freshP.leagueTier?.name || freshP.league?.name || "Unranked";
+                    const freshDynLeagueEmoji = emojiUtils.getLeagueEmoji(freshLeagueName, "sheild");
 
                     const freshConqueror = freshP.achievements?.find(a => a.name === "Conqueror");
                     const freshTotalAttacks = freshConqueror ? freshConqueror.value : (freshP.attackWins || 0);

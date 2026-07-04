@@ -38,7 +38,8 @@ const EMOJI_NAMES = {
     rules: 'book',
     delete: 'delete',
     fwa: 'whitefwa',
-    war: 'cocfight'
+    war: 'cocfight',
+    mem: 'mem'
 };
 
 /**
@@ -306,6 +307,32 @@ async function handleTicketInteraction(interaction, context) {
         return true;
     }
 
+    if (customId && customId.startsWith('ticket_user_profile:')) {
+        await interaction.deferReply();
+        const targetUserId = customId.split(':')[1];
+
+        try {
+            const targetUser = await client.users.fetch(targetUserId);
+            const profileCmd = require('../../commands/coc/profile/profile.js');
+            const mockMessage = {
+                author: targetUser,
+                mentions: { users: new Map() },
+                delete: async () => { },
+                channel: {
+                    send: async (payload) => {
+                        return interaction.editReply(payload).catch(() => { });
+                    }
+                }
+            };
+            await profileCmd.execute(mockMessage, [], context);
+        } catch (err) {
+            console.error("❌ Error showing user profile:", err);
+            const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ An error occurred while fetching user profile.");
+            await interaction.editReply({ embeds: [errEmbed] }).catch(() => { });
+        }
+        return true;
+    }
+
     if (customId === 'set_ticket_timer') {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
@@ -470,7 +497,7 @@ async function handleTicketInteraction(interaction, context) {
                 '### ⚠️ Alliance Rules\n' +
                 `1. **Server Presence:** All Leaders and Clan Representatives must be present in the Discord server. ${wowEmoji}\n` +
                 '2. **Lazy CWL:** All Lazy CWL activities must be conducted strictly within the alliance. ⚔️\n' +
-                '3. **Member Recruitment:** You must bring at least **15 members** from your clan (excluding Leaders and Reps) into the server. 👥\n\n' +
+                '3. **Member Recruitment:** You must bring at least **30 members** from your clan (excluding Leaders and Reps) into the server. 👥\n\n' +
                 '### ✨ Benefits\n' +
                 '• **Shared Leadership Support:** Access to experienced leaders for strategic growth.\n' +
                 '• **Organized Lazy CWL:** Maximize rewards with minimal effort through our system.\n' +
@@ -881,6 +908,13 @@ async function handleTicketInteraction(interaction, context) {
             });
         }
 
+        if (customId === 'help_assistance') {
+            overwrites.push({
+                id: '1514535148119392377',
+                allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+            });
+        }
+
         if (recruitmentTag) {
             let foundSpecific = false;
             if (clanData) {
@@ -937,6 +971,10 @@ async function handleTicketInteraction(interaction, context) {
             .setTimestamp();
 
         const actionRow = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId(`ticket_user_profile:${user.id}`)
+                .setEmoji(emojis.mem?.id || '👤')
+                .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
                 .setCustomId('set_ticket_timer')
                 .setLabel('Timer')
@@ -998,7 +1036,11 @@ async function handleTicketInteraction(interaction, context) {
 
         // Ghost ping Server Moderator (STAFF_ROLE_IDS[0]) for all ticket types
         const serverModRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? config.STAFF_ROLE_IDS[0].trim() : null;
-        const ghostPing = serverModRoleId ? ` ||<@&${serverModRoleId}>||` : "";
+        let ghostPingRoles = [];
+        if (serverModRoleId) ghostPingRoles.push(`<@&${serverModRoleId}>`);
+        if (customId === 'help_assistance') ghostPingRoles.push(`<@&1514535148119392377>`);
+        
+        const ghostPing = ghostPingRoles.length > 0 ? ` ||${ghostPingRoles.join(' ')}||` : "";
 
         await channel.send({
             content: mentionContent + ghostPing,

@@ -53,6 +53,10 @@ module.exports = {
       try {
         const data = await coc.getPlayer(tagArg);
         const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || emojiUtils.getEmoji('th8') || "";
+        
+        const leagueName = data.leagueTier?.name || data.league?.name || "Unranked";
+        const leagueEmoji = emojiUtils.getLeagueEmoji(leagueName, "throphy");
+
         const openInGame = `[Open in Game](https://link.clashofclans.com/en/?action=OpenPlayerProfile&tag=${encodeURIComponent(data.tag)})`;
         const fwaLink = `[Chocolate Clash](https://cc.fwafarm.com/cc_n/member.php?tag=${encodeURIComponent(data.tag)})`;
 
@@ -86,6 +90,7 @@ module.exports = {
             `**Tag:** \`${data.tag}\`\n` +
             `**Clan:** ${data.clan?.name || "None"} ${data.clan?.tag ? `(\`${data.clan.tag}\`)` : ""}\n` +
             `**Role:** ${formatRole(data.role)}\n` +
+            `**League:** ${leagueName} ${leagueEmoji}\n` +
             `${thEmoji}:${data.townHallLevel}\t\t ${xpEmoji}:${data.expLevel}\t\t\n\n` +
 
             `**— Battles & Trophies —**\n` +
@@ -151,9 +156,8 @@ module.exports = {
         const openInGame = `[Open in Game](https://link.clashofclans.com/en/?action=OpenPlayerProfile&tag=${encodeURIComponent(data.tag)})`;
         const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || emojiUtils.getEmoji('th8') || "👑";
 
-        const leagueName = data.league?.name || "Unranked";
-        const leagueEmojiKey = leagueName.replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
-        const leagueEmoji = emojiUtils.getEmoji(leagueEmojiKey) || emojiUtils.getEmoji("throphy") || "🏆";
+        const leagueName = data.leagueTier?.name || data.league?.name || "Unranked";
+        const leagueEmoji = emojiUtils.getLeagueEmoji(leagueName, "throphy");
 
         const isMain = account.tag === mainTag;
 
