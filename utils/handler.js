@@ -6,13 +6,8 @@ const path = require("path");
 
 function getCwlClans() {
     try {
-        const raw = fs.readFileSync(path.join(__dirname, "../data/cwlfuture.json"), "utf8");
-        const data = JSON.parse(raw);
-        let cwl = {};
-        for(let tag in data) {
-            if(data[tag].type === 'cwl') cwl[tag] = data[tag];
-        }
-        return cwl;
+        const raw = fs.readFileSync(path.join(__dirname, "../data/cwlclans.json"), "utf8");
+        return JSON.parse(raw);
     } catch (e) {
         return {};
     }
@@ -36,6 +31,19 @@ async function handleInteraction(interaction, context) {
         return memberReplacementsCmd.handleMemberReplacements(interaction, context);
     }
     // ── end /member-replacements handler ────────────────────────────────────
+
+    // ── /cwl-clan edit panel — select menu ───────────────────────────────────
+    if (interaction.isStringSelectMenu() && interaction.customId === "cwl_clan_edit_sel") {
+        const cwlClanCmd = require("../commands/coc/clan/cwl-clan.js");
+        return cwlClanCmd.handleSelectMenu(interaction, context);
+    }
+
+    // ── /cwl-clan edit panel — buttons ───────────────────────────────────────
+    if (interaction.isButton() && (interaction.customId === "cwl_clan_edit_delete" || interaction.customId === "cwl_clan_edit_update")) {
+        const cwlClanCmd = require("../commands/coc/clan/cwl-clan.js");
+        return cwlClanCmd.handleButton(interaction, context);
+    }
+    // ── end /cwl-clan edit panel handler ─────────────────────────────────────
 
     const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, data: dataManager, coc, config, emoji } = context;
     const { getEmoji, getEmojiObject } = emoji;
@@ -1565,6 +1573,11 @@ async function handleInteraction(interaction, context) {
             const oldPlayerTag = parts[2];
             const wwTrackCmd = require("../commands/coc/war/ww-tracklist.js");
             return wwTrackCmd.handleModalSubmit(interaction, context, clanTag, oldPlayerTag);
+        }
+
+        if (id.startsWith("cwl_clan_modal_") || id.startsWith("cwl_clan_modal_update:")) {
+            const cwlClanCmd = require("../commands/coc/clan/cwl-clan.js");
+            return cwlClanCmd.handleModalSubmit(interaction, context);
         }
     }
 

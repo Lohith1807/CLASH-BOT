@@ -1,7 +1,7 @@
 const fs   = require("fs");
 const path = require("path");
 const { EmbedBuilder } = require("discord.js");
-const { getEmoji } = require("./emoji.js");
+const { getEmoji, getLeagueEmoji } = require("./emoji.js");
 
 // ─────────────────────────────────────────────
 //  Constants
@@ -76,7 +76,7 @@ function formatTimeLeft(startTs, now) {
 //  Entry point — called from index.js
 // ─────────────────────────────────────────────
 async function startAutoRoleManager(client, config, coc, dataManager) {
-    console.log("🛡️ Auto-Role Manager started (removal-only mode, 2-day grace period)");
+    console.log("🛡️ Auto-Role Manager started (notification-only mode, 2-day grace period)");
 
     // First run after 20 s (let bot fully boot)
     setTimeout(() => checkAutoRoles(client, config, coc, dataManager), 20_000);
@@ -127,7 +127,7 @@ async function checkAutoRoles(client, config, coc, dataManager) {
             await processUser({
                 client, config, userId, accounts,
                 monitoredClans, currentClanMembers,
-                leaverTimestamps, now, logChannel,
+                leaverTimestamps, now, logChannel, coc
             });
         } catch { /* per-user errors are non-fatal */ }
     }
@@ -147,7 +147,7 @@ async function checkAutoRoles(client, config, coc, dataManager) {
 async function processUser({
     client, config, userId, accounts,
     monitoredClans, currentClanMembers,
-    leaverTimestamps, now, logChannel,
+    leaverTimestamps, now, logChannel, coc
 }) {
     const GLOBAL_ROLE_ID = config.GLOBAL_ROLE_ID;
     const guild  = await client.guilds.fetch(config.GUILD_ID).catch(() => null);
@@ -202,12 +202,10 @@ async function processUser({
         delete leaverTimestamps[`${userId}:${clanTag}`];
     }
 
-    // ── Step 4: Evaluate every managed role ────────────────────────────────
+    // ── Step 4: Evaluate every managed role for Notifications ──────────────
     const allManagedRoleIds = new Set(
         Object.values(monitoredClans).filter(c => c.roleId).map(c => c.roleId)
     );
-
-    const rolesToRemove = []; // { roleId, clanTag, reason, players: [{ name, rawTag }] }
 
     for (const roleId of allManagedRoleIds) {
         if (!member.roles.cache.has(roleId)) {
@@ -228,60 +226,63 @@ async function processUser({
         if (!leaverTimestamps[key]) {
             // Grace period STARTS now
             leaverTimestamps[key] = now;
+        } else if (leaverTimestamps[key] === "notified") {
+            // Already notified leaders
+            continue;
         } else if (now - leaverTimestamps[key] >= TWO_DAYS_MS) {
-            // Grace period OVER — schedule removal
-            // Attach the accounts that LEFT this clan (not currently in it)
+            // Grace period OVER — send notification
             const leavingPlayers = playersNotInAnyClan.length > 0
                 ? playersNotInAnyClan
                 : (clanToPlayers[clanTag] || []);
-            rolesToRemove.push({ roleId, clanTag, reason: "2-day grace period elapsed", players: leavingPlayers });
-            delete leaverTimestamps[key];
-        }
-        // else: still within grace, do nothing
-    }
-
-    // ── Step 5: Global role logic ──────────────────────────────────────────
-    // Simulate what managed roles the user will have AFTER this cycle
-    const rolesToAdd = [];
-    if (GLOBAL_ROLE_ID) {
-        const isExemptFromGlobal = 
-            (config.VIP_USER_IDS && config.VIP_USER_IDS.includes(userId)) ||
-            (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id)));
-
-        const remainingManaged = new Set(
-            [...allManagedRoleIds].filter(id => member.roles.cache.has(id))
-        );
-        for (const { roleId } of rolesToRemove) remainingManaged.delete(roleId);
-
-        if (remainingManaged.size === 0 && shouldHaveRoleIds.size === 0) {
-            // No clan roles at all → give global
-            if (!isExemptFromGlobal && !member.roles.cache.has(GLOBAL_ROLE_ID)) rolesToAdd.push(GLOBAL_ROLE_ID);
-        } else {
-            // Has at least one clan role → remove global
-            if (member.roles.cache.has(GLOBAL_ROLE_ID)) {
-                rolesToRemove.push({ roleId: GLOBAL_ROLE_ID, clanTag: null, reason: null });
+            
+            leaverTimestamps[key] = "notified";
+            
+            const info = monitoredClans[clanTag];
+            const leadChannelId = info.leadChannelId;
+            if (leadChannelId) {
+                const leadChannel = await client.channels.fetch(leadChannelId).catch(() => null);
+                if (leadChannel) {
+                    const clanEmojiStr = clanEmoji(info.nickName);
+                    
+                    const pName = leavingPlayers.length > 0 ? leavingPlayers[0].name : member.user.username;
+                    const pTag = leavingPlayers.length > 0 ? leavingPlayers[0].rawTag : "Unknown";
+                    
+                    let leagueTier = "Unranked";
+                    let joinedClan = "None";
+                    let leagueEmoji = "🏆";
+                    
+                    if (pTag !== "Unknown") {
+                        try {
+                            const pData = await coc.getPlayer(pTag);
+                            if (pData) {
+                                leagueTier = pData.league ? pData.league.name : "Unranked";
+                                joinedClan = pData.clan ? `${pData.clan.name} (${pData.clan.tag})` : "None";
+                                leagueEmoji = getLeagueEmoji(leagueTier);
+                            }
+                        } catch (e) {
+                            console.error("Failed to fetch player for auto role notification", e.message);
+                        }
+                    }
+                    
+                    const embed = new EmbedBuilder()
+                        .setColor(0xE74C3C)
+                        .setTitle(`${getEmoji("rarroww")} ${pName} - ${pTag}`)
+                        .setDescription(
+                            `**In Game Name:** ${pName}\n` +
+                            `**League Tier:** ${leagueEmoji} ${leagueTier}\n` +
+                            `**Left Clan:** ${clanEmojiStr} **${info.nickName || clanTag}**\n` +
+                            `**Joined Clan:** ${joinedClan}\n` +
+                            `**Discord:** <@${member.id}>\n` +
+                            `**Status:** Left 2 days ago\n` +
+                            `**Action:** Do you want to send him to re-apply or just ignore him?\n` +
+                            `*(Use \`;re @user\` to process the leave)*`
+                        )
+                        .setTimestamp();
+                        
+                    await leadChannel.send({ embeds: [embed] }).catch(() => null);
+                }
             }
         }
-    }
-
-    // ── Step 6: Apply changes ──────────────────────────────────────────────
-    const removedClanRoles = []; // only clan roles (not global) — used for logging
-
-    for (const { roleId, clanTag, reason, players } of rolesToRemove) {
-        if (member.roles.cache.has(roleId)) {
-            await member.roles.remove(roleId).catch(() => null);
-            if (clanTag) removedClanRoles.push({ roleId, clanTag, reason, players: players || [] });
-        }
-    }
-    for (const roleId of rolesToAdd) {
-        if (!member.roles.cache.has(roleId)) {
-            await member.roles.add(roleId).catch(() => null);
-        }
-    }
-
-    // ── Step 7: Log ONLY if a real clan role was removed ──────────────────
-    if (removedClanRoles.length > 0) {
-        await sendAutoRemovalLog(logChannel, member, removedClanRoles, monitoredClans, now, leaverTimestamps);
     }
 }
 
@@ -354,13 +355,23 @@ async function syncUser(client, config, coc, dataManager, userId, monitoredClans
     const inMonitoredClans = validPlayers.filter(p => p.clan && monitoredClans[p.clan.tag.toUpperCase()]);
     const currentClanTags  = [...new Set(inMonitoredClans.map(p => p.clan.tag.toUpperCase()))];
 
-    const shouldHaveRoleIds = new Set(
-        currentClanTags.flatMap(tag => monitoredClans[tag]?.roleId ? [monitoredClans[tag].roleId] : [])
-    );
+    const shouldHaveRoleIds = new Set();
+    const managedRoleIds = new Set();
 
-    const managedRoleIds = new Set(
-        Object.values(monitoredClans).filter(c => c.roleId).map(c => c.roleId)
-    );
+    for (const p of inMonitoredClans) {
+        const clanTag = p.clan.tag.toUpperCase();
+        if (monitoredClans[clanTag]?.roleId) {
+            shouldHaveRoleIds.add(monitoredClans[clanTag].roleId);
+        }
+        if ((p.role === 'coLeader' || p.role === 'leader') && monitoredClans[clanTag]?.leaderRoleId) {
+            shouldHaveRoleIds.add(monitoredClans[clanTag].leaderRoleId);
+        }
+    }
+
+    for (const c of Object.values(monitoredClans)) {
+        if (c.roleId) managedRoleIds.add(c.roleId);
+        if (c.leaderRoleId) managedRoleIds.add(c.leaderRoleId);
+    }
 
     const rolesToAdd    = [];
     const rolesToRemove = []; // { roleId, clanTag }
@@ -369,7 +380,7 @@ async function syncUser(client, config, coc, dataManager, userId, monitoredClans
         if (shouldHaveRoleIds.has(roleId)) {
             rolesToAdd.push(roleId);
         } else {
-            const clanTag = Object.keys(monitoredClans).find(t => monitoredClans[t].roleId === roleId);
+            const clanTag = Object.keys(monitoredClans).find(t => monitoredClans[t].roleId === roleId || monitoredClans[t].leaderRoleId === roleId);
             rolesToRemove.push({ roleId, clanTag: clanTag || null });
         }
     }

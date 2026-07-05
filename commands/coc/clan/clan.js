@@ -4,13 +4,8 @@ const path = require("path");
 
 function getCwlClans() {
     try {
-        const raw = fs.readFileSync(path.join(__dirname, "../../../data/cwlfuture.json"), "utf8");
-        const data = JSON.parse(raw);
-        let cwl = {};
-        for(let tag in data) {
-            if(data[tag].type === 'cwl') cwl[tag] = data[tag];
-        }
-        return cwl;
+        const raw = fs.readFileSync(path.join(__dirname, "../../../data/cwlclans.json"), "utf8");
+        return JSON.parse(raw);
     } catch (e) {
         return {};
     }

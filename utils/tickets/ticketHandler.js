@@ -18,6 +18,7 @@ const staffApply = require('./embeds/staffApply');
 const allianceJoin = require('./embeds/allianceJoin');
 const helpAssistance = require('./embeds/helpAssistance');
 const warClanEntry = require('./embeds/warClanEntry');
+const staffTicketTracker = require('../staffTicketTracker');
 
 const EMOJI_NAMES = {
     check: 'coc',
@@ -84,6 +85,146 @@ async function handleTicketInteraction(interaction, context) {
         const localEmoji = emojiUtils.getEmojiObject(name);
         return localEmoji || { id: null, name: name };
     };
+
+    if (interaction.isButton() && customId.startsWith('start_app_')) {
+        const ticketOwnerId = interaction.channel.topic;
+        if (ticketOwnerId && ticketOwnerId !== interaction.user.id) {
+            return interaction.reply({ content: '❌ Only the ticket creator can start the application.', flags: [MessageFlags.Ephemeral] });
+        }
+
+        const type = customId.replace('start_app_', '');
+        const modal = new ModalBuilder()
+            .setCustomId(`submit_app_${type}`)
+            .setTitle('Application Form');
+
+        if (type === 'fwa-entry' || type === 'clan-entry') {
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1.Where did you find Blood Alliance?').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2.Share Your FWA Base').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3.Upload Your Profile').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.First time of FWA? How long you Plan to stay?').setStyle(TextInputStyle.Paragraph).setRequired(true))
+            );
+        } else if (type === 'war-entry') {
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1. Where did you find Blood Alliance?').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2. Share Your War Base').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3. Upload War Performance').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4. Hero availability').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5. Why do you want to join?').setStyle(TextInputStyle.Paragraph).setRequired(true))
+            );
+        } else if (type === 'rep-apply') {
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1. FWA CC Profile link').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2. Location & Timezone').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3. How long you have FWA Clan Experience').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4. Any FWA Rep Experience').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5. Motivation Of Being a Rep').setStyle(TextInputStyle.Paragraph).setRequired(true))
+            );
+        } else if (type === 'staff-apply') {
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1.What is Your Age').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2.What Role you are applying for?').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3.How long you are in FWA or current clan?').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.Motivation & Daily Activity').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5.Any Staff Experience? or Staff in Any other servers?').setStyle(TextInputStyle.Paragraph).setRequired(true))
+            );
+        } else if (type === 'alliance-join') {
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1.Where you found Blood Alliance').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2.What are you looking for from us?').setStyle(TextInputStyle.Paragraph).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3.Clan Type (FWA or War or FUTURE FWA)').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.Your Clan Members already in server? or You Want to get them?').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5.Are You Okay with alliance rules?').setStyle(TextInputStyle.Short).setRequired(true))
+            );
+        } else if (type === 'help-assistance') {
+            modal.addComponents(
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('How can we help?').setStyle(TextInputStyle.Paragraph).setRequired(true))
+            );
+        }
+        
+        await interaction.showModal(modal);
+        return true;
+    }
+
+    if (interaction.isModalSubmit() && customId.startsWith('submit_app_')) {
+        const type = customId.replace('submit_app_', '');
+        let q1, q2, q3, q4, q5;
+        try { q1 = interaction.fields.getTextInputValue('q1'); } catch (e) {}
+        try { q2 = interaction.fields.getTextInputValue('q2'); } catch (e) {}
+        try { q3 = interaction.fields.getTextInputValue('q3'); } catch (e) {}
+        try { q4 = interaction.fields.getTextInputValue('q4'); } catch (e) {}
+        try { q5 = interaction.fields.getTextInputValue('q5'); } catch (e) {}
+
+        const embed = new EmbedBuilder()
+            .setAuthor({ name: `${interaction.user.username}'s Application`, iconURL: interaction.user.displayAvatarURL() })
+            .setColor(0x00FF00)
+            .setTimestamp();
+
+        if (type === 'fwa-entry' || type === 'clan-entry') {
+            embed.addFields(
+                { name: '1. Where did you find Blood Alliance?', value: q1 || 'N/A' },
+                { name: '2. Upload a screenshot of your current FWA base.', value: q2 || 'N/A' },
+                { name: '3. Send a screenshot of your Clash of Clans. it shows My Profile.', value: q3 || 'N/A' },
+                { name: '4. First time joining FWA? Read all FWA & Mention how long you plan to stay', value: q4 || 'N/A' }
+            );
+        } else if (type === 'war-entry') {
+            embed.addFields(
+                { name: '1. Where did you find Blood Alliance?', value: q1 || 'N/A' },
+                { name: '2. Share Your War Base', value: q2 || 'N/A' },
+                { name: '3. Upload War Performance(Send a screenshot showing your War Stars and best attacks.)', value: q3 || 'N/A' },
+                { name: '4. Ensure your heroes are available or you have books to finish them.', value: q4 || 'N/A' },
+                { name: '5. Why do you want to join?', value: q5 || 'N/A' }
+            );
+        } else if (type === 'rep-apply') {
+            embed.addFields(
+                { name: '1. Share Your FWA CC Profile link', value: q1 || 'N/A' },
+                { name: '2. Location & Timezone (Where are you from and which time zone are you in?)', value: q2 || 'N/A' },
+                { name: '3. FWA Clan Experience (Are you currently in any FWA clan, or have you been in one before?)', value: q3 || 'N/A' },
+                { name: '4. FWA Rep Experience (Have you been a Rep in any clan before? If yes, please mention the clan(s).)', value: q4 || 'N/A' },
+                { name: '5. Motivation(Why do you want to be a Rep in our alliance?)', value: q5 || 'N/A' }
+            );
+        } else if (type === 'staff-apply') {
+            embed.addFields(
+                { name: '1. Your Age', value: q1 || 'N/A' },
+                { name: '2. What role are you applying for?', value: q2 || 'N/A' },
+                { name: '3. How long have you been in FWA or your current clan?', value: q3 || 'N/A' },
+                { name: '4. Why do you want to join the staff, and how active are you daily?', value: q4 || 'N/A' },
+                { name: '5. Past Experience (Have you held any staff roles before? If yes, list them.)', value: q5 || 'N/A' }
+            );
+        } else if (type === 'alliance-join') {
+            embed.addFields(
+                { name: 'Where you found Blood Alliance', value: q1 || 'N/A' },
+                { name: 'Why do you want your clan to join?', value: q2 || 'N/A' },
+                { name: 'Clan Type (FWA or War)', value: q3 || 'N/A' },
+                { name: 'Members already in server?', value: q4 || 'N/A' },
+                { name: 'Okay with alliance rules?', value: q5 || 'N/A' }
+            );
+        } else if (type === 'help-assistance') {
+            embed.addFields(
+                { name: 'Issue Description', value: q1 || 'N/A' }
+            );
+        }
+
+        let content = `**<@${interaction.user.id}> Application Submitted!**`;
+        if (type === 'fwa-entry' || type === 'clan-entry') {
+            content += '\n\n**🛑 ACTION REQUIRED: Please upload your FWA Base and Profile screenshots into this chat now!**';
+        } else if (type === 'war-entry') {
+            content += '\n\n**🛑 ACTION REQUIRED: Please upload your War Base, Profile, and War Stats (Performance) screenshots into this chat now!**';
+        }
+
+        await interaction.reply({ content, embeds: [embed] });
+        
+        // Remove the "Start Application" button after submission
+        try {
+            const originalMsg = await interaction.message.fetch();
+            if (originalMsg) {
+                const newComponents = originalMsg.components.slice(1);
+                await originalMsg.edit({ components: newComponents });
+            }
+        } catch(e) {}
+        
+        return true;
+    }
 
     if (interaction.isModalSubmit() && customId === 'alliance_apply_modal') {
         await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
@@ -158,6 +299,14 @@ async function handleTicketInteraction(interaction, context) {
                 .setColor('Random')
                 .setTimestamp();
 
+            const appRow = new ActionRowBuilder().addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`start_app_alliance-join`)
+                    .setLabel('Start Application')
+                    .setEmoji(emojis.book?.id || '📝')
+                    .setStyle(ButtonStyle.Success)
+            );
+
             const actionRow1 = new ActionRowBuilder().addComponents(
                 new ButtonBuilder()
                     .setCustomId(`view_clan_ticket:${clanTag}`)
@@ -165,13 +314,10 @@ async function handleTicketInteraction(interaction, context) {
                     .setEmoji(emojis.clancastle?.id || '🏰')
                     .setStyle(ButtonStyle.Primary),
                 new ButtonBuilder()
-                    .setCustomId('set_ticket_timer')
-                    .setLabel('Timer')
-                    .setEmoji(emojis.timer?.id || '⏳')
-                    .setStyle(ButtonStyle.Danger)
-            );
-
-            const actionRow2 = new ActionRowBuilder().addComponents(
+                    .setCustomId('claim_ticket')
+                    .setLabel('Claim')
+                    .setEmoji('✋')
+                    .setStyle(ButtonStyle.Success),
                 new ButtonBuilder()
                     .setCustomId('view_alliance_rules')
                     .setLabel('View Rules')
@@ -200,7 +346,7 @@ async function handleTicketInteraction(interaction, context) {
             await channel.send({
                 content: mentionContent + ghostPing,
                 embeds: [welcomeEmbed],
-                components: [actionRow1, actionRow2]
+                components: [appRow, actionRow1]
             });
 
             await interaction.editReply({ content: `Successfully created your ticket: ${channel}` });
@@ -490,14 +636,26 @@ async function handleTicketInteraction(interaction, context) {
         await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
 
         const wowEmoji = await getAppEmoji('wow');
+        const pinkdot = await getAppEmoji('pinkdot');
+        const reddot = await getAppEmoji('reddot');
+        const orangedot = await getAppEmoji('orangedot');
+        const rarrow = await getAppEmoji('rarroww');
 
         const rulesEmbed = new EmbedBuilder()
             .setTitle('📜 Blood Alliance Join Rules & Benefits')
             .setDescription(
                 '### ⚠️ Alliance Rules\n' +
-                `1. **Server Presence:** All Leaders and Clan Representatives must be present in the Discord server. ${wowEmoji}\n` +
-                '2. **Lazy CWL:** All Lazy CWL activities must be conducted strictly within the alliance. ⚔️\n' +
-                '3. **Member Recruitment:** You must bring at least **30 members** from your clan (excluding Leaders and Reps) into the server. 👥\n\n' +
+                '1. **Leadership Contact:** We will only communicate with the Leader of the clan. If you are not one, please ask them to join the server so we can initiate the discussion. 👑\n' +
+                `2. **Server Presence:** All Leaders and Clan Representatives must be present in the Discord server. ${wowEmoji}\n` +
+                '3. **Lazy CWL:** All Lazy CWL activities must be conducted strictly within the alliance. ⚔️\n' +
+                '4. **Member Recruitment:** This for Either FWA (or) FUTURE FWA (or) SERIOUS WAR You must bring at least **30 members** from your clan (excluding Leaders and Reps) into the server. 👥\n' +
+                `5. **Leadership:** Any one leader from the clan should always be active (exceptions allowed only for a few days). ${pinkdot}\n\n` +
+                `${rarrow} *It is mandatory to respond to the Filler War starter to state if you are able to start war or request fillers.*\n\n` +
+                `6. **Syncs & Activity:** Missing a sync without a response will make Blood Alliance take action. ${reddot}\n\n` +
+                `${rarrow} *If a clan joins and dies later, it ruins members' trust in the Blood Alliance.*\n\n` +
+                `7. **Discord Linking:** We should increase the number of members linked on Discord on a regular check basis (not one time at entry). ${orangedot}\n\n` +
+                `${rarrow} *Clans should impose Discord as mandatory for members in most cases.*\n\n` +
+                `${rarrow} *If members opt not to create a Discord, leaders should link their ID to their own Discord ID and register for CWL on their behalf.*\n\n` +
                 '### ✨ Benefits\n' +
                 '• **Shared Leadership Support:** Access to experienced leaders for strategic growth.\n' +
                 '• **Organized Lazy CWL:** Maximize rewards with minimal effort through our system.\n' +
@@ -509,6 +667,47 @@ async function handleTicketInteraction(interaction, context) {
             .setTimestamp();
 
         await interaction.editReply({ embeds: [rulesEmbed] });
+        return true;
+    }
+
+    if (customId === 'claim_ticket') {
+        const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+
+        if (!isStaff && !isAdmin) {
+            await interaction.reply({ content: '❌ Only Staff or Admins can claim this ticket.', flags: [MessageFlags.Ephemeral] });
+            return true;
+        }
+
+        const claimEmbed = new EmbedBuilder()
+            .setColor(0x00FF00)
+            .setDescription(`✅ <@${user.id}> has claimed this ticket and will be assisting shortly.`);
+        await interaction.reply({ embeds: [claimEmbed] });
+
+        // Record the claim for the staff weekly summary
+        staffTicketTracker.recordClaim(user);
+
+        try {
+            const msg = interaction.message;
+            if (msg && msg.components) {
+                const newComponents = msg.components.map(row => {
+                    const newRow = new ActionRowBuilder();
+                    row.components.forEach(comp => {
+                        if (comp.type === 2) { // Button
+                            const newBtn = ButtonBuilder.from(comp);
+                            if (comp.customId === 'claim_ticket') {
+                                newBtn.setDisabled(true);
+                                newBtn.setLabel(`Claimed by ${user.username}`);
+                            }
+                            newRow.addComponents(newBtn);
+                        }
+                    });
+                    return newRow;
+                });
+                await msg.edit({ components: newComponents });
+            }
+        } catch (e) {}
+
         return true;
     }
 
@@ -970,16 +1169,24 @@ async function handleTicketInteraction(interaction, context) {
             .setColor('Random')
             .setTimestamp();
 
+        const appRow = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId(`start_app_${ticketType.toLowerCase()}`)
+                .setLabel('Start Application')
+                .setEmoji(emojis.book?.id || '📝')
+                .setStyle(ButtonStyle.Success)
+        );
+
         const actionRow = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
                 .setCustomId(`ticket_user_profile:${user.id}`)
                 .setEmoji(emojis.mem?.id || '👤')
                 .setStyle(ButtonStyle.Primary),
             new ButtonBuilder()
-                .setCustomId('set_ticket_timer')
-                .setLabel('Timer')
-                .setEmoji(emojis.timer?.id || '⏳')
-                .setStyle(ButtonStyle.Danger)
+                .setCustomId('claim_ticket')
+                .setLabel('Claim')
+                .setEmoji('✋')
+                .setStyle(ButtonStyle.Success)
         );
 
         if (customId === 'alliance_apply') {
@@ -1045,7 +1252,7 @@ async function handleTicketInteraction(interaction, context) {
         await channel.send({
             content: mentionContent + ghostPing,
             embeds: [welcomeEmbed],
-            components: [actionRow]
+            components: [appRow, actionRow]
         });
 
         await interaction.editReply({ content: `Successfully created your ticket: ${channel}` });

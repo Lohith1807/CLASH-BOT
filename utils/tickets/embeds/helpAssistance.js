@@ -1,18 +1,17 @@
 const { EmbedBuilder } = require('discord.js');
+const { getEmoji } = require('../../emoji.js');
 
 module.exports = {
-    getEmbed: (emojis = {}) => {
+    getEmbed: () => {
         return new EmbedBuilder()
-            .setTitle(`${emojis.chat || '❓'} Help & Support –`)
+            .setTitle(`${getEmoji('reddot')} Support Assistance`)
             .setDescription(
-                '**Do you need help or have questions about Blood Alliance?**\n\n' +
-                'Please describe your issue or question in detail below. Our support team will be with you as soon as possible.\n\n' +
-                `${emojis.arrow || '»'} **Common Support Topics:**\n` +
-                '• clan war leauge doubts?\n' +
-                '• Alliance rules clarification\n' +
-                '• General Clash of Clans questions\n\n' +
-                `*Please be patient while waiting for a response. We are here to help! ${emojis.chat || '💬'}*`
+                `${getEmoji('parrow')} **Welcome to Support!**\n\n` +
+                `${getEmoji('pinkdot')} Need help? You're in the right place.\n\n` +
+                `${getEmoji('orangedot')} Click **Start Application** below and describe the issue you're facing or the question you have.\n\n` +
+                `${getEmoji('orangedot')} Please provide as much detail as possible so our support team can assist you efficiently.\n\n` +
+                `We'll be with you shortly! 💬`
             )
-            .setColor(0x3498db);
+            .setColor(0x00FF00);
     }
 };

@@ -28,4 +28,5 @@ module.exports = {
   AUTOROLE_LOG_CHANNEL_ID: process.env.AUTOROLE_LOG_CHANNEL_ID,
   
   EMOJI_SERVER_ID: process.env.EMOJI_SERVER_ID,
+  REAPPLY_ROLE_ID: process.env.REAPPLY_ROLE_ID,
 };

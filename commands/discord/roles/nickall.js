@@ -36,8 +36,12 @@ module.exports = {
 
       let processed = 0;
 
+      const REAPPLY_ROLE_ID = config.REAPPLY_ROLE_ID || "1442426406444335217";
+
       for (const [memberId, member] of message.guild.members.cache) {
         if (member.user.bot) continue;
+        if (!member.manageable) continue;
+        if (member.roles.cache.has(REAPPLY_ROLE_ID)) continue;
 
         const currentName = member.nickname || member.user.username;
         if (currentName.toUpperCase().startsWith("BLOOD |")) continue;
@@ -61,13 +65,9 @@ module.exports = {
         }
 
         try {
-          if (member.manageable) {
-            await member.setNickname(newNick);
-            await logChannel.send(`✅ Changed nickname for **${member.user.tag}** → \`${newNick}\``);
-            processed++;
-          } else {
-            await logChannel.send(`⚠️ Cannot manage **${member.user.tag}** (Hierarchy issue)`);
-          }
+          await member.setNickname(newNick);
+          await logChannel.send(`✅ Changed nickname for **${member.user.tag}** → \`${newNick}\``);
+          processed++;
         } catch (err) {
           await logChannel.send(`⚠️ Failed to change nickname for **${member.user.tag}**: \`${err.message}\``);
         }

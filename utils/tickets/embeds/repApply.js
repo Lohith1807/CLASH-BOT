@@ -1,23 +1,17 @@
 const { EmbedBuilder } = require('discord.js');
+const { getEmoji } = require('../../emoji.js');
 
 module.exports = {
-    getEmbed: (emojis = {}) => {
+    getEmbed: () => {
         return new EmbedBuilder()
-            .setTitle(`${emojis.book || '📖'} Rep Application Requirements`)
+            .setTitle(`${getEmoji('reddot')} Rep Application`)
             .setDescription(
-                '**If you\'re applying to become a Rep in our alliance, please answer the following:**\n\n' +
-                `${emojis.arrow || '»'} **1. Share Your FWA CC Profile link -**\n` +
-                `${emojis.chain || '🔗'} [FWA ChocolateClash](https://chocolateclash.com/)\n\n` +
-                `${emojis.arrow || '»'} **2. Location & Timezone –**\n` +
-                'Where are you from and which time zone are you in?\n\n' +
-                `${emojis.arrow || '»'} **3. FWA Clan Experience –**\n` +
-                'Are you currently in any FWA clan, or have you been in one before?\n\n' +
-                `${emojis.arrow || '»'} **4. FWA Rep Experience –**\n` +
-                'Have you been a Rep in any clan before? If yes, please mention the clan(s).\n\n' +
-                `${emojis.arrow || '»'} **5. Motivation –**\n` +
-                'Why do you want to be a Rep in our alliance?\n\n' +
-                '*Please provide detailed answers so we can properly review your application.*'
+                `${getEmoji('parrow')} **Welcome to the Rep-Application Ticket!**\n\n` +
+                `${getEmoji('pinkdot')} We're glad you're interested in joining the Blood Alliance Leaders family.\n\n` +
+                `${getEmoji('orangedot')} Click **Start Application** below and answer all the questions honestly. This helps our leadership team review your request efficiently.\n\n` +
+                `${getEmoji('orangedot')} After you submit, a member of our management team will review your application and get back to you shortly.\n\n` +
+                `Good luck! 🛡️`
             )
-            .setColor(0x5865f2);
+            .setColor(0x00FF00);
     }
 };

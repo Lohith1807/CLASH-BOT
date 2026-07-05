@@ -265,6 +265,15 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                     } else {
                         results.push("⚠️ Clan role not found.");
                     }
+                    
+                    if ((playerData.role === 'coLeader' || playerData.role === 'leader') && clanInfo.leaderRoleId) {
+                        const leaderRole = message.guild.roles.cache.get(clanInfo.leaderRoleId);
+                        if (leaderRole) {
+                            await targetMember.roles.add(leaderRole)
+                                .then(() => results.push(`${tickEmoji} Added role **${leaderRole.name}**.`))
+                                .catch(() => results.push("⚠️ Failed to add leader role."));
+                        }
+                    }
                 } else {
                     results.push("⚠️ Clan is not registered.");
                 }
@@ -274,6 +283,13 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                 await targetMember.roles.remove(GLOBAL_ROLE_ID)
                     .then(() => results.push(`${tickEmoji} Removed Global role.`))
                     .catch(() => results.push("⚠️ Could not remove Global role."));
+            }
+
+            const REAPPLY_ROLE_ID = config.REAPPLY_ROLE_ID || "1523186839509401701";
+            if (targetMember.roles.cache.has(REAPPLY_ROLE_ID)) {
+                await targetMember.roles.remove(REAPPLY_ROLE_ID)
+                    .then(() => results.push(`${tickEmoji} Removed Re-Apply role.`))
+                    .catch(() => results.push("⚠️ Could not remove Re-Apply role."));
             }
 
             await targetMember.setNickname(`BLOOD | ${playerName || targetMember.user.username}`)
