@@ -102,7 +102,7 @@ async function handleTicketInteraction(interaction, context) {
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1.Where did you find Blood Alliance?').setStyle(TextInputStyle.Short).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2.Share Your FWA Base').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3.Upload Your Profile').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
-                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.First time of FWA? How long you Plan to stay?').setStyle(TextInputStyle.Paragraph).setRequired(true))
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.First time FWA? How long to stay?').setStyle(TextInputStyle.Paragraph).setRequired(true))
             );
         } else if (type === 'war-entry') {
             modal.addComponents(
@@ -126,14 +126,14 @@ async function handleTicketInteraction(interaction, context) {
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2.What Role you are applying for?').setStyle(TextInputStyle.Short).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3.How long you are in FWA or current clan?').setStyle(TextInputStyle.Short).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.Motivation & Daily Activity').setStyle(TextInputStyle.Paragraph).setRequired(true)),
-                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5.Any Staff Experience? or Staff in Any other servers?').setStyle(TextInputStyle.Paragraph).setRequired(true))
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5.Any Staff Experience or other servers?').setStyle(TextInputStyle.Paragraph).setRequired(true))
             );
         } else if (type === 'alliance-join') {
             modal.addComponents(
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1.Where you found Blood Alliance').setStyle(TextInputStyle.Short).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2.What are you looking for from us?').setStyle(TextInputStyle.Paragraph).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3.Clan Type (FWA or War or FUTURE FWA)').setStyle(TextInputStyle.Short).setRequired(true)),
-                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.Your Clan Members already in server? or You Want to get them?').setStyle(TextInputStyle.Short).setRequired(true)),
+                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.Clan Members in server or bringing?').setStyle(TextInputStyle.Short).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5.Are You Okay with alliance rules?').setStyle(TextInputStyle.Short).setRequired(true))
             );
         } else if (type === 'help-assistance') {

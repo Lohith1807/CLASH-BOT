@@ -6,6 +6,7 @@ const dataPath = path.join(__dirname, "../../../data/cwlclans.json");
 
 // In-memory store: userId -> array of selected clan tags
 const pendingSelections = new Map();
+const pendingSearch = new Map();
 
 function loadData() {
     try {
@@ -28,7 +29,9 @@ function saveData(data) {
     }
 }
 
-function buildEditMessage(data) {
+function buildEditMessage(data, userId) {
+    const selectedTags = userId ? (pendingSelections.get(userId) || []) : [];
+    const searchQuery = userId ? (pendingSearch.get(userId) || "") : "";
     const entries = Object.entries(data);
 
     const embed = new EmbedBuilder()
@@ -40,10 +43,39 @@ function buildEditMessage(data) {
         return { embed, components: [] };
     }
 
+    let filteredEntries = entries;
+    if (searchQuery) {
+        const q = searchQuery.toLowerCase();
+        filteredEntries = entries.filter(([tag, v]) => tag.toLowerCase().includes(q) || v.name.toLowerCase().includes(q));
+    }
+
+    const selectedEntries = entries.filter(([tag]) => selectedTags.includes(tag));
+    const finalEntriesMap = new Map();
+    selectedEntries.forEach(([tag, v]) => finalEntriesMap.set(tag, v));
+    filteredEntries.forEach(([tag, v]) => finalEntriesMap.set(tag, v));
+    
+    let finalEntries = Array.from(finalEntriesMap.entries());
+    if (finalEntries.length > 25) {
+        finalEntries = finalEntries.slice(0, 25);
+    }
+
     const serious = entries.filter(([, v]) => v.style === 'serious');
     const lazy = entries.filter(([, v]) => v.style !== 'serious');
 
     let desc = "";
+    if (searchQuery) {
+        desc += `🔍 **Search Filter:** \`${searchQuery}\`\n\n`;
+    }
+
+    if (selectedTags.length > 0) {
+        desc += `**✅ Selected Clans (${selectedTags.length}):**\n`;
+        selectedTags.forEach(tag => {
+            const c = data[tag];
+            if (c) desc += `• **${c.name}** \`${tag}\`\n`;
+        });
+        desc += "\n";
+    }
+
     if (serious.length > 0) {
         desc += "**🏆 Serious CWL Clans**\n";
         serious.forEach(([tag, v]) => { desc += `• **${v.name}** \`${tag}\`\n`; });
@@ -52,23 +84,38 @@ function buildEditMessage(data) {
         desc += "\n**😴 Lazy CWL Clans**\n";
         lazy.forEach(([tag, v]) => { desc += `• **${v.name}** \`${tag}\`\n`; });
     }
-    desc += "\n*Select clans below, then click **Delete** or **Update**.*";
+    
+    if (finalEntries.length === 0) {
+        desc += "\n*No clans match your search.*";
+    } else {
+        desc += "\n*Select clans below, then click **Delete** or **Update**.*";
+    }
+    
+    if (desc.length > 4096) desc = desc.slice(0, 4093) + "...";
     embed.setDescription(desc);
 
-    const options = entries.slice(0, 25).map(([tag, v]) => ({
+    const options = finalEntries.map(([tag, v]) => ({
         label: v.name.slice(0, 100),
         description: `${tag} — ${v.style === 'serious' ? '🏆 Serious' : '😴 Lazy'}`,
-        value: tag
+        value: tag,
+        default: selectedTags.includes(tag)
     }));
 
-    const selectMenu = new StringSelectMenuBuilder()
-        .setCustomId("cwl_clan_edit_sel")
-        .setPlaceholder("Select one or more clans…")
-        .setMinValues(1)
-        .setMaxValues(options.length)
-        .addOptions(options);
+    const selectRow = new ActionRowBuilder();
+    if (options.length > 0) {
+        const selectMenu = new StringSelectMenuBuilder()
+            .setCustomId("cwl_clan_edit_sel")
+            .setPlaceholder("Select one or more clans…")
+            .setMinValues(0)
+            .setMaxValues(options.length)
+            .addOptions(options);
+        selectRow.addComponents(selectMenu);
+    }
 
-    const selectRow = new ActionRowBuilder().addComponents(selectMenu);
+    const btnSearch = new ButtonBuilder()
+        .setCustomId("cwl_clan_edit_search_btn")
+        .setLabel("🔍 Search Clan")
+        .setStyle(ButtonStyle.Secondary);
 
     const btnDelete = new ButtonBuilder()
         .setCustomId("cwl_clan_edit_delete")
@@ -80,16 +127,16 @@ function buildEditMessage(data) {
         .setLabel("✏️ Update Selected")
         .setStyle(ButtonStyle.Primary);
 
-    const btnRow = new ActionRowBuilder().addComponents(btnDelete, btnUpdate);
+    const btnRow = new ActionRowBuilder().addComponents(btnSearch, btnDelete, btnUpdate);
 
-    return { embed, components: [selectRow, btnRow] };
+    return { embed, components: options.length > 0 ? [selectRow, btnRow] : [btnRow] };
 }
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('cwl-clan')
         .setDescription('Manage CWL clans')
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .addStringOption(option =>
             option.setName('action')
                 .setDescription('Select an action')
@@ -132,7 +179,9 @@ module.exports = {
             } else if (action === 'edit') {
                 await interaction.deferReply({ ephemeral: true });
                 const data = loadData();
-                const { embed, components } = buildEditMessage(data);
+                pendingSelections.delete(interaction.user.id);
+                pendingSearch.delete(interaction.user.id);
+                const { embed, components } = buildEditMessage(data, interaction.user.id);
 
                 if (components.length === 0) {
                     return interaction.editReply({ embeds: [embed] });
@@ -153,14 +202,16 @@ module.exports = {
     // Called by handler.js when customId === "cwl_clan_edit_sel"
     async handleSelectMenu(interaction, context) {
         try {
-            const selected = interaction.values; // array of clan tags
+            const selected = interaction.values || []; 
             pendingSelections.set(interaction.user.id, selected);
 
             const data = loadData();
-            const names = selected.map(t => data[t] ? `**${data[t].name}**` : `\`${t}\``).join(", ");
+            const { embed, components } = buildEditMessage(data, interaction.user.id);
 
             await interaction.update({
-                content: `✅ Selected ${selected.length} clan(s): ${names}\n*Now click **🗑️ Delete Selected** or **✏️ Update Selected**.*`,
+                embeds: [embed],
+                components,
+                content: ""
             });
         } catch (error) {
             console.error("Error in cwl_clan_edit_sel select menu:", error);
@@ -173,6 +224,22 @@ module.exports = {
         try {
             const id = interaction.customId;
             const userId = interaction.user.id;
+            if (id === "cwl_clan_edit_search_btn") {
+                const modal = new ModalBuilder()
+                    .setCustomId('cwl_clan_modal_search')
+                    .setTitle('Search CWL Clans');
+
+                const searchInput = new TextInputBuilder()
+                    .setCustomId('search_query')
+                    .setLabel('Clan Name or Tag')
+                    .setStyle(TextInputStyle.Short)
+                    .setPlaceholder('Enter text to filter clans...')
+                    .setRequired(false);
+
+                modal.addComponents(new ActionRowBuilder().addComponents(searchInput));
+                return interaction.showModal(modal);
+            }
+
             const selected = pendingSelections.get(userId);
 
             if (!selected || selected.length === 0) {
@@ -200,6 +267,7 @@ module.exports = {
                 }
                 saveData(data);
                 pendingSelections.delete(userId);
+                pendingSearch.delete(userId);
 
                 const embed = new EmbedBuilder()
                     .setTitle("✅ Clans Deleted")
@@ -253,6 +321,16 @@ module.exports = {
         try {
             const id = interaction.customId;
 
+            // ── SEARCH MODAL ──────────────────────────────────────────────────
+            if (id === 'cwl_clan_modal_search') {
+                const query = interaction.fields.getTextInputValue('search_query').trim();
+                pendingSearch.set(interaction.user.id, query);
+                
+                const data = loadData();
+                const { embed, components } = buildEditMessage(data, interaction.user.id);
+                return interaction.update({ embeds: [embed], components, content: "" });
+            }
+
             // ── UPDATE MODAL ──────────────────────────────────────────────────
             if (id.startsWith('cwl_clan_modal_update:')) {
                 const clanTag = id.split(':')[1];
@@ -279,6 +357,7 @@ module.exports = {
                 data[clanTag].style = typeInput;
                 saveData(data);
                 pendingSelections.delete(interaction.user.id);
+                pendingSearch.delete(interaction.user.id);
 
                 return interaction.editReply({
                     embeds: [new EmbedBuilder()

@@ -1,6 +1,6 @@
 const fs   = require("fs");
 const path = require("path");
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
 const { getEmoji, getLeagueEmoji } = require("./emoji.js");
 
 // ─────────────────────────────────────────────
@@ -255,7 +255,7 @@ async function processUser({
                         try {
                             const pData = await coc.getPlayer(pTag);
                             if (pData) {
-                                leagueTier = pData.league ? pData.league.name : "Unranked";
+                                leagueTier = pData.leagueTier ? pData.leagueTier.name : "Unranked";
                                 joinedClan = pData.clan ? `${pData.clan.name} (${pData.clan.tag})` : "None";
                                 leagueEmoji = getLeagueEmoji(leagueTier);
                             }
@@ -272,14 +272,20 @@ async function processUser({
                             `**League Tier:** ${leagueEmoji} ${leagueTier}\n` +
                             `**Left Clan:** ${clanEmojiStr} **${info.nickName || clanTag}**\n` +
                             `**Joined Clan:** ${joinedClan}\n` +
-                            `**Discord:** <@${member.id}>\n` +
+                            `**Discord:** ${member.user.username}\n` +
                             `**Status:** Left 2 days ago\n` +
                             `**Action:** Do you want to send him to re-apply or just ignore him?\n` +
                             `*(Use \`;re @user\` to process the leave)*`
                         )
                         .setTimestamp();
+
+                    const contactBtn = new ButtonBuilder()
+                        .setLabel("Contact person")
+                        .setStyle(ButtonStyle.Link)
+                        .setURL(`https://discord.com/users/${member.id}`);
+                    const row = new ActionRowBuilder().addComponents(contactBtn);
                         
-                    await leadChannel.send({ embeds: [embed] }).catch(() => null);
+                    await leadChannel.send({ embeds: [embed], components: [row] }).catch(() => null);
                 }
             }
         }

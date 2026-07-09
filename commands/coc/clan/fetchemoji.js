@@ -29,35 +29,48 @@ module.exports = {
       const clanRoles = dataManager.getClanRoles();
       const newEmojis = {};
       let logs = [];
+      const entries = Object.entries(clanRoles).filter(([_, info]) => info.nickName);
+      const totalClans = entries.length;
+      let processed = 0;
 
-      for (const [tag, info] of Object.entries(clanRoles)) {
-        if (!info.nickName) continue;
-        
+      if (totalClans === 0) {
+          return interaction.editReply({ content: `⚠️ No clans with a \`nickName\` found in \`clanrole.json\`. Nothing to fetch.` });
+      }
+
+      await interaction.editReply({ content: `⏳ Starting emoji fetch for **${totalClans}** clans...` });
+
+      for (const [tag, info] of entries) {
+        processed++;
         const emojiName = info.nickName.toLowerCase();
-        
+
+        // Show progress BEFORE each API call so the user sees activity
+        await interaction.editReply({ content: `⏳ Fetching clan **${processed}/${totalClans}**: \`${tag}\` (${emojiName})...` }).catch(() => {});
+
         try {
             const clan = await coc.getClan(tag);
             if (!clan.badgeUrls || !clan.badgeUrls.large) {
                 logs.push(`❌ No badge found for \`${clan.name}\``);
-                continue;
+            } else {
+                const existingEmoji = guild.emojis.cache.find(e => e.name === emojiName);
+                if (existingEmoji) {
+                    await existingEmoji.delete().catch(() => {});
+                }
+
+                const createdEmoji = await guild.emojis.create({
+                    attachment: clan.badgeUrls.large,
+                    name: emojiName
+                });
+
+                newEmojis[emojiName] = createdEmoji.id;
+                logs.push(`✅ Created ${createdEmoji.toString()} for \`${clan.name}\``);
             }
-
-            const existingEmoji = guild.emojis.cache.find(e => e.name === emojiName);
-            if (existingEmoji) {
-                await existingEmoji.delete().catch(() => {});
-            }
-
-            const createdEmoji = await guild.emojis.create({
-                attachment: clan.badgeUrls.large,
-                name: emojiName
-            });
-
-            newEmojis[emojiName] = createdEmoji.id;
-            
-            logs.push(`✅ Created ${createdEmoji.toString()} for \`${clan.name}\``);
-            
         } catch (err) {
-            logs.push(`❌ Failed to process clan \`${tag}\`: ${err.message}`);
+            logs.push(`❌ Failed to process clan \`${tag}\` (${emojiName}): ${err.message}`);
+        }
+
+        // Small delay between clans to avoid CoC API rate limits
+        if (processed < totalClans) {
+            await new Promise(resolve => setTimeout(resolve, 300));
         }
       }
 
@@ -70,9 +83,9 @@ module.exports = {
           let content = fs.readFileSync(emojiFilePath, 'utf8');
           
           let emojiStr = "const emojis = {\n";
-          const entries = Object.entries(emojiUtils.emojis);
-          entries.forEach(([key, val], idx) => {
-              emojiStr += `  ${key}: "${val}"${idx < entries.length - 1 ? ',' : ''}\n`;
+          const emEntries = Object.entries(emojiUtils.emojis);
+          emEntries.forEach(([key, val], idx) => {
+              emojiStr += `  ${key}: "${val}"${idx < emEntries.length - 1 ? ',' : ''}\n`;
           });
           emojiStr += "};";
           
@@ -81,7 +94,7 @@ module.exports = {
           
           logs.push(`\n✅ Successfully updated \`utils/emoji.js\` with ${Object.keys(newEmojis).length} new/updated emojis.`);
       } else {
-          logs.push(`\n⚠ No new emojis were created.`);
+          logs.push(`\n⚠️ No new emojis were created.`);
       }
 
       const finalMsg = logs.join('\n');

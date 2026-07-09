@@ -93,7 +93,16 @@ const emojis = {
   LegendLeague: "1523005569743585481",
   PEKKALeague: "1523005573652680914",
   SkeletonLeague: "1523005577251520592",
-  ValkyrieLeague: "1523005580849971371"
+  ValkyrieLeague: "1523005580849971371",
+  bronze: "1524360232346587287",
+  champion: "1524360236054483044",
+  crystal: "1524360238961004654",
+  gold: "1524360241217671370",
+  legend: "1524360244288032768",
+  master: "1524360247077113907",
+  silver: "1524360249677451394",
+  titan: "1524360252324188230",
+  unranked: "1524360254702223472"
 };
 // Function to get animated emoji (with <a:>), else static emoji (<:>)
 const animatedEmojis = new Set([
@@ -157,7 +166,7 @@ const getEmojiObject = (name) => {
 };
 
 const getLeagueEmoji = (leagueName, fallback = "throphy") => {
-    if (!leagueName || leagueName === "Unranked") return getEmoji(fallback) || "🏆";
+    if (!leagueName || leagueName === "Unranked") return getEmoji("unranked") || getEmoji(fallback) || "🏆";
     const upperLeagueName = leagueName.replace(/[^a-zA-Z]/g, '').toUpperCase();
     const knownLeagues = ["ELECTRO", "SKELETON", "BARBARIAN", "VALKYRIE", "WIZARD", "ARCHER", "DRAGON", "LEGEND", "TITAN", "GOLEM", "WITCH", "PEKKA"];
     
@@ -181,9 +190,17 @@ const getLeagueEmoji = (leagueName, fallback = "throphy") => {
     return getEmoji(leagueEmojiKey) || getEmoji(fallback) || "🏆";
 };
 
+const getCwlLeagueEmoji = (leagueName, fallback = "cwl") => {
+    if (!leagueName) return getEmoji("unranked") || getEmoji(fallback) || "🏆";
+    if (leagueName === "Unranked") return getEmoji("unranked") || getEmoji(fallback) || "🏆";
+    let base = leagueName.split(" ")[0].replace(/\./g, '').toLowerCase();
+    return getEmoji(base) || getEmoji(fallback) || "🏆";
+};
+
 module.exports = {
   emojis,
   getEmoji,
   getEmojiObject,
-  getLeagueEmoji
+  getLeagueEmoji,
+  getCwlLeagueEmoji
 };
