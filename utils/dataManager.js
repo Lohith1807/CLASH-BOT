@@ -19,7 +19,8 @@ const PATHS = {
     wartype: path.join(DATA_DIR, "wartype.json"),
     recruitingths: path.join(DATA_DIR, "recruitingths.json"),
     scanwar: path.join(DATA_DIR, "scanwar.json"),
-    strikecounters: path.join(DATA_DIR, "strikecounters.json")
+    strikecounters: path.join(DATA_DIR, "strikecounters.json"),
+    recruitments: path.join(DATA_DIR, "recruitments.json")
 };
 
 
@@ -312,6 +313,34 @@ function saveStrikeCounters(data) {
     }
 }
 
+/**
+ * Get recruitments data
+ * @returns {Object} Recruitments data object
+ */
+function getRecruitments() {
+    try {
+        if (!fs.existsSync(PATHS.recruitments)) return {};
+        const raw = fs.readFileSync(PATHS.recruitments, "utf8");
+        return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+        console.error("Error reading recruitments.json:", err.message);
+        return {};
+    }
+}
+
+/**
+ * Save recruitments data
+ * @param {Object} data - Recruitments data to save
+ */
+function saveRecruitments(data) {
+    try {
+        fs.writeFileSync(PATHS.recruitments, JSON.stringify(data, null, 2));
+    } catch (err) {
+        console.error("Error writing recruitments.json:", err.message);
+        throw err;
+    }
+}
+
 module.exports = {
     getUserData,
     getClanRoles,
@@ -323,6 +352,7 @@ module.exports = {
     getRecruitingTHs,
     getScanWar,
     getStrikeCounters,
+    getRecruitments,
 
     saveUserData,
     saveClanRoles,
@@ -334,6 +364,7 @@ module.exports = {
     saveRecruitingTHs,
     saveScanWar,
     saveStrikeCounters,
+    saveRecruitments,
 
     PATHS
 };

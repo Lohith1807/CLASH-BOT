@@ -33,7 +33,7 @@ module.exports = {
         const clanRoles = dataManager.getClanRoles();
         const monitoredClans = {};
         for (const [tag, info] of Object.entries(clanRoles)) {
-            if (info.roleId && info.autoRole) {
+            if (info.roleId) { // Check all clans, not just those with autoRole enabled
                 monitoredClans[tag.toUpperCase()] = info;
             }
         }

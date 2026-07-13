@@ -8,8 +8,8 @@
     "feedChannelId": "1154291712357826651",
     "nickName": "BB",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "autoRole": true,
+    "welcomeMessage": false,
     "leaders": [
       "<@562951110562938880>"
     ],
@@ -30,8 +30,8 @@
     "feedChannelId": "1381624022055387278",
     "nickName": "BL",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "autoRole": true,
+    "welcomeMessage": false,
     "leaders": [
       "<@562951110562938880>"
     ],
@@ -51,14 +51,15 @@
     "leadChannelId": "1519223246862422037",
     "feedChannelId": "1519223251530940506",
     "clanType": "fwa",
-    "autoPostRecruitment": false,
     "nickName": "BZ",
+    "welcomeMessage": false,
     "leaders": [
       "<@1393061101838532630>"
     ],
     "coLeaders": [
-      "<@599555022807891978>",
-      "<@1427304113225338990>"
+      "<@1427304113225338990>",
+      "<@910063105403400243>",
+      "<@1179429119524610058>"
     ],
     "joinLeaveTracker": true,
     "autoRole": true
@@ -72,8 +73,8 @@
     "feedChannelId": "1395372262944800890",
     "nickName": "TL",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "autoRole": true,
+    "welcomeMessage": false,
     "leaders": [
       "<@667011170229682201>"
     ],
@@ -93,8 +94,8 @@
     "feedChannelId": "1408288953370542130",
     "nickName": "SU",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "autoRole": true,
+    "welcomeMessage": false,
     "leaders": [
       "<@389262993147428867>"
     ],
@@ -112,8 +113,8 @@
     "feedChannelId": "1408407082901700618",
     "nickName": "IK",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "autoRole": true,
+    "welcomeMessage": false,
     "leaders": [
       "<@667011170229682201>"
     ],
@@ -132,8 +133,8 @@
     "feedChannelId": "1420295078097715273",
     "nickName": "DW",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "autoRole": true,
+    "welcomeMessage": false,
     "leaders": [
       "<@599555022807891978>"
     ],
@@ -152,8 +153,8 @@
     "feedChannelId": "1429783312360013896",
     "nickName": "CC",
     "clanType": "fwa",
-    "autoPostRecruitment": false,
     "autoRole": true,
+    "welcomeMessage": false,
     "leaders": [
       "<@895919742563545118>"
     ],
@@ -173,8 +174,8 @@
     "feedChannelId": "1500909780418691242",
     "nickName": "ASR",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "autoRole": true,
+    "welcomeMessage": false,
     "leaders": [
       "<@965295354805383228>"
     ],
@@ -192,8 +193,8 @@
     "leadChannelId": "1504511878204887040",
     "feedChannelId": "1504511882667622471",
     "clanType": "fwa",
-    "autoPostRecruitment": false,
     "nickName": "KC",
+    "welcomeMessage": false,
     "leaders": [
       "<@562951110562938880>"
     ],
@@ -212,8 +213,8 @@
     "leadChannelId": "1510263566438236181",
     "feedChannelId": "1510263571022479491",
     "clanType": "war",
-    "autoPostRecruitment": true,
     "nickName": "BWC",
+    "welcomeMessage": false,
     "leaders": [
       "<@900404315619999805>"
     ],
@@ -230,8 +231,8 @@
     "leadChannelId": "1513223729424105623",
     "feedChannelId": "1513223734050164837",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "nickName": "QG",
+    "welcomeMessage": false,
     "leaders": [
       "<@1110227979189100604>"
     ],
@@ -248,16 +249,18 @@
     "leadChannelId": "1518669398167257198",
     "feedChannelId": "1518669411907801148",
     "clanType": "fwa",
-    "autoPostRecruitment": true,
     "nickName": "cfw",
+    "welcomeMessage": false,
     "leaders": [
       "<@562951110562938880>"
     ],
     "coLeaders": [
       "<@1315947502226247692>",
-      "<@1256130360329371664>"
+      "<@1256130360329371664>",
+      "<@1393061101838532630>"
     ],
-    "joinLeaveTracker": false
+    "joinLeaveTracker": true,
+    "autoRole": true
   },
   "#2JP829R9C": {
     "roleId": "1519780801665957959",
@@ -267,13 +270,50 @@
     "leadChannelId": "1519780812537729275",
     "feedChannelId": "1519780818829054085",
     "clanType": "fwa",
-    "autoPostRecruitment": false,
     "nickName": "BKL",
+    "welcomeMessage": false,
     "leaders": [
       "<@599555022807891978>"
     ],
     "coLeaders": [
       "<@1393061101838532630>"
+    ],
+    "joinLeaveTracker": true,
+    "autoRole": true
+  },
+  "#ULY0Q9G": {
+    "roleId": "1524774373473517811",
+    "leaderRoleId": "1524774372542517308",
+    "channelId": "1524774386052104212",
+    "mailChannelId": "1524774384500346880",
+    "leadChannelId": "1524774383300775946",
+    "feedChannelId": "1524774387503468686",
+    "clanType": "fwa",
+    "nickName": "HD",
+    "welcomeMessage": false,
+    "leaders": [
+      "<@667011170229682201>"
+    ],
+    "coLeaders": [
+      "<@667011170229682201>"
+    ],
+    "joinLeaveTracker": false
+  },
+  "#2GPCPRL29": {
+    "roleId": "1525172164255551488",
+    "leaderRoleId": "1525172163143929937",
+    "channelId": "1525172176754311199",
+    "mailChannelId": "1525172175206744145",
+    "leadChannelId": "1525172173893931080",
+    "feedChannelId": "1525172179107319850",
+    "clanType": "war",
+    "nickName": "EON",
+    "welcomeMessage": false,
+    "leaders": [
+      "<@1496768315727806535>"
+    ],
+    "coLeaders": [
+      "<@1496768315727806535>"
     ],
     "joinLeaveTracker": false
   }

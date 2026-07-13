@@ -62,8 +62,9 @@ module.exports = {
 
     const userMention = ticketOwner ? `<@${ticketOwner.id}>` : 'there';
     
-    // 2. Detect the ticket type automatically
-    const type = channel.name.split('-')[0].toLowerCase();
+    // 2. Detect the ticket type automatically (ignoring approved/rejected prefixes)
+    const baseChannelName = channel.name.replace(/^(approved|rejected)-/, '');
+    const type = baseChannelName.split('-')[0].toLowerCase();
 
     const starsEmoji = emojiUtils.getEmojiObject('stars');
     const starsIconURL = starsEmoji && starsEmoji.id ? `https://cdn.discordapp.com/emojis/${starsEmoji.id}.${starsEmoji.animated ? 'gif' : 'png'}` : null;
@@ -97,6 +98,17 @@ module.exports = {
         { name: 'Approved By', value: `${moderator} (${moderator.tag})`, inline: true },
         { name: 'Approved At', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true }
     );
+
+    const currentName = channel.name;
+    const baseName = currentName.replace(/^(approved|rejected)-/, '');
+    const newChannelName = `approved-${baseName}`;
+
+    try {
+        await channel.setName(newChannelName);
+        embed.addFields({ name: 'Ticket Name', value: `Changed to \`${newChannelName}\``, inline: false });
+    } catch (err) {
+        console.error('Failed to change channel name:', err);
+    }
 
     // Emojis spelling "blood alliance" — placed inside embed so they render at smaller inline size
     const welEmoji = getEmoji('wel');

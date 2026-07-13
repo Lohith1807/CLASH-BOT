@@ -55,16 +55,9 @@ async function buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject) {
     const validClans = clanResults.filter(Boolean);
     if (validClans.length === 0) return null;
 
-    // Group clans by warLeague name
-    const leagueGroups = {};
-    for (const entry of validClans) {
-        const leagueName = entry.clan.warLeague ? entry.clan.warLeague.name : "Unranked";
-        if (!leagueGroups[leagueName]) leagueGroups[leagueName] = [];
-        leagueGroups[leagueName].push(entry);
-    }
-
-    // Sort leagues by rank, then clans within each league alphabetically
-    const sortedLeagues = Object.keys(leagueGroups).sort((a, b) => getLeagueRank(a) - getLeagueRank(b));
+    // Split clans by family friendly status
+    const familyFriendlyClans = validClans.filter(entry => entry.clan.isFamilyFriendly);
+    const nonFamilyFriendlyClans = validClans.filter(entry => !entry.clan.isFamilyFriendly);
 
     let embeds = [];
     let currentText = "";
@@ -72,41 +65,66 @@ async function buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject) {
     let totalPlayers = 0;
     let totalClans = 0;
 
-    for (const leagueName of sortedLeagues) {
-        const clans = leagueGroups[leagueName];
-        clans.sort((a, b) => a.clan.name.localeCompare(b.clan.name));
+    const processClanList = (clans, categoryTitle) => {
+        if (clans.length === 0) return;
 
-        const leagueEmoji = getCwlLeagueEmoji(leagueName);
-        let leagueText = `\n${leagueEmoji} **${leagueName}**\n`;
-
+        // Add a header for the category if the current text is not empty or if it's the beginning
+        let categoryHeader = `\n\n**━━━ ${categoryTitle} ━━━**\n`;
+        
+        // Group clans by warLeague name
+        const leagueGroups = {};
         for (const entry of clans) {
-            const { clan, info } = entry;
-            const clanNick = info.nickName ? info.nickName.toLowerCase() : "";
-            const badgeEmojiObj = clanNick && getEmojiObject(clanNick) ? getEmojiObject(clanNick) : getEmojiObject("cwl");
+            const leagueName = entry.clan.warLeague ? entry.clan.warLeague.name : "Unranked";
+            if (!leagueGroups[leagueName]) leagueGroups[leagueName] = [];
+            leagueGroups[leagueName].push(entry);
+        }
 
-            const clanLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${clan.tag.replace("#", "")}`;
-            const clanLine = `[**${clan.name}** (${clan.members}/50)](${clanLink})\n`;
+        const sortedLeagues = Object.keys(leagueGroups).sort((a, b) => getLeagueRank(a) - getLeagueRank(b));
 
-            if (currentText.length + leagueText.length + clanLine.length > 4000) {
-                embeds.push(new EmbedBuilder()
-                    .setTitle(embeds.length === 0 ? `${getEmoji("cwl")} CWL Clans` : `${getEmoji("cwl")} CWL Clans (Cont.)`)
-                    .setDescription(currentText)
-                    .setColor(0x2ECC71));
-                currentText = `\n**${leagueName} (Cont.)**\n`;
-                leagueText = "";
+        for (const leagueName of sortedLeagues) {
+            const leagueClans = leagueGroups[leagueName];
+            leagueClans.sort((a, b) => a.clan.name.localeCompare(b.clan.name));
+
+            const leagueEmoji = getCwlLeagueEmoji(leagueName);
+            let leagueText = `\n${leagueEmoji} **${leagueName}**\n`;
+
+            if (categoryHeader) {
+                leagueText = categoryHeader + leagueText;
+                categoryHeader = ""; // Only prepend the header to the first league
             }
 
-            currentText += leagueText + clanLine;
-            leagueText = "";
-            totalPlayers += clan.members;
-            totalClans++;
-        }
-    }
+            for (const entry of leagueClans) {
+                const { clan, info } = entry;
+                const clanNick = info.nickName ? info.nickName.toLowerCase() : "";
+                const badgeEmojiObj = clanNick && getEmojiObject(clanNick) ? getEmojiObject(clanNick) : getEmojiObject("cwl");
 
-    currentText += `\n**${totalPlayers} Players | ${totalClans} Clans**`;
+                const clanLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${clan.tag.replace("#", "")}`;
+                const clanLine = `[**${clan.name}** (${clan.members}/50)](${clanLink})\n`;
+
+                if (currentText.length + leagueText.length + clanLine.length > 4000) {
+                    embeds.push(new EmbedBuilder()
+                        .setTitle(embeds.length === 0 ? `${getEmoji("cwl")} CWL Clans` : `${getEmoji("cwl")} CWL Clans (Cont.)`)
+                        .setDescription(currentText.trim())
+                        .setColor(0x2ECC71));
+                    currentText = `\n**${leagueName} (Cont.)**\n`;
+                    leagueText = "";
+                }
+
+                currentText += leagueText + clanLine;
+                leagueText = "";
+                totalPlayers += clan.members;
+                totalClans++;
+            }
+        }
+    };
+
+    processClanList(familyFriendlyClans, "Family Friendly Clans");
+    processClanList(nonFamilyFriendlyClans, "Non-Family Friendly Clans");
+
+    currentText += `\n\n**${totalPlayers} Players | ${totalClans} Clans**`;
     embeds.push(new EmbedBuilder()
         .setTitle(embeds.length === 0 ? `${getEmoji("cwl")} CWL Clans` : `${getEmoji("cwl")} CWL Clans (Cont.)`)
-        .setDescription(currentText)
+        .setDescription(currentText.trim())
         .setColor(0x2ECC71)
         .setTimestamp());
 

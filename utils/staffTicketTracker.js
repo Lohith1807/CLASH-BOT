@@ -71,6 +71,18 @@ function recordClaim(user) {
     saveData(data);
 }
 
+function removeClaim(userId) {
+    const data = loadData();
+    checkAndReset(data);
+    
+    if (data.staff[userId] && data.staff[userId].claims > 0) {
+        data.staff[userId].claims -= 1;
+        saveData(data);
+        return true;
+    }
+    return false;
+}
+
 function getSummary() {
     const data = loadData();
     checkAndReset(data);
@@ -79,6 +91,7 @@ function getSummary() {
 
 module.exports = {
     recordClaim,
+    removeClaim,
     getSummary,
     getMostRecentResetTime // exported for testing if needed
 };

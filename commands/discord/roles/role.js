@@ -25,11 +25,16 @@ module.exports = {
                     { name: "War", value: "war" }
                 )
         )
-        .addBooleanOption(option =>
-            option.setName("autopost")
-                .setDescription("Enable automatic recruitment posting?")
+        .addStringOption(option =>
+            option.setName("welcomemessage")
+                .setDescription("Send welcome message when member joins?")
                 .setRequired(true)
+                .addChoices(
+                    { name: "Yes", value: "yes" },
+                    { name: "No", value: "no" }
+                )
         )
+
         .addUserOption(option =>
             option.setName("leader")
                 .setDescription("Leader of this clan")
@@ -78,12 +83,13 @@ module.exports = {
 
             var nickName = interaction.options.getString("nickname");
             var clanType = interaction.options.getString("clantype");
+            var welcomeMsgOpt = interaction.options.getString("welcomemessage");
             var leader = interaction.options.getUser("leader");
             var co1 = interaction.options.getUser("coleader1");
             var co2 = interaction.options.getUser("coleader2") || null;
             var co3 = interaction.options.getUser("coleader3") || null;
             var co4 = interaction.options.getUser("coleader4") || null;
-            var autoPost = interaction.options.getBoolean("autopost");
+
 
             var clanroles = dataManager.getClanRoles();
             var existing = clanroles[clanTag] || {};
@@ -320,7 +326,7 @@ module.exports = {
                 leadChannelId: finalLeadChannelId,
                 feedChannelId: finalFeedChannelId,
                 clanType: finalType,
-                autoPostRecruitment: autoPost
+                welcomeMessage: (welcomeMsgOpt === "yes")
             };
 
             if (nickName) clanroles[clanTag].nickName = nickName;
@@ -338,7 +344,7 @@ module.exports = {
                 "• **Leadership Chat:** <#" + finalLeadChannelId + ">\n" +
                 "• **Clan Feed:** <#" + finalFeedChannelId + ">\n" +
                 "• **Clan Type:** " + finalType + "\n" +
-                "• **Auto-Post Recruitment:** " + (autoPost ? "✅ Enabled" : "❌ Disabled") + "\n";
+                "• **Welcome Messages:** " + (welcomeMsgOpt === "yes" ? "Enabled ✅" : "Disabled ❌") + "\n";
 
             if (nickName) desc += "• **Nickname:** " + nickName + "\n";
             if (leaders.length > 0) desc += "• **Leader:** " + leaders.join(", ") + "\n";

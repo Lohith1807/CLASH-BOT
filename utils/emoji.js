@@ -102,7 +102,8 @@ const emojis = {
   master: "1524360247077113907",
   silver: "1524360249677451394",
   titan: "1524360252324188230",
-  unranked: "1524360254702223472"
+  unranked: "1524360254702223472",
+  lightbluedot: "1526220742826393741"
 };
 // Function to get animated emoji (with <a:>), else static emoji (<:>)
 const animatedEmojis = new Set([
@@ -145,7 +146,8 @@ const animatedEmojis = new Set([
   "bird",
   "darrow",
   "reddot",
-  "greendot"
+  "greendot",
+  "lightbluedot"
 ]);
 
 const getEmoji = (name) => {

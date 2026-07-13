@@ -67,8 +67,9 @@ module.exports = {
 
     const userMention = ticketOwner ? `<@${ticketOwner.id}>` : 'there';
     
-    // 2. Detect the ticket type automatically
-    const type = channel.name.split('-')[0].toLowerCase();
+    // 2. Detect the ticket type automatically (ignoring approved/rejected prefixes)
+    const baseChannelName = channel.name.replace(/^(approved|rejected)-/, '');
+    const type = baseChannelName.split('-')[0].toLowerCase();
     
     // 6. Get optional reason argument
     const reason = interaction.options.getString('reason');
@@ -105,6 +106,17 @@ module.exports = {
         { name: 'Rejected By', value: `${moderator} (${moderator.tag})`, inline: true },
         { name: 'Rejected At', value: `<t:${Math.floor(Date.now() / 1000)}:F>`, inline: true }
     );
+
+    const currentName = channel.name;
+    const baseName = currentName.replace(/^(approved|rejected)-/, '');
+    const newChannelName = `rejected-${baseName}`;
+
+    try {
+        await channel.setName(newChannelName);
+        embed.addFields({ name: 'Ticket Name', value: `Changed to \`${newChannelName}\``, inline: false });
+    } catch (err) {
+        console.error('Failed to change channel name:', err);
+    }
 
     const embeds = [embed];
     if (reason) {

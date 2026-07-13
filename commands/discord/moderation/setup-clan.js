@@ -16,14 +16,14 @@ const { getEmoji } = require("../../../utils/emoji.js");
 // These must be at module scope so nested collectors can access them
 const SETTING_LABELS = {
     autorole: "Auto Role Removal",
-    autopost: "Auto Post Recruitment",
     tracker:  "Join / Leave Tracker",
+    welcome:  "Welcome Messages",
 };
 
 const SETTING_FIELDS = {
     autorole: "autoRole",
-    autopost: "autoPostRecruitment",
     tracker:  "joinLeaveTracker",
+    welcome:  "welcomeMessage",
 };
 
 function statusTag(val) {
@@ -50,14 +50,15 @@ function buildPanelEmbed(clanTag, info, clanBadge) {
                 value:  statusTag(info.autoRole),
                 inline: true,
             },
-            {
-                name:   `${book} Auto Post Recruitment`,
-                value:  statusTag(info.autoPostRecruitment),
-                inline: true,
-            },
+
             {
                 name:   `${parrow} Join / Leave Tracker`,
                 value:  statusTag(info.joinLeaveTracker),
+                inline: true,
+            },
+            {
+                name:   `👋 Welcome Messages`,
+                value:  statusTag(info.welcomeMessage),
                 inline: true,
             }
         )
@@ -72,13 +73,15 @@ function buildButtonRow(clanTag) {
             .setCustomId(`setup_clan:autorole:${clanTag}`)
             .setLabel("Auto Role Removal")
             .setStyle(ButtonStyle.Secondary),
-        new ButtonBuilder()
-            .setCustomId(`setup_clan:autopost:${clanTag}`)
-            .setLabel("Auto Post Recruitment")
-            .setStyle(ButtonStyle.Secondary),
+
         new ButtonBuilder()
             .setCustomId(`setup_clan:tracker:${clanTag}`)
             .setLabel("Join / Leave Tracker")
+            .setStyle(ButtonStyle.Secondary),
+
+        new ButtonBuilder()
+            .setCustomId(`setup_clan:welcome:${clanTag}`)
+            .setLabel("Welcome Messages")
             .setStyle(ButtonStyle.Secondary),
     );
 }

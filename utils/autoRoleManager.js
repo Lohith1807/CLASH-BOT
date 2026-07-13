@@ -9,22 +9,7 @@ const { getEmoji, getLeagueEmoji } = require("./emoji.js");
 const LEAVER_TIMESTAMPS_PATH = path.join(__dirname, "../data/leaver_timestamps.json");
 const TWO_DAYS_MS            = 2 * 24 * 60 * 60 * 1000;
 
-// Nickname (lowercase) → emoji key mapping
-const CLAN_EMOJI_MAP = {
-    bb:  "bb",
-    bz:  "bz",
-    bkl: "bkl",
-    tl:  "tl",
-    su:  "su",
-    ik:  "ik",
-    dw:  "dw",
-    cc:  "cc",
-    bl:  "bl",
-    asr: "asr",
-    kc:  "kc",
-    bwc: "bwc",
-    qg:  "qg",
-};
+// Nickname (lowercase) is used to directly lookup emojis in emoji.js
 
 // ─────────────────────────────────────────────
 //  Leaver timestamp helpers
@@ -58,8 +43,8 @@ function buildMonitoredClans(clanRoles) {
 /** Returns the clan emoji string for a given nickName, or a fallback shield */
 function clanEmoji(nickName) {
     if (!nickName) return getEmoji("sheild");
-    const key = CLAN_EMOJI_MAP[nickName.toLowerCase()];
-    return key ? getEmoji(key) : getEmoji("sheild");
+    const emojiStr = getEmoji(nickName.toLowerCase());
+    return emojiStr || getEmoji("sheild");
 }
 
 /** Format ms remaining as "Xd Yh" */

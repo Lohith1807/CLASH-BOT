@@ -237,10 +237,8 @@ async function sendWarNotification(client, coc, emojiUtils, clanTag, roleData, a
 
                 if (fwaData.isActiveFWA && isOpponentFWA) {
                     matchType = "FWA Match";
-                } else if (fwaData.isActiveFWA && !isOpponentFWA) {
-                    matchType = "Mismatch";
                 } else {
-                    matchType = "Blacklisted Match";
+                    throw new Error("Opponent is not FWA or not an FWA match, falling back to manual prompt");
                 }
 
                 const ourPoints = parseInt(fwaData.pointsSummary, 10) || 0;
@@ -444,6 +442,7 @@ module.exports = {
             };
 
             for (const [tag, roleData] of Object.entries(clanRoles)) {
+                if (roleData.clanType && roleData.clanType.toLowerCase() !== "fwa") continue;
                 const success = await sendWarNotification(client, coc, emojiUtils, tag, roleData, apiLogger, false);
                 if (success) {
                     successCount++;
@@ -487,6 +486,7 @@ module.exports = {
                 let warState = fs.existsSync(STATE_PATH) ? JSON.parse(fs.readFileSync(STATE_PATH, "utf-8")) : {};
 
                 for (const [tag, roleData] of Object.entries(clanRoles)) {
+                    if (roleData.clanType && roleData.clanType.toLowerCase() !== "fwa") continue;
                     try {
                         const currentWar = await coc.getCurrentWar(tag);
                         if (!currentWar || currentWar.state === "notInWar") {
