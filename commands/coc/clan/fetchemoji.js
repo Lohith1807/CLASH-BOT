@@ -10,22 +10,26 @@ module.exports = {
     .setDescription('Fetch clan badges from clanrole.json and add them as emojis in the server'),
 
   async execute(interaction, context) {
+    try {
+        if (!interaction.deferred && !interaction.replied) await interaction.deferReply();
+    } catch (e) {
+        return; // Interaction already expired due to network lag
+    }
+
     const { coc, data: dataManager, emoji: emojiUtils, config } = context;
     
     const targetGuildId = config.EMOJI_SERVER_ID || process.env.EMOJI_SERVER_ID;
     if (!targetGuildId) {
-        return interaction.reply({ content: "❌ `EMOJI_SERVER_ID` is not set in your `.env` file.", ephemeral: true });
+        return interaction.editReply({ content: "❌ `EMOJI_SERVER_ID` is not set in your `.env` file.", ephemeral: true });
     }
 
     const guild = interaction.client.guilds.cache.get(targetGuildId);
 
     if (!guild) {
-        return interaction.reply({ content: `❌ Could not find the emoji server with ID \`${targetGuildId}\`. Make sure the bot is in that server!`, ephemeral: true });
+        return interaction.editReply({ content: `❌ Could not find the emoji server with ID \`${targetGuildId}\`. Make sure the bot is in that server!`, ephemeral: true });
     }
 
     try {
-      if (!interaction.deferred && !interaction.replied) await interaction.deferReply();
-
       const clanRoles = dataManager.getClanRoles();
       const newEmojis = {};
       let logs = [];
