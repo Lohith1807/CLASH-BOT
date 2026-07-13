@@ -20,13 +20,15 @@ module.exports = {
     
     const targetGuildId = config.EMOJI_SERVER_ID || process.env.EMOJI_SERVER_ID;
     if (!targetGuildId) {
-        return interaction.editReply({ content: "❌ `EMOJI_SERVER_ID` is not set in your `.env` file.", ephemeral: true });
+        await interaction.editReply({ content: "❌ `EMOJI_SERVER_ID` is not set in your `.env` file." }).catch(() => {});
+        return;
     }
 
     const guild = interaction.client.guilds.cache.get(targetGuildId);
 
     if (!guild) {
-        return interaction.editReply({ content: `❌ Could not find the emoji server with ID \`${targetGuildId}\`. Make sure the bot is in that server!`, ephemeral: true });
+        await interaction.editReply({ content: `❌ Could not find the emoji server with ID \`${targetGuildId}\`. Make sure the bot is in that server!` }).catch(() => {});
+        return;
     }
 
     try {
@@ -38,10 +40,11 @@ module.exports = {
       let processed = 0;
 
       if (totalClans === 0) {
-          return interaction.editReply({ content: `⚠️ No clans with a \`nickName\` found in \`clanrole.json\`. Nothing to fetch.` });
+          await interaction.editReply({ content: `⚠️ No clans with a \`nickName\` found in \`clanrole.json\`. Nothing to fetch.` }).catch(() => {});
+          return;
       }
 
-      await interaction.editReply({ content: `⏳ Starting emoji fetch for **${totalClans}** clans...` });
+      await interaction.editReply({ content: `⏳ Starting emoji fetch for **${totalClans}** clans...` }).catch(() => {});
 
       for (const [tag, info] of entries) {
         processed++;
@@ -105,15 +108,15 @@ module.exports = {
       const chunks = finalMsg.match(/[\s\S]{1,1999}/g) || [];
       
       for (let i = 0; i < chunks.length; i++) {
-          if (i === 0) await interaction.editReply({ content: chunks[i] });
-          else await interaction.followUp({ content: chunks[i] });
+          if (i === 0) await interaction.editReply({ content: chunks[i] }).catch(() => {});
+          else await interaction.followUp({ content: chunks[i] }).catch(() => {});
       }
       
     } catch (error) {
-      console.error(error);
+      console.error("Error in fetchemoji:", error.message);
       const errMsg = "⚠ Error processing request.";
-      if (interaction.deferred || interaction.replied) await interaction.editReply(errMsg);
-      else await interaction.reply(errMsg);
+      if (interaction.deferred || interaction.replied) await interaction.editReply(errMsg).catch(() => {});
+      else await interaction.reply(errMsg).catch(() => {});
     }
   }
 };
