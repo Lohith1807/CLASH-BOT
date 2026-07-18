@@ -3,6 +3,7 @@ const axios = require("axios");
 const fs = require("fs");
 const path = require("path");
 const dataManager = require("../../../utils/dataManager.js");
+const { sendBatchedEmbeds } = require("./scan-clan.js");
 
 async function fwaFetch(originalUrl) {
     const workerBase = process.env.FWA_WORKER_URL;
@@ -256,7 +257,8 @@ module.exports = {
             );
                 
             clearInterval(animationInterval);
-            return await interaction.editReply({ embeds: allEmbeds, components: [row] });
+            await sendBatchedEmbeds(interaction, allEmbeds, [row]);
+            return;
             
         } else {
             // Specific Clan logic

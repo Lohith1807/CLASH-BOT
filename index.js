@@ -1,6 +1,17 @@
 const path = require("path");
 const fs = require("fs");
 
+// Global override to silently skip CoC API maintenance errors in the console
+const originalConsoleError = console.error;
+console.error = function (...args) {
+  const isMaintenanceError = args.some(arg => 
+    (arg instanceof Error && (arg.message === "API_MAINTENANCE_PAUSE" || (arg.response && arg.response.status === 503))) ||
+    (typeof arg === "string" && (arg.includes("API_MAINTENANCE_PAUSE") || arg.includes("status code 503") || arg.includes("503 Service Unavailable")))
+  );
+  if (isMaintenanceError) return; // Skip silently
+  originalConsoleError.apply(console, args);
+};
+
 const config = require("./config/config.js");
 const {
   Client,
@@ -38,6 +49,15 @@ app.get("/proxy", async (req, res) => {
   const logChannel = await client.channels.fetch(API_LOGS_ID).catch(() => null);
 
   const apiLogger = async (msg) => {
+    if (msg) {
+      const lower = msg.toLowerCase();
+      const isTokenError = lower.includes("403") || lower.includes("forbidden") || lower.includes("access denied");
+      const isIgnorable = lower.includes("coc api") || lower.includes("clash api") || lower.includes("fetch") || 
+                          lower.includes("timeout") || lower.includes("503") || lower.includes("504") || 
+                          lower.includes("502") || lower.includes("500") || lower.includes("network error") || 
+                          lower.includes("econnreset") || lower.includes("etimedout") || lower.includes("api_maintenance_pause");
+      if (isIgnorable && !isTokenError) return;
+    }
     if (logChannel) {
       await logChannel.send(`\`[API PROXY]\` ${msg}`).catch(() => null);
     }
@@ -78,6 +98,8 @@ client.activeTicketTimers = new Map();
 
 client.once(Events.ClientReady, async (c) => {
   console.log(`✅ Logged in as ${c.user.tag}`);
+  
+  tools.coc.init(c); // Initialize cocManager with client for maintenance logs
 
   const { connectToDatabase } = require('./utils/mongodb.js');
   await connectToDatabase();

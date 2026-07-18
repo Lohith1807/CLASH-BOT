@@ -20,7 +20,9 @@ const PATHS = {
     recruitingths: path.join(DATA_DIR, "recruitingths.json"),
     scanwar: path.join(DATA_DIR, "scanwar.json"),
     strikecounters: path.join(DATA_DIR, "strikecounters.json"),
-    recruitments: path.join(DATA_DIR, "recruitments.json")
+    recruitments: path.join(DATA_DIR, "recruitments.json"),
+    staffmembers: path.join(DATA_DIR, "staffmembers.json"),
+    stafftrainees: path.join(DATA_DIR, "stafftrainees.json")
 };
 
 
@@ -341,6 +343,62 @@ function saveRecruitments(data) {
     }
 }
 
+/**
+ * Get staff members data
+ * @returns {Object} Staff members data object (keyed by clan tag)
+ */
+function getStaffMembers() {
+    try {
+        if (!fs.existsSync(PATHS.staffmembers)) return {};
+        const raw = fs.readFileSync(PATHS.staffmembers, "utf8");
+        return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+        console.error("Error reading staffmembers.json:", err.message);
+        return {};
+    }
+}
+
+/**
+ * Save staff members data
+ * @param {Object} data - Staff members data to save
+ */
+function saveStaffMembers(data) {
+    try {
+        fs.writeFileSync(PATHS.staffmembers, JSON.stringify(data, null, 2));
+    } catch (err) {
+        console.error("Error writing staffmembers.json:", err.message);
+        throw err;
+    }
+}
+
+/**
+ * Get staff trainees data
+ * @returns {Object} Staff trainees data object (keyed by trainerId)
+ */
+function getStaffTrainees() {
+    try {
+        if (!fs.existsSync(PATHS.stafftrainees)) return {};
+        const raw = fs.readFileSync(PATHS.stafftrainees, "utf8");
+        return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+        console.error("Error reading stafftrainees.json:", err.message);
+        return {};
+    }
+}
+
+/**
+ * Save staff trainees data
+ * @param {Object} data - Staff trainees data to save
+ */
+function saveStaffTrainees(data) {
+    try {
+        fs.writeFileSync(PATHS.stafftrainees, JSON.stringify(data, null, 2));
+    } catch (err) {
+        console.error("Error writing stafftrainees.json:", err.message);
+        throw err;
+    }
+}
+
 module.exports = {
     getUserData,
     getClanRoles,
@@ -353,6 +411,8 @@ module.exports = {
     getScanWar,
     getStrikeCounters,
     getRecruitments,
+    getStaffMembers,
+    getStaffTrainees,
 
     saveUserData,
     saveClanRoles,
@@ -365,6 +425,8 @@ module.exports = {
     saveScanWar,
     saveStrikeCounters,
     saveRecruitments,
+    saveStaffMembers,
+    saveStaffTrainees,
 
     PATHS
 };

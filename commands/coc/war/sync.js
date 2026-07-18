@@ -24,6 +24,15 @@ function setLastWarId(id) {
 }
 
 async function logToChannel(context, msg) {
+    if (msg) {
+        const lower = msg.toLowerCase();
+        const isTokenError = lower.includes("403") || lower.includes("forbidden") || lower.includes("access denied");
+        const isIgnorable = lower.includes("coc api") || lower.includes("clash api") || lower.includes("fetch") || 
+                            lower.includes("timeout") || lower.includes("503") || lower.includes("504") || 
+                            lower.includes("502") || lower.includes("500") || lower.includes("network error") || 
+                            lower.includes("econnreset") || lower.includes("etimedout") || lower.includes("api_maintenance_pause");
+        if (isIgnorable && !isTokenError) return;
+    }
     const { client, config, EmbedBuilder } = context;
     const LOG_CHANNEL_ID = config.LOG_CHANNEL_ID;
     try {
@@ -235,7 +244,11 @@ async function cleanSyncMessages(context) {
         if (syncState.messageId) {
             const syncMsg = await channel.messages.fetch(syncState.messageId).catch(() => null);
             if (syncMsg && syncMsg.embeds.length > 0) {
-                await syncMsg.edit({ components: [] }).catch(() => {});
+                await syncMsg.edit({ 
+                    content: syncMsg.content, 
+                    embeds: syncMsg.embeds, 
+                    components: [] 
+                }).catch(() => {});
             }
         }
 
@@ -348,8 +361,16 @@ async function storeAllFwaWarRosters(context) {
                     }
                 }
             } catch (e) {
-                const clanName = data.nickName || tag;
-                errorClans.push(`${clanName} (\`${tag}\`): ${e.message}`);
+                const lower = e.message.toLowerCase();
+                const isTokenError = lower.includes("403") || lower.includes("forbidden") || lower.includes("access denied");
+                const isIgnorable = lower.includes("coc api") || lower.includes("clash api") || lower.includes("fetch") || 
+                                    lower.includes("timeout") || lower.includes("503") || lower.includes("504") || 
+                                    lower.includes("502") || lower.includes("500") || lower.includes("network error") || 
+                                    lower.includes("econnreset") || lower.includes("etimedout") || lower.includes("api_maintenance_pause");
+                if (!isIgnorable || isTokenError) {
+                    const clanName = data.nickName || tag;
+                    errorClans.push(`${clanName} (\`${tag}\`): ${e.message}`);
+                }
             }
         }
 

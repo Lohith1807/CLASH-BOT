@@ -9,6 +9,54 @@ const cocApi = axios.create({
     timeout: 5000, // 5 seconds timeout to prevent hanging
 });
 
+let discordClient = null;
+let isInMaintenance = false;
+let maintenanceCheckUntil = 0;
+
+function init(client) {
+    discordClient = client;
+}
+
+async function announceMaintenanceState(isStarted) {
+    if (!discordClient) return;
+    const API_LOGS_ID = process.env.API_LOGS || config.LOG_CHANNEL_ID || "1482784031954305024";
+    const logChannel = await discordClient.channels.fetch(API_LOGS_ID).catch(() => null);
+    if (!logChannel) return;
+
+    const message = isStarted ? "Clash of Clans Maintainance Started" : "Clash of Clans Maintainance Ended";
+    await logChannel.send(message).catch(() => null);
+}
+
+cocApi.interceptors.request.use(reqConfig => {
+    if (isInMaintenance && Date.now() < maintenanceCheckUntil) {
+        return Promise.reject(new Error("API_MAINTENANCE_PAUSE"));
+    }
+    return reqConfig;
+});
+
+cocApi.interceptors.response.use(
+    response => {
+        if (isInMaintenance) {
+            isInMaintenance = false;
+            maintenanceCheckUntil = 0;
+            announceMaintenanceState(false);
+        }
+        return response;
+    },
+    error => {
+        if (error.response && error.response.status === 503) {
+            if (!isInMaintenance) {
+                isInMaintenance = true;
+                announceMaintenanceState(true);
+            }
+            // Pause polling for 5 minutes
+            maintenanceCheckUntil = Date.now() + 5 * 60 * 1000;
+            return Promise.reject(new Error("API_MAINTENANCE_PAUSE"));
+        }
+        return Promise.reject(error);
+    }
+);
+
 /**
  * Format tag to ensure it has # prefix
  * @param {string} tag 
@@ -154,4 +202,5 @@ module.exports = {
     getClanWarLeagueGroup,
     searchClans,
     formatTag,
+    init,
 };

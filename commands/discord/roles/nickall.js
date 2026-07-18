@@ -1,9 +1,22 @@
-
 const logChannelId = "1188515065889050746";
 
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+/**
+ * Helper to clean current name by extracting the last part of a "BLOOD | Name" format
+ * @param {GuildMember} member 
+ * @returns {string}
+ */
+const getCleanName = (member) => {
+    const currentNickname = member.nickname || member.user.username;
+    if (currentNickname.includes("BLOOD |")) {
+        const parts = currentNickname.split("BLOOD |");
+        return parts[parts.length - 1].trim();
+    }
+    return currentNickname.trim();
+};
 
 module.exports = {
   name: "nickall",
@@ -36,18 +49,49 @@ module.exports = {
 
       let processed = 0;
 
-      const REAPPLY_ROLE_ID = config.REAPPLY_ROLE_ID || "1442426406444335217";
+      const REAPPLY_ROLE_ID = config.REAPPLY_ROLE_ID || "1523186839509401701";
+      const ALL_STAFF_ROLE_IDS = (config.ALL_STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+      const STAFF_ROLE_IDS = (config.STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+
+      const fallbackAllStaff = ["1466103376642314445", "1511650426343133274"];
+      const fallbackStaff = ["1513940638909988874", "1513942017196167389", "1154276716982833154"];
+
+      const allStaffIds = ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff;
+      const staffIds = STAFF_ROLE_IDS.length > 0 ? STAFF_ROLE_IDS : fallbackStaff;
+
+      // Build monitored clans mapping
+      const clanRoles = dataManager.getClanRoles();
+      const monitoredClans = {};
+      for (const [tag, info] of Object.entries(clanRoles)) {
+          if (info.roleId) {
+              monitoredClans[tag.toUpperCase()] = info;
+          }
+      }
+
+      const adminRoleIds = (config.ADMIN_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
 
       for (const [memberId, member] of message.guild.members.cache) {
         if (member.user.bot) continue;
         if (!member.manageable) continue;
+        
+        // Skip members with Reapply, Staff or Admin roles
         if (member.roles.cache.has(REAPPLY_ROLE_ID)) continue;
+        if (member.roles.cache.some(r => allStaffIds.includes(r.id) || staffIds.includes(r.id) || adminRoleIds.includes(r.id))) continue;
+        if (member.permissions.has("Administrator")) continue;
 
         const currentName = member.nickname || member.user.username;
-        if (currentName.toUpperCase().startsWith("BLOOD |")) continue;
 
-        let newNick;
+        let clanNick = "";
+        for (const [tag, info] of Object.entries(monitoredClans)) {
+            if (info.roleId && member.roles.cache.has(info.roleId)) {
+                if (info.nickName) {
+                    clanNick = info.nickName;
+                    break; // Use first matching clan nickname
+                }
+            }
+        }
 
+        let playerName = "";
         if (userData[memberId] && userData[memberId].length > 0) {
           const accounts = userData[memberId];
 
@@ -59,10 +103,16 @@ module.exports = {
             );
           }
 
-          newNick = `BLOOD | ${account.name}`;
+          playerName = account.name;
         } else {
-          newNick = `BLOOD | ${member.user.username}`;
+          playerName = getCleanName(member);
         }
+
+        const newNick = clanNick
+            ? `${clanNick} • BLOOD | ${playerName}`
+            : `BLOOD | ${playerName}`;
+
+        if (currentName === newNick) continue;
 
         try {
           await member.setNickname(newNick);

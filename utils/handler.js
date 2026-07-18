@@ -672,6 +672,7 @@ async function handleInteraction(interaction, context) {
                     options: { getString: () => target },
                     reply: async (data) => await interaction.editReply(data).catch(()=>{}),
                     editReply: async (data) => await interaction.editReply(data).catch(()=>{}),
+                    followUp: async (data) => await interaction.followUp(data).catch(()=>{}),
                 };
                 await warsearchCmd.execute(mockInteraction, context);
             } catch (err) {
@@ -743,7 +744,7 @@ async function handleInteraction(interaction, context) {
         }
 
         if (id.startsWith("ww_submit_update_")) {
-            const cleanTag = id.replace("ww_submit_update_", "");
+            const cleanTag = id.replace("ww_submit_update_", "").toUpperCase();
             const clanTag = "#" + cleanTag;
             
             try {
@@ -762,6 +763,16 @@ async function handleInteraction(interaction, context) {
                         clanName = clan.name;
                     }
                 } catch (e) {}
+
+                // Clean up case-mismatched duplicates
+                const lowerTag = clanTag.toLowerCase();
+                const cleanTagKey = cleanTag; // without hash
+                const keysToDelete = [lowerTag, cleanTagKey, cleanTagKey.toLowerCase()];
+                for (const key of keysToDelete) {
+                    if (key !== clanTag && wwData[key]) {
+                        delete wwData[key];
+                    }
+                }
 
                 if (!wwData[clanTag]) {
                     wwData[clanTag] = { clanName: clanName, lastUpdated: "" };
@@ -1361,7 +1372,7 @@ async function handleInteraction(interaction, context) {
         if (id === "wwpanel_clan_select") {
             if (interaction.replied || interaction.deferred) return;
 
-            const clanTag = "#" + interaction.values[0];
+            const clanTag = "#" + interaction.values[0].toUpperCase();
 
             try {
                 await interaction.deferReply({ ephemeral: true });

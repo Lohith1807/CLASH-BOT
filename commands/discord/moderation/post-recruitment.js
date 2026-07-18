@@ -114,102 +114,138 @@ module.exports = {
 
             await interaction.showModal(modal);
 
-            // Await Modal Submit
-            const filter = (i) => i.customId === `post_recruit_modal_${clanTag}` && i.user.id === interaction.user.id;
-            const submitted = await interaction.awaitModalSubmit({ filter, time: 300000 }).catch(() => null);
+            // Handle Modal Submit via interactionCreate collector for instant deferReply
+            const modalCustomId = `post_recruit_modal_${clanTag}`;
+            const userId = interaction.user.id;
+            const clientRef = interaction.client;
 
-            if (!submitted) return; // User closed modal or timed out
-            
-            await submitted.deferReply({ ephemeral: true });
+            const handleModalSubmit = async (submitted) => {
+                if (!submitted.isModalSubmit()) return;
+                if (submitted.customId !== modalCustomId) return;
+                if (submitted.user.id !== userId) return;
 
-            // Gather data from modal
-            const spotsNeededData = {};
-            let totalSpots = 0;
-            
-            thList.forEach(th => {
-                const numericTh = th.replace(/[^0-9]/g, '');
-                const value = parseInt(submitted.fields.getTextInputValue(`th_input_${numericTh}`)) || 0;
-                spotsNeededData[numericTh] = value;
-                totalSpots += value;
-            });
+                // Remove listener immediately to avoid double-handling
+                clientRef.removeListener('interactionCreate', handleModalSubmit);
+                clearTimeout(modalTimeout);
 
-            // If 0 total spots
-            if (totalSpots === 0) {
-                return submitted.editReply({ content: '❌ Cannot post recruitment with 0 spots needed.' });
-            }
-
-            // Fetch Clan Info for Embed
-            let officialClanName = clanRoles[clanTag].nickName || clanTag;
-            let clanType = clanRoles[clanTag].clanType || "fwa";
-            try {
-                const cocData = await context.coc.getClan(clanTag);
-                if (cocData && cocData.name) officialClanName = cocData.name;
-            } catch (e) {
-                console.warn(`Could not fetch clan info for ${clanTag}`, e.message);
-            }
-
-            // Generate Embed
-            let thDesc = "Below are the townhalls with members needed\n\n";
-            for (const [th, spots] of Object.entries(spotsNeededData)) {
-                if (spots > 0) {
-                    const thEmoji = getEmoji(`th${th}`) || `TH${th}`;
-                    thDesc += `${thEmoji} : **${spots}** needed\n`;
+                try {
+                    // deferReply IMMEDIATELY — this is the critical fix
+                    await submitted.deferReply({ ephemeral: true });
+                } catch (deferErr) {
+                    console.error('Failed to defer modal reply (post-recruitment):', deferErr.message);
+                    return; // interaction expired, nothing we can do
                 }
-            }
 
-            const recruitEmbed = new EmbedBuilder()
-                .setTitle(`${getEmoji("gtick")} RECRUITMENT OPEN`)
-                .setColor("#2ECC71")
-                .setDescription(
-                    `**${officialClanName}** is now recruiting!\n\n` + 
-                    `${thDesc}\n` + 
-                    `**Clan Type:** ${clanType.toUpperCase()}`
-                )
-                .setFooter({ text: 'Recruitment System' })
-                .setTimestamp();
+                try {
+                    // Gather data from modal
+                    const spotsNeededData = {};
+                    let totalSpots = 0;
+                    
+                    thList.forEach(th => {
+                        const numericTh = th.replace(/[^0-9]/g, '');
+                        const value = parseInt(submitted.fields.getTextInputValue(`th_input_${numericTh}`)) || 0;
+                        spotsNeededData[numericTh] = value;
+                        totalSpots += value;
+                    });
 
-            // Send to RECRUIT_CHANNEL_ID (1503298102860320829)
-            const recruitChannelId = process.env.RECRUIT_CHANNEL_ID || "1503298102860320829";
-            const recruitChannel = interaction.client.channels.cache.get(recruitChannelId) 
-                                   || await interaction.client.channels.fetch(recruitChannelId).catch(() => null);
+                    // If 0 total spots
+                    if (totalSpots === 0) {
+                        return submitted.editReply({ content: '❌ Cannot post recruitment with 0 spots needed.' });
+                    }
+                    if (totalSpots > 5) {
+                        return submitted.editReply({ content: '❌ You can only recruit for a maximum of 5 spots in total.' });
+                    }
 
-            if (!recruitChannel) {
-                return submitted.editReply({ content: `❌ Could not find recruitment channel ${recruitChannelId}.` });
-            }
+                    // Fetch Clan Info for Embed
+                    let officialClanName = clanRoles[clanTag].nickName || clanTag;
+                    let clanType = clanRoles[clanTag].clanType || "fwa";
+                    try {
+                        const cocData = await context.coc.getClan(clanTag);
+                        if (cocData && cocData.name) officialClanName = cocData.name;
+                    } catch (e) {
+                        console.warn(`Could not fetch clan info for ${clanTag}`, e.message);
+                    }
 
-            const msg = await recruitChannel.send({ embeds: [recruitEmbed] });
+                    // Generate Embed
+                    let thDesc = `${getEmoji("bluedot")} **Below are the townhalls with members needed**\n\n`;
+                    for (const [th, spots] of Object.entries(spotsNeededData)) {
+                        if (spots > 0) {
+                            const thEmoji = getEmoji(`th${th}`) || `TH${th}`;
+                            thDesc += `${getEmoji("rarroww")} ${thEmoji} : **${spots}** needed\n`;
+                        }
+                    }
 
-            // Save to recruitments.json
-            recruitments[clanTag] = {
-                messageId: msg.id,
-                channelId: msg.channel.id,
-                townhalls: spotsNeededData
+                    const clanLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${encodeURIComponent(clanTag)}`;
+
+                    const recruitEmbed = new EmbedBuilder()
+                        .setTitle(`${getEmoji("alaram")} RECRUITMENT OPEN ${getEmoji("alaram")}`)
+                        .setColor("#2ECC71")
+                        .setDescription(
+                            `${getEmoji("heart")} **${officialClanName}** is now recruiting!\n\n` + 
+                            `${thDesc}\n` + 
+                            `${getEmoji("pinkdot")} **Clan Type:** ${clanType.toUpperCase()}\n` +
+                            `${getEmoji("chain")} **View in game :** [Click Here](${clanLink})`
+                        )
+                        .setFooter({ text: 'Recruitment System' })
+                        .setTimestamp();
+
+                    // Send to RECRUIT_CHANNEL_ID (1503298102860320829)
+                    const recruitChannelId = process.env.RECRUIT_CHANNEL_ID || "1503298102860320829";
+                    const recruitChannel = clientRef.channels.cache.get(recruitChannelId) 
+                                           || await clientRef.channels.fetch(recruitChannelId).catch(() => null);
+
+                    if (!recruitChannel) {
+                        return submitted.editReply({ content: `❌ Could not find recruitment channel ${recruitChannelId}.` });
+                    }
+
+                    const msg = await recruitChannel.send({ embeds: [recruitEmbed] });
+
+                    // Save to recruitments.json
+                    recruitments[clanTag] = {
+                        messageId: msg.id,
+                        channelId: msg.channel.id,
+                        townhalls: spotsNeededData
+                    };
+                    dataManager.saveRecruitments(recruitments);
+
+                    // Log creation
+                    const logChannelId = process.env.LOG_CHANNEL_ID;
+                    if (logChannelId) {
+                        const logChan = clientRef.channels.cache.get(logChannelId) 
+                                     || await clientRef.channels.fetch(logChannelId).catch(() => null);
+                        
+                        if (logChan) {
+                            const logEmbed = new EmbedBuilder()
+                                .setTitle("📢 Recruitment Posted")
+                                .setColor("Green")
+                                .setDescription(`**User:** <@${submitted.user.id}>\n**Clan:** ${officialClanName} (${clanTag})\n**Message:** [Click Here](${msg.url})`);
+                            logChan.send({ embeds: [logEmbed] }).catch(() => null);
+                        }
+                    }
+
+                    await submitted.editReply({ content: `✅ Recruitment posted successfully in <#${recruitChannel.id}>!` });
+
+                } catch (error) {
+                    console.error('Error processing post-recruitment modal:', error);
+                    try {
+                        await submitted.editReply({ content: '❌ An error occurred while posting recruitment.' });
+                    } catch (e) {}
+                }
             };
-            dataManager.saveRecruitments(recruitments);
 
-            // Log creation
-            const logChannelId = process.env.LOG_CHANNEL_ID;
-            if (logChannelId) {
-                const logChan = interaction.client.channels.cache.get(logChannelId) 
-                             || await interaction.client.channels.fetch(logChannelId).catch(() => null);
-                
-                if (logChan) {
-                    const logEmbed = new EmbedBuilder()
-                        .setTitle("📢 Recruitment Posted")
-                        .setColor("Green")
-                        .setDescription(`**User:** <@${interaction.user.id}>\n**Clan:** ${officialClanName} (${clanTag})\n**Message:** [Click Here](${msg.url})`);
-                    logChan.send({ embeds: [logEmbed] }).catch(() => null);
-                }
-            }
+            clientRef.on('interactionCreate', handleModalSubmit);
 
-            await submitted.editReply({ content: `✅ Recruitment posted successfully in <#${recruitChannel.id}>!` });
+            // Auto-cleanup after 5 minutes if user never submits the modal
+            const modalTimeout = setTimeout(() => {
+                clientRef.removeListener('interactionCreate', handleModalSubmit);
+            }, 300000);
 
         } catch (error) {
             console.error(error);
             try {
                 if (interaction.replied || interaction.deferred) {
                     await interaction.followUp({ content: '❌ An error occurred.', ephemeral: true });
-                } else if (!interaction.isModalSubmit()) {
+                } else {
                     await interaction.reply({ content: '❌ An error occurred.', ephemeral: true });
                 }
             } catch (e) {}

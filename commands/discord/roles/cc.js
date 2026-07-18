@@ -292,16 +292,47 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                     .catch(() => results.push("⚠️ Could not remove Re-Apply role."));
             }
 
-            await targetMember.setNickname(`BLOOD | ${playerName || targetMember.user.username}`)
-                .then(() => results.push(`${tickEmoji} Nickname updated.`))
-                .catch(err => {
-                    if (err.code === 50013) {
-                        results.push("⚠️ Missing Permissions to change nickname.");
-                    } else {
-                        results.push(`⚠️ Could not change nickname: ${err.message}`);
+            // Check if user is staff (all staff role or staff roles)
+            const ALL_STAFF_ROLE_IDS = (config.ALL_STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+            const STAFF_ROLE_IDS = (config.STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+
+            const fallbackAllStaff = ["1466103376642314445", "1511650426343133274"];
+            const fallbackStaff = ["1513940638909988874", "1513942017196167389", "1154276716982833154"];
+
+            const allStaffIds = ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff;
+            const staffIds = STAFF_ROLE_IDS.length > 0 ? STAFF_ROLE_IDS : fallbackStaff;
+
+            const hasStaffRole = targetMember.roles.cache.some(r => 
+                allStaffIds.includes(r.id) || 
+                staffIds.includes(r.id) ||
+                r.name.toLowerCase().includes("staff")
+            );
+
+            if (hasStaffRole) {
+                results.push("⚠️ Nickname updation skipped , He/she is a staff at Blood");
+            } else {
+                let clanNick = "";
+                if (playerData.clan) {
+                    const clanInfo = clanroles[playerData.clan.tag];
+                    if (clanInfo && clanInfo.nickName) {
+                        clanNick = clanInfo.nickName;
                     }
-                    console.error("Nickname error:", err);
-                });
+                }
+                const newNickname = clanNick 
+                    ? `${clanNick} • BLOOD | ${playerName || targetMember.user.username}` 
+                    : `BLOOD | ${playerName || targetMember.user.username}`;
+
+                await targetMember.setNickname(newNickname)
+                    .then(() => results.push(`${tickEmoji} Nickname updated.`))
+                    .catch(err => {
+                        if (err.code === 50013) {
+                            results.push("⚠️ Missing Permissions to change nickname.");
+                        } else {
+                            results.push(`⚠️ Could not change nickname: ${err.message}`);
+                        }
+                        console.error("Nickname error:", err);
+                    });
+            }
 
             results.push(`${tickEmoji} Verified by ${verifier.tag}`);
 

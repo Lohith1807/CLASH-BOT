@@ -29,4 +29,7 @@ module.exports = {
   
   EMOJI_SERVER_ID: process.env.EMOJI_SERVER_ID,
   REAPPLY_ROLE_ID: process.env.REAPPLY_ROLE_ID,
+  ALL_STAFF_ROLE_IDS: (process.env.ALL_STAFF_ROLE || "").split(",").map(id => id.trim()).filter(Boolean),
+  TRAINEE_ROLE_ID: process.env.TRAINEE_ROLE_ID || '1514536928412827758',
+  STAFF_CHANNEL_ID: process.env.STAFF_CHANNEL_ID || '1417528968294174740',
 };

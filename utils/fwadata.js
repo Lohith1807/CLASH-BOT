@@ -4,8 +4,12 @@ const fs = require("fs");
 const path = require("path");
 
 async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild }) {
-    const url = `https://fwastats.com/Clan/${tag.replace("#", "")}/Members.json`;
-    const url2 = `https://fwastats.com/Clan/${tag.replace("#", "")}/Weight`;
+    const tagMatch = tag.match(/#([A-Z0-9]+)/i);
+    const cleanTag = tagMatch ? tagMatch[1].toUpperCase() : tag.replace("#", "").toUpperCase();
+    const formattedTag = `#${cleanTag}`;
+
+    const url = `https://fwastats.com/Clan/${cleanTag}/Members.json`;
+    const url2 = `https://fwastats.com/Clan/${cleanTag}/Weight`;
 
     const fwaHeaders = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
@@ -60,7 +64,7 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
 
     let clanName = "";
     if (coc) {
-        const cocClan = await coc.getClan(tag).catch(() => null);
+        const cocClan = await coc.getClan(formattedTag).catch(() => null);
         if (cocClan) {
             clanName = cocClan.name;
         }
@@ -69,7 +73,7 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
         clanName = $("body > div.container.body-content.fill > div.well > div > div > h3").text().trim();
     }
     if (!clanName) {
-        clanName = tag;
+        clanName = formattedTag;
     }
 
     let lastDate = "";
@@ -81,8 +85,20 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
     if (fs.existsSync(wwPath)) {
         try {
             wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
-            if (wwData[tag] && wwData[tag].lastUpdated) {
-                lastDate = wwData[tag].lastUpdated;
+            
+            const tagKeys = [
+                formattedTag,
+                cleanTag,
+                tag,
+                tag.toUpperCase(),
+                tag.toLowerCase()
+            ];
+            
+            for (const key of tagKeys) {
+                if (wwData[key] && wwData[key].lastUpdated) {
+                    lastDate = wwData[key].lastUpdated;
+                    break;
+                }
             }
         } catch (err) {
             console.error("Error parsing ww.json:", err);
@@ -285,8 +301,12 @@ async function checkFWAWeights(client) {
                 diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
             }
 
+            const tagMatch = clanTag.match(/#([A-Z0-9]+)/i);
+            const cleanTag = tagMatch ? tagMatch[1].toUpperCase() : clanTag.replace("#", "").toUpperCase();
+            const normalizedClanTag = `#${cleanTag}`;
+            const roleData = clanRoles[normalizedClanTag] || clanRoles[clanTag];
+
             if (diffDays === 25) {
-                const roleData = clanRoles[clanTag];
                 if (roleData) {
                     const targetChannelId = roleData.leadChannelId && roleData.leadChannelId.trim() !== ""
                         ? roleData.leadChannelId
@@ -296,7 +316,6 @@ async function checkFWAWeights(client) {
                             const channel = await client.channels.fetch(targetChannelId).catch(() => null);
                             if (channel) {
                                 const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
-                                const cleanTag = clanTag.replace("#", "");
                                 const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
 
                                 const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
@@ -334,7 +353,6 @@ async function checkFWAWeights(client) {
                     }
                 }
             } else if (diffDays === 27) {
-                const roleData = clanRoles[clanTag];
                 if (roleData) {
                     const targetChannelId = roleData.leadChannelId && roleData.leadChannelId.trim() !== ""
                         ? roleData.leadChannelId

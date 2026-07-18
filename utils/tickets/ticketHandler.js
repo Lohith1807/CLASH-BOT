@@ -386,6 +386,15 @@ async function handleTicketInteraction(interaction, context) {
 
         try {
             const apiLogger = async (msg) => {
+                if (msg) {
+                    const lower = msg.toLowerCase();
+                    const isTokenError = lower.includes("403") || lower.includes("forbidden") || lower.includes("access denied");
+                    const isIgnorable = lower.includes("coc api") || lower.includes("clash api") || lower.includes("fetch") || 
+                                        lower.includes("timeout") || lower.includes("503") || lower.includes("504") || 
+                                        lower.includes("502") || lower.includes("500") || lower.includes("network error") || 
+                                        lower.includes("econnreset") || lower.includes("etimedout") || lower.includes("api_maintenance_pause");
+                    if (isIgnorable && !isTokenError) return;
+                }
                 const API_LOGS_ID = process.env.API_LOGS || "1482784031954305024";
                 const logChannel = await client.channels.fetch(API_LOGS_ID).catch(() => null);
                 if (logChannel) await logChannel.send(`\`[TICKET VIEW CLAN]\` ${msg}`).catch(() => null);
