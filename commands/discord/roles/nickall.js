@@ -10,10 +10,15 @@ function delay(ms) {
  * @returns {string}
  */
 const getCleanName = (member) => {
-    const currentNickname = member.nickname || member.user.username;
+    let currentNickname = member.nickname || member.user.username;
     if (currentNickname.includes("BLOOD |")) {
         const parts = currentNickname.split("BLOOD |");
-        return parts[parts.length - 1].trim();
+        let namePart = parts[parts.length - 1].trim();
+        if (namePart.includes("•")) {
+            const subParts = namePart.split("•");
+            namePart = subParts[0].trim();
+        }
+        return namePart;
     }
     return currentNickname.trim();
 };
@@ -81,12 +86,11 @@ module.exports = {
 
         const currentName = member.nickname || member.user.username;
 
-        let clanNick = "";
+        const clanNicks = [];
         for (const [tag, info] of Object.entries(monitoredClans)) {
             if (info.roleId && member.roles.cache.has(info.roleId)) {
-                if (info.nickName) {
-                    clanNick = info.nickName;
-                    break; // Use first matching clan nickname
+                if (info.nickName && !clanNicks.includes(info.nickName)) {
+                    clanNicks.push(info.nickName);
                 }
             }
         }
@@ -108,9 +112,14 @@ module.exports = {
           playerName = getCleanName(member);
         }
 
-        const newNick = clanNick
-            ? `${clanNick} • BLOOD | ${playerName}`
+        const clanNickStr = clanNicks.join(' • ');
+        let newNick = clanNickStr
+            ? `BLOOD | ${playerName} • ${clanNickStr}`
             : `BLOOD | ${playerName}`;
+
+        if (newNick.length > 32) {
+            newNick = newNick.substring(0, 32);
+        }
 
         if (currentName === newNick) continue;
 

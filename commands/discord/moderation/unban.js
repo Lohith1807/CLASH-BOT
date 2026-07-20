@@ -8,7 +8,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('unban')
         .setDescription('Unban a user from the server by their user ID')
-        .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option =>
             option.setName('userid')
                 .setDescription('The Discord User ID of the banned user')
@@ -22,13 +22,17 @@ module.exports = {
 
     async execute(interaction, context) {
         const { config } = context;
-        const ALLOWED_ROLES = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
+        const allowedRoles = [
+            ...(config.ADMIN_ROLE_IDS || []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
+        ];
 
-        if (
-            !interaction.member.permissions.has(PermissionFlagsBits.BanMembers) &&
-            !interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))
-        ) {
-            return interaction.reply({ content: '❌ You do not have permission to unban members.', ephemeral: true });
+        const hasAllowedRole = interaction.member.roles.cache.some(r => allowedRoles.includes(r.id));
+        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+
+        if (!isAdmin && !hasAllowedRole) {
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
         }
 
         const userId = interaction.options.getString('userid').trim();

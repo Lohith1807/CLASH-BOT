@@ -271,6 +271,13 @@ module.exports = {
                     }
                 }
                 
+                const FAMILY_ROLE_ID = config.FAMILY_ROLE_ID || "1528073821343584387";
+                let familyRoleRemoved = false;
+                if (member.roles.cache.has(FAMILY_ROLE_ID)) {
+                    await member.roles.remove(FAMILY_ROLE_ID).catch(() => null);
+                    familyRoleRemoved = true;
+                }
+                
                 if (GLOBAL_ROLE_ID && !member.roles.cache.has(GLOBAL_ROLE_ID)) {
                     await member.roles.add(GLOBAL_ROLE_ID).catch(() => null);
                 }
@@ -333,15 +340,20 @@ module.exports = {
                 const nickNote = nickSuccess ? `\`${newNick}\`` : "*(Failed to change, missing permissions)*";
                 
                 const currentEmbed = (await interaction.fetchReply()).embeds[0];
+                let descText = currentEmbed.description +
+                    `\n\n**${getEmoji("gtick")} Completed Re-Apply for ${member.user.tag}**\n` +
+                    `${getEmoji("rarroww")} **Removed clan roles:** ${clanPrefix}\n`;
+                
+                if (familyRoleRemoved) {
+                    descText += `${getEmoji("rarroww")} **Removed Family role**\n`;
+                }
+
+                descText += `${getEmoji("yarrow")} **Added Re-Apply role**\n` +
+                    `${getEmoji("parrow")} **Changed nickname to:** ${nickNote}`;
+
                 const updatedEmbed = EmbedBuilder.from(currentEmbed)
                     .setColor("Green")
-                    .setDescription(
-                        currentEmbed.description +
-                        `\n\n**${getEmoji("gtick")} Completed Re-Apply for ${member.user.tag}**\n` +
-                        `${getEmoji("rarroww")} **Removed clan roles:** ${clanPrefix}\n` +
-                        `${getEmoji("yarrow")} **Added Re-Apply role**\n` +
-                        `${getEmoji("parrow")} **Changed nickname to:** ${nickNote}`
-                    );
+                    .setDescription(descText);
 
                 return interaction.editReply({ embeds: [updatedEmbed], components: [] }).catch(console.error);
             }

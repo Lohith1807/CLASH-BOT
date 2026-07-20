@@ -32,4 +32,5 @@ module.exports = {
   ALL_STAFF_ROLE_IDS: (process.env.ALL_STAFF_ROLE || "").split(",").map(id => id.trim()).filter(Boolean),
   TRAINEE_ROLE_ID: process.env.TRAINEE_ROLE_ID || '1514536928412827758',
   STAFF_CHANNEL_ID: process.env.STAFF_CHANNEL_ID || '1417528968294174740',
+  FAMILY_ROLE_ID: process.env.FAMILY_ROLE_ID || '1528073821343584387',
 };

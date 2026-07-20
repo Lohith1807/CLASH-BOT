@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 const basesPath = path.join(__dirname, '../../../data/fwa_bases.json');
 
@@ -11,20 +11,12 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('updatebase')
         .setDescription('Update an FWA base link for a specific Town Hall level')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option =>
             option.setName('th')
-                .setDescription('The Town Hall level')
+                .setDescription('The Town Hall level (e.g., 18, 19)')
                 .setRequired(true)
-                .addChoices(
-                    { name: 'TH 18', value: '18' },
-                    { name: 'TH 17', value: '17' },
-                    { name: 'TH 16', value: '16' },
-                    { name: 'TH 15', value: '15' },
-                    { name: 'TH 14', value: '14' },
-                    { name: 'TH 13', value: '13' },
-                    { name: 'TH 12', value: '12' },
-                    { name: 'TH 11', value: '11' }
-                ))
+        )
         .addStringOption(option =>
             option.setName('link')
                 .setDescription('The new base link')
@@ -62,7 +54,11 @@ module.exports = {
                 .setColor(randomColor)
                 .setTimestamp();
 
-            const thLevels = ["18", "17", "16", "15", "14", "13", "12", "11"];
+            const thLevels = Object.keys(baseData)
+                .filter(key => !isNaN(key) && key !== "lastUpdated")
+                .map(Number)
+                .sort((a, b) => b - a)
+                .map(String);
             
             thLevels.forEach(th => {
                 const link = baseData[th];
@@ -90,14 +86,19 @@ module.exports = {
 
         const allowedRoles = [
             ...(config.ADMIN_ROLE_IDS || []),
-            ...(config.STAFF_ROLE_IDS || [])
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
         ];
 
-        if (!allowedRoles.some(roleId => member.roles.cache.has(roleId))) {
+        const hasAllowedRole = member.roles.cache.some(roleId => allowedRoles.includes(roleId));
+        const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
+
+        if (!isAdmin && !hasAllowedRole) {
             return interaction.reply({ content: "❌ You do not have permission to update base links.", ephemeral: true });
         }
 
-        const th = interaction.options.getString('th');
+        const thInput = interaction.options.getString('th');
+        const th = thInput.replace(/\D/g, '') || thInput;
         const link = interaction.options.getString('link');
 
         if (!link.startsWith("https://link.clashofclans.com")) {

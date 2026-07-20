@@ -130,7 +130,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("setup-clan")
         .setDescription("Manage per-clan settings: Auto Role, Auto Post, Join/Leave Tracker")
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option =>
             option
                 .setName("clan")
@@ -164,14 +164,18 @@ module.exports = {
         const { data: dataManager, config, coc } = context;
 
         // Permission check
-        const STAFF_ROLE_IDS = config.STAFF_ROLE_IDS || [];
-        const isStaff =
-            STAFF_ROLE_IDS.some(id => interaction.member.roles.cache.has(id)) ||
-            interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+        const allowedRoles = [
+            ...(config.ADMIN_ROLE_IDS || []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
+        ];
 
-        if (!isStaff) {
+        const hasAllowedRole = interaction.member.roles.cache.some(r => allowedRoles.includes(r.id));
+        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+
+        if (!isAdmin && !hasAllowedRole) {
             return interaction.reply({
-                content: "❌ Only Staff or Admins can use this command.",
+                content: "❌ You do not have permission to use this command.",
                 ephemeral: true,
             });
         }

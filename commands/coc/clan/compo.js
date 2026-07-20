@@ -168,11 +168,45 @@ module.exports = {
 
     } catch (error) {
       try {
+        if (error.response?.status === 404) {
+          const clanRoles = dataManager.getClanRoles();
+          const tags = Object.keys(clanRoles);
+          const nickList = [];
+          for (let i = 0; i < tags.length; i++) {
+            const info = clanRoles[tags[i]];
+            if (info.nickName) {
+              nickList.push(`• **${info.nickName}** (\`${tags[i]}\`)`);
+            }
+          }
+
+          const helpEmbed = new EmbedBuilder()
+            .setTitle("❌ Clan Not Found")
+            .setDescription(`Clan is not found with nickname/tag: \`${arg0}\`\n\n**Available Nicknames:**\n${nickList.join("\n") || "No nicknames configured."}`)
+            .setColor(0xFF0000)
+            .setFooter({ text: "Tip: Use the nicknames above or a full clan tag (#TAG)" })
+            .setTimestamp();
+
+          if (isInteraction) {
+            await input.deleteReply().catch(() => {});
+            await input.followUp({ embeds: [helpEmbed], ephemeral: true });
+          } else {
+            try {
+              await input.author.send({ embeds: [helpEmbed] });
+            } catch (dmErr) {
+              const msg = await input.channel.send({ embeds: [helpEmbed] });
+              setTimeout(() => msg.delete().catch(() => {}), 15000);
+            }
+          }
+          return;
+        }
+
         const errMsg = "⚠ There was an error processing your command.";
         if (isInteraction && !input.replied && !input.deferred) await input.reply(errMsg);
         else if (isInteraction) await input.editReply(errMsg);
         else await input.channel.send(errMsg);
-      } catch { }
+      } catch (err) {
+        console.error("Error in compo catch block:", err);
+      }
     }
   },
 };

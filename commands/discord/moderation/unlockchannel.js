@@ -9,7 +9,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('unlockchannel')
         .setDescription('Unlock a channel to allow members to send messages again')
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addChannelOption(option =>
             option.setName('channel')
                 .setDescription('The channel to unlock (defaults to current channel)')
@@ -24,13 +24,17 @@ module.exports = {
 
     async execute(interaction, context) {
         const { config } = context;
-        const ALLOWED_ROLES = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
+        const allowedRoles = [
+            ...(config.ADMIN_ROLE_IDS || []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
+        ];
 
-        if (
-            !interaction.member.permissions.has(PermissionFlagsBits.ManageChannels) &&
-            !interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))
-        ) {
-            return interaction.reply({ content: '❌ You do not have permission to unlock channels.', ephemeral: true });
+        const hasAllowedRole = interaction.member.roles.cache.some(r => allowedRoles.includes(r.id));
+        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+
+        if (!isAdmin && !hasAllowedRole) {
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
         }
 
         const channel = interaction.options.getChannel('channel') || interaction.channel;

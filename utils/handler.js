@@ -17,6 +17,11 @@ async function handleInteraction(interaction, context) {
     const handled = await ticketHandler(interaction, context);
     if (handled) return;
 
+    if (interaction.isButton() && interaction.customId.startsWith("staffpannel_")) {
+        const staffPannelCmd = require("../commands/discord/moderation/staff-pannel.js");
+        return staffPannelCmd.handleButtonPress(interaction, context);
+    }
+
     if ((interaction.isButton() || interaction.isStringSelectMenu()) && interaction.customId.startsWith("sync_")) {
         const syncCommand = require("../commands/coc/war/sync.js");
         return syncCommand.handleSyncButton(interaction, context);

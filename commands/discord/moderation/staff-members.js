@@ -5,7 +5,8 @@ const {
     ButtonBuilder,
     ButtonStyle,
     EmbedBuilder,
-    UserSelectMenuBuilder
+    UserSelectMenuBuilder,
+    PermissionFlagsBits
 } = require('discord.js');
 const { getEmoji } = require('../../../utils/emoji.js');
 
@@ -48,6 +49,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('staff-members')
         .setDescription('Manage staff members for clans')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option =>
             option.setName('action')
                 .setDescription('Choose an action')
@@ -82,8 +84,8 @@ module.exports = {
             ...allStaffRoles
         ].filter(Boolean);
 
-        const canManage = interaction.member.roles.cache.some(r => manageRoles.includes(r.id));
-        const canList = interaction.member.roles.cache.some(r => listRoles.includes(r.id));
+        const canManage = interaction.member.roles.cache.some(r => manageRoles.includes(r.id)) || interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+        const canList = interaction.member.roles.cache.some(r => listRoles.includes(r.id)) || interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (action === 'add' || action === 'update_remove') {
             if (!canManage) {

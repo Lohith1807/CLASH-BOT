@@ -4,7 +4,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("clanentry")
         .setDescription("Add or update a clan entry with role, channels, leaders, and type")
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option =>
             option.setName("clantag")
                 .setDescription("Clan tag (e.g. #CYQVL002)")
@@ -64,10 +64,17 @@ module.exports = {
     async execute(interaction, context) {
         try {
             const { data: dataManager, config } = context;
-            const ALLOWED_ROLES = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
+            const allowedRoles = [
+                ...(config.ADMIN_ROLE_IDS || []),
+                ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
+                ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
+            ];
 
-            if (!interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) {
-                return interaction.reply({ content: "❌ You do not have permission (Staff/Admin) to use this command.", ephemeral: true });
+            const hasAllowedRole = interaction.member.roles.cache.some(r => allowedRoles.includes(r.id));
+            const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+
+            if (!isAdmin && !hasAllowedRole) {
+                return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
             }
 
             await interaction.deferReply({ ephemeral: true });

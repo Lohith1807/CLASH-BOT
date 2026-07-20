@@ -7,10 +7,15 @@ const { syncUser } = require('../../../utils/autoRoleManager.js');
  * @returns {string}
  */
 const getCleanName = (member) => {
-    const currentNickname = member.nickname || member.user.username;
+    let currentNickname = member.nickname || member.user.username;
     if (currentNickname.includes("BLOOD |")) {
         const parts = currentNickname.split("BLOOD |");
-        return parts[parts.length - 1].trim();
+        let namePart = parts[parts.length - 1].trim();
+        if (namePart.includes("•")) {
+            const subParts = namePart.split("•");
+            namePart = subParts[0].trim();
+        }
+        return namePart;
     }
     return currentNickname.trim();
 };
@@ -73,19 +78,23 @@ const updateMemberNickname = async (member, monitoredClans, config) => {
             ? `${staffPrefix} • BLOOD | ${formattedName}` 
             : `BLOOD | ${formattedName}`;
     } else {
-        // Normal member: Clannickname • BLOOD | cleanName
-        let clanNick = "";
+        // Normal member: BLOOD | cleanName • Clannickname(s)
+        const clanNicks = [];
         for (const [tag, info] of Object.entries(monitoredClans)) {
             if (info.roleId && member.roles.cache.has(info.roleId)) {
-                if (info.nickName) {
-                    clanNick = info.nickName;
-                    break; // Pick first matching clan
+                if (info.nickName && !clanNicks.includes(info.nickName)) {
+                    clanNicks.push(info.nickName);
                 }
             }
         }
-        newNickname = clanNick 
-            ? `${clanNick} • BLOOD | ${cleanName}` 
+        const clanNickStr = clanNicks.join(' • ');
+        newNickname = clanNickStr 
+            ? `BLOOD | ${cleanName} • ${clanNickStr}` 
             : `BLOOD | ${cleanName}`;
+    }
+
+    if (newNickname.length > 32) {
+        newNickname = newNickname.substring(0, 32);
     }
 
     if (oldNickname !== newNickname) {

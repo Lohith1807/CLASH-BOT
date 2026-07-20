@@ -194,11 +194,29 @@ module.exports = {
   buildCwlClanEmbed,
   buildAvailabilityEmbed,
   async execute(message, args, context) {
-    const { coc, data: dataManager, emoji: emojiUtils, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = context;
+    const { coc, data: dataManager, emoji: emojiUtils, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, config, commandName } = context;
     var getEmoji = emojiUtils.getEmoji;
     var getEmojiObject = emojiUtils.getEmojiObject;
 
     if (message.deletable) message.delete().catch(function () { });
+
+    if (!message.guild || !message.member) return;
+
+    if (commandName === "clans") {
+      const { PermissionFlagsBits } = require("discord.js");
+      const ALLOWED_ROLES = config.ADMIN_ROLE_IDS || [];
+      const isAdmin = message.member.permissions.has(PermissionFlagsBits.Administrator);
+      const hasAllowedRole = message.member.roles.cache.some(role => ALLOWED_ROLES.includes(role.id));
+
+      if (!isAdmin && !hasAllowedRole) {
+        const embed = new EmbedBuilder()
+          .setTitle("🚫 Access Denied")
+          .setDescription("You do not have permission to use this command.")
+          .setColor(0xe74c3c)
+          .setTimestamp();
+        return message.channel.send({ embeds: [embed] });
+      }
+    }
 
     if (message.mentions.users.size > 0) {
       const userId = message.mentions.users.first().id;

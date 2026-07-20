@@ -259,9 +259,28 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                 if (clanInfo) {
                     const role = message.guild.roles.cache.get(clanInfo.roleId);
                     if (role) {
-                        await targetMember.roles.add(role)
-                            .then(() => results.push(`${tickEmoji} Added role **${role.name}**.`))
-                            .catch(() => results.push("⚠️ Failed to add clan role."));
+                        const rolesToAdd = [role];
+                        const familyRoleId = config.FAMILY_ROLE_ID || "1528073821343584387";
+                        let extraRole = message.guild.roles.cache.get(familyRoleId);
+                        if (!extraRole) {
+                            extraRole = await message.guild.roles.fetch(familyRoleId).catch(() => null);
+                        }
+                        if (extraRole) {
+                            rolesToAdd.push(extraRole);
+                        } else {
+                            rolesToAdd.push(familyRoleId);
+                        }
+
+                        await targetMember.roles.add(rolesToAdd)
+                            .then(() => {
+                                results.push(`${tickEmoji} Added role **${role.name}**.`);
+                                if (extraRole) {
+                                    results.push(`${tickEmoji} Added role **${extraRole.name}**.`);
+                                } else {
+                                    results.push(`${tickEmoji} Added role **${familyRoleId}**.`);
+                                }
+                            })
+                            .catch(() => results.push("⚠️ Failed to add clan roles."));
                     } else {
                         results.push("⚠️ Clan role not found.");
                     }
@@ -311,16 +330,28 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
             if (hasStaffRole) {
                 results.push("⚠️ Nickname updation skipped , He/she is a staff at Blood");
             } else {
-                let clanNick = "";
-                if (playerData.clan) {
-                    const clanInfo = clanroles[playerData.clan.tag];
-                    if (clanInfo && clanInfo.nickName) {
-                        clanNick = clanInfo.nickName;
+                const clanNicks = [];
+                for (const [tag, info] of Object.entries(clanroles)) {
+                    if (info.roleId && targetMember.roles.cache.has(info.roleId)) {
+                        if (info.nickName && !clanNicks.includes(info.nickName)) {
+                            clanNicks.push(info.nickName);
+                        }
                     }
                 }
-                const newNickname = clanNick 
-                    ? `${clanNick} • BLOOD | ${playerName || targetMember.user.username}` 
+                if (playerData.clan) {
+                    const clanInfo = clanroles[playerData.clan.tag];
+                    if (clanInfo && clanInfo.nickName && !clanNicks.includes(clanInfo.nickName)) {
+                        clanNicks.push(clanInfo.nickName);
+                    }
+                }
+                const clanNickStr = clanNicks.join(' • ');
+                let newNickname = clanNickStr 
+                    ? `BLOOD | ${playerName || targetMember.user.username} • ${clanNickStr}` 
                     : `BLOOD | ${playerName || targetMember.user.username}`;
+
+                if (newNickname.length > 32) {
+                    newNickname = newNickname.substring(0, 32);
+                }
 
                 await targetMember.setNickname(newNickname)
                     .then(() => results.push(`${tickEmoji} Nickname updated.`))

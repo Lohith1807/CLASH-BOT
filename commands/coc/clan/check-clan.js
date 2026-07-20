@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 
 // In-memory cache for clan names to speed up autocomplete responses
 const clanNameCache = new Map();
@@ -101,7 +101,17 @@ module.exports = {
   },
 
   async execute(interaction, context) {
-    const { coc, data: dataManager, emoji } = context;
+    const { coc, data: dataManager, emoji, config } = context;
+
+    const allowedRoles = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
+    const isAuthorized = allowedRoles.some(roleId => interaction.member.roles.cache.has(roleId)) || interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+
+    if (!isAuthorized) {
+      return interaction.reply({
+        content: "❌ You cannot use this command.",
+        ephemeral: true
+      });
+    }
     
     // Defer the interaction immediately to buy time (especially for checking all clans)
     await interaction.deferReply().catch(() => {});

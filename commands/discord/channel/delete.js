@@ -103,7 +103,7 @@ module.exports = {
             const isAuthorized = ALLOWED_ROLES.some(roleId => message.member.roles.cache.has(roleId)) || message.member.permissions.has(PermissionFlagsBits.Administrator);
 
             if (!isAuthorized) {
-                return message.channel.send('❌ You do not have permission to use this command.');
+                return message.channel.send('❌ You cannot use this command.');
             }
 
             if (!message.member.permissions.has(PermissionFlagsBits.ManageMessages)) {
@@ -196,7 +196,7 @@ module.exports = {
         const isAuthorized = ALLOWED_ROLES.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAuthorized) {
-            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You cannot use this command.', ephemeral: true });
         }
 
         if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {
@@ -285,7 +285,7 @@ module.exports = {
         const isAuthorized = ALLOWED_ROLES.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAuthorized) {
-            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You cannot use this command.', ephemeral: true });
         }
 
         if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {

@@ -1,13 +1,29 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const { connectToDatabase, Clan } = require('../../../utils/mongodb.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('refresh')
-        .setDescription('Refresh all clans data in MongoDB from the Clash of Clans API'),
+        .setDescription('Refresh all clans data in MongoDB from the Clash of Clans API')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
 
     async execute(interaction, context) {
-        const { coc } = context;
+        const { coc, config } = context;
+        const member = interaction.member;
+
+        const allowedRoles = [
+            ...(config.ADMIN_ROLE_IDS || []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
+        ];
+
+        const hasAllowedRole = member.roles.cache.some(roleId => allowedRoles.includes(roleId));
+        const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
+
+        if (!isAdmin && !hasAllowedRole) {
+            return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
+        }
+
         await interaction.deferReply();
 
         try {

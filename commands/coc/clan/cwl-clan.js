@@ -136,7 +136,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('cwl-clan')
         .setDescription('Manage CWL clans')
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option =>
             option.setName('action')
                 .setDescription('Select an action')
@@ -148,6 +148,22 @@ module.exports = {
 
     async execute(interaction, context) {
         try {
+            const { config } = context;
+            const member = interaction.member;
+
+            const allowedRoles = [
+                ...(config.ADMIN_ROLE_IDS || []),
+                ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
+                ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
+            ];
+
+            const hasAllowedRole = member.roles.cache.some(roleId => allowedRoles.includes(roleId));
+            const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
+
+            if (!isAdmin && !hasAllowedRole) {
+                return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
+            }
+
             const action = interaction.options.getString('action');
 
             if (action === 'add') {

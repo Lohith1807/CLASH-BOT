@@ -4,7 +4,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('set-welcome-th')
         .setDescription('Manage the recruited Town Halls in the welcome message')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option => 
             option.setName('add')
                 .setDescription('TH levels to add (e.g. 18, 17, 16)')
@@ -17,7 +17,20 @@ module.exports = {
         ),
 
     async execute(interaction, context) {
-        const { data: dataManager, emoji: emojiUtils } = context;
+        const { data: dataManager, emoji: emojiUtils, config } = context;
+
+        const allowedRoles = [
+            ...(config.ADMIN_ROLE_IDS || []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
+            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
+        ];
+
+        const hasAllowedRole = interaction.member.roles.cache.some(r => allowedRoles.includes(r.id));
+        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+
+        if (!isAdmin && !hasAllowedRole) {
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+        }
         
         const addInput = interaction.options.getString('add');
         const removeInput = interaction.options.getString('remove');
