@@ -20,8 +20,8 @@ module.exports = {
         .setDescription('Deletes the existing ticket where the command is used'),
 
     async execute(interaction, context) {
-        const { channel, member, guild, user } = interaction;
-        const { config } = context;
+        const { channel, member, config } = interaction;
+        const conf = context.config || config;
 
         if (channel.deleting) {
             return interaction.reply({
@@ -30,7 +30,7 @@ module.exports = {
             }).catch(() => null);
         }
 
-        const STAFF_ROLE_IDS = config.STAFF_ROLE_IDS || [];
+        const STAFF_ROLE_IDS = conf.STAFF_ROLE_IDS || [];
         const isStaff = STAFF_ROLE_IDS.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isStaff) {
@@ -40,7 +40,7 @@ module.exports = {
             });
         }
 
-        const CATEGORY_ID = config.TICKET_CATEGORY_ID || config.ADMIN_CATEGORY_ID;
+        const CATEGORY_ID = conf.TICKET_CATEGORY_ID || conf.ADMIN_CATEGORY_ID;
         if (channel.parentId !== CATEGORY_ID) {
             return interaction.reply({
                 content: '❌ This command can only be used inside a ticket channel.',
@@ -48,69 +48,24 @@ module.exports = {
             });
         }
 
-        await interaction.deferReply();
+        const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
-        const creationTime = channel.createdAt;
+        const confirmEmbed = new EmbedBuilder()
+            .setTitle('Close Ticket')
+            .setDescription('Are you sure you want to close this ticket?')
+            .setColor(0xff0000);
 
-        let attachment = null;
-        try {
-            attachment = await transcripts.createTranscript(channel, {
-                limit: -1,
-                fileName: `transcript-${channel.name}.html`,
-                returnBuffer: false,
-                saveImages: false
-            });
-        } catch (err) {
-            console.error('Transcript Generation Error:', err);
-        }
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId('confirm_close_ticket')
+                .setLabel('Yes')
+                .setStyle(ButtonStyle.Danger),
+            new ButtonBuilder()
+                .setCustomId('cancel_close_ticket')
+                .setLabel('No')
+                .setStyle(ButtonStyle.Secondary)
+        );
 
-        let ticketOwnerId = channel.topic;
-        let ownerMention = '';
-        if (ticketOwnerId && /^\d+$/.test(ticketOwnerId)) {
-            const owner = await guild.members.fetch(ticketOwnerId).catch(() => null);
-            if (owner) {
-                ownerMention = `<@${ticketOwnerId}>(${owner.user.username})`;
-            } else {
-                ownerMention = `<@${ticketOwnerId}>`;
-            }
-        } else if (ticketOwnerId) {
-            ownerMention = `<@${ticketOwnerId}>`;
-        } else {
-            ownerMention = `Unknown User`;
-        }
-
-        const now = Math.floor(Date.now() / 1000);
-        
-        const closeContent = `Ticket Closed - By: ${user} | ${user.username} - Ticket: ${channel.name}, ${ownerMention} - Time: <t:${now}:F> -`;
-
-        const closeEmbed = new EmbedBuilder()
-            .setAuthor({ name: user.username, iconURL: user.displayAvatarURL() })
-            .setTitle('Ticket Closed')
-            .setDescription(
-                `• By: ${user} | ${user.username}\n` +
-                `• Ticket: ${channel.name}, ${ownerMention}\n` +
-                `• Time: <t:${now}:F>\n` +
-                `• Ticket Creation: <t:${Math.floor(creationTime.getTime() / 1000)}:F>`
-            )
-            .setColor(0x2b2d31);
-
-        try {
-            await sendLog(guild, closeEmbed, config, attachment, closeContent);
-        } catch (err) {
-            console.error('Failed to send log with attachment:', err);
-            await sendLog(guild, closeEmbed, config).catch(e => console.error('Final Log Error:', e));
-        }
-
-        if (channel.deleting) return;
-        channel.deleting = true;
-
-        await interaction.editReply({ content: '✅ Transcript saved! This ticket will be deleted in **5 seconds**...' });
-
-        setTimeout(() => {
-            channel.delete().catch(err => {
-                if (err.code === 10003) return; // Silence "Unknown Channel" error
-                console.log('Error deleting channel:', err);
-            });
-        }, 5000);
+        await interaction.reply({ embeds: [confirmEmbed], components: [row] });
     }
 };

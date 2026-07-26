@@ -202,6 +202,23 @@ client.on("messageCreate", async (message) => {
       }
     }
   }
+  if (message.content.startsWith("?")) {
+    const args = message.content.slice(1).trim().split(/ +/);
+    const commandName = args.shift().toLowerCase();
+    
+    if (commandName === "check") {
+      try {
+        const context = { ...tools, commandName, prefix: "?" };
+        const command = require("./commands/discord/moderation/check.js");
+        await command.execute(message, args, context);
+      } catch (err) {
+        console.error(err);
+        message.channel.send("⚠️ There was an error executing that command.");
+      }
+      return;
+    }
+  }
+
   if (!message.content.startsWith(PREFIX)) return;
 
   const args = message.content.slice(PREFIX.length).trim().split(/ +/);
@@ -222,7 +239,7 @@ client.on("messageCreate", async (message) => {
       const command = require("./commands/coc/profile/unlink.js");
       await command.execute(message, args, context);
 
-    } else if (commandName === "cc" || commandName === "check") {
+    } else if (commandName === "cc") {
       const command = require("./commands/discord/roles/cc.js");
       await command.execute(message, args, context);
     } else if (commandName === "ww") {

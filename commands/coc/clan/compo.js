@@ -85,10 +85,10 @@ module.exports = {
     if (!ctx) return;
 
     const { coc, data: dataManager, EmbedBuilder } = ctx;
+    let arg0;
     try {
       if (!isInteraction && input.deletable) await input.delete().catch(() => { });
 
-      let arg0;
       if (isInteraction) {
         arg0 = input.options.getString('clan');
         await input.deferReply().catch(() => {});

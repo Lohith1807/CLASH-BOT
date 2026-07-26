@@ -8,7 +8,9 @@ const {
     MessageFlags,
     ModalBuilder,
     TextInputBuilder,
-    TextInputStyle
+    TextInputStyle,
+    FileUploadBuilder,
+    LabelBuilder
 } = require('discord.js');
 const transcripts = require('discord-html-transcripts');
 
@@ -98,17 +100,49 @@ async function handleTicketInteraction(interaction, context) {
             .setTitle('Application Form');
 
         if (type === 'fwa-entry' || type === 'clan-entry') {
+            const q2Label = new LabelBuilder()
+                .setLabel('2.Share Your FWA Base')
+                .setFileUploadComponent(
+                    new FileUploadBuilder()
+                        .setCustomId('q2')
+                        .setRequired(true)
+                );
+
+            const q3Label = new LabelBuilder()
+                .setLabel('3.Upload Your Profile')
+                .setFileUploadComponent(
+                    new FileUploadBuilder()
+                        .setCustomId('q3')
+                        .setRequired(true)
+                );
+
             modal.addComponents(
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1.Where did you find Blood Alliance?').setStyle(TextInputStyle.Short).setRequired(true)),
-                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2.Share Your FWA Base').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
-                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3.Upload Your Profile').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
+                q2Label,
+                q3Label,
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.First time FWA? How long to stay?').setStyle(TextInputStyle.Paragraph).setRequired(true))
             );
         } else if (type === 'war-entry') {
+            const q2Label = new LabelBuilder()
+                .setLabel('2. Share Your War Base')
+                .setFileUploadComponent(
+                    new FileUploadBuilder()
+                        .setCustomId('q2')
+                        .setRequired(true)
+                );
+
+            const q3Label = new LabelBuilder()
+                .setLabel('3. Upload War Performance')
+                .setFileUploadComponent(
+                    new FileUploadBuilder()
+                        .setCustomId('q3')
+                        .setRequired(true)
+                );
+
             modal.addComponents(
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('1. Where did you find Blood Alliance?').setStyle(TextInputStyle.Short).setRequired(true)),
-                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q2').setLabel('2. Share Your War Base').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
-                new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q3').setLabel('3. Upload War Performance').setPlaceholder("Type 'Yes' and upload screenshot later").setStyle(TextInputStyle.Short).setRequired(true)),
+                q2Label,
+                q3Label,
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4. Hero availability').setStyle(TextInputStyle.Short).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5. Why do you want to join?').setStyle(TextInputStyle.Paragraph).setRequired(true))
             );
@@ -148,10 +182,18 @@ async function handleTicketInteraction(interaction, context) {
 
     if (interaction.isModalSubmit() && customId.startsWith('submit_app_')) {
         const type = customId.replace('submit_app_', '');
-        let q1, q2, q3, q4, q5;
+        let q1, q2, q3, q4, q5, q2_file, q3_file;
         try { q1 = interaction.fields.getTextInputValue('q1'); } catch (e) {}
         try { q2 = interaction.fields.getTextInputValue('q2'); } catch (e) {}
+        try {
+            const files = interaction.fields.getUploadedFiles('q2');
+            q2_file = files?.first() || null;
+        } catch (e) {}
         try { q3 = interaction.fields.getTextInputValue('q3'); } catch (e) {}
+        try {
+            const files = interaction.fields.getUploadedFiles('q3');
+            q3_file = files?.first() || null;
+        } catch (e) {}
         try { q4 = interaction.fields.getTextInputValue('q4'); } catch (e) {}
         try { q5 = interaction.fields.getTextInputValue('q5'); } catch (e) {}
 
@@ -160,21 +202,27 @@ async function handleTicketInteraction(interaction, context) {
             .setColor(0x00FF00)
             .setTimestamp();
 
+        const embeds = [embed];
+
         if (type === 'fwa-entry' || type === 'clan-entry') {
             embed.addFields(
                 { name: '1. Where did you find Blood Alliance?', value: q1 || 'N/A' },
-                { name: '2. Upload a screenshot of your current FWA base.', value: q2 || 'N/A' },
-                { name: '3. Send a screenshot of your Clash of Clans. it shows My Profile.', value: q3 || 'N/A' },
+                { name: '2. Upload a screenshot of your current FWA base.', value: q2_file ? '[Images Attached below]' : (q2 || 'N/A') },
+                { name: '3. Send a screenshot of your Clash of Clans. it shows My Profile.', value: q3_file ? '[Images Attached below]' : (q3 || 'N/A') },
                 { name: '4. First time joining FWA? Read all FWA & Mention how long you plan to stay', value: q4 || 'N/A' }
             );
+            if (q2_file) embeds.push(new EmbedBuilder().setTitle('FWA Base').setImage(q2_file.url).setColor(0x00FF00));
+            if (q3_file) embeds.push(new EmbedBuilder().setTitle('Profile').setImage(q3_file.url).setColor(0x00FF00));
         } else if (type === 'war-entry') {
             embed.addFields(
                 { name: '1. Where did you find Blood Alliance?', value: q1 || 'N/A' },
-                { name: '2. Share Your War Base', value: q2 || 'N/A' },
-                { name: '3. Upload War Performance(Send a screenshot showing your War Stars and best attacks.)', value: q3 || 'N/A' },
+                { name: '2. Share Your War Base', value: q2_file ? '[Images Attached below]' : (q2 || 'N/A') },
+                { name: '3. Upload War Performance(Send a screenshot showing your War Stars and best attacks.)', value: q3_file ? '[Images Attached below]' : (q3 || 'N/A') },
                 { name: '4. Ensure your heroes are available or you have books to finish them.', value: q4 || 'N/A' },
                 { name: '5. Why do you want to join?', value: q5 || 'N/A' }
             );
+            if (q2_file) embeds.push(new EmbedBuilder().setTitle('War Base').setImage(q2_file.url).setColor(0x00FF00));
+            if (q3_file) embeds.push(new EmbedBuilder().setTitle('War Performance').setImage(q3_file.url).setColor(0x00FF00));
         } else if (type === 'rep-apply') {
             embed.addFields(
                 { name: '1. Share Your FWA CC Profile link', value: q1 || 'N/A' },
@@ -206,13 +254,12 @@ async function handleTicketInteraction(interaction, context) {
         }
 
         let content = `**<@${interaction.user.id}> Application Submitted!**`;
-        if (type === 'fwa-entry' || type === 'clan-entry') {
-            content += '\n\n**🛑 ACTION REQUIRED: Please upload your FWA Base and Profile screenshots into this chat now!**';
-        } else if (type === 'war-entry') {
-            content += '\n\n**🛑 ACTION REQUIRED: Please upload your War Base, Profile, and War Stats (Performance) screenshots into this chat now!**';
+        if (type === 'fwa-entry' || type === 'clan-entry' || type === 'war-entry') {
+            const execStaffRole = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[2] ? `<@&${config.STAFF_ROLE_IDS[2].trim()}> ` : '';
+            content += `\n\n**🛑 CONFIRMATION REQUIRED:** ${execStaffRole}Player application completed please verify him by using \`?check #PLAYERTAG\` then move on`;
         }
 
-        await interaction.reply({ content, embeds: [embed] });
+        await interaction.reply({ content, embeds: embeds });
         
         // Remove the "Start Application" button after submission
         try {
@@ -682,9 +729,22 @@ async function handleTicketInteraction(interaction, context) {
     if (customId === 'claim_ticket') {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const hasHelpRole = member.roles.cache.has('1514535148119392377');
+        const isHelpTicket = interaction.channel.name.startsWith('help-assistance');
 
-        if (!isStaff && !isAdmin) {
-            await interaction.reply({ content: '❌ Only Staff or Admins can claim this ticket.', flags: [MessageFlags.Ephemeral] });
+        let canClaim = false;
+        if (isStaff || isAdmin) {
+            canClaim = true;
+        } else if (hasHelpRole && isHelpTicket) {
+            canClaim = true;
+        }
+
+        if (!canClaim) {
+            if (hasHelpRole && !isHelpTicket && !isStaff && !isAdmin) {
+                await interaction.reply({ content: '❌ You can only claim Help Assistance tickets.', flags: [MessageFlags.Ephemeral] });
+            } else {
+                await interaction.reply({ content: '❌ Only Staff or Admins can claim this ticket.', flags: [MessageFlags.Ephemeral] });
+            }
             return true;
         }
 
@@ -694,7 +754,8 @@ async function handleTicketInteraction(interaction, context) {
         await interaction.reply({ embeds: [claimEmbed] });
 
         // Record the claim for the staff weekly summary
-        staffTicketTracker.recordClaim(user);
+        const ticketType = staffTicketTracker.resolveTicketType(interaction.channel.name);
+        staffTicketTracker.recordClaim(user, ticketType);
 
         try {
             const msg = interaction.message;
@@ -721,6 +782,41 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (customId === 'close_ticket') {
+        const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+
+        if (!isStaff && !isAdmin) {
+            await interaction.reply({ content: '❌ Only Staff or Admins can delete this ticket.', flags: [MessageFlags.Ephemeral] });
+            return true;
+        }
+
+        const confirmEmbed = new EmbedBuilder()
+            .setTitle('Close Ticket')
+            .setDescription('Are you sure you want to close this ticket?')
+            .setColor(0xff0000);
+
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId('confirm_close_ticket')
+                .setLabel('Yes')
+                .setStyle(ButtonStyle.Danger),
+            new ButtonBuilder()
+                .setCustomId('cancel_close_ticket')
+                .setLabel('No')
+                .setStyle(ButtonStyle.Secondary)
+        );
+
+        await interaction.reply({ embeds: [confirmEmbed], components: [row] });
+        return true;
+    }
+
+    if (customId === 'cancel_close_ticket') {
+        await interaction.deferUpdate().catch(() => {});
+        await interaction.message.delete().catch(() => {});
+        return true;
+    }
+
+    if (customId === 'confirm_close_ticket') {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
 

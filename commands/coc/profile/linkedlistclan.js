@@ -58,7 +58,8 @@ module.exports = {
         const tickbox = emojiUtils.getEmoji("tickbox") || "✅";
         const wrongbox = emojiUtils.getEmoji("wrongbox") || "❌";
         const memEmoji = emojiUtils.getEmoji("mem") || "👥";
-        const discordEmoji = client.emojis.cache.find(e => e.name.toLowerCase() === 'discord') || "💬";
+        const discordEmojiObj = client.emojis.cache.find(e => e.name.toLowerCase() === 'discord');
+        const discordEmoji = discordEmojiObj ? `${discordEmojiObj}` : "💬";
 
         const tagToUser = {};
         for (const [discordId, accounts] of Object.entries(userData)) {
@@ -127,6 +128,8 @@ module.exports = {
                 const len = m.name.replace(/`/g, "").length;
                 if (len > maxNameLength) maxNameLength = len;
             });
+            // Cap maxNameLength to prevent excessively wide lines that break embeds
+            if (maxNameLength > 20) maxNameLength = 20;
 
             const headerName = "Name".padEnd(maxNameLength, ' ');
             const headerLinked = `${discordEmoji} \`${headerName}\` **Discord**\n`;
@@ -145,7 +148,11 @@ module.exports = {
                 const cleanTag = m.tag.replace("#", "").toUpperCase();
                 const discordId = tagToUser[cleanTag];
 
-                const cleanName = m.name.replace(/`/g, "'");
+                let cleanName = m.name.replace(/`/g, "'");
+                // Truncate names that exceed maxNameLength to prevent embed overflow
+                if (cleanName.length > maxNameLength) {
+                    cleanName = cleanName.substring(0, maxNameLength - 1) + '…';
+                }
                 const paddedName = cleanName.padEnd(maxNameLength, ' ');
 
                 if (discordId) {
@@ -156,7 +163,14 @@ module.exports = {
                     } else if (resolvedUsernames[discordId]) {
                         username = resolvedUsernames[discordId];
                     }
-                    linkedLines.push(`${tickbox} \`${paddedName}\` ${username}`);
+                    // Truncate long usernames to prevent embed overflow
+                    if (username.length > 20) username = username.substring(0, 19) + '…';
+                    
+                    // Escape markdown to prevent Discord's regex parser from hitting complexity limits
+                    // (which is what caused the emojis to stop rendering halfway through)
+                    const safeUsername = username.replace(/([_*~`|])/g, '\\$1');
+                    
+                    linkedLines.push(`${tickbox} \`${paddedName}\` ${safeUsername}`);
 
                     // Tally accounts per Discord user
                     discordIdAccountCount[discordId] = (discordIdAccountCount[discordId] || 0) + 1;
@@ -185,7 +199,7 @@ module.exports = {
             const linkedChunks = [];
             let currentLinkedChunk = headerLinked;
             for (const line of linkedLines) {
-                if ((currentLinkedChunk.length + line.length + 1) > 3500) {
+                if ((currentLinkedChunk.length + line.length + 1) > 4000) {
                     linkedChunks.push(currentLinkedChunk);
                     currentLinkedChunk = headerLinked + line + "\n";
                 } else {
@@ -199,7 +213,7 @@ module.exports = {
             const notLinkedChunks = [];
             let currentNotLinkedChunk = headerNotLinked;
             for (const line of notLinkedLines) {
-                if ((currentNotLinkedChunk.length + line.length + 1) > 3500) {
+                if ((currentNotLinkedChunk.length + line.length + 1) > 4000) {
                     notLinkedChunks.push(currentNotLinkedChunk);
                     currentNotLinkedChunk = headerNotLinked + line + "\n";
                 } else {
@@ -246,7 +260,7 @@ module.exports = {
                 const multipleIdsChunks = [];
                 let currentChunk = "";
                 for (const line of multipleIdsLines) {
-                    if ((currentChunk.length + line.length + 1) > 3500) {
+                    if ((currentChunk.length + line.length + 1) > 4000) {
                         multipleIdsChunks.push(currentChunk);
                         currentChunk = line + "\n";
                     } else {
@@ -286,10 +300,35 @@ module.exports = {
                 
                 const row = new ActionRowBuilder().addComponents(refreshBtn);
 
-                if (isInteraction) {
-                    await source.editReply({ embeds: allEmbeds, components: [row] });
-                } else {
-                    await source.channel.send({ embeds: allEmbeds, components: [row] });
+                // Discord limits to 10 embeds per message — send in batches
+                const EMBED_LIMIT = 10;
+                const channel = isInteraction ? null : source.channel;
+                
+                for (let i = 0; i < allEmbeds.length; i += EMBED_LIMIT) {
+                    const batch = allEmbeds.slice(i, i + EMBED_LIMIT);
+                    const isLastBatch = (i + EMBED_LIMIT) >= allEmbeds.length;
+                    const msgPayload = { embeds: batch };
+                    
+                    // Only attach the refresh button to the last batch
+                    if (isLastBatch) {
+                        msgPayload.components = [row];
+                    }
+                    
+                    if (i === 0) {
+                        // First batch: use editReply for interactions, send for messages
+                        if (isInteraction) {
+                            await source.editReply(msgPayload);
+                        } else {
+                            await channel.send(msgPayload);
+                        }
+                    } else {
+                        // Subsequent batches: always send as follow-up messages
+                        if (isInteraction) {
+                            await source.followUp(msgPayload);
+                        } else {
+                            await channel.send(msgPayload);
+                        }
+                    }
                 }
             }
         } catch (err) {

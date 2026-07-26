@@ -219,12 +219,12 @@ module.exports = {
             const confirmEmbed = buildConfirmEmbed(settingLabel, currentVal);
             const confirmRow   = buildConfirmRow(settingKey, tag);
 
-            const confirmMsg = await btn.reply({
+            await btn.reply({
                 embeds:     [confirmEmbed],
                 components: [confirmRow],
                 ephemeral:  true,
-                fetchReply: true,
             });
+            const confirmMsg = await btn.fetchReply();
 
             // ── Confirm collector (no expiry) ──────────────────────────
             const confirmCollector = confirmMsg.createMessageComponentCollector({

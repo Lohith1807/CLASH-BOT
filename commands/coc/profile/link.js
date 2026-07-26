@@ -132,13 +132,15 @@ module.exports = {
                             .setColor('#57F287')
                             .setDescription(`${tickbox} Player (${data.tag}) force-linked to discord account <@${targetUser.id}>`);
 
-                        await i.update({ embeds: [successEmbed], components: [] });
+                        await i.update({ components: [] });
+                        await i.channel.send({ embeds: [successEmbed] });
                     } else if (i.customId === 'cancel_link') {
                         const cancelEmbed = new EmbedBuilder()
                             .setTitle('❌ Action Cancelled')
                             .setDescription(`Force-linking has been cancelled.`)
                             .setColor(0xE74C3C);
-                        await i.update({ embeds: [cancelEmbed], components: [] });
+                        await i.update({ components: [] });
+                        await i.channel.send({ embeds: [cancelEmbed] });
                     }
                 });
 

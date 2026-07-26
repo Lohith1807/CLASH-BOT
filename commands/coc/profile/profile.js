@@ -12,6 +12,7 @@ function formatRole(role) {
 
 module.exports = {
   name: "profile",
+  aliases: ["p"],
   description: "Show linked Clash of Clans accounts or fetch by tag",
   async execute(message, args, context) {
     const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, emoji: emojiUtils, coc, data: dataManager } = context;
@@ -50,6 +51,10 @@ module.exports = {
     const userData = dataManager.getUserData();
 
     if (tagArg) {
+      let loadingMessage = await message.channel.send({ 
+        embeds: [new EmbedBuilder().setColor(0x9B59B6).setDescription(`Fetching Clash of Clans profiles...\n\`\`\`ansi\n\u001b[30m[▱▱▱▱▱]\u001b[0m (0/1)\n\`\`\``)]
+      });
+
       try {
         const data = await coc.getPlayer(tagArg);
         const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || emojiUtils.getEmoji('th8') || "";
@@ -116,12 +121,12 @@ module.exports = {
           )
           .setTimestamp();
 
-        return message.channel.send({ embeds: [embed] });
+        return loadingMessage.edit({ embeds: [embed] });
       } catch (err) {
         if (err.response && err.response.status === 503) {
-            return message.channel.send(`❌ The Clash of Clans API is currently in maintenance. Please try again later.`);
+            return loadingMessage.edit({ content: `❌ The Clash of Clans API is currently in maintenance. Please try again later.`, embeds: [] });
         }
-        return message.channel.send(`❌ Could not fetch tag ${tagArg}: ${err.message}`);
+        return loadingMessage.edit({ content: `❌ Could not fetch tag ${tagArg}: ${err.message}`, embeds: [] });
       }
     }
 
@@ -132,16 +137,22 @@ module.exports = {
       );
     }
 
-    const accounts = await module.exports.getProfileAccounts(userId, userData, coc, emojiUtils);
+    const totalAccounts = userData[userId].length;
+    let loadingMessage = await message.channel.send({ 
+        embeds: [new EmbedBuilder().setColor(0x9B59B6).setDescription(`Fetching Clash of Clans profiles...\n\`\`\`ansi\n\u001b[30m[▱▱▱▱▱]\u001b[0m (0/${totalAccounts})\n\`\`\``)]
+    });
+
+    const accounts = await module.exports.getProfileAccounts(userId, userData, coc, emojiUtils, loadingMessage);
     let page = 0;
 
     const embed = module.exports.buildProfileEmbed(targetUser, accounts, page);
     const components = module.exports.buildProfileComponents(targetUser.id, page, leftEmoji, rightEmoji, accounts.length);
 
-    await message.channel.send({ embeds: [embed], components: components });
+    await loadingMessage.edit({ embeds: [embed], components: components });
   },
 
-  async getProfileAccounts(userId, userData, coc, emojiUtils) {
+  async getProfileAccounts(userId, userData, coc, emojiUtils, loadingMessage) {
+    const { EmbedBuilder } = require("discord.js");
     const accounts = [];
     const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡";
     const userAccounts = userData[userId] || [];
@@ -149,6 +160,8 @@ module.exports = {
     if (userAccounts.length === 0) return [];
     
     const mainTag = userAccounts[0].tag;
+    const total = userAccounts.length;
+    let fetched = 0;
 
     for (const account of userAccounts) {
       try {
@@ -194,6 +207,13 @@ module.exports = {
           townHallLevel: 0,
           tag: account.tag
         });
+      }
+
+      fetched++;
+      if (loadingMessage) {
+        const progress = Math.round((fetched / total) * 5);
+        const bar = `\u001b[1;32m${"▰".repeat(progress)}\u001b[0m\u001b[30m${"▱".repeat(5 - progress)}\u001b[0m`;
+        await loadingMessage.edit({ embeds: [new EmbedBuilder().setColor(0x9B59B6).setDescription(`Fetching Clash of Clans profiles...\n\`\`\`ansi\n[${bar}] (${fetched}/${total})\n\`\`\``)] }).catch(() => {});
       }
     }
 

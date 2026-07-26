@@ -70,7 +70,7 @@ module.exports = {
 
             var embed = new EmbedBuilder()
                 .setTitle("⚠️ Confirm Revocation")
-                .setDescription("Are you sure you want to remove this clan from the registry?\n\n" + infoLines)
+                .setDescription("Are you sure you want to remove this clan from the registry?\n**This will also delete the clan's Category, Channels, and Roles (Leader & Member).**\n\n" + infoLines)
                 .setColor(0xe67e22)
                 .setTimestamp();
 
@@ -98,14 +98,59 @@ module.exports = {
                 if (confirmation.customId === "confirm_revoke") {
                     clanroles = dataManager.getClanRoles();
                     if (clanroles[clanTag]) {
+                        var entryData = clanroles[clanTag];
+                        
+                        await confirmation.deferUpdate();
+
+                        const guild = interaction.guild;
+                        const roleId = entryData.roleId;
+                        const leaderRoleId = entryData.leaderRoleId;
+                        const channelId = entryData.channelId;
+                        const mailChannelId = entryData.mailChannelId;
+                        const leadChannelId = entryData.leadChannelId;
+                        const feedChannelId = entryData.feedChannelId;
+
+                        let categoryId = null;
+
+                        // Delete channels and find category
+                        for (let chId of [channelId, mailChannelId, leadChannelId, feedChannelId]) {
+                            if (chId) {
+                                try {
+                                    let ch = await guild.channels.fetch(chId).catch(() => null);
+                                    if (ch) {
+                                        if (ch.parentId) categoryId = ch.parentId;
+                                        await ch.delete().catch(() => null);
+                                    }
+                                } catch(e) {}
+                            }
+                        }
+
+                        // Delete category
+                        if (categoryId) {
+                            try {
+                                let cat = await guild.channels.fetch(categoryId).catch(() => null);
+                                if (cat) await cat.delete().catch(() => null);
+                            } catch (e) {}
+                        }
+
+                        // Delete roles
+                        for (let rId of [roleId, leaderRoleId]) {
+                            if (rId) {
+                                try {
+                                    let role = await guild.roles.fetch(rId).catch(() => null);
+                                    if (role) await role.delete().catch(() => null);
+                                } catch (e) {}
+                            }
+                        }
+
                         delete clanroles[clanTag];
                         dataManager.saveClanRoles(clanroles);
 
-                        await confirmation.update({
+                        await interaction.editReply({
                             embeds: [
                                 new EmbedBuilder()
                                     .setTitle("🗑️ Clan Revoked")
-                                    .setDescription("Successfully removed clan **" + clanTag + "** from the registry.")
+                                    .setDescription("Successfully removed clan **" + clanTag + "** from the registry, and deleted its associated channels, category, and roles.")
                                     .setColor(0xe74c3c)
                                     .setTimestamp()
                             ],

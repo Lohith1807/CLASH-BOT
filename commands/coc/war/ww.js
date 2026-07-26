@@ -98,7 +98,9 @@ module.exports = {
         try {
           await msg.edit({ components: [] });
         } catch (err) {
-          console.warn("Failed to clear buttons:", err);
+          if (err.code !== 10008) {
+            console.warn("Failed to clear buttons:", err);
+          }
         }
       });
     } catch (err) {

@@ -29,7 +29,24 @@ function loadData() {
             return { lastReset: 0, staff: {} };
         }
         const data = fs.readFileSync(dataPath, 'utf-8');
-        return JSON.parse(data);
+        const parsed = JSON.parse(data);
+        
+        // Migration: Ensure all staff have claimsByType and total claims
+        if (parsed.staff) {
+            for (const userId in parsed.staff) {
+                const userObj = parsed.staff[userId];
+                if (typeof userObj.claims === 'number' && !userObj.claimsByType) {
+                    userObj.claimsByType = { 'Other': userObj.claims };
+                }
+                if (!userObj.claimsByType) {
+                    userObj.claimsByType = {};
+                }
+                
+                // Recalculate total claims to be safe
+                userObj.claims = Object.values(userObj.claimsByType).reduce((sum, val) => sum + val, 0);
+            }
+        }
+        return parsed;
     } catch (e) {
         console.error("Error reading staffTickets.json:", e);
         return { lastReset: 0, staff: {} };
@@ -54,33 +71,65 @@ function checkAndReset(data) {
     }
 }
 
-function recordClaim(user) {
+function recordClaim(user, ticketType = 'Other') {
     const data = loadData();
     checkAndReset(data);
     
     if (!data.staff[user.id]) {
         data.staff[user.id] = {
             username: user.username,
-            claims: 0
+            claims: 0,
+            claimsByType: {}
         };
     }
     
-    data.staff[user.id].claims += 1;
+    if (!data.staff[user.id].claimsByType[ticketType]) {
+        data.staff[user.id].claimsByType[ticketType] = 0;
+    }
+    
+    data.staff[user.id].claimsByType[ticketType] += 1;
+    data.staff[user.id].claims += 1; // Update total
     data.staff[user.id].username = user.username; // keep username up to date
     
     saveData(data);
 }
 
-function removeClaim(userId) {
+function removeClaim(userId, ticketType = 'Other') {
     const data = loadData();
     checkAndReset(data);
     
     if (data.staff[userId] && data.staff[userId].claims > 0) {
+        if (data.staff[userId].claimsByType && data.staff[userId].claimsByType[ticketType] > 0) {
+            data.staff[userId].claimsByType[ticketType] -= 1;
+        } else if (data.staff[userId].claimsByType && data.staff[userId].claimsByType['Other'] > 0) {
+            // Fallback to removing from Other if the type wasn't found but they have claims
+            data.staff[userId].claimsByType['Other'] -= 1;
+        } else {
+            // Just find any type with > 0 and deduct (fallback)
+            for (const type in data.staff[userId].claimsByType) {
+                if (data.staff[userId].claimsByType[type] > 0) {
+                    data.staff[userId].claimsByType[type] -= 1;
+                    break;
+                }
+            }
+        }
+        
         data.staff[userId].claims -= 1;
         saveData(data);
         return true;
     }
     return false;
+}
+
+function resolveTicketType(channelName) {
+    if (!channelName) return 'Other';
+    const prefix = channelName.split('-')[0].toLowerCase();
+    if (['fwa', 'clan', 'war'].includes(prefix)) return 'Clan Apply';
+    if (prefix === 'rep') return 'Rep Apply';
+    if (prefix === 'staff') return 'Staff Apply';
+    if (prefix === 'alliance') return 'Alliance Join';
+    if (prefix === 'help') return 'Help Assistance';
+    return 'Other';
 }
 
 function getSummary() {
@@ -93,5 +142,6 @@ module.exports = {
     recordClaim,
     removeClaim,
     getSummary,
+    resolveTicketType,
     getMostRecentResetTime // exported for testing if needed
 };

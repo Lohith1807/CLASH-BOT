@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, PermissionsBitField } = require("discord.js");
-
+const fs = require("fs");
+const path = require("path");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("clanentry")
@@ -139,17 +140,28 @@ module.exports = {
             let finalRoleId, finalChannelId, finalMailChannelId, finalLeadChannelId, finalFeedChannelId;
             let setupWarnings = [];
 
-            let leaderRole = await interaction.guild.roles.create({
+            let leaderIconPath = path.join(__dirname, "../../../../assets/leader.png");
+            let memberIconPath = path.join(__dirname, "../../../../assets/member.png");
+
+            let leaderRoleOptions = {
                 name: `〢・🩸${officialClanName} Leader`,
                 color: 0xfd0303,
+                hoist: true,
                 reason: `Automated setup for ${clanTag}`
-            });
+            };
+            if (fs.existsSync(leaderIconPath)) leaderRoleOptions.icon = leaderIconPath;
 
-            let memberRole = await interaction.guild.roles.create({
+            let leaderRole = await interaction.guild.roles.create(leaderRoleOptions);
+
+            let memberRoleOptions = {
                 name: `〢・🩸${officialClanName} Member`,
                 color: 0xe99898,
+                hoist: true,
                 reason: `Automated setup for ${clanTag}`
-            });
+            };
+            if (fs.existsSync(memberIconPath)) memberRoleOptions.icon = memberIconPath;
+
+            let memberRole = await interaction.guild.roles.create(memberRoleOptions);
             finalRoleId = memberRole.id;
 
             const assignRoles = async (user) => {

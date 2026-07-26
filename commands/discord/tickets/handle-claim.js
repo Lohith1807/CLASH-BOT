@@ -27,13 +27,22 @@ module.exports = {
         const hasNameRole = memberRoles.some(r => allowedRoleNames.some(allowed => r.name.toLowerCase().includes(allowed)));
         const hasPerms = interaction.memberPermissions && interaction.memberPermissions.has(PermissionFlagsBits.ManageRoles);
         const isAdmin = (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => memberRoles.has(id))) || hasPerms || interaction.user.id === interaction.guild.ownerId;
+        const hasHelpRole = memberRoles.has('1514535148119392377');
+        const isHelpTicket = interaction.channel.name.startsWith('help-assistance');
 
-        if (!hasConfigRole && !hasNameRole && !hasPerms && interaction.user.id !== interaction.guild.ownerId) {
+        let canUseCommand = false;
+        if (hasConfigRole || hasNameRole || hasPerms || interaction.user.id === interaction.guild.ownerId) {
+            canUseCommand = true;
+        } else if (hasHelpRole && isHelpTicket) {
+            canUseCommand = true;
+        }
+
+        if (!canUseCommand) {
             return interaction.reply({ 
                 embeds: [
                     new EmbedBuilder()
                         .setColor("Red")
-                        .setDescription(`${getEmoji("bluex") || '❌'} You do not have the required roles to use this command.`)
+                        .setDescription(`${getEmoji("bluex") || '❌'} You do not have the required roles to use this command here.`)
                 ], 
                 ephemeral: true 
             });
@@ -101,11 +110,13 @@ module.exports = {
             });
         }
 
+        const ticketType = staffTicketTracker.resolveTicketType(interaction.channel.name);
+
         // Remove claim from previous user
-        staffTicketTracker.removeClaim(previousClaimerId);
+        staffTicketTracker.removeClaim(previousClaimerId, ticketType);
 
         // Add claim to new user
-        staffTicketTracker.recordClaim(targetUser);
+        staffTicketTracker.recordClaim(targetUser, ticketType);
 
         // We no longer update the original claim message so the history remains intact
 

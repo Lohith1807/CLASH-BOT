@@ -9,7 +9,7 @@
     "nickName": "BB",
     "clanType": "fwa",
     "autoRole": true,
-    "welcomeMessage": false,
+    "welcomeMessage": true,
     "leaders": [
       "<@562951110562938880>"
     ],
@@ -52,7 +52,7 @@
     "feedChannelId": "1519223251530940506",
     "clanType": "fwa",
     "nickName": "BZ",
-    "welcomeMessage": false,
+    "welcomeMessage": true,
     "leaders": [
       "<@1393061101838532630>"
     ],
@@ -159,7 +159,6 @@
       "<@895919742563545118>"
     ],
     "coLeaders": [
-      "<@1405855635894960291>",
       "<@855449588228161548>",
       "<@976081743859822612>"
     ],
@@ -223,24 +222,6 @@
     ],
     "joinLeaveTracker": false
   },
-  "#2G0Y0QQL2": {
-    "roleId": "1513223718728630343",
-    "leaderRoleId": "1513223717755555960",
-    "channelId": "1513223732171112578",
-    "mailChannelId": "1513223730871009511",
-    "leadChannelId": "1513223729424105623",
-    "feedChannelId": "1513223734050164837",
-    "clanType": "fwa",
-    "nickName": "QG",
-    "welcomeMessage": false,
-    "leaders": [
-      "<@1110227979189100604>"
-    ],
-    "coLeaders": [
-      "<@1488241132188991558>"
-    ],
-    "joinLeaveTracker": false
-  },
   "#2VR8VG2Y": {
     "roleId": "1518669387496816783",
     "leaderRoleId": "1518669386041397510",
@@ -249,7 +230,7 @@
     "leadChannelId": "1518669398167257198",
     "feedChannelId": "1518669411907801148",
     "clanType": "fwa",
-    "nickName": "cfw",
+    "nickName": "CFW",
     "welcomeMessage": false,
     "leaders": [
       "<@562951110562938880>"
@@ -257,25 +238,6 @@
     "coLeaders": [
       "<@1315947502226247692>",
       "<@1256130360329371664>",
-      "<@1393061101838532630>"
-    ],
-    "joinLeaveTracker": true,
-    "autoRole": true
-  },
-  "#2JP829R9C": {
-    "roleId": "1519780801665957959",
-    "leaderRoleId": "1519780799459627120",
-    "channelId": "1519780816832430080",
-    "mailChannelId": "1519780814064324720",
-    "leadChannelId": "1519780812537729275",
-    "feedChannelId": "1519780818829054085",
-    "clanType": "fwa",
-    "nickName": "BKL",
-    "welcomeMessage": false,
-    "leaders": [
-      "<@599555022807891978>"
-    ],
-    "coLeaders": [
       "<@1393061101838532630>"
     ],
     "joinLeaveTracker": true,

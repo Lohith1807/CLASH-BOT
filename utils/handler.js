@@ -61,6 +61,11 @@ async function handleInteraction(interaction, context) {
             return syncCommand.handleSyncButton(interaction, context);
         }
 
+        if (id.startsWith("check_approve") || id.startsWith("check_reject")) {
+            const checkCmd = require("../commands/discord/moderation/check.js");
+            return checkCmd.handleButton(interaction, context);
+        }
+
         if (id.startsWith("checkinvite_refresh:")) {
             const checkinvite = require("../commands/discord/moderation/checkinvite.js");
             return checkinvite.handleRefreshButton(interaction, context);
@@ -843,7 +848,8 @@ async function handleInteraction(interaction, context) {
 
         if (id.startsWith("scanclan_refresh_")) {
             if (interaction.replied || interaction.deferred) return;
-            const clanTag = "#" + id.replace("scanclan_refresh_", "");
+            const cleanTag = id.replace("scanclan_refresh_", "");
+            const clanTag = "#" + cleanTag;
 
             try { await interaction.deferUpdate(); } catch(e) { return; }
 
@@ -851,7 +857,20 @@ async function handleInteraction(interaction, context) {
                 const scanClanCmd = require("../commands/coc/war/scan-clan.js");
                 const result = await scanClanCmd.buildScanClanEmbeds(clanTag, coc, dataManager, emoji);
                 if (result && result.embeds) {
-                    await scanClanCmd.sendBatchedEmbeds(interaction, result.embeds);
+                    // Rebuild buttons so they persist after refresh
+                    const refreshEmoji = getEmojiObject("refresh") || "🔄";
+                    const refreshBtn = new ButtonBuilder()
+                        .setCustomId(`scanclan_refresh_${cleanTag}`)
+                        .setStyle(ButtonStyle.Danger)
+                        .setEmoji(refreshEmoji);
+                    const lastWarsBtn = new ButtonBuilder()
+                        .setCustomId(`scanclan_lastwars_${cleanTag}`)
+                        .setLabel("Last Wars")
+                        .setStyle(ButtonStyle.Secondary)
+                        .setEmoji("📜");
+                    const btnRow = new ActionRowBuilder().addComponents(refreshBtn, lastWarsBtn);
+
+                    await scanClanCmd.sendBatchedEmbeds(interaction, result.embeds, [btnRow]);
                 } else {
                     await interaction.followUp({ content: "❌ Error refreshing war roster.", ephemeral: true }).catch(() => {});
                 }
@@ -940,6 +959,13 @@ async function handleInteraction(interaction, context) {
             );
             
             return interaction.reply({ content: "Select the account to set as Main:", components: [selectRow], ephemeral: true });
+        }
+    } else if (interaction.isModalSubmit()) {
+        const id = interaction.customId;
+        
+        if (id.startsWith("chk_a:") || id.startsWith("chk_r:")) {
+            const checkCmd = require("../commands/discord/moderation/check.js");
+            return checkCmd.handleModal(interaction, context);
         }
     }
 
