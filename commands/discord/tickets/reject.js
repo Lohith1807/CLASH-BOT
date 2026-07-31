@@ -30,8 +30,10 @@ module.exports = {
     // 9. Restrict these commands to staff/admin roles only.
     const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
     const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+    const WEL_EXE_STAFF_ID = config.WEL_EXE_STAFF_ID || process.env.WEL_EXE_STAFF_ID;
+    const isWelExe = WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID);
 
-    if (!isStaff && !isAdmin) {
+    if (!isStaff && !isAdmin && !isWelExe) {
         return interaction.reply({ content: '❌ Only Staff or Admins can use this command.', ephemeral: true });
     }
 

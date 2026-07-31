@@ -99,7 +99,7 @@ module.exports = {
                             embeds: [new EmbedBuilder()
                                 .setTitle(`You have been banned from ${interaction.guild.name}`)
                                 .setColor(0xFF0000)
-                                .setDescription(`**Reason:** ${reason}\n**Moderator:** ${interaction.user.tag}`)
+                                .setDescription(`**Reason:** ${reason}`)
                                 .setTimestamp()]
                         }).catch(() => null);
                     }
@@ -124,7 +124,7 @@ module.exports = {
 
                     await i.update({ embeds: [successEmbed], components: [] });
 
-                    const logChannelId = config.LOG_CHANNEL_ID;
+                    const logChannelId = "1531220741075243190";
                     if (logChannelId) {
                         const logChannel = interaction.guild.channels.cache.get(logChannelId);
                         if (logChannel) await logChannel.send({ embeds: [successEmbed] }).catch(() => null);

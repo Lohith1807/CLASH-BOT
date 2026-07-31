@@ -4,7 +4,7 @@ const fs = require("fs");
 // Global override to silently skip CoC API maintenance errors in the console
 const originalConsoleError = console.error;
 console.error = function (...args) {
-  const isMaintenanceError = args.some(arg => 
+  const isMaintenanceError = args.some(arg =>
     (arg instanceof Error && (arg.message === "API_MAINTENANCE_PAUSE" || (arg.response && arg.response.status === 503))) ||
     (typeof arg === "string" && (arg.includes("API_MAINTENANCE_PAUSE") || arg.includes("status code 503") || arg.includes("503 Service Unavailable")))
   );
@@ -52,10 +52,10 @@ app.get("/proxy", async (req, res) => {
     if (msg) {
       const lower = msg.toLowerCase();
       const isTokenError = lower.includes("403") || lower.includes("forbidden") || lower.includes("access denied");
-      const isIgnorable = lower.includes("coc api") || lower.includes("clash api") || lower.includes("fetch") || 
-                          lower.includes("timeout") || lower.includes("503") || lower.includes("504") || 
-                          lower.includes("502") || lower.includes("500") || lower.includes("network error") || 
-                          lower.includes("econnreset") || lower.includes("etimedout") || lower.includes("api_maintenance_pause");
+      const isIgnorable = lower.includes("coc api") || lower.includes("clash api") || lower.includes("fetch") ||
+        lower.includes("timeout") || lower.includes("503") || lower.includes("504") ||
+        lower.includes("502") || lower.includes("500") || lower.includes("network error") ||
+        lower.includes("econnreset") || lower.includes("etimedout") || lower.includes("api_maintenance_pause");
       if (isIgnorable && !isTokenError) return;
     }
     if (logChannel) {
@@ -98,7 +98,7 @@ client.activeTicketTimers = new Map();
 
 client.once(Events.ClientReady, async (c) => {
   console.log(`✅ Logged in as ${c.user.tag}`);
-  
+
   tools.coc.init(c); // Initialize cocManager with client for maintenance logs
 
   const { connectToDatabase } = require('./utils/mongodb.js');
@@ -205,8 +205,8 @@ client.on("messageCreate", async (message) => {
   if (message.content.startsWith("?")) {
     const args = message.content.slice(1).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
-    
-    if (commandName === "check") {
+
+    if (commandName === "check" || commandName === "cc") {
       try {
         const context = { ...tools, commandName, prefix: "?" };
         const command = require("./commands/discord/moderation/check.js");
@@ -240,13 +240,19 @@ client.on("messageCreate", async (message) => {
       await command.execute(message, args, context);
 
     } else if (commandName === "cc") {
-      const command = require("./commands/discord/roles/cc.js");
+      const command = require("./commands/discord/moderation/check.js");
+      await command.execute(message, args, context);
+    } else if (commandName === "as") {
+      const command = require("./commands/discord/roles/as.js");
       await command.execute(message, args, context);
     } else if (commandName === "ww") {
       const command = require("./commands/coc/war/ww.js");
       await command.execute(message, args, context);
-    } else if (commandName === 'crinfo') {
+    } else if (commandName === "crinfo") {
       const command = require('./commands/discord/roles/clanroleinfo.js');
+      await command.execute(message, args, context);
+    } else if (commandName === "reapply" || commandName === "re") {
+      const command = require('./commands/discord/tickets/reapply.js');
       await command.execute(message, args, context);
     } else if (commandName === 'player') {
       const command = require('./commands/coc/profile/player.js');
@@ -255,8 +261,8 @@ client.on("messageCreate", async (message) => {
     } else if (commandName === "clans" || commandName === "clan") {
       const command = require("./commands/coc/clan/clan.js");
       await command.execute(message, args, context);
-      
-    }  else if (commandName === "delc") {
+
+    } else if (commandName === "delc") {
       const command = require("./commands/discord/channel/delc.js");
       await command.run(message, args, context);
 

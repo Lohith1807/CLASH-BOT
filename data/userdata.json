@@ -1,19 +1,42 @@
 {
   "1393061101838532630": [
     {
-      "tag": "#8UUQ8RJUU",
-      "name": "⚔★Badalツ",
-      "strikes": 0
-    },
-    {
       "tag": "#PJVL0JRR9",
-      "name": "Rizzo",
-      "strikes": 0
+      "name": "Z E R O !!",
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "Q2SUU",
+          "reason": "test",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "1393061101838532630",
+          "clan": "Blood Zero",
+          "date": "24-06-2026"
+        }
+      ],
+      "strikes": 1
     },
     {
-      "tag": "#P0LYUQPLC",
-      "name": "ROMAN REGINS",
-      "strikes": 0
+      "tag": "#P2VLY0Y80",
+      "name": "ɪ͜͡٭KinG"
+    },
+    {
+      "tag": "#Y0URPVQ9V",
+      "name": "*Ghõst Rid€r* 4"
+    },
+    {
+      "tag": "#PR9GRL8RY",
+      "name": "..M.O.O.N.."
+    },
+    {
+      "tag": "#QVGQGUUPL",
+      "name": "Hex"
+    },
+    {
+      "tag": "#PRQYR9V00",
+      "name": "山卄丨ㄒ乇"
     }
   ],
   "562951110562938880": [
@@ -29,6 +52,10 @@
     }
   ],
   "1256130360329371664": [
+    {
+      "tag": "#GYYPRRP09",
+      "name": "Darkness"
+    },
     {
       "tag": "#8LYV9QGPC",
       "name": "Dexter...",
@@ -85,6 +112,74 @@
       "tag": "#QVU09QU9L",
       "name": "ESTxMAXADO",
       "strikes": 0
+    },
+    {
+      "tag": "#9CV029P29",
+      "name": "Battle King"
+    },
+    {
+      "tag": "#Q9Y8RQ8QL",
+      "name": "HAKU @"
+    },
+    {
+      "tag": "#LLLLVYUUG",
+      "name": "BATTEL KING"
+    },
+    {
+      "tag": "#GLPY0JJ2U",
+      "name": "Battel king"
+    },
+    {
+      "tag": "#LJRV2P80V",
+      "name": "BATTEL KING"
+    },
+    {
+      "tag": "#P90C8J88G",
+      "name": "BATTEL KING"
+    },
+    {
+      "tag": "#ULYQ0JQ8",
+      "name": "myself RÕHÎT✔✔✔"
+    },
+    {
+      "tag": "#92RP2YG8U",
+      "name": "BATTEL KING"
+    },
+    {
+      "tag": "#YLGU9PJ22",
+      "name": "siddhartha"
+    },
+    {
+      "tag": "#9YUVGVQPC",
+      "name": "Bàttlë kïng"
+    },
+    {
+      "tag": "#9U8QY2Q0V",
+      "name": "BATTEL KING"
+    },
+    {
+      "tag": "#QJ9VQCGQJ",
+      "name": "BATTEL KING"
+    },
+    {
+      "tag": "#Q9C0GL0PR",
+      "name": "BATTEL KING"
+    },
+    {
+      "tag": "#LGY98GLV9",
+      "name": "BATTEL KING"
+    },
+    {
+      "tag": "#P2P0Y8LYJ",
+      "name": "Thuwan Imzamam"
+    },
+    {
+      "tag": "#LQ9VJ8U9R",
+      "name": "battle king"
+    },
+    {
+      "tag": "#QG0P9PGJC",
+      "name": "BATTEL KING"
     }
   ],
   "389262993147428867": [
@@ -92,6 +187,74 @@
       "tag": "#G9UGCC92",
       "name": "Subham",
       "strikes": 0
+    },
+    {
+      "tag": "#22CP9LLPG",
+      "name": "Subham"
+    },
+    {
+      "tag": "#Q8880Q8GQ",
+      "name": "Psyduck"
+    },
+    {
+      "tag": "#PPPV0CYR",
+      "name": "DoomDestroyer1"
+    },
+    {
+      "tag": "#9Q0Q88QR",
+      "name": "saket"
+    },
+    {
+      "tag": "#PJJVCPPRP",
+      "name": "Subham Mini 2"
+    },
+    {
+      "tag": "#28C99CQLR",
+      "name": "$@ju"
+    },
+    {
+      "tag": "#2CPV9UPR0",
+      "name": "Kingpin"
+    },
+    {
+      "tag": "#G98ULG80R",
+      "name": "Tronvak"
+    },
+    {
+      "tag": "#GCLJV0VV0",
+      "name": "Isolda"
+    },
+    {
+      "tag": "#GQ98V0UL0",
+      "name": "Traciano"
+    },
+    {
+      "tag": "#8JLYQCCC9",
+      "name": "MUBASHIR BHATTI"
+    },
+    {
+      "tag": "#2G0VUU0JP",
+      "name": "jiya ch"
+    },
+    {
+      "tag": "#88R08V0LR",
+      "name": "maira"
+    },
+    {
+      "tag": "#82GLJVLU",
+      "name": "iqbal"
+    },
+    {
+      "tag": "#GG2RQJUYY",
+      "name": "Game+Changer"
+    },
+    {
+      "tag": "#QLGVPULLJ",
+      "name": "ＴＨＥ ＴＲＡＵＭＡＴＩＺＥＲ"
+    },
+    {
+      "tag": "#YGV9RYCU2",
+      "name": "bx"
     }
   ],
   "895919742563545118": [
@@ -169,14 +332,49 @@
       "tag": "#99CGPG8QL",
       "name": "Lv.13 lashon™",
       "strikes": 0
+    },
+    {
+      "tag": "#YY8G209VL",
+      "name": "ALBION 2"
+    },
+    {
+      "tag": "#PJG9CC8R",
+      "name": "ALBION"
+    },
+    {
+      "tag": "#G0J92V200",
+      "name": "ALBION 14"
+    },
+    {
+      "tag": "#Q0R29PLJ8",
+      "name": "ALBION 13"
+    },
+    {
+      "tag": "#P9R9L2L9P",
+      "name": "Lv.5 lashon™"
+    },
+    {
+      "tag": "#9R0L2LUVJ",
+      "name": "JÄ§MÄÑ F'ĐËZ"
+    },
+    {
+      "tag": "#GQVQCVJGU",
+      "name": "Lv.9 lashon™"
+    },
+    {
+      "tag": "#QYG22G8R8",
+      "name": "ALBION 10"
+    },
+    {
+      "tag": "#G89CJP0Q9",
+      "name": "ALBION 11"
+    },
+    {
+      "tag": "#L9UVVUJ0C",
+      "name": "ALBION 16"
     }
   ],
   "1315947502226247692": [
-    {
-      "tag": "#QYUYUCYV2",
-      "name": "*Manado*",
-      "strikes": 0
-    },
     {
       "tag": "#P0C2QRUGP",
       "name": "alien93",
@@ -192,6 +390,10 @@
   ],
   "667011170229682201": [
     {
+      "tag": "#8Y8YRQ8JR",
+      "name": "Tejas"
+    },
+    {
       "tag": "#2JQLVGQLY",
       "name": "wàrlörd",
       "strikes": 0
@@ -205,6 +407,26 @@
       "tag": "#YG98PQC8C",
       "name": "LEADER LEGEND",
       "strikes": 0
+    },
+    {
+      "tag": "#LGJ0QLLG9",
+      "name": "Naman"
+    },
+    {
+      "tag": "#Q0V922YJQ",
+      "name": "SHADOW LEGEND"
+    },
+    {
+      "tag": "#QVP2VCG0Q",
+      "name": "ADITHYAN ADHI"
+    },
+    {
+      "tag": "#QV980RCPU",
+      "name": "KILLER LEGEND"
+    },
+    {
+      "tag": "#LVRCQQRY9",
+      "name": "ＡＹＵＳＨ」"
     }
   ],
   "624543613925457939": [
@@ -293,6 +515,26 @@
       "tag": "#LQ2V980QQ",
       "name": "Afonsoo",
       "strikes": 0
+    },
+    {
+      "tag": "#L9PPRCQ9U",
+      "name": "Arqueira"
+    },
+    {
+      "tag": "#QQUP90V0V",
+      "name": "Steve"
+    },
+    {
+      "tag": "#QCRYYYP8J",
+      "name": "Miner"
+    },
+    {
+      "tag": "#QQURGL8C0",
+      "name": "Golem"
+    },
+    {
+      "tag": "#QYRULGJ00",
+      "name": "Bowler"
     }
   ],
   "1144947784412299326": [
@@ -348,14 +590,41 @@
   ],
   "1299282477076058156": [
     {
-      "tag": "#GYG8LV0Y9",
-      "name": "messi",
-      "strikes": 0
-    },
-    {
       "tag": "#G8RLGYPU0",
       "name": "Dhoni",
       "strikes": 0
+    },
+    {
+      "tag": "#R292PJPJR",
+      "name": "ronaldo"
+    },
+    {
+      "tag": "#GURU8U80V",
+      "name": "lamine yamal"
+    },
+    {
+      "tag": "#GJ99YRCUP",
+      "name": "kylian mbapps"
+    },
+    {
+      "tag": "#LCJVR98VP",
+      "name": "aertex"
+    },
+    {
+      "tag": "#GQL8P22JL",
+      "name": "This_One720"
+    },
+    {
+      "tag": "#G880CVRJC",
+      "name": "This_Alt720"
+    },
+    {
+      "tag": "#LV8L98V9U",
+      "name": "arya"
+    },
+    {
+      "tag": "#GYG8LV0Y9",
+      "name": "messi"
     }
   ],
   "539770184236269568": [
@@ -528,6 +797,14 @@
       "tag": "#YR2YYU2LY",
       "name": "NoISY々2 0 0 2",
       "strikes": 0
+    },
+    {
+      "tag": "#LYR8CPRY9",
+      "name": "ÃNgLE_283"
+    },
+    {
+      "tag": "#YV8UGPCV9",
+      "name": "Sapphire"
     }
   ],
   "810858581548990484": [
@@ -648,6 +925,10 @@
       "tag": "#GV2P9QGG",
       "name": "Janit©",
       "strikes": 0
+    },
+    {
+      "tag": "#LG8JYPUQC",
+      "name": "Janit™"
     }
   ],
   "161656316425797635": [
@@ -773,6 +1054,54 @@
       "tag": "#8Y8JPQR9J",
       "name": "⚔️☆☞*κɪɴɢ*☜☆⚔️",
       "strikes": 0
+    },
+    {
+      "tag": "#8GURLQQLV",
+      "name": "#amc HenczUp"
+    },
+    {
+      "tag": "#YLYCRQUR0",
+      "name": "REBEL"
+    },
+    {
+      "tag": "#QYGJQ92GP",
+      "name": "✨Sizzling Ice✨"
+    },
+    {
+      "tag": "#8JV0VYQ9Y",
+      "name": "!₦Ｏ₩ᴀƳ2ᴇsᴄᴀᴘᴇ❌™"
+    },
+    {
+      "tag": "#LC08LY9U8",
+      "name": "•☔Ｍａｒｓｈｍｅｌｌｏｗ☔•"
+    },
+    {
+      "tag": "#LQUYLQQRU",
+      "name": "Why Me!Why Now?"
+    },
+    {
+      "tag": "#LC9LJQQRV",
+      "name": "『ㄗ尺口』父『尸 工 长 丹』"
+    },
+    {
+      "tag": "#LYQQUJL9J",
+      "name": "▄ ︻̷̿┻̿═━一ＧＩＲＬ™"
+    },
+    {
+      "tag": "#Q0CJUGYQQ",
+      "name": "OP❌ZAID❌YT™"
+    },
+    {
+      "tag": "#G90C298PU",
+      "name": "Crazy killer"
+    },
+    {
+      "tag": "#QQYYPJUYR",
+      "name": "hut noob"
+    },
+    {
+      "tag": "#QGLUY28VL",
+      "name": "legend"
     }
   ],
   "442313735789608960": [
@@ -817,6 +1146,14 @@
       "tag": "#9QG00Q2V9",
       "name": "dFuZe 4",
       "strikes": 0
+    },
+    {
+      "tag": "#98UUUV0V9",
+      "name": "dFuze 3"
+    },
+    {
+      "tag": "#GC9RUJJL8",
+      "name": "dFuZe 5"
     }
   ],
   "455455626194321418": [
@@ -824,6 +1161,10 @@
       "tag": "#9VLCUJ2VG",
       "name": "Mad General",
       "strikes": 0
+    },
+    {
+      "tag": "#P8Q80YRY8",
+      "name": "Terminator"
     }
   ],
   "518279869046718466": [
@@ -864,6 +1205,10 @@
       "tag": "#QCV2LY2V8",
       "name": "SAMRAT_747",
       "strikes": 0
+    },
+    {
+      "tag": "#Q009G98RQ",
+      "name": "samrat"
     }
   ],
   "771950979952279583": [
@@ -961,6 +1306,10 @@
       "tag": "#GJRV98Y2Q",
       "name": "Psj9820jr",
       "strikes": 0
+    },
+    {
+      "tag": "#GUJ08Y8GY",
+      "name": "Psj9820 IV"
     }
   ],
   "457820668952838144": [
@@ -1014,8 +1363,7 @@
     },
     {
       "tag": "#2PP",
-      "name": "Morgil",
-      "strikes": 0
+      "name": "Morgil"
     }
   ],
   "1294342261882097706": [
@@ -1174,6 +1522,10 @@
       "tag": "#QLRYPYQ98",
       "name": "plzplaypubg",
       "strikes": 0
+    },
+    {
+      "tag": "#G2YGVYV80",
+      "name": "l luv rushing"
     }
   ],
   "1160191707380453518": [
@@ -1374,13 +1726,7 @@
       "strikes": 0
     }
   ],
-  "685350658810970221": [
-    {
-      "tag": "#YP9Y9UVL2",
-      "name": "CLASHER",
-      "strikes": 0
-    }
-  ],
+  "685350658810970221": [],
   "140013176476532736": [
     {
       "tag": "#8VYQQ2YY",
@@ -1410,18 +1756,47 @@
       "tag": "#90L0PP2UJ",
       "name": "Banaburger",
       "strikes": 0
+    },
+    {
+      "tag": "#GU9LQU2PQ",
+      "name": "Arcon"
+    },
+    {
+      "tag": "#R2L0QUR9Q",
+      "name": "Bana9"
     }
   ],
   "855449588228161548": [
     {
       "tag": "#YG9PQJJV2",
       "name": "saravana",
-      "strikes": 0
+      "strikes": 1,
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "EZ6ZW",
+          "reason": "test",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "1393061101838532630",
+          "clan": "CLASHING COBRAS",
+          "date": "11-05-2026"
+        }
+      ]
     },
     {
       "tag": "#P9CULJJP9",
       "name": "RK",
       "strikes": 0
+    },
+    {
+      "tag": "#Y0200CV8R",
+      "name": "D R A G O N !!"
+    },
+    {
+      "tag": "#PL82J8PU8",
+      "name": "W I Z A R D !!"
     }
   ],
   "694870014972526672": [
@@ -1482,25 +1857,25 @@
   ],
   "730445144637177927": [
     {
-      "tag": "#G0RYGUVLQ",
-      "name": "MR.MOJI 1",
+      "tag": "#LYYL0L9UQ",
+      "name": "Champion",
       "strikes": 0
     },
     {
-      "tag": "#LYYL0L9UQ",
-      "name": "Champion",
+      "tag": "#G0RYGUVLQ",
+      "name": "MR.MOJI 1",
       "strikes": 0
     }
   ],
   "1056568744186490880": [
     {
-      "tag": "#G9RVJPVJG",
-      "name": "Deadshot ☠️",
+      "tag": "#G0Q9VV0CY",
+      "name": "Aditya",
       "strikes": 0
     },
     {
-      "tag": "#G0Q9VV0CY",
-      "name": "Aditya",
+      "tag": "#G9RVJPVJG",
+      "name": "Deadshot ☠️",
       "strikes": 0
     }
   ],
@@ -1528,6 +1903,10 @@
       "tag": "#9QJG8YGYP",
       "name": "pranav",
       "strikes": 0
+    },
+    {
+      "tag": "#YY2QVU8Q8",
+      "name": "shiv"
     }
   ],
   "675040646746079242": [
@@ -1666,6 +2045,10 @@
       "tag": "#GYYC282G8",
       "name": "TheDarkLord",
       "strikes": 0
+    },
+    {
+      "tag": "#QVQ2U9P9R",
+      "name": "SAHIL ⚡"
     }
   ],
   "1464558633365930039": [
@@ -1924,7 +2307,10 @@
     {
       "tag": "#L0YRLR08R",
       "name": "DILWALE❤",
-      "strikes": 0
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#LYPPQYR2C",
@@ -2000,9 +2386,20 @@
   ],
   "976081743859822612": [
     {
+      "tag": "#QU9RLP0QC",
+      "name": "MR~SAKIB:)"
+    },
+    {
+      "tag": "#GGL0VJPVL",
+      "name": "Pekka ate wifi"
+    },
+    {
+      "tag": "#QCCUJCCRP",
+      "name": "nahiyan"
+    },
+    {
       "tag": "#Q2RLV29LV",
-      "name": "ɴᴀʜɪʏᴀɴ✔︎",
-      "strikes": 0
+      "name": "ɴᴀʜɪʏᴀɴ✔︎"
     }
   ],
   "984193780913676410": [
@@ -2016,7 +2413,20 @@
     {
       "tag": "#98JR0R0Q",
       "name": "NERRY..Max™",
-      "strikes": 0
+      "strikes": 2,
+      "totalStrikes": 2,
+      "strikeHistory": [
+        {
+          "id": "9NHUY",
+          "reason": "For 3-starring the base (2nd attack) within the first 16 hours of the FWA win against War Snipers ⒉３.",
+          "weight": 2,
+          "strikeCountAdded": 2,
+          "totalAtTime": 2,
+          "addedBy": "1393061101838532630",
+          "clan": "CLASHING COBRAS",
+          "date": "11-05-2026"
+        }
+      ]
     },
     {
       "tag": "#LY0Y88JPP",
@@ -2042,6 +2452,10 @@
       "tag": "#9VV2URQ2G",
       "name": "N€RR¥ F€RNAND€$",
       "strikes": 0
+    },
+    {
+      "tag": "#8UQPG0VQC",
+      "name": "NERRY™"
     }
   ],
   "737333471642648698": [
@@ -2186,13 +2600,7 @@
       "strikes": 0
     }
   ],
-  "1484015129917133062": [
-    {
-      "tag": "#8UQPG0VQC",
-      "name": "DenZ!l fd$",
-      "strikes": 0
-    }
-  ],
+  "1484015129917133062": [],
   "1231976546588426280": [
     {
       "tag": "#2YQUCP2PU",
@@ -2220,8 +2628,7 @@
     },
     {
       "tag": "#GLYLGPYCG",
-      "name": "viper4u",
-      "strikes": 0
+      "name": "viper4u"
     }
   ],
   "922815338247249950": [
@@ -2240,9 +2647,21 @@
   ],
   "827125642256056371": [
     {
+      "tag": "#82GRPU9JC",
+      "name": "N.D."
+    },
+    {
       "tag": "#88URVGUC0",
       "name": "N.D. II",
       "strikes": 0
+    },
+    {
+      "tag": "#GCLQVG980",
+      "name": "Alpha2Omega007"
+    },
+    {
+      "tag": "#R0YGRC99P",
+      "name": "Alpha2OmegaCoC1"
     }
   ],
   "509258104802770955": [
@@ -2309,6 +2728,22 @@
       "tag": "#29289YJ9C",
       "name": "Clarity",
       "strikes": 0
+    },
+    {
+      "tag": "#LV000VQ0J",
+      "name": "Clarity Gaming"
+    },
+    {
+      "tag": "#GP0UYQUP9",
+      "name": "Archimedes"
+    },
+    {
+      "tag": "#22GJRYCQP",
+      "name": "Chief Matt"
+    },
+    {
+      "tag": "#QJPPP98VP",
+      "name": "Mini Clarity"
     }
   ],
   "957657576869330954": [
@@ -2330,6 +2765,10 @@
       "tag": "#QUP2L2U8U",
       "name": "visper",
       "strikes": 0
+    },
+    {
+      "tag": "#GUVR9JC8L",
+      "name": "Sectumsempra"
     }
   ],
   "378213372723986434": [
@@ -2398,6 +2837,10 @@
       "tag": "#9UUL0CCGL",
       "name": "MimiKyu",
       "strikes": 0
+    },
+    {
+      "tag": "#YPUUJRGRR",
+      "name": "71121"
     }
   ],
   "760492207303032873": [
@@ -2514,6 +2957,10 @@
       "tag": "#GLV998PG",
       "name": "Themostawesome",
       "strikes": 0
+    },
+    {
+      "tag": "#LQ8QYU9V9",
+      "name": "trash"
     }
   ],
   "1356148105367650315": [
@@ -2693,9 +3140,8 @@
   ],
   "1494945280401870889": [
     {
-      "tag": "#GLYUJC29C",
-      "name": "Ayush 2",
-      "strikes": 0
+      "tag": "#GG0RGVPG2",
+      "name": "Ayush 3"
     }
   ],
   "331769925540773888": [
@@ -2703,6 +3149,14 @@
       "tag": "#Q98JQJ0L",
       "name": "lolo",
       "strikes": 0
+    },
+    {
+      "tag": "#8V9GRLUU",
+      "name": "#AzisVerdian17"
+    },
+    {
+      "tag": "#QRV8P89J0",
+      "name": "ParaPinkUniL1"
     }
   ],
   "740990717664428123": [
@@ -2712,28 +3166,12 @@
       "strikes": 0
     },
     {
-      "tag": "#809UVJ8GL",
-      "name": "DJ13",
-      "strikes": 0
-    },
-    {
       "tag": "#9GV00YRRJ",
       "name": "naruto uzumaki",
       "strikes": 0
-    },
-    {
-      "tag": "#GGV898VGC",
-      "name": "MONKEY.D.LUFFY",
-      "strikes": 0
     }
   ],
-  "530776943986212888": [
-    {
-      "tag": "#QQLQJPGLU",
-      "name": "Kurumi",
-      "strikes": 0
-    }
-  ],
+  "530776943986212888": [],
   "465542853821595652": [
     {
       "tag": "#GU2JYLYU9",
@@ -2760,14 +3198,29 @@
       "strikes": 0
     }
   ],
-  "300172770237743104": [],
-  "816654871515103243": [
+  "300172770237743104": [
     {
       "tag": "#Q0URGVC0Y",
-      "name": "it-wasn't_me",
-      "strikes": 0
+      "name": "it-wasn't_me"
+    },
+    {
+      "tag": "#GLJ0VYR9C",
+      "name": "***NOVA***³"
+    },
+    {
+      "tag": "#99R9VYRCQ",
+      "name": "<<ᶜᵃʳᵃˣᵉˢ>>"
+    },
+    {
+      "tag": "#R089PR90U",
+      "name": "<<ᴠɪᴘᴇʀʙʏᴛᴇ>>"
+    },
+    {
+      "tag": "#C9Y0VU8",
+      "name": "Mccreary"
     }
   ],
+  "816654871515103243": [],
   "503633520728604682": [
     {
       "tag": "#P00PJC8UP",
@@ -2777,11 +3230,6 @@
   ],
   "1497167160978440305": [
     {
-      "tag": "#GG0RGVPG2",
-      "name": "Ayush 3",
-      "strikes": 0
-    },
-    {
       "tag": "#G80PJ22VP",
       "name": "Killer",
       "strikes": 0
@@ -2790,6 +3238,10 @@
       "tag": "#GCV0CC29R",
       "name": "010",
       "strikes": 0
+    },
+    {
+      "tag": "#GLGRVQRVJ",
+      "name": "020"
     }
   ],
   "630847825323884571": [
@@ -2804,13 +3256,20 @@
       "tag": "#GGJYV0C9",
       "name": "ManOfSun",
       "strikes": 0
+    },
+    {
+      "tag": "#9QJGYPJQU",
+      "name": "ManOfSun"
+    },
+    {
+      "tag": "#9JQL2928J",
+      "name": "ManOfsun"
     }
   ],
   "296397754605895681": [
     {
-      "tag": "#R0PU2V90U",
-      "name": "CJDGuy v3",
-      "strikes": 0
+      "tag": "#GRCLC292U",
+      "name": "Chief CJ"
     }
   ],
   "1423656999568146542": [
@@ -2879,6 +3338,10 @@
       "tag": "#G8RRCJ09R",
       "name": "StingrayEV",
       "strikes": 0
+    },
+    {
+      "tag": "#QQCU02UQU",
+      "name": "StingrayEQ"
     }
   ],
   "554381824344719372": [
@@ -2904,6 +3367,10 @@
       "tag": "#20RVL2GY8",
       "name": "MONKEY D LUFFY",
       "strikes": 0
+    },
+    {
+      "tag": "#Q9L0YU0YJ",
+      "name": "Milan Patidar"
     }
   ],
   "1406695913329528894": [
@@ -2944,6 +3411,10 @@
     {
       "tag": "#QJQ92222Q",
       "name": "Ayush"
+    },
+    {
+      "tag": "#GLYUJC29C",
+      "name": "Ayush 2"
     }
   ],
   "396572775340441601": [
@@ -2954,6 +3425,34 @@
     {
       "tag": "#90VL2CPRY",
       "name": "RushClasherMAX"
+    },
+    {
+      "tag": "#GCGJ2GV9J",
+      "name": "Eren--2"
+    },
+    {
+      "tag": "#QYGYPR202",
+      "name": "WhyThisGame3"
+    },
+    {
+      "tag": "#GG2G82CVG",
+      "name": "WhyThisGame4"
+    },
+    {
+      "tag": "#8Y8P9YUJL",
+      "name": "WTG ❤️ KOW"
+    },
+    {
+      "tag": "#YPPG28Q9R",
+      "name": "WhyThisDüng1"
+    },
+    {
+      "tag": "#G99JG8VLV",
+      "name": "RushClasherZED"
+    },
+    {
+      "tag": "#8QR9LUQQU",
+      "name": "WhyThisGame2"
     }
   ],
   "399308641217544192": [
@@ -2966,6 +3465,2569 @@
     {
       "tag": "#PLUY2YCJR",
       "name": "ASLI_SHRESHTH"
+    },
+    {
+      "tag": "#YJLQGPP22",
+      "name": "•MAHAKAAL•"
+    }
+  ],
+  "788154507422466048": [
+    {
+      "tag": "#QRLYPY8RL",
+      "name": "Grahamcracker"
+    }
+  ],
+  "1069737286964609104": [
+    {
+      "tag": "#YRU82CUCR",
+      "name": "SMG"
+    }
+  ],
+  "853784353263714314": [
+    {
+      "tag": "#R89V0Q022",
+      "name": "AquaHoshino"
+    }
+  ],
+  "603321529148768257": [
+    {
+      "tag": "#L92PY28GV",
+      "name": "SwordgaiCALEB"
+    }
+  ],
+  "802675802431815681": [
+    {
+      "tag": "#YPV8YQ0VQ",
+      "name": "Dodgy Craig"
+    }
+  ],
+  "1239387864601591849": [
+    {
+      "tag": "#QJ2R0JR2C",
+      "name": "BROWN RANG DE"
+    },
+    {
+      "tag": "#Y0VVP9CJQ",
+      "name": "Content Creator"
+    }
+  ],
+  "559554954713628672": [
+    {
+      "tag": "#LQQL9UQV",
+      "name": "EVIL WITCH"
+    }
+  ],
+  "307938921726214154": [
+    {
+      "tag": "#R8R2L8JCY",
+      "name": "YonniPhantom"
+    }
+  ],
+  "295131491187556354": [
+    {
+      "tag": "#QQJUC2VQ0",
+      "name": "Tom7363-Filler8"
+    }
+  ],
+  "233436039899774976": [
+    {
+      "tag": "#G9Q0VPRRC",
+      "name": "yolocat"
+    }
+  ],
+  "931550669935112192": [
+    {
+      "tag": "#GJRR9J890",
+      "name": "fenix"
+    }
+  ],
+  "452861157686902784": [
+    {
+      "tag": "#9L2JGGVU",
+      "name": "Allen"
+    }
+  ],
+  "582987123087638529": [
+    {
+      "tag": "#GC2Q9Q9U2",
+      "name": "Good Morty"
+    },
+    {
+      "tag": "#VYUPYQJR",
+      "name": "Evil Morty"
+    }
+  ],
+  "1386852868962779276": [
+    {
+      "tag": "#GUQQQ9UU9",
+      "name": "Logan"
+    }
+  ],
+  "1358878620810088679": [
+    {
+      "tag": "#Q889VQV9P",
+      "name": "dani"
+    }
+  ],
+  "1506312420564406387": [
+    {
+      "tag": "#9RRJPUUCL",
+      "name": "Pyth0nGh057"
+    }
+  ],
+  "1324189258730180651": [
+    {
+      "tag": "#GUC9Q0PG2",
+      "name": "eryndor"
+    }
+  ],
+  "386552679012499486": [
+    {
+      "tag": "#LCUVJJ8G",
+      "name": "Portell"
+    }
+  ],
+  "1093823915949834263": [
+    {
+      "tag": "#22CQ098P8",
+      "name": "Avi"
+    }
+  ],
+  "760057029934579723": [
+    {
+      "tag": "#GVP8C88QJ",
+      "name": "Ratty"
+    },
+    {
+      "tag": "#Q9YG8CC08",
+      "name": "Blaze"
+    },
+    {
+      "tag": "#Q9YYG9VGG",
+      "name": "Ember"
+    },
+    {
+      "tag": "#LRV98ULYL",
+      "name": "Scorch"
+    },
+    {
+      "tag": "#Q29QGYVCJ",
+      "name": "Fury"
+    },
+    {
+      "tag": "#LUUGPR0RR",
+      "name": "Inferno"
+    }
+  ],
+  "1375871690948481154": [
+    {
+      "tag": "#PCUULJ0CY",
+      "name": "azhar"
+    }
+  ],
+  "695933691041546262": [
+    {
+      "tag": "#P09L208CJ",
+      "name": "Loony 1st"
+    }
+  ],
+  "506174433506099210": [
+    {
+      "tag": "#80YL02YYQ",
+      "name": "Leo light"
+    },
+    {
+      "tag": "#GQLP8LVY2",
+      "name": "mars"
+    }
+  ],
+  "383431153790615554": [
+    {
+      "tag": "#LLG02U2UQ",
+      "name": "Little Grand"
+    },
+    {
+      "tag": "#LYC9L8PJL",
+      "name": "Grand"
+    },
+    {
+      "tag": "#QUPVPY8JP",
+      "name": "Grand Jr"
+    }
+  ],
+  "670124728874434590": [
+    {
+      "tag": "#LR8GPLCLR",
+      "name": "PlAtInAx 3.0"
+    },
+    {
+      "tag": "#YV2L922R2",
+      "name": "PlAtInAx K!NG"
+    }
+  ],
+  "1507276833312473159": [
+    {
+      "tag": "#GRY9JVLP9",
+      "name": "drizz"
+    },
+    {
+      "tag": "#LG0Q9PYL9",
+      "name": "(GOD.OF.WAR)"
+    },
+    {
+      "tag": "#GQG9VPYQ8",
+      "name": "JAAT"
+    },
+    {
+      "tag": "#LY2J0RCVG",
+      "name": "Tiger Brothers"
+    },
+    {
+      "tag": "#L2RPRUR09",
+      "name": "MINGURIGAMINGYT"
+    },
+    {
+      "tag": "#YRJL0PR0L",
+      "name": "skmediafactory"
+    },
+    {
+      "tag": "#QQU0QUCLC",
+      "name": "G∅kù R@gë"
+    },
+    {
+      "tag": "#LGYPGQ8Q8",
+      "name": "ಅ್ಅ್ಅ್"
+    },
+    {
+      "tag": "#LQ2LQ0PVG",
+      "name": "Sumit 007"
+    },
+    {
+      "tag": "#YCUVJR9VV",
+      "name": "As Styles"
+    },
+    {
+      "tag": "#L0R9PQ29J",
+      "name": "GANGSTARS"
+    },
+    {
+      "tag": "#LJ0PGV892",
+      "name": "PANKAJ"
+    },
+    {
+      "tag": "#R29888QY9",
+      "name": "父 MEWTWO 父"
+    },
+    {
+      "tag": "#G8PVPGPU9",
+      "name": "RANDOM EDGE"
+    }
+  ],
+  "1488241132188991558": [
+    {
+      "tag": "#L0GVC8VVY",
+      "name": "FlasH☄️"
+    }
+  ],
+  "458483269516656643": [
+    {
+      "tag": "#LP20RYGJ8",
+      "name": "Aku"
+    }
+  ],
+  "1316046985769521236": [
+    {
+      "tag": "#Y9LYGYGVY",
+      "name": "KiRiTo"
+    },
+    {
+      "tag": "#YL8RL0JUV",
+      "name": "ApexPredator"
+    }
+  ],
+  "1507354423016558612": [
+    {
+      "tag": "#GGQQJ8P20",
+      "name": "⚘GrimメReaper⁠❥☻"
+    },
+    {
+      "tag": "#GGUVR29Y8",
+      "name": "Al Sah-Him➺❥➛"
+    }
+  ],
+  "170981402282557440": [
+    {
+      "tag": "#LQQCVJVP9",
+      "name": "Sdl3"
+    }
+  ],
+  "804362685243719722": [
+    {
+      "tag": "#LP2LUYRL9",
+      "name": "vassooo"
+    }
+  ],
+  "1435166692853415978": [
+    {
+      "tag": "#GUL88J9YR",
+      "name": "Suspicious Man"
+    }
+  ],
+  "728352257850212437": [
+    {
+      "tag": "#YU2CLRGGY",
+      "name": "Dr.Huterlax"
+    }
+  ],
+  "274818442249502720": [
+    {
+      "tag": "#L0QV92YG9",
+      "name": "Rusher ✅"
+    }
+  ],
+  "726732048194338858": [
+    {
+      "tag": "#2VP2QV29U",
+      "name": "niel"
+    },
+    {
+      "tag": "#LG9VGG0L",
+      "name": "Ķinģ Ňieł"
+    }
+  ],
+  "751436015595683921": [
+    {
+      "tag": "#2UPQQPC9U",
+      "name": "Noobie"
+    }
+  ],
+  "1507566326011658260": [
+    {
+      "tag": "#P9C99J8QJ",
+      "name": "Miguel"
+    }
+  ],
+  "1147204310250307685": [
+    {
+      "tag": "#LJJG9R00P",
+      "name": "Eddie Vedder"
+    }
+  ],
+  "1397035228207517739": [
+    {
+      "tag": "#9GPYYP80C",
+      "name": "Qz"
+    }
+  ],
+  "1412391654987403344": [
+    {
+      "tag": "#GV0RPQQ99",
+      "name": "Forsaken"
+    }
+  ],
+  "1405762499609100362": [
+    {
+      "tag": "#9VLP2Q82L",
+      "name": "ANIKET",
+      "totalStrikes": 4,
+      "strikeHistory": [
+        {
+          "id": "CC001",
+          "reason": "For not attacking mirror  in FWA war against THRONE x GLORY",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "1393061101838532630",
+          "clan": "CLASHING COBRAS",
+          "date": "29-06-2026"
+        },
+        {
+          "id": "CC002",
+          "reason": "For 3-starring the base (2nd attack) within the first 16 hours of the FWA against THRONE x GLORY",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "1393061101838532630",
+          "clan": "CLASHING COBRAS",
+          "date": "29-06-2026"
+        },
+        {
+          "id": "CC003",
+          "reason": "For missing attacks against BL war firey",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 3,
+          "addedBy": "1393061101838532630",
+          "clan": "CLASHING COBRAS",
+          "date": "29-06-2026"
+        },
+        {
+          "id": "CC004",
+          "reason": "For missing both war attacks against War Snipers 2.2",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 4,
+          "addedBy": "1393061101838532630",
+          "clan": "CLASHING COBRAS",
+          "date": "29-06-2026"
+        }
+      ],
+      "strikes": 4
+    },
+    {
+      "tag": "#L0JLCCQR8",
+      "name": "✨Archer_Queen✨"
+    }
+  ],
+  "1201869036267503659": [
+    {
+      "tag": "#9VQU2YUJV",
+      "name": "kApIl"
+    },
+    {
+      "tag": "#YCGU2P08Y",
+      "name": "Sumit2"
+    }
+  ],
+  "1026499702151192686": [
+    {
+      "tag": "#Q8PL08RV8",
+      "name": "Blobby"
+    }
+  ],
+  "896467681346220054": [
+    {
+      "tag": "#GRY9RQU8U",
+      "name": "mini abood"
+    }
+  ],
+  "1187031056747090043": [
+    {
+      "tag": "#PR8YVLVCP",
+      "name": "RIXHI"
+    },
+    {
+      "tag": "#8C92QJQ2G",
+      "name": "RIXHII"
+    }
+  ],
+  "1508763803675000892": [
+    {
+      "tag": "#LUV0PJUGQ",
+      "name": "BRIAN"
+    }
+  ],
+  "396691858010538005": [
+    {
+      "tag": "#R00YU08QU",
+      "name": "zen"
+    }
+  ],
+  "287258703638560768": [
+    {
+      "tag": "#9J8VRCV0",
+      "name": "El Gloriosa"
+    },
+    {
+      "tag": "#YQ8Q920YG",
+      "name": "Tritoma"
+    },
+    {
+      "tag": "#990QJU2U",
+      "name": "El Shakky"
+    }
+  ],
+  "761767506670125116": [
+    {
+      "tag": "#89VUGRCRP",
+      "name": "Yogesh Chhetri"
+    },
+    {
+      "tag": "#GV0P8RC9V",
+      "name": "YOGESH"
+    },
+    {
+      "tag": "#QL8LQQ8YG",
+      "name": "Erwin"
+    }
+  ],
+  "452396366635859968": [
+    {
+      "tag": "#8QLRQ8PJ0",
+      "name": "HemRockSocity2"
+    },
+    {
+      "tag": "#9Y9L2V0Q9",
+      "name": "KARIZMA"
+    }
+  ],
+  "357896796145713153": [
+    {
+      "tag": "#PR2YUJRY",
+      "name": "ysanathoi"
+    }
+  ],
+  "710209072879763636": [
+    {
+      "tag": "#88JPQL8VJ",
+      "name": "Prince Faiyan"
+    },
+    {
+      "tag": "#LP8J8L0C9",
+      "name": "mfi 64"
+    }
+  ],
+  "900404315619999805": [
+    {
+      "tag": "#92CJUGJ2V",
+      "name": "⚡️•• SIDHU ••⚡️"
+    },
+    {
+      "tag": "#LLJVVJG0Q",
+      "name": "JACK SPARROW"
+    },
+    {
+      "tag": "#PL0800Q98",
+      "name": "Bhupinder singh"
+    },
+    {
+      "tag": "#G8Y0JUGJY",
+      "name": "nothing"
+    },
+    {
+      "tag": "#LYLC9R89V",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#QRPUU2Y0J",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#LVR0VVRP8",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#JVP0VUVC",
+      "name": "FATEH"
+    },
+    {
+      "tag": "#PRPY0G92R",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#LPGVCG8VR",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#G2JV8V2G8",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#YYC2VV9JQ",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#989LYGG80",
+      "name": "THE BEAST"
+    },
+    {
+      "tag": "#GPUCU9PU9",
+      "name": "Jazz sidhu"
+    },
+    {
+      "tag": "#2QG8GRCV8",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#PQ9PU8YJ9",
+      "name": "super ghost x"
+    },
+    {
+      "tag": "#9PPVRGVUR",
+      "name": "Tindu Sidhu"
+    },
+    {
+      "tag": "#LRCLRQYP9",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#YUC2V2Y0L",
+      "name": "⭕️GODFATHER⭕️"
+    },
+    {
+      "tag": "#PJGL00CJ8",
+      "name": "Jassa sahotA"
+    },
+    {
+      "tag": "#PPYJ8QV82",
+      "name": "sukhwinder"
+    },
+    {
+      "tag": "#P2LU2220Y",
+      "name": "#FateH"
+    },
+    {
+      "tag": "#LQPRGV9VR",
+      "name": "sidhuz"
+    },
+    {
+      "tag": "#8JVCVV000",
+      "name": "BAINS"
+    },
+    {
+      "tag": "#Q22YQL8U9",
+      "name": "么 T H O R 么"
+    },
+    {
+      "tag": "#9PJQV28CP",
+      "name": "Harjot Birl"
+    },
+    {
+      "tag": "#YR9R009UU",
+      "name": "AKASHPREET"
+    },
+    {
+      "tag": "#G909QRV88",
+      "name": "sidhu"
+    },
+    {
+      "tag": "#PRYGYYVGV",
+      "name": "PREET"
+    },
+    {
+      "tag": "#L9JURYC02",
+      "name": "Jowan Bains"
+    },
+    {
+      "tag": "#GG8U9RQ9R",
+      "name": "prashant3523"
+    },
+    {
+      "tag": "#QC9P29022",
+      "name": "LORD_ROLEX"
+    },
+    {
+      "tag": "#LVPYY2RRQ",
+      "name": "ROYAL CHAMPION"
+    },
+    {
+      "tag": "#Q2C9Q8GY8",
+      "name": "LORD_SHIVA"
+    },
+    {
+      "tag": "#QVR9CJJ9L",
+      "name": "LORD_WARDEN"
+    },
+    {
+      "tag": "#PYQLG0JUL",
+      "name": "Nitro knight"
+    }
+  ],
+  "1510236564813385859": [
+    {
+      "tag": "#2YUQ0LV8P",
+      "name": "foji saab"
+    },
+    {
+      "tag": "#Y2G8UQV8Q",
+      "name": "CHOBBRR"
+    },
+    {
+      "tag": "#22QPY0U29",
+      "name": "foji saab"
+    },
+    {
+      "tag": "#9JQYPJCYC",
+      "name": "Gagan"
+    },
+    {
+      "tag": "#QU8LU2PC",
+      "name": "bajwa"
+    },
+    {
+      "tag": "#29URQ2YV0",
+      "name": "foji saab"
+    },
+    {
+      "tag": "#9GR29PR88",
+      "name": "HARMNN JATT"
+    },
+    {
+      "tag": "#LVLV8CL0Y",
+      "name": "bajwa saab"
+    },
+    {
+      "tag": "#L8JRCL9UR",
+      "name": "Gagan"
+    }
+  ],
+  "1250709609463939073": [
+    {
+      "tag": "#QUYJVJG9L",
+      "name": "NinjaX"
+    },
+    {
+      "tag": "#LVG8YJVRP",
+      "name": "Capt. Rider"
+    }
+  ],
+  "1031353678101225513": [
+    {
+      "tag": "#9G99LCYQ",
+      "name": "Biplob khan"
+    },
+    {
+      "tag": "#8JGGJJ2JP",
+      "name": "Biplob w"
+    },
+    {
+      "tag": "#2PR898L2C",
+      "name": "Biplob Khan"
+    },
+    {
+      "tag": "#8JLU90JQL",
+      "name": "Biplob khan"
+    }
+  ],
+  "1383637179565084702": [
+    {
+      "tag": "#Y29UY0JLQ",
+      "name": "Justin"
+    }
+  ],
+  "1037688513778438144": [
+    {
+      "tag": "#9QUYUJVPG",
+      "name": "abel"
+    }
+  ],
+  "1510260250782077068": [
+    {
+      "tag": "#R0QP082V0",
+      "name": "Wandering_Soul"
+    }
+  ],
+  "602888457575989248": [
+    {
+      "tag": "#YLQPJUPV9",
+      "name": "SHADOW"
+    }
+  ],
+  "751638793349759067": [
+    {
+      "tag": "#R0RPLQ298",
+      "name": "Rushedleg"
+    }
+  ],
+  "432603969945075714": [
+    {
+      "tag": "#GLCQV8R2C",
+      "name": "капуцис"
+    }
+  ],
+  "1489833764455714836": [
+    {
+      "tag": "#GG2JLGRYV",
+      "name": "Aldrin"
+    }
+  ],
+  "970329546698129428": [],
+  "868554427336896512": [
+    {
+      "tag": "#2UCQ0Q8UG",
+      "name": "Dööfënşhmïrtş"
+    },
+    {
+      "tag": "#QYRLRVLVU",
+      "name": "Wrath ⚡"
+    }
+  ],
+  "815440418892021790": [
+    {
+      "tag": "#PR20Q02LP",
+      "name": "Sky"
+    }
+  ],
+  "558334336336658461": [
+    {
+      "tag": "#VQCCG2PJ",
+      "name": "Coco"
+    }
+  ],
+  "700436734961254510": [
+    {
+      "tag": "#GCCLVR0RC",
+      "name": "sss"
+    }
+  ],
+  "309155855222439947": [
+    {
+      "tag": "#ULJUVJ0",
+      "name": "✖️CALLMEAPEWM✖️"
+    },
+    {
+      "tag": "#8C9LV2QCU",
+      "name": "✖️⚡️RYUGA!⚡️✖️"
+    },
+    {
+      "tag": "#9LQYPGR29",
+      "name": "✖️⚡️SASUKE⚡️✖️"
+    }
+  ],
+  "672670507975442442": [
+    {
+      "tag": "#PPQG9P0RP",
+      "name": "GLÁDÍÃTØR"
+    },
+    {
+      "tag": "#PGC0VP28C",
+      "name": "SOUVIKING"
+    }
+  ],
+  "681258519621664811": [
+    {
+      "tag": "#PQV9LU9C",
+      "name": "bearwolf 2.0"
+    },
+    {
+      "tag": "#202LLP0LV",
+      "name": "bearwolf"
+    }
+  ],
+  "432341090792898561": [
+    {
+      "tag": "#29V0CRU0",
+      "name": "ClintBeastwood"
+    }
+  ],
+  "515222175075139614": [
+    {
+      "tag": "#99J09RUY8",
+      "name": "ANIX"
+    },
+    {
+      "tag": "#8LGG9CYQC",
+      "name": "AAIX 2"
+    }
+  ],
+  "723428682693345311": [
+    {
+      "tag": "#9GY0VC2L2",
+      "name": "Abhimanyu"
+    }
+  ],
+  "1021825710651867223": [
+    {
+      "tag": "#LJRCJJ9P0",
+      "name": "⚡SPARK⚡"
+    }
+  ],
+  "277624727168745472": [
+    {
+      "tag": "#Q9LJV89U",
+      "name": "SUCC"
+    }
+  ],
+  "952616671946883143": [
+    {
+      "tag": "#QP90Y9J9G",
+      "name": "Mystic"
+    }
+  ],
+  "214270636124536833": [
+    {
+      "tag": "#LP9V9208C",
+      "name": "NARWHAL"
+    }
+  ],
+  "491361760780222464": [
+    {
+      "tag": "#VGV2P09Q",
+      "name": "Holden"
+    }
+  ],
+  "1168220248479105144": [
+    {
+      "tag": "#GVGJPU09R",
+      "name": "Marcobra"
+    }
+  ],
+  "1092905995870670951": [
+    {
+      "tag": "#GYGGL8QRY",
+      "name": "INTELLIGENT"
+    },
+    {
+      "tag": "#8LCCPCGGY",
+      "name": "hello"
+    }
+  ],
+  "1395137871849193584": [
+    {
+      "tag": "#GU00V88YL",
+      "name": "Sayed Ali"
+    }
+  ],
+  "451245722843611146": [
+    {
+      "tag": "#YYU9U9UQ",
+      "name": "Remegio"
+    }
+  ],
+  "743308518223904848": [
+    {
+      "tag": "#G9J0RYQRV",
+      "name": "okl"
+    },
+    {
+      "tag": "#QY2C828JV",
+      "name": "bombking69"
+    }
+  ],
+  "884790045146501171": [],
+  "398174875598192651": [
+    {
+      "tag": "#VYYGYV2J",
+      "name": "Domínguez [⚜️]"
+    },
+    {
+      "tag": "#29LJRUJGQ",
+      "name": "Domínguez [⚜️]"
+    },
+    {
+      "tag": "#8V2RJVCPP",
+      "name": "Domínguez [⚜️]"
+    },
+    {
+      "tag": "#PG00Q2V0Y",
+      "name": "Domínguez [⚜️]"
+    },
+    {
+      "tag": "#Y2G0R99RP",
+      "name": "Domínguez [⚜️]"
+    }
+  ],
+  "1496768315727806535": [
+    {
+      "tag": "#QCJLJPU9P",
+      "name": "SHIHAB MAHMUD"
+    },
+    {
+      "tag": "#GR99VUUUL",
+      "name": "ˢʰⁱʰᵃᵇ亗ᴹᵃʰᵐᵘᵈ"
+    },
+    {
+      "tag": "#QJV29YCVG",
+      "name": "seiam"
+    },
+    {
+      "tag": "#GJRQL00RR",
+      "name": "Qin empire"
+    },
+    {
+      "tag": "#GLQ88QQPY",
+      "name": "ᴺɪʀVØID"
+    },
+    {
+      "tag": "#QVR902R80",
+      "name": "NIR MAX"
+    },
+    {
+      "tag": "#QYVR8LP9C",
+      "name": "Master nir"
+    },
+    {
+      "tag": "#GGR8JQ0QP",
+      "name": "Rifat 2"
+    }
+  ],
+  "1165194582561148940": [
+    {
+      "tag": "#PPJYCCRVC",
+      "name": "Super Clasher"
+    }
+  ],
+  "857142082584969216": [
+    {
+      "tag": "#2L099V8CY",
+      "name": "Harry Sandhu"
+    }
+  ],
+  "1402875812692365454": [
+    {
+      "tag": "#2UCV8PJGY",
+      "name": "Naresh"
+    },
+    {
+      "tag": "#8QQGQL0P2",
+      "name": "YOGIRAJ"
+    }
+  ],
+  "755089350857064448": [
+    {
+      "tag": "#GR9LYJVQ8",
+      "name": "Wind"
+    },
+    {
+      "tag": "#QCQ9GRG2R",
+      "name": "10 zy"
+    }
+  ],
+  "1446207005097197739": [
+    {
+      "tag": "#2GJQ8G9YY",
+      "name": "Deniz"
+    }
+  ],
+  "612325785293815874": [
+    {
+      "tag": "#882VY80UY",
+      "name": "SkYLanD"
+    }
+  ],
+  "566305965633306668": [
+    {
+      "tag": "#GUP8PRVVL",
+      "name": "ʟᴏʀᴅ ɪɴᴏꜱᴜᴋᴇ"
+    },
+    {
+      "tag": "#GY2QJ9RJY",
+      "name": "Ｒ  Σ  ＮＧＯＫＵ"
+    }
+  ],
+  "1457004068332503164": [
+    {
+      "tag": "#GLJRPVJCG",
+      "name": "Clasher"
+    }
+  ],
+  "1303743253660569670": [
+    {
+      "tag": "#GLLRQY8QJ",
+      "name": "exce11ent"
+    }
+  ],
+  "826194115574235208": [
+    {
+      "tag": "#L0RGVU2VY",
+      "name": "andres"
+    }
+  ],
+  "537313024369885214": [
+    {
+      "tag": "#YQR2LRCLP",
+      "name": "ELVIS"
+    }
+  ],
+  "401693354024239106": [
+    {
+      "tag": "#L8V8GYV0Y",
+      "name": "mxanis"
+    }
+  ],
+  "1515757348172337162": [
+    {
+      "tag": "#P0LYUQPLC",
+      "name": "ROMAN REGINS"
+    }
+  ],
+  "906563287980851291": [
+    {
+      "tag": "#YGYVR9UUR",
+      "name": "VenomVortex"
+    },
+    {
+      "tag": "#GULVV2UU2",
+      "name": "NostalgicVisit"
+    }
+  ],
+  "722488471440326708": [
+    {
+      "tag": "#PLUJ9QJV8",
+      "name": "BINLADIN"
+    }
+  ],
+  "1506526135515615437": [
+    {
+      "tag": "#LJCQY8YV",
+      "name": "DeathStr0kE"
+    }
+  ],
+  "617323202204663838": [
+    {
+      "tag": "#PV2J229VU",
+      "name": "αʍαη ツ ψαδαѵ"
+    }
+  ],
+  "1172541997861576759": [
+    {
+      "tag": "#QRL8920Q0",
+      "name": "Dark King™"
+    }
+  ],
+  "1268865097984643106": [
+    {
+      "tag": "#2YUG2QPCP",
+      "name": "ARUNVISHNU003"
+    }
+  ],
+  "1397227289250631690": [
+    {
+      "tag": "#9L8YJ0GR9",
+      "name": "Code: GALADON"
+    }
+  ],
+  "264029995821694996": [
+    {
+      "tag": "#LV8V9P22",
+      "name": "Werockk"
+    }
+  ],
+  "1516378095068774472": [
+    {
+      "tag": "#R2L0LY02Y",
+      "name": "Æ_Mztsn6"
+    }
+  ],
+  "1061332605963862026": [
+    {
+      "tag": "#QGV8G2CP",
+      "name": "Goudse Mocro"
+    }
+  ],
+  "286765001962684417": [
+    {
+      "tag": "#2GQULRRPQ",
+      "name": "Lord Avitus"
+    }
+  ],
+  "230347620969742337": [
+    {
+      "tag": "#292YGQ2",
+      "name": "Suddenimpact04"
+    },
+    {
+      "tag": "#20UJQR2",
+      "name": "Truscorpio82"
+    }
+  ],
+  "997781016011878420": [
+    {
+      "tag": "#9QGPQVGP9",
+      "name": "ANAS R Master"
+    },
+    {
+      "tag": "#G2PR2982P",
+      "name": "أنس ناظم Anas"
+    },
+    {
+      "tag": "#G22U8UYYQ",
+      "name": "أنس Anas N"
+    }
+  ],
+  "368582515994132480": [
+    {
+      "tag": "#8CR2PV9UY",
+      "name": "Dragon"
+    }
+  ],
+  "1467924392318337187": [
+    {
+      "tag": "#QJU0U0UP2",
+      "name": "iampavel"
+    }
+  ],
+  "736976605817208953": [
+    {
+      "tag": "#209P9VPL2",
+      "name": "Murtuza T"
+    }
+  ],
+  "1462121218613182631": [
+    {
+      "tag": "#GC0JC22U9",
+      "name": "DonAK"
+    },
+    {
+      "tag": "#GCUPCVJQV",
+      "name": "ChiefAK"
+    },
+    {
+      "tag": "#2RVQ0PVRR",
+      "name": "AkramN"
+    }
+  ],
+  "777032533568127018": [
+    {
+      "tag": "#80QQJQ0CV",
+      "name": "CULDESACK23"
+    }
+  ],
+  "766803884559433739": [
+    {
+      "tag": "#LPQYQ2GVJ",
+      "name": "boloscov"
+    }
+  ],
+  "766323454705664000": [
+    {
+      "tag": "#QCJRPCYYR",
+      "name": "Clashero"
+    }
+  ],
+  "971424611629678623": [
+    {
+      "tag": "#UP0U9G9U",
+      "name": "dudayxd"
+    },
+    {
+      "tag": "#R00VUYC8J",
+      "name": "Pitouu."
+    }
+  ],
+  "1281517407084609646": [
+    {
+      "tag": "#PRY90U02",
+      "name": "STier"
+    }
+  ],
+  "702945273537757264": [
+    {
+      "tag": "#QLJLQY2V8",
+      "name": "丂廾尺长"
+    }
+  ],
+  "861477213006462977": [
+    {
+      "tag": "#Y9L0G9ULL",
+      "name": "abbys?"
+    }
+  ],
+  "790472986494631976": [
+    {
+      "tag": "#LYQGJ08J",
+      "name": "Pandesal"
+    },
+    {
+      "tag": "#QP9UJ9G08",
+      "name": "Monay"
+    },
+    {
+      "tag": "#G20CUUPR9",
+      "name": "Chief Andrew"
+    }
+  ],
+  "622289953014939668": [
+    {
+      "tag": "#9P0LPU9UL",
+      "name": "Wolfgang"
+    }
+  ],
+  "1507448576744226836": [
+    {
+      "tag": "#YG9JR02PL",
+      "name": "Ketchi"
+    }
+  ],
+  "951693295900307458": [
+    {
+      "tag": "#QLCUQJYGU",
+      "name": "Limbo"
+    }
+  ],
+  "341942715925135360": [
+    {
+      "tag": "#GYLPCLYUJ",
+      "name": "Xmin 3"
+    },
+    {
+      "tag": "#GJYLCJQYL",
+      "name": "SET☀️Xmin"
+    },
+    {
+      "tag": "#GCC09CQQR",
+      "name": "Xmin 2"
+    }
+  ],
+  "1427304113225338990": [
+    {
+      "tag": "#G8LUVJPPL",
+      "name": "ARISE_SHUBHAM2"
+    }
+  ],
+  "416243887359918080": [
+    {
+      "tag": "#2899J8UQ8",
+      "name": "Aleondy_Galih √"
+    }
+  ],
+  "998376864508825621": [
+    {
+      "tag": "#22PL0828",
+      "name": "Clasher"
+    }
+  ],
+  "710009741912440872": [
+    {
+      "tag": "#QQYGYGU9V",
+      "name": "Niloy 93"
+    }
+  ],
+  "1138501938019848242": [
+    {
+      "tag": "#228LQJ8CC",
+      "name": "CallumC"
+    }
+  ],
+  "1416151437443989515": [
+    {
+      "tag": "#GCVRCLC0C",
+      "name": "SpaceX"
+    }
+  ],
+  "1179429119524610058": [
+    {
+      "tag": "#QVJC88P0G",
+      "name": "мαχωαя gαмιηg"
+    },
+    {
+      "tag": "#G8UPGRCLQ",
+      "name": "Sʜɪᴠᴀᴍ×͜×max"
+    },
+    {
+      "tag": "#G99JQ9QPC",
+      "name": "Itz_SHIVAM"
+    },
+    {
+      "tag": "#QCGJPLPP0",
+      "name": "⚡maxwar⚡"
+    }
+  ],
+  "1505016586845818958": [
+    {
+      "tag": "#Q2JV8U9CQ",
+      "name": "Kakashi"
+    }
+  ],
+  "900071151043227689": [
+    {
+      "tag": "#ULJUQJCQ",
+      "name": "RaFaY"
+    },
+    {
+      "tag": "#2U2PCL2V9",
+      "name": "RaY"
+    },
+    {
+      "tag": "#YJ88QGPU",
+      "name": "HugSteR"
+    },
+    {
+      "tag": "#9QJCLCVLV",
+      "name": "CelestiRay"
+    }
+  ],
+  "1124669320908251146": [
+    {
+      "tag": "#R80U0UCV9",
+      "name": "Rush2Donate",
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "BZ001",
+          "reason": "3 stars on lose war , opponent clan = Zero Gravity",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "1393061101838532630",
+          "clan": "Blood Zero",
+          "date": "19-07-2026"
+        }
+      ],
+      "strikes": 1
+    }
+  ],
+  "1499846514367791274": [
+    {
+      "tag": "#G2Y8G0VQ9",
+      "name": "Kairo.CS"
+    }
+  ],
+  "846442399533891614": [
+    {
+      "tag": "#LPVL8YQVL",
+      "name": "Anant"
+    }
+  ],
+  "618002399726010369": [
+    {
+      "tag": "#2CJ8P2QPY",
+      "name": "Dovydas"
+    }
+  ],
+  "1415406439282901134": [
+    {
+      "tag": "#PLUL2RJUQ",
+      "name": "ㅤ艾克black吾ㅤㅤㅤㅤㅤ"
+    },
+    {
+      "tag": "#YVVGQYU9L",
+      "name": "Donator Gator"
+    },
+    {
+      "tag": "#LJQLLQUJR",
+      "name": "Mikes Big Hawk"
+    },
+    {
+      "tag": "#QGGL822Y8",
+      "name": "Rustic"
+    },
+    {
+      "tag": "#LRLVCUVV2",
+      "name": "E dawg"
+    },
+    {
+      "tag": "#PVLP2VYYR",
+      "name": "LocoRemir"
+    }
+  ],
+  "1196578282708140152": [
+    {
+      "tag": "#9PQ29CQ8G",
+      "name": "Mike"
+    }
+  ],
+  "855661049361858570": [
+    {
+      "tag": "#QC2QRC22C",
+      "name": "MINI ZONE"
+    },
+    {
+      "tag": "#Q8R0CGPGU",
+      "name": "TOXIC"
+    }
+  ],
+  "325723486112841728": [
+    {
+      "tag": "#898G0YGJ9",
+      "name": "ManiChis"
+    }
+  ],
+  "1520253948722679911": [
+    {
+      "tag": "#PJR20U2VP",
+      "name": "MR. CRIMINAL"
+    },
+    {
+      "tag": "#P9RCQ0JVJ",
+      "name": "MR. CRIMINAL"
+    },
+    {
+      "tag": "#9GG920QPL",
+      "name": "mashir anwar"
+    },
+    {
+      "tag": "#Q90C8PYYL",
+      "name": "MR. CRIMINAL"
+    },
+    {
+      "tag": "#QJQP0C2LP",
+      "name": "MR.CRIMINAL"
+    },
+    {
+      "tag": "#9V2VPPCLY",
+      "name": "SILENCER"
+    }
+  ],
+  "556800204729221130": [
+    {
+      "tag": "#Y0JG0LGL8",
+      "name": "GRANTXGAURAV"
+    }
+  ],
+  "1520361711331442830": [
+    {
+      "tag": "#QG28RGCY0",
+      "name": "Kratos"
+    }
+  ],
+  "862010548447477770": [
+    {
+      "tag": "#PC8LRG20Q",
+      "name": "⚡⚡THUNDERBOLT⚡⚡"
+    }
+  ],
+  "482994997772419072": [
+    {
+      "tag": "#GQ0LRL0GR",
+      "name": "ƳΞΔƬ"
+    }
+  ],
+  "709056580016013313": [
+    {
+      "tag": "#PPP2JCQG8",
+      "name": "Ash"
+    },
+    {
+      "tag": "#229LVQVR",
+      "name": "Zenitsu❤Nezuko"
+    }
+  ],
+  "764355601698390018": [
+    {
+      "tag": "#PYGRC92L",
+      "name": "Arshdeep Nijjar"
+    }
+  ],
+  "749905375234621501": [
+    {
+      "tag": "#99JYUGYQC",
+      "name": "TheRogue47"
+    }
+  ],
+  "319466090969169940": [
+    {
+      "tag": "#2GQVVRLP",
+      "name": "Nerites"
+    }
+  ],
+  "258237634688712704": [
+    {
+      "tag": "#2U89RG98",
+      "name": "CookieKiller"
+    },
+    {
+      "tag": "#P8RQR9RLU",
+      "name": "Rahul"
+    }
+  ],
+  "1313534090666053724": [
+    {
+      "tag": "#P29C0QG8C",
+      "name": "Hunter 2"
+    }
+  ],
+  "1520684916566921331": [
+    {
+      "tag": "#G2PCC00GQ",
+      "name": "Merazul Islam"
+    }
+  ],
+  "738474342152667286": [
+    {
+      "tag": "#8VPPL8VG0",
+      "name": "Katiee"
+    }
+  ],
+  "566601262167228417": [
+    {
+      "tag": "#VVGLCJU9",
+      "name": "MR. Conquerer"
+    }
+  ],
+  "771594515953877003": [
+    {
+      "tag": "#2G9JUVQ9G",
+      "name": "MaK MaNi007"
+    }
+  ],
+  "729299884381044748": [
+    {
+      "tag": "#LC2GV8JCG",
+      "name": "famousang"
+    }
+  ],
+  "1274970239431606305": [
+    {
+      "tag": "#Y0C2JR0JL",
+      "name": "Ishan"
+    }
+  ],
+  "1493114403338326087": [
+    {
+      "tag": "#LV9VYP99G",
+      "name": "Boundless Bapu"
+    }
+  ],
+  "1450964844416340020": [
+    {
+      "tag": "#9GJVJCPJC",
+      "name": "P3ragon"
+    }
+  ],
+  "1510271308129243187": [
+    {
+      "tag": "#R9PUJ8JJY",
+      "name": "Teresa"
+    }
+  ],
+  "462905319723368448": [
+    {
+      "tag": "#9G2JPYYU2",
+      "name": "Kiano2274"
+    }
+  ],
+  "669242746271301663": [
+    {
+      "tag": "#9L8GGL8GU",
+      "name": "♕︎Ⓚ︎Ⓘ︎Ⓝ︎Ⓖ︎♕︎"
+    }
+  ],
+  "1473330310308430056": [
+    {
+      "tag": "#QC0UJR8RP",
+      "name": "P.E.K.K.A"
+    }
+  ],
+  "756402773943124018": [
+    {
+      "tag": "#8G9CLQPGC",
+      "name": "Numaan"
+    }
+  ],
+  "910063105403400243": [
+    {
+      "tag": "#QRCGJVQVC",
+      "name": "Sub - zero"
+    },
+    {
+      "tag": "#GJG2RLPPG",
+      "name": "ToxicAdi2211"
+    },
+    {
+      "tag": "#QQ8PYQ0GG",
+      "name": "shubh17"
+    },
+    {
+      "tag": "#QJRY2CCL9",
+      "name": "Shubh17"
+    }
+  ],
+  "1447630873846481007": [
+    {
+      "tag": "#GJRUCRRPP",
+      "name": "Shadow Apex"
+    }
+  ],
+  "1521137330151489607": [],
+  "1480002632612450335": [
+    {
+      "tag": "#QGJ989UUQ",
+      "name": "Lucky"
+    }
+  ],
+  "542395089796988936": [
+    {
+      "tag": "#GRP882Y99",
+      "name": "soorena.lnt.3"
+    }
+  ],
+  "317983313316806658": [
+    {
+      "tag": "#2C82QRVYV",
+      "name": "Just_Om"
+    }
+  ],
+  "1002926541170286652": [
+    {
+      "tag": "#2YPJQJRC",
+      "name": "Hugh Jr"
+    }
+  ],
+  "535370620863774726": [
+    {
+      "tag": "#9CQUC8RYP",
+      "name": "Isaac"
+    }
+  ],
+  "866774498266447882": [
+    {
+      "tag": "#G8GG29CRP",
+      "name": "Ramir"
+    }
+  ],
+  "1013300464017752184": [
+    {
+      "tag": "#YGJYGP8GR",
+      "name": "ALPHA WARRIOR"
+    },
+    {
+      "tag": "#9QL8RY2L9",
+      "name": "Manthan???"
+    }
+  ],
+  "293881885556211743": [
+    {
+      "tag": "#GGJUC02UL",
+      "name": "Zer0"
+    },
+    {
+      "tag": "#GCPYRR2QU",
+      "name": "Her0"
+    },
+    {
+      "tag": "#GCPR9J0LC",
+      "name": "Wind"
+    },
+    {
+      "tag": "#GC0C0GG9P",
+      "name": "Water"
+    },
+    {
+      "tag": "#GUUQUPC2R",
+      "name": "Wolf"
+    }
+  ],
+  "715902955152474163": [
+    {
+      "tag": "#R9YJR8QQG",
+      "name": "Harry Potter"
+    },
+    {
+      "tag": "#G990G0LUP",
+      "name": "Nobita"
+    },
+    {
+      "tag": "#P9QPLUPLJ",
+      "name": "gowtham"
+    }
+  ],
+  "1460854069936525487": [
+    {
+      "tag": "#P20Y9UC0Y",
+      "name": "Looping_Fox"
+    }
+  ],
+  "352296057054691329": [
+    {
+      "tag": "#2R9R98G99",
+      "name": "Ashina"
+    }
+  ],
+  "416783388058451999": [
+    {
+      "tag": "#R2LLJRL89",
+      "name": "Benny"
+    }
+  ],
+  "1029756436185612371": [
+    {
+      "tag": "#GLYQY0C80",
+      "name": "The Conqueror"
+    }
+  ],
+  "812930666722492426": [
+    {
+      "tag": "#2LU9JUJJR",
+      "name": "BOSS"
+    }
+  ],
+  "586896088217419786": [
+    {
+      "tag": "#922VY90VC",
+      "name": "ZødiacFTW"
+    }
+  ],
+  "402204922164150274": [
+    {
+      "tag": "#80GYQ9LCV",
+      "name": "Snappy #2"
+    }
+  ],
+  "978541688895180800": [
+    {
+      "tag": "#LCJQ9YU09",
+      "name": "nikki"
+    },
+    {
+      "tag": "#YVG9G0VVP",
+      "name": "GW☣️SHAV"
+    }
+  ],
+  "711074758720094309": [
+    {
+      "tag": "#V2UGYJ08",
+      "name": "Flip"
+    },
+    {
+      "tag": "#YLP2Q2JLL",
+      "name": "JDLB"
+    }
+  ],
+  "898083290647519233": [
+    {
+      "tag": "#PVV0R9L0L",
+      "name": "Anasul"
+    },
+    {
+      "tag": "#PCC08PR0C",
+      "name": "Anasul#2"
+    }
+  ],
+  "465458895226142722": [
+    {
+      "tag": "#P8UVY2GUJ",
+      "name": "KING LUCIFAR"
+    }
+  ],
+  "526041719037231114": [
+    {
+      "tag": "#8ULC8R2G",
+      "name": "HuNgRyLiOn"
+    }
+  ],
+  "593158540827426817": [
+    {
+      "tag": "#GJLP0U0JL",
+      "name": "AlwaysHustling2"
+    }
+  ],
+  "137200243392380928": [
+    {
+      "tag": "#CP0CU09",
+      "name": "T1 Faker"
+    }
+  ],
+  "1369761129966075954": [
+    {
+      "tag": "#29L8J88VC",
+      "name": "Soul of fire"
+    }
+  ],
+  "1159099919932588112": [
+    {
+      "tag": "#QURVRYG8G",
+      "name": "adritn"
+    }
+  ],
+  "1517965019172700364": [
+    {
+      "tag": "#QQLQJPGLU",
+      "name": "Kurumi"
+    }
+  ],
+  "260678192321396737": [
+    {
+      "tag": "#GYPC8Y2UG",
+      "name": "Jenny Talia"
+    }
+  ],
+  "1523465854061117490": [
+    {
+      "tag": "#L9YV8QRQ",
+      "name": "ＣＨＵＮ ＨＵＡ"
+    },
+    {
+      "tag": "#2JG8QCR0V",
+      "name": "❇️ Chun Hua ❇️"
+    },
+    {
+      "tag": "#YURVQ8GU",
+      "name": "ℹⓂ❔"
+    },
+    {
+      "tag": "#8Q080GP8V",
+      "name": "ＣＨＵＮ ＨＵＡ"
+    }
+  ],
+  "1523335409579593762": [
+    {
+      "tag": "#LVUC8QV02",
+      "name": "cool abhay"
+    }
+  ],
+  "913295152011943948": [
+    {
+      "tag": "#8VVCULGR",
+      "name": ".-%Noise%-.yyt"
+    }
+  ],
+  "1515776777090367600": [
+    {
+      "tag": "#R2PQPL290",
+      "name": "deyza"
+    }
+  ],
+  "868531367313559592": [
+    {
+      "tag": "#Q08JY8LCV",
+      "name": "SARNITH 2"
+    },
+    {
+      "tag": "#Q8RLLV22J",
+      "name": "sarnith 3"
+    },
+    {
+      "tag": "#Q8GVLV9UQ",
+      "name": "『Ꭺɢ』戀*ᗪᴀʀκ ᗪᴇvɪ"
+    },
+    {
+      "tag": "#QJL0Y0RJ2",
+      "name": "『Ꭺɢ』戀*ᗪᴀʀκ ᗪᴇv²"
+    },
+    {
+      "tag": "#QG9Q8QYYR",
+      "name": "个i噢让册"
+    },
+    {
+      "tag": "#GYJ992VCJ",
+      "name": "sarnith"
+    },
+    {
+      "tag": "#R2LUQUGLR",
+      "name": "OWL [RUSHED ]"
+    }
+  ],
+  "503969566817386511": [
+    {
+      "tag": "#80PYYCGJJ",
+      "name": "HYPERION"
+    },
+    {
+      "tag": "#8LGCCQL8J",
+      "name": "SANDMAN"
+    }
+  ],
+  "1487822301092253898": [
+    {
+      "tag": "#GC0RULC9J",
+      "name": "Edison"
+    },
+    {
+      "tag": "#R0CQLJQQ2",
+      "name": "th 4 kalp"
+    },
+    {
+      "tag": "#GCULQV20G",
+      "name": "Gen-Z"
+    },
+    {
+      "tag": "#GCYYPP02U",
+      "name": "AARAV-F2P"
+    }
+  ],
+  "212567573294743553": [
+    {
+      "tag": "#8282P09U8",
+      "name": "BurtMachine"
+    },
+    {
+      "tag": "#VLQRRCG8",
+      "name": "lil burt"
+    }
+  ],
+  "636750969559842838": [
+    {
+      "tag": "#QYPY8L28Y",
+      "name": "メＲＡＨＡTメ"
+    }
+  ],
+  "788044355071508526": [
+    {
+      "tag": "#82VLCRR9R",
+      "name": "EdWaRd NewgATe"
+    }
+  ],
+  "549126056515207188": [
+    {
+      "tag": "#20L9PYJUP",
+      "name": "Jms1x"
+    }
+  ],
+  "1508850684613890209": [
+    {
+      "tag": "#Q82UQGGPG",
+      "name": "LYSANDER"
+    }
+  ],
+  "364388982081191936": [
+    {
+      "tag": "#GRCPLR999",
+      "name": "Math"
+    }
+  ],
+  "431017799998242826": [
+    {
+      "tag": "#L2C8P8RUR",
+      "name": "Rex~~K♛ng"
+    },
+    {
+      "tag": "#YR0UUYR0R",
+      "name": "David"
+    }
+  ],
+  "1524503634023551026": [
+    {
+      "tag": "#29VPJ0Q09",
+      "name": "Alenarion"
+    },
+    {
+      "tag": "#2PV0Y0UPR",
+      "name": "Calharin"
+    }
+  ],
+  "852561159337148436": [
+    {
+      "tag": "#LGJY0VJ9R",
+      "name": "ROYAL_SUBHO"
+    }
+  ],
+  "1276804979188826145": [
+    {
+      "tag": "#LVQGVCPP9",
+      "name": "⚡⚡《HERO》⚡⚡"
+    }
+  ],
+  "803291726998536213": [
+    {
+      "tag": "#LLUYQGQP0",
+      "name": "Samarvir"
+    },
+    {
+      "tag": "#Q9UULRJVR",
+      "name": "Samar 2"
+    },
+    {
+      "tag": "#2R08RG9GC",
+      "name": "Samar"
+    }
+  ],
+  "1052229133733740564": [
+    {
+      "tag": "#L8JVPC9VC",
+      "name": "MAHMOUD"
+    }
+  ],
+  "458253351214252032": [
+    {
+      "tag": "#L8G2VR2LL",
+      "name": "Criskooo"
+    }
+  ],
+  "920570176271974410": [
+    {
+      "tag": "#99UCRPJ8Q",
+      "name": "Ghost rider"
+    }
+  ],
+  "1036166009687658506": [
+    {
+      "tag": "#QVR08C2J2",
+      "name": "levi"
+    }
+  ],
+  "781468199014891570": [
+    {
+      "tag": "#LRPYPCJR8",
+      "name": "JP05"
+    }
+  ],
+  "1377321575719895070": [
+    {
+      "tag": "#YQ2JG9J9Q",
+      "name": "☠️Homz×Knight☠️"
+    }
+  ],
+  "663276432658661436": [
+    {
+      "tag": "#YRQ0Q0RCC",
+      "name": "isohel"
+    }
+  ],
+  "1514186310481481801": [
+    {
+      "tag": "#QQYYRU22R",
+      "name": "Ｄｕｎｅ Ｖａｌｏｒ"
+    }
+  ],
+  "1520775633385558166": [
+    {
+      "tag": "#P0CJUGR8R",
+      "name": "乃เՇς๏เภ"
+    }
+  ],
+  "279304534793125888": [
+    {
+      "tag": "#R80GQQ9R9",
+      "name": "spongeboimebob"
+    }
+  ],
+  "1384963420121595945": [
+    {
+      "tag": "#P2UQUQ0CR",
+      "name": "MangoNut"
+    }
+  ],
+  "736960222748344372": [
+    {
+      "tag": "#PCJLGCQ8L",
+      "name": "Looner"
+    },
+    {
+      "tag": "#L0V9V0990",
+      "name": "`°'JohN_❌_WiCk'"
+    }
+  ],
+  "1173670092479930500": [
+    {
+      "tag": "#JPCVU0C",
+      "name": "stars"
+    }
+  ],
+  "690821866365124668": [
+    {
+      "tag": "#LJC92CVVG",
+      "name": "Kevinmacklin"
+    }
+  ],
+  "1357745017539530802": [
+    {
+      "tag": "#PYPRR8UGY",
+      "name": "Riyad"
+    }
+  ],
+  "1208098909302300692": [
+    {
+      "tag": "#PUL9V2U2",
+      "name": "Master J"
+    }
+  ],
+  "1180770206218457099": [
+    {
+      "tag": "#GUVC8P2GV",
+      "name": "Dragon Purist"
+    }
+  ],
+  "506354776586452992": [
+    {
+      "tag": "#2UURU829Q",
+      "name": "$w£@sh™"
+    },
+    {
+      "tag": "#2LPVQL8GL",
+      "name": "Soren_X"
+    }
+  ],
+  "459424917654339585": [
+    {
+      "tag": "#GYY9P0UY8",
+      "name": "ＺＩＳＨＡＮＸＶＩ"
+    }
+  ],
+  "107027135096422400": [
+    {
+      "tag": "#GCJ8RP9JQ",
+      "name": "NLighten"
+    }
+  ],
+  "660737289676390404": [
+    {
+      "tag": "#88RLCVUGP",
+      "name": "A.M.J"
+    }
+  ],
+  "1525101549355798539": [
+    {
+      "tag": "#G2P2890U0",
+      "name": "Edgee_"
+    }
+  ],
+  "1397454871052943380": [
+    {
+      "tag": "#9LVCCVGY2",
+      "name": "Who is A7x"
+    }
+  ],
+  "689727743679528974": [
+    {
+      "tag": "#YP98UY2V0",
+      "name": "Galaxy'✨"
+    }
+  ],
+  "544838677164064768": [
+    {
+      "tag": "#9RY292PCY",
+      "name": "Sp!dEY"
+    },
+    {
+      "tag": "#L90GUPR0Y",
+      "name": "ZoRo"
+    },
+    {
+      "tag": "#GUQVV92YL",
+      "name": "Zenitsu"
+    },
+    {
+      "tag": "#GC0RCJR9C",
+      "name": "Naruto"
+    },
+    {
+      "tag": "#QPY2YYY9V",
+      "name": "gojo"
+    },
+    {
+      "tag": "#LVGUGJPPC",
+      "name": "Mikasa"
+    },
+    {
+      "tag": "#GV9PPGJV8",
+      "name": "dablu"
+    },
+    {
+      "tag": "#PVPYCPL9G",
+      "name": "zoro"
+    },
+    {
+      "tag": "#R2LULR8Y9",
+      "name": "WW"
+    },
+    {
+      "tag": "#RP0CJ8RU2",
+      "name": "ww"
+    }
+  ],
+  "945580502428045342": [
+    {
+      "tag": "#GUUQU00L8",
+      "name": "Akioo"
+    }
+  ],
+  "599838811777662980": [
+    {
+      "tag": "#G0R0P9Q2R",
+      "name": "OrK"
+    }
+  ],
+  "1089860648579637300": [
+    {
+      "tag": "#2VRRR990",
+      "name": "StormDrake"
+    }
+  ],
+  "773270571680530493": [
+    {
+      "tag": "#80R22VQ9",
+      "name": "DIZ NUTS"
+    }
+  ],
+  "911117664301232129": [
+    {
+      "tag": "#QYYVQLJRR",
+      "name": "CARGO MINI"
+    }
+  ],
+  "1030834233909968926": [
+    {
+      "tag": "#P8VUUQGR0",
+      "name": "Brang"
+    }
+  ],
+  "1410699052793991353": [
+    {
+      "tag": "#QVGR2R0QV",
+      "name": "Grimholder"
+    },
+    {
+      "tag": "#Q00PCGRR8",
+      "name": "TANMAY"
+    },
+    {
+      "tag": "#PG8PR0Q9G",
+      "name": "jeevan"
+    },
+    {
+      "tag": "#QJP2R9988",
+      "name": "NBknight"
+    },
+    {
+      "tag": "#LL8LLPCC2",
+      "name": "HYDRA (B)"
+    }
+  ],
+  "1242495275432677537": [
+    {
+      "tag": "#99CQ2C8QU",
+      "name": "RASHA"
+    },
+    {
+      "tag": "#2YL8U9QYY",
+      "name": "LEVI ACKERMAN"
+    },
+    {
+      "tag": "#2GJR2YRL0",
+      "name": "Hazard"
+    }
+  ],
+  "456235887827615744": [
+    {
+      "tag": "#GGRJ2CCG",
+      "name": "splunk"
+    }
+  ],
+  "1527649041398239342": [
+    {
+      "tag": "#9LRYV09Y2",
+      "name": "AㅤKㅤAㅤZㅤAㅤ"
+    }
+  ],
+  "444875044208771073": [
+    {
+      "tag": "#Q9YCQLY9",
+      "name": "REXD"
+    }
+  ],
+  "748216305101963317": [
+    {
+      "tag": "#GJULLQPRQ",
+      "name": "broodie"
+    }
+  ],
+  "1193989502478327861": [
+    {
+      "tag": "#QU8R9YGVQ",
+      "name": "legend"
+    }
+  ],
+  "1387598059478847549": [
+    {
+      "tag": "#2GJC22PLR",
+      "name": "el rey de ck"
+    }
+  ],
+  "199390237133111296": [
+    {
+      "tag": "#GU9R0UP0G",
+      "name": "Murdoc"
+    }
+  ],
+  "1333450985921712235": [
+    {
+      "tag": "#9JC9QRY0G",
+      "name": "DON"
+    }
+  ],
+  "1264127307933683746": [
+    {
+      "tag": "#GJPJYPJV9",
+      "name": "i_live_here"
+    }
+  ],
+  "1395763958517993632": [
+    {
+      "tag": "#G9QL8QYVQ",
+      "name": "Toy Friend"
+    }
+  ],
+  "1326026164803862608": [
+    {
+      "tag": "#8PP2GVUY2",
+      "name": "Kunhi"
+    }
+  ],
+  "1363688310899212351": [
+    {
+      "tag": "#YGCRCVQPU",
+      "name": "✨✨TRICKSTAR✨✨"
+    },
+    {
+      "tag": "#Y8R9PQ2YJ",
+      "name": "✨✨TRICKSTAR✨✨"
+    },
+    {
+      "tag": "#YV92RPCYP",
+      "name": "✨✨TRICKSTAR✨✨"
+    }
+  ],
+  "1202280738200752180": [
+    {
+      "tag": "#GLYUGCCGC",
+      "name": "Papi Kris"
+    }
+  ],
+  "1529736029051944998": [
+    {
+      "tag": "#PYRPQR2YC",
+      "name": "Pointbreak"
+    }
+  ],
+  "649206139619377174": [
+    {
+      "tag": "#GQ2QC2R8Q",
+      "name": "☣DAREDEVIL☣"
+    },
+    {
+      "tag": "#GYRVRCPLU",
+      "name": "☣Mr. Fantastic☣"
+    }
+  ],
+  "800878844529344513": [
+    {
+      "tag": "#GJ22RCL",
+      "name": "Weneki"
+    }
+  ],
+  "1254097886388555788": [
+    {
+      "tag": "#GCRPYVP8Q",
+      "name": "⭐️HARSH⭐️"
+    }
+  ],
+  "1530086128181313627": [
+    {
+      "tag": "#CGY28QRY",
+      "name": "ULTRA字ˡᵉᵍᵉᶰᵈ"
+    }
+  ],
+  "760035269901811712": [
+    {
+      "tag": "#9G00UR2V",
+      "name": "⚡∆∆RON⚡"
+    }
+  ],
+  "293756368735698944": [
+    {
+      "tag": "#809UVJ8GL",
+      "name": "DJ13"
+    },
+    {
+      "tag": "#GGV898VGC",
+      "name": "MONKEY.D.LUFFY"
+    }
+  ],
+  "1428769463552970824": [
+    {
+      "tag": "#2UGQPUVQ2",
+      "name": "Trapmaker"
+    }
+  ],
+  "1427657755065319435": [
+    {
+      "tag": "#V8JUGR2J",
+      "name": "Maximus"
+    },
+    {
+      "tag": "#P88U00LRV",
+      "name": "DEEPAK PATEL#"
+    }
+  ],
+  "182527005428809739": [
+    {
+      "tag": "#RU0GLPUL",
+      "name": "Optimus Pope"
+    }
+  ],
+  "1444743535713718332": [
+    {
+      "tag": "#G0UP8J2UQ",
+      "name": "NamelessMonster"
+    }
+  ],
+  "1236304475719864333": [
+    {
+      "tag": "#P02RPL2JY",
+      "name": "Grim ReapeR"
+    }
+  ],
+  "431778397920690176": [
+    {
+      "tag": "#8VPPP000C",
+      "name": "proinmortal999"
+    }
+  ],
+  "1147815176486260736": [
+    {
+      "tag": "#RJRCY00U",
+      "name": "Knull"
+    },
+    {
+      "tag": "#8QQUQCVY2",
+      "name": "Venom"
+    }
+  ],
+  "1193707876426973305": [
+    {
+      "tag": "#29GGQ0G88",
+      "name": "dragonblade"
+    }
+  ],
+  "1061734819362508821": [
+    {
+      "tag": "#89YPRPPV",
+      "name": "ⓓⓐⓝⓝⓨ ⓟⓗⓐⓝⓣⓞⓜ"
+    }
+  ],
+  "718360914079776911": [
+    {
+      "tag": "#892RVPQJ2",
+      "name": "Andreas Brahma"
+    },
+    {
+      "tag": "#88PQUPUQ8",
+      "name": "Damocles..."
+    }
+  ],
+  "1277259776744624289": [
+    {
+      "tag": "#9Q28GCGPV",
+      "name": "surya"
+    },
+    {
+      "tag": "#PQG9UL2PL",
+      "name": "S.P"
+    }
+  ],
+  "706488115971227728": [
+    {
+      "tag": "#PP889RRGL",
+      "name": "Dragon"
+    }
+  ],
+  "368641821175185409": [
+    {
+      "tag": "#2VL98RR9",
+      "name": "NoodleBox"
+    }
+  ],
+  "1021474206036283473": [
+    {
+      "tag": "#PVGQL2C2Q",
+      "name": "sans"
+    },
+    {
+      "tag": "#YGUCLU9QU",
+      "name": "Inksans"
+    },
+    {
+      "tag": "#YGV8U0YJJ",
+      "name": "Defne"
+    },
+    {
+      "tag": "#LPVYLRCQC",
+      "name": "☆SIWAR☆"
+    }
+  ],
+  "901601494095241227": [
+    {
+      "tag": "#GG8CYP9Y",
+      "name": "trilliam"
+    }
+  ],
+  "812847097472483359": [
+    {
+      "tag": "#QUGVRVUVV",
+      "name": "Alberich05"
+    }
+  ],
+  "710364540088614923": [
+    {
+      "tag": "#QQCQPJQ9Q",
+      "name": ".-Huargo1910-.j"
+    }
+  ],
+  "499056672023773184": [
+    {
+      "tag": "#Y9LVQULPJ",
+      "name": "SparklingGator"
     }
   ]
 }

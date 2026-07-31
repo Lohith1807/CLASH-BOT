@@ -90,7 +90,7 @@ module.exports = {
             ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
         ];
 
-        const hasAllowedRole = member.roles.cache.some(roleId => allowedRoles.includes(roleId));
+        const hasAllowedRole = member.roles.cache.some(role => allowedRoles.includes(role.id));
         const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {

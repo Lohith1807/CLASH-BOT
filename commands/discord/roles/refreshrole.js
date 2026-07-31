@@ -110,7 +110,7 @@ const updateMemberNickname = async (member, monitoredClans, config) => {
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('refreshrole')
+        .setName('role-refresh')
         .setDescription('Re-check and sync alliance roles for a user')
         .addUserOption(option =>
             option.setName('user')

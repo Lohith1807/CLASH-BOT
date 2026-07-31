@@ -388,6 +388,13 @@ async function syncUser(client, config, coc, dataManager, userId, monitoredClans
         }
     }
 
+    const FAMILY_ROLE_ID = config.FAMILY_ROLE_ID || "1528073821343584387";
+    if (currentClanTags.length > 0) {
+        rolesToAdd.push(FAMILY_ROLE_ID);
+    } else {
+        rolesToRemove.push({ roleId: FAMILY_ROLE_ID, clanTag: null });
+    }
+
     const finalAdd    = [...new Set(rolesToAdd)];
     const finalRemove = [...new Set(rolesToRemove.map(r => r.roleId))]
         .filter(id => !finalAdd.includes(id))
@@ -446,7 +453,7 @@ async function syncUser(client, config, coc, dataManager, userId, monitoredClans
             .setTitle(`${ref} Manual Role Sync`)
             .setDescription(`**Member:** <@${member.id}>`)
             .addFields(fields)
-            .setFooter({ text: "Triggered by: /autorolerefresh" })
+            .setFooter({ text: "Triggered by: /role-refresh" })
             .setTimestamp();
 
         await logChannel.send({ embeds: [embed] }).catch(() => null);

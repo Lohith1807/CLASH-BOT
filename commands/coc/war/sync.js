@@ -307,14 +307,25 @@ async function cleanSyncChannel(context) {
         if (!channel || !channel.isTextBased()) return;
 
         try {
+            // Delete active threads
             const activeThreads = await channel.threads.fetchActive().catch(() => ({ threads: new Map() }));
             for (const thread of activeThreads.threads.values()) {
                 await thread.delete().catch(() => { });
             }
 
-            const archivedThreads = await channel.threads.fetchArchived().catch(() => ({ threads: new Map() }));
-            for (const thread of archivedThreads.threads.values()) {
-                await thread.delete().catch(() => { });
+            // Delete archived threads (handle pagination)
+            let hasMore = true;
+            let lastThreadId = undefined;
+            while (hasMore) {
+                const options = { limit: 100 };
+                if (lastThreadId) options.before = lastThreadId;
+                
+                const archivedThreads = await channel.threads.fetchArchived(options).catch(() => ({ threads: new Map(), hasMore: false }));
+                for (const thread of archivedThreads.threads.values()) {
+                    await thread.delete().catch(() => { });
+                    lastThreadId = thread.id;
+                }
+                hasMore = archivedThreads.hasMore && archivedThreads.threads.size > 0;
             }
         } catch (threadErr) {
             console.error("Failed to delete threads in sync channel:", threadErr);
@@ -322,6 +333,8 @@ async function cleanSyncChannel(context) {
 
         try {
             let state = {};
+            const syncStatePath = require("path").join(__dirname, "../../../data/syncState.json");
+            const fs = require("fs");
             if (fs.existsSync(syncStatePath)) {
                 try { state = JSON.parse(fs.readFileSync(syncStatePath, "utf8")); } catch (e) { }
             }
@@ -391,7 +404,7 @@ async function storeAllFwaWarRosters(context) {
 
 async function checkWarStatus(context) {
     const { coc, config, client } = context;
-    const CLAN_TAG = "#CYQVL002";
+    const CLAN_TAG = "#2L90V8PYY";
     const SYNC_CHANNEL_ID = config.SYNC_CHANNEL_ID;
 
     try {

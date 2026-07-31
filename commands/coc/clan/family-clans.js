@@ -32,7 +32,7 @@ function getLeagueRank(leagueName) {
  * Build the CWL clans embed, select menu, and refresh button.
  * Shared between the slash command and the handler refresh button.
  */
-async function buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject) {
+async function buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject, page = 0) {
     const cwlData = getCwlClans();
     const allTags = Object.keys(cwlData);
 
@@ -55,9 +55,12 @@ async function buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject) {
     const validClans = clanResults.filter(Boolean);
     if (validClans.length === 0) return null;
 
-    // Split clans by family friendly status
-    const familyFriendlyClans = validClans.filter(entry => entry.clan.isFamilyFriendly);
-    const nonFamilyFriendlyClans = validClans.filter(entry => !entry.clan.isFamilyFriendly);
+    // Split clans by ranked/unranked and family friendly status
+    const unrankedClans = validClans.filter(entry => !entry.clan.warLeague || entry.clan.warLeague.name === "Unranked");
+    const rankedClans = validClans.filter(entry => entry.clan.warLeague && entry.clan.warLeague.name !== "Unranked");
+
+    const familyFriendlyClans = rankedClans.filter(entry => entry.clan.isFamilyFriendly);
+    const nonFamilyFriendlyClans = rankedClans.filter(entry => !entry.clan.isFamilyFriendly);
 
     let embeds = [];
     let currentText = "";
@@ -65,8 +68,16 @@ async function buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject) {
     let totalPlayers = 0;
     let totalClans = 0;
 
-    const processClanList = (clans, categoryTitle) => {
+    const processClanList = (clans, categoryTitle, forceNewEmbed = false) => {
         if (clans.length === 0) return;
+
+        if (forceNewEmbed && currentText.trim().length > 0) {
+            embeds.push(new EmbedBuilder()
+                .setTitle(embeds.length === 0 ? `${getEmoji("cwl")} CWL Clans` : `${getEmoji("cwl")} CWL Clans (Cont.)`)
+                .setDescription(currentText.trim())
+                .setColor(0x2ECC71));
+            currentText = "";
+        }
 
         // Add a header for the category if the current text is not empty or if it's the beginning
         let categoryHeader = `\n\n**━━━ ${categoryTitle} ━━━**\n`;
@@ -96,8 +107,6 @@ async function buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject) {
             for (const entry of leagueClans) {
                 const { clan, info } = entry;
                 const clanNick = info.nickName ? info.nickName.toLowerCase() : "";
-                const badgeEmojiObj = clanNick && getEmojiObject(clanNick) ? getEmojiObject(clanNick) : getEmojiObject("cwl");
-
                 const clanLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${clan.tag.replace("#", "")}`;
                 const clanLine = `[**${clan.name}** (${clan.members}/50)](${clanLink})\n`;
 
@@ -120,25 +129,93 @@ async function buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject) {
 
     processClanList(familyFriendlyClans, "Family Friendly Clans");
     processClanList(nonFamilyFriendlyClans, "Non-Family Friendly Clans");
+    
+    // Push whatever is left for ranked clans
+    if (currentText.trim().length > 0) {
+        embeds.push(new EmbedBuilder()
+            .setTitle(embeds.length === 0 ? `${getEmoji("cwl")} CWL Clans` : `${getEmoji("cwl")} CWL Clans (Cont.)`)
+            .setDescription(currentText.trim())
+            .setColor(0x2ECC71));
+        currentText = "";
+    }
 
-    currentText += `\n\n**${totalPlayers} Players | ${totalClans} Clans**`;
-    embeds.push(new EmbedBuilder()
-        .setTitle(embeds.length === 0 ? `${getEmoji("cwl")} CWL Clans` : `${getEmoji("cwl")} CWL Clans (Cont.)`)
-        .setDescription(currentText.trim())
-        .setColor(0x2ECC71)
-        .setTimestamp());
+    let unrankedEmbed = null;
+    if (unrankedClans.length > 0) {
+        let unrankedText = "";
+        unrankedClans.sort((a, b) => a.clan.name.localeCompare(b.clan.name));
+        for (const entry of unrankedClans) {
+            const { clan } = entry;
+            const clanLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${clan.tag.replace("#", "")}`;
+            const clanLine = `[**${clan.name}** (${clan.members}/50)](${clanLink})\n`;
+            unrankedText += clanLine;
+            totalPlayers += clan.members;
+            totalClans++;
+        }
+        unrankedEmbed = new EmbedBuilder()
+            .setTitle(`${getEmoji("cwl")} Unranked Clans`)
+            .setDescription(unrankedText.trim())
+            .setColor(0x2ECC71);
+    }
+
+    const totalStatsText = `\n\n**${totalPlayers} Players | ${totalClans} Clans**`;
+    if (unrankedEmbed) {
+        unrankedEmbed.setDescription(unrankedEmbed.data.description + totalStatsText);
+    } else if (embeds.length > 0) {
+        const lastEmbed = embeds[embeds.length - 1];
+        lastEmbed.setDescription(lastEmbed.data.description + totalStatsText);
+    }
+
+    if (embeds.length === 0 && !unrankedEmbed) return null;
+
+    if (page < 0) page = 0;
+    if (page >= embeds.length) page = Math.max(0, embeds.length - 1);
+
+    let responseEmbeds = [];
+    if (embeds.length > 0) {
+        const currentEmbed = embeds[page];
+        if (embeds.length > 1) {
+            currentEmbed.setFooter({ text: `Page ${page + 1} of ${embeds.length}` });
+        }
+        responseEmbeds.push(currentEmbed);
+    }
+
+    if (unrankedEmbed) {
+        responseEmbeds.push(unrankedEmbed);
+    }
 
     const refreshBtn = new ButtonBuilder()
-        .setCustomId("familyclans_refresh_cwl")
+        .setCustomId(`familyclans_cwl_refresh_${page}`)
         .setLabel("Refresh")
         .setStyle(ButtonStyle.Secondary);
     const refreshEmoji = getEmojiObject("refresh");
     if (refreshEmoji) refreshBtn.setEmoji(refreshEmoji);
     else refreshBtn.setEmoji("🔄");
 
-    const btnRow = new ActionRowBuilder().addComponents(refreshBtn);
+    const btnRow = new ActionRowBuilder();
 
-    return { embeds: embeds, components: [btnRow] };
+    if (embeds.length > 1) {
+        btnRow.addComponents(
+            new ButtonBuilder()
+                .setCustomId(`familyclans_cwl_prev_${page}`)
+                .setLabel("Previous")
+                .setStyle(ButtonStyle.Primary)
+                .setDisabled(page === 0)
+        );
+    }
+    
+    btnRow.addComponents(refreshBtn);
+    
+    if (embeds.length > 1) {
+        btnRow.addComponents(
+            new ButtonBuilder()
+                .setCustomId(`familyclans_cwl_next_${page}`)
+                .setLabel("Next")
+                .setStyle(ButtonStyle.Primary)
+                .setDisabled(page === embeds.length - 1)
+        );
+    }
+
+    return { embeds: responseEmbeds, components: [btnRow] };
 }
 
 module.exports = {

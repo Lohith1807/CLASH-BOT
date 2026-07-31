@@ -230,19 +230,28 @@ async function handleInteraction(interaction, context) {
             return;
         }
 
-        // ── CWL Clans refresh button ──────────────────────────────────────────
-        if (id === "familyclans_refresh_cwl") {
+        // ── CWL Clans pagination & refresh button ──────────────────────────────────────────
+        if (id.startsWith("familyclans_cwl_")) {
             if (interaction.replied || interaction.deferred) return;
             try {
                 await interaction.deferUpdate();
+                let page = 0;
+                if (id.startsWith("familyclans_cwl_refresh_")) {
+                    page = parseInt(id.replace("familyclans_cwl_refresh_", "")) || 0;
+                } else if (id.startsWith("familyclans_cwl_prev_")) {
+                    page = parseInt(id.replace("familyclans_cwl_prev_", "")) - 1;
+                } else if (id.startsWith("familyclans_cwl_next_")) {
+                    page = parseInt(id.replace("familyclans_cwl_next_", "")) + 1;
+                }
+
                 const clanRoles = dataManager.getClanRoles();
                 const familyClansCmd = require("../commands/coc/clan/family-clans.js");
-                const result = await familyClansCmd.buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject);
+                const result = await familyClansCmd.buildCwlResponse(coc, clanRoles, getEmoji, getEmojiObject, page);
                 if (!result) return interaction.editReply({ content: "No CWL clans found.", embeds: [], components: [] });
                 await interaction.editReply({ embeds: result.embeds, components: result.components });
             } catch (err) {
                 console.error("CWL refresh error:", err);
-                try { await interaction.followUp({ content: "❌ Error refreshing CWL clans.", ephemeral: true }); } catch(e) {}
+                try { await interaction.followUp({ content: "❌ Error updating CWL clans.", ephemeral: true }); } catch(e) {}
             }
             return;
         }
@@ -738,6 +747,81 @@ async function handleInteraction(interaction, context) {
                 var refreshEmoji = getEmojiObject("refresh");
                 var compoBtn = new ButtonBuilder()
                     .setCustomId("compo_refresh_" + compoTag.replace("#", ""))
+                    .setLabel("Refresh Data")
+                    .setStyle(ButtonStyle.Secondary);
+
+                if (refreshEmoji) { compoBtn.setEmoji(refreshEmoji); }
+                else { compoBtn.setEmoji("🔄"); }
+
+                var compoBtnRow = new ActionRowBuilder().addComponents(compoBtn);
+                await interaction.editReply({ embeds: [compoEmbed], components: [compoBtnRow] });
+            } catch (err) {
+                console.error(err);
+                try { await interaction.followUp({ content: "❌ Error refreshing compo data.", ephemeral: true }); } catch(e) {}
+            }
+            return;
+        }
+
+        if (id.startsWith("ww_compo_refresh_")) {
+            if (interaction.replied || interaction.deferred) return;
+            var compoTag = "#" + id.replace("ww_compo_refresh_", "");
+
+            try { await interaction.deferUpdate(); } catch(e) { return; }
+
+            try {
+                var clan = await coc.getClan(compoTag);
+
+                var thEmojis = {
+                    18: getEmoji("th18"), 17: getEmoji("th17"), 16: getEmoji("th16"),
+                    15: getEmoji("th15"), 14: getEmoji("th14"), 13: getEmoji("th13"),
+                    12: getEmoji("th12"), 11: getEmoji("th11")
+                };
+                var thCounts = {};
+                var totalTH = 0;
+                var totalMembers = 0;
+
+                clan.memberList.forEach(function(m) {
+                    thCounts[m.townHallLevel] = (thCounts[m.townHallLevel] || 0) + 1;
+                    totalTH += m.townHallLevel;
+                    totalMembers++;
+                });
+
+                var sortedTH = Object.entries(thCounts).sort(function(a, b) { return b[0] - a[0]; });
+                var desc = "";
+                sortedTH.forEach(function(entry) {
+                    var emojiStr = thEmojis[entry[0]] || "🏰";
+                    desc += "**TH" + entry[0] + "** " + emojiStr + " **" + entry[1] + "**\n";
+                });
+                
+                var fwaClanData = require("./fwadata.js");
+                var pages = await fwaClanData(compoTag, context);
+                var eqvDesc = "";
+                var eqvCounts = pages.eqvCounts || {};
+                var sortedEqvTH = Object.entries(eqvCounts).sort(function(a, b) { return b[0] - a[0]; });
+                sortedEqvTH.forEach(function(entry) {
+                    var emojiStr = thEmojis[entry[0]] || "🏰";
+                    eqvDesc += "**TH" + entry[0] + "** " + emojiStr + " **" + entry[1] + "**\n";
+                });
+
+                var avgTH = totalMembers > 0 ? (totalTH / totalMembers).toFixed(2) : "N/A";
+
+                var now = new Date();
+                var options = { timeZone: 'Asia/Kolkata', day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit', hour12: true };
+                var timestamp = now.toLocaleString('en-GB', options).replace(',', '');
+
+                var compoEmbed = new EmbedBuilder()
+                    .setTitle(clan.name + " Townhalls")
+                    .addFields(
+                        { name: "CoC API Compo", value: desc || "No data", inline: true },
+                        { name: "War Weight Compo", value: eqvDesc || "No data", inline: true }
+                    )
+                    .setColor(0xFF0000)
+                    .setThumbnail(clan.badgeUrls.medium)
+                    .setFooter({ text: "Accounts: " + totalMembers + " | Avg TH: " + avgTH + " | Updated: " + timestamp });
+
+                var refreshEmoji = getEmojiObject("refresh");
+                var compoBtn = new ButtonBuilder()
+                    .setCustomId("ww_compo_refresh_" + compoTag.replace("#", ""))
                     .setLabel("Refresh Data")
                     .setStyle(ButtonStyle.Secondary);
 
@@ -1406,29 +1490,48 @@ async function handleInteraction(interaction, context) {
             const clanTag = "#" + interaction.values[0].toUpperCase();
 
             try {
-                await interaction.deferReply({ ephemeral: true });
-            } catch (e) {
-                if (e.code === 10062 || e.code === 40060) return; // Unknown Interaction / Already Acknowledged
-                console.error("wwpanel defer error:", e);
-                return;
-            }
-
-            try {
-                const { ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
+                const { EmbedBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
                 const fwaData = require("./fwadata.js");
+
+                let progress = 0;
+                const getBar = (p) => `\u001b[1;32m${"▰".repeat(p)}\u001b[0m\u001b[30m${"▱".repeat(5 - p)}\u001b[0m`;
+
+                const loadEmbed = new EmbedBuilder()
+                    .setDescription(`Loading war weight of players...\n\`\`\`ansi\n[${getBar(0)}] (0%)\n\`\`\``)
+                    .setColor("Random");
+                
+                await interaction.reply({ embeds: [loadEmbed], ephemeral: true });
+
+                const progressInterval = setInterval(() => {
+                    progress++;
+                    if (progress > 4) progress = 4;
+                    const newEmbed = new EmbedBuilder()
+                        .setDescription(`Loading war weight of players...\n\`\`\`ansi\n[${getBar(progress)}] (${progress * 20}%)\n\`\`\``)
+                        .setColor("Random");
+                    interaction.editReply({ embeds: [newEmbed] }).catch(() => {});
+                }, 1000);
 
                 let pages;
                 const guild = interaction.guild || interaction.client.guilds.cache.get('1153720899715993681');
                 try {
                     pages = await fwaData(clanTag, { ...context, guild });
                 } catch (fetchErr) {
+                    clearInterval(progressInterval);
                     console.error("wwpanel fwadata error:", fetchErr);
-                    return interaction.editReply({ content: `❌ Failed to fetch FWA weight data for \`${clanTag}\`. Check the clan tag or try again later.` });
+                    return interaction.editReply({ content: `❌ Failed to fetch FWA weight data for \`${clanTag}\`. Check the clan tag or try again later.`, embeds: [] });
                 }
+                
+                clearInterval(progressInterval);
 
                 if (!pages || pages.length === 0) {
-                    return interaction.editReply({ content: `❌ No weight data found for \`${clanTag}\`.` });
+                    return interaction.editReply({ content: `❌ No weight data found for \`${clanTag}\`.`, embeds: [] });
                 }
+
+                // Briefly show 100%
+                const fullEmbed = new EmbedBuilder()
+                    .setDescription(`Loading war weight of players...\n\`\`\`ansi\n[${getBar(5)}] (100%)\n\`\`\``)
+                    .setColor("Random");
+                await interaction.editReply({ embeds: [fullEmbed] }).catch(() => {});
 
                 let currentPage = 0;
                 const leftEmoji = getEmojiObject("larrow");
@@ -1459,7 +1562,14 @@ async function handleInteraction(interaction, context) {
                     if (refreshEmoji && refreshEmoji.id) refreshBtn.setEmoji({ id: refreshEmoji.id, animated: refreshEmoji.animated });
                     else refreshBtn.setEmoji('🔄');
 
-                    row.addComponents(prevBtn, nextBtn, refreshBtn);
+                    const realCompoBtn = new BB()
+                        .setCustomId(`ww_compo_${clanTag.replace('#', '')}`)
+                        .setLabel("Real Compo")
+                        .setStyle(BS.Success);
+                    const memEmoji = getEmojiObject("mem");
+                    if (memEmoji && memEmoji.id) realCompoBtn.setEmoji({ id: memEmoji.id, animated: memEmoji.animated });
+
+                    row.addComponents(prevBtn, nextBtn, refreshBtn, realCompoBtn);
                     return row;
                 };
 

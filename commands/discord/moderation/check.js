@@ -172,8 +172,8 @@ module.exports = {
             new ButtonBuilder()
                 .setCustomId(`check_reject:${message.author.id}:${tagWithoutHash}`)
                 .setLabel('Reject')
+                .setEmoji('1532793683559186613')
                 .setStyle(ButtonStyle.Danger)
-                .setEmoji('❌')
         );
 
         const sentMessage = await message.channel.send({ embeds: [embed], components: [row] });

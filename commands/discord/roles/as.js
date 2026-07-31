@@ -9,7 +9,7 @@ function getRandomColor() {
 }
 
 module.exports = {
-    name: "cc",
+    name: "as",
     description: "Check Clash of Clans base and assign clan roles",
     async execute(message, args, context) {
         const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, coc, data, config } = context;
@@ -152,8 +152,22 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
         ...config.STAFF_ROLE_IDS
     ];
 
+    let playerData = null;
+    try {
+        playerData = await coc.getPlayer(`#${cleanTag}`);
+        if (!playerName) playerName = playerData.name;
+    } catch (e) {
+        // Player fetch failed, we'll continue with defaults
+    }
+
     const cosLink = `https://www.clashofstats.com/players/${cleanTag}/summary`;
-    const fwaLink = `https://cc.fwafarm.com/cc_n/member.php?tag=${encodeURIComponent(cleanTag)}`;
+    
+    let clanField = "None";
+    if (playerData && playerData.clan) {
+        const clanLink = `https://link.clashofclans.com/en/?action=OpenClanProfile&tag=${encodeURIComponent(playerData.clan.tag)}`;
+        clanField = `[${playerData.clan.name}](${clanLink})`;
+    }
+
     const titleText = playerName ? `${playerName}  #${cleanTag}` : `Player #${cleanTag}`;
 
     const embed = new EmbedBuilder()
@@ -162,7 +176,7 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
         .setDescription(`${cocEmoji} Please confirm base is correct and check CC.`)
         .addFields(
             { name: "Clash of Stats", value: `[View Stats](${cosLink})`, inline: true },
-            { name: "FWA Farm Link", value: `[View FWA](${fwaLink})`, inline: true },
+            { name: "Player Clan", value: clanField, inline: true },
             { name: "Actions", value: "⏳ Waiting for confirmation...", inline: false }
         )
         .setFooter({ text: `Please click the ✅ emoji if you are sure.`, iconURL: message.author.displayAvatarURL() });
@@ -364,6 +378,8 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                         console.error("Nickname error:", err);
                     });
             }
+
+
 
             results.push(`${tickEmoji} Verified by ${verifier.tag}`);
 

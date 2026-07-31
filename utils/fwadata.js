@@ -133,6 +133,14 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
         11: emojiUtils.getEmoji("th11"),
     };
 
+    const thresholdsPath = path.join(__dirname, "../data/ww_thresholds.json");
+    let thresholds = null;
+    if (fs.existsSync(thresholdsPath)) {
+        try {
+            thresholds = JSON.parse(fs.readFileSync(thresholdsPath, "utf8"));
+        } catch(e) {}
+    }
+
     const clanWeight = {};
     for (const member of clanData) {
         try {
@@ -141,15 +149,26 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
             const weight = parseInt(member.weight, 10);
 
             let equivalent;
-            if (weight > 170000 && weight <= 179000) equivalent = 18;
-            else if (weight > 160000 && weight <= 169000) equivalent = 17;
-            else if (weight > 150000 && weight <= 160000) equivalent = 16;
-            else if (weight > 140000 && weight <= 150000) equivalent = 15;
-            else if (weight > 130000 && weight <= 140000) equivalent = 14;
-            else if (weight > 120000 && weight <= 130000) equivalent = 13;
-            else if (weight > 110000 && weight <= 120000) equivalent = 12;
-            else if (weight > 90000 && weight <= 110000) equivalent = 11;
-            else equivalent = townHallLevel;
+            if (thresholds && Object.keys(thresholds).length > 0) {
+                const sortedTHs = Object.keys(thresholds).map(Number).sort((a,b) => b - a);
+                equivalent = townHallLevel > 10 ? 10 : townHallLevel;
+                for (let th of sortedTHs) {
+                    if (weight > thresholds[th]) {
+                        equivalent = th;
+                        break;
+                    }
+                }
+            } else {
+                if (weight > 170000 && weight <= 179000) equivalent = 18;
+                else if (weight > 160000 && weight <= 169000) equivalent = 17;
+                else if (weight > 150000 && weight <= 160000) equivalent = 16;
+                else if (weight > 140000 && weight <= 150000) equivalent = 15;
+                else if (weight > 130000 && weight <= 140000) equivalent = 14;
+                else if (weight > 120000 && weight <= 130000) equivalent = 13;
+                else if (weight > 110000 && weight <= 120000) equivalent = 12;
+                else if (weight > 90000 && weight <= 110000) equivalent = 11;
+                else equivalent = townHallLevel;
+            }
 
             clanWeight[playerName] = {
                 townHall: townHallLevel,
@@ -215,6 +234,11 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
             .setTimestamp();
 
         pages.push(embed);
+    }
+    pages.eqvCounts = {};
+    for (const item of sortedClanWeight) {
+        const eqv = item[1].eqvweight;
+        pages.eqvCounts[eqv] = (pages.eqvCounts[eqv] || 0) + 1;
     }
 
     return pages;

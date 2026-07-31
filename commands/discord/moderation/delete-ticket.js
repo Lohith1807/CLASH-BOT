@@ -31,7 +31,8 @@ module.exports = {
         }
 
         const STAFF_ROLE_IDS = conf.STAFF_ROLE_IDS || [];
-        const isStaff = STAFF_ROLE_IDS.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator);
+        const WEL_EXE_STAFF_ID = conf.WEL_EXE_STAFF_ID || process.env.WEL_EXE_STAFF_ID;
+        const isStaff = STAFF_ROLE_IDS.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator) || (WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID));
 
         if (!isStaff) {
             return interaction.reply({

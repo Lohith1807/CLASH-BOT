@@ -22,7 +22,8 @@ const PATHS = {
     strikecounters: path.join(DATA_DIR, "strikecounters.json"),
     recruitments: path.join(DATA_DIR, "recruitments.json"),
     staffmembers: path.join(DATA_DIR, "staffmembers.json"),
-    stafftrainees: path.join(DATA_DIR, "stafftrainees.json")
+    stafftrainees: path.join(DATA_DIR, "stafftrainees.json"),
+    reapplyreasons: path.join(DATA_DIR, "reapplyreasons.json")
 };
 
 
@@ -399,6 +400,34 @@ function saveStaffTrainees(data) {
     }
 }
 
+/**
+ * Get reapply reasons data
+ * @returns {Object} Reapply reasons object (keyed by userId)
+ */
+function getReapplyReasons() {
+    try {
+        if (!fs.existsSync(PATHS.reapplyreasons)) return {};
+        const raw = fs.readFileSync(PATHS.reapplyreasons, "utf8");
+        return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+        console.error("Error reading reapplyreasons.json:", err.message);
+        return {};
+    }
+}
+
+/**
+ * Save reapply reasons data
+ * @param {Object} data - Reapply reasons data to save
+ */
+function saveReapplyReasons(data) {
+    try {
+        fs.writeFileSync(PATHS.reapplyreasons, JSON.stringify(data, null, 2));
+    } catch (err) {
+        console.error("Error writing reapplyreasons.json:", err.message);
+        throw err;
+    }
+}
+
 module.exports = {
     getUserData,
     getClanRoles,
@@ -413,6 +442,7 @@ module.exports = {
     getRecruitments,
     getStaffMembers,
     getStaffTrainees,
+    getReapplyReasons,
 
     saveUserData,
     saveClanRoles,
@@ -427,6 +457,7 @@ module.exports = {
     saveRecruitments,
     saveStaffMembers,
     saveStaffTrainees,
+    saveReapplyReasons,
 
     PATHS
 };

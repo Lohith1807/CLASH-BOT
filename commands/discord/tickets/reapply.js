@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,7 +9,12 @@ module.exports = {
                 .setDescription('The member to process')
                 .setRequired(true)),
 
-    async execute(interaction, context) {
+    async execute(source, arg2, arg3) {
+        try {
+            const isInteraction = arg3 === undefined;
+        const context = isInteraction ? arg2 : arg3;
+        const args = isInteraction ? [] : arg2;
+        
         const { config, data, coc, emoji } = context;
         const { getEmoji } = emoji;
         const GLOBAL_ROLE_ID = config.GLOBAL_ROLE_ID;
@@ -17,48 +22,78 @@ module.exports = {
         const TARGET_CHANNEL_ID = "1523186791950323824"; // fallback if not in config
 
         const errorEmbed = (desc) => new EmbedBuilder().setColor("Red").setDescription(`${getEmoji("bluex")} ${desc}`);
-        const loadingEmbed = (desc) => new EmbedBuilder().setColor("Blue").setDescription(`${getEmoji("loading")} ${desc}`);
+        const loadingEmbed = (desc) => new EmbedBuilder().setColor("Blue").setDescription(`**${desc}**\n\`\`\`ansi\n\u001b[30m[▱▱▱▱▱]\u001b[0m\n\`\`\``);
         const successEmbed = (desc) => new EmbedBuilder().setColor("Green").setDescription(`${getEmoji("gtick")} ${desc}`);
 
         // Permission check
         const allowedRoleNames = ['all leaders', 'executive staff', 'server mod', 't-mod', 'admin', 'moderator'];
-        const memberRoles = interaction.member.roles.cache;
+        const memberRoles = source.member?.roles?.cache || new Map();
         
         const hasConfigRole = 
             memberRoles.has(config.ALL_LEAD_ROLE_ID) || 
             (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => memberRoles.has(id))) ||
             (config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => memberRoles.has(id)));
 
-        const hasNameRole = memberRoles.some(r => allowedRoleNames.some(allowed => r.name.toLowerCase().includes(allowed)));
-        const hasPerms = interaction.memberPermissions && interaction.memberPermissions.has(PermissionFlagsBits.ManageRoles);
+        const hasNameRole = typeof memberRoles.some === 'function' ? memberRoles.some(r => allowedRoleNames.some(allowed => r.name.toLowerCase().includes(allowed))) : false;
+        const hasPerms = source.member?.permissions?.has(PermissionFlagsBits.ManageRoles);
+        const executorUser = isInteraction ? source.user : source.author;
 
-        if (!hasConfigRole && !hasNameRole && !hasPerms && interaction.user.id !== interaction.guild.ownerId) {
-            return interaction.reply({ embeds: [errorEmbed("You do not have the required roles to use this command.")], ephemeral: true });
+        let loadingMsg = null;
+        const safeReply = async (opts) => {
+            if (isInteraction) return source.reply(opts);
+            return source.reply(opts);
+        };
+        const safeDeferReply = async () => {
+            if (isInteraction) return source.deferReply();
+            loadingMsg = await source.reply({ embeds: [loadingEmbed("Processing...")] });
+        };
+        const safeEditReply = async (opts) => {
+            if (isInteraction) return source.editReply(opts);
+            if (loadingMsg) return loadingMsg.edit(opts);
+            return source.reply(opts);
+        };
+        const safeFetchReply = async () => {
+            if (isInteraction) return source.fetchReply();
+            return loadingMsg;
+        };
+
+        if (!hasConfigRole && !hasNameRole && !hasPerms && executorUser.id !== source.guild.ownerId) {
+            return safeReply({ embeds: [errorEmbed("You do not have the required roles to use this command.")], ephemeral: true });
         }
 
-        const member = interaction.options.getMember('member');
+        let member = null;
+
+        if (isInteraction) {
+            member = source.options.getMember('member');
+        } else {
+            if (!args[0]) {
+                return safeReply({ embeds: [errorEmbed("Please mention a member or provide their ID.")], ephemeral: true });
+            }
+            const targetId = args[0].replace(/[<@!>]/g, "");
+            member = source.guild.members.cache.get(targetId);
+        }
         
         if (!member) {
-            return interaction.reply({ embeds: [errorEmbed("Could not resolve the selected member.")], ephemeral: true });
+            return safeReply({ embeds: [errorEmbed("Could not resolve the selected member.")], ephemeral: true });
         }
 
         if (member.user.bot) {
-            return interaction.reply({ embeds: [errorEmbed("Bots cannot be processed.")], ephemeral: true });
+            return safeReply({ embeds: [errorEmbed("Bots cannot be processed.")], ephemeral: true });
         }
 
-        const targetChannel = interaction.guild.channels.cache.get(TARGET_CHANNEL_ID);
+        const targetChannel = source.guild.channels.cache.get(TARGET_CHANNEL_ID);
         if (!targetChannel) {
-            return interaction.reply({ embeds: [errorEmbed("Target channel not found. Check CHANNEL ID.")], ephemeral: true });
+            return safeReply({ embeds: [errorEmbed("Target channel not found. Check CHANNEL ID.")], ephemeral: true });
         }
 
-        await interaction.deferReply();
+        await safeDeferReply();
 
         // Fetch user data
         const userData = data.getUserData();
         const userAccounts = userData[member.id] || [];
         
         if (userAccounts.length === 0) {
-            return interaction.editReply({ embeds: [errorEmbed("This user has no linked Clash accounts.")] });
+            return safeEditReply({ embeds: [errorEmbed("This user has no linked Clash accounts.")] });
         }
 
         const clanRoles = data.getClanRoles();
@@ -77,10 +112,10 @@ module.exports = {
         }
 
         if (userClanRolesHeld.length === 0) {
-            return interaction.editReply({ embeds: [errorEmbed("This user does not currently hold any clan roles.")] });
+            return safeEditReply({ embeds: [errorEmbed("This user does not currently hold any clan roles.")] });
         }
 
-        await interaction.editReply({ embeds: [loadingEmbed("Fetching live data for all accounts...")] });
+        await safeEditReply({ embeds: [loadingEmbed("Fetching live data for all accounts...")] });
 
         // Fetch live player data for user's accounts
         const validPlayers = [];
@@ -93,29 +128,27 @@ module.exports = {
             }
         }
 
-        // Determine which clans the user is currently in (in-game) across all accounts
-        const currentInGameClanTags = new Set(
-            validPlayers
-                .filter(p => p.clan && monitoredClans[p.clan.tag.toUpperCase()])
-                .map(p => p.clan.tag.toUpperCase())
-        );
-
-        // Identify which clans the user "left" (they have the Discord role, but no account in the clan)
-        const clansLeft = [];
+        // Compare live API data against discord roles to find which clans they actually left
         const clansStillIn = [];
+        const clansLeft = [];
         
-        for (const clanInfo of userClanRolesHeld) {
-            if (currentInGameClanTags.has(clanInfo.tag)) {
-                clansStillIn.push(clanInfo);
-            } else {
-                clansLeft.push(clanInfo);
+        for (const p of validPlayers) {
+            if (p.clan) {
+                const cTag = p.clan.tag.toUpperCase();
+                if (monitoredClans[cTag]) {
+                    clansStillIn.push(monitoredClans[cTag]);
+                }
             }
         }
 
-        if (clansLeft.length === 0) {
-            return interaction.editReply({ embeds: [successEmbed("The user's accounts are still inside the clan(s) for which they hold roles. No action needed.")] });
+        for (const roleInfo of userClanRolesHeld) {
+            const isStillInClan = clansStillIn.some(c => c.tag === roleInfo.tag);
+            if (!isStillInClan) {
+                clansLeft.push(roleInfo);
+            }
         }
 
+        // We will determine which roles to remove in executeLeaveLogic based on the selectedPlayer
         let selectedPlayer = null;
 
         if (validPlayers.length === 1) {
@@ -140,7 +173,7 @@ module.exports = {
                     .addOptions(options)
             );
             
-            const message = await interaction.editReply({
+            const message = await safeEditReply({
                 embeds: [new EmbedBuilder().setColor("Blue").setDescription(`${getEmoji("rarrow")} **${member.user.username}** has multiple accounts. Select one to process.`)]
                 , components: [row]
             });
@@ -151,7 +184,7 @@ module.exports = {
             });
 
             collector.on("collect", async (i) => {
-                if (i.user.id !== interaction.user.id) {
+                if (i.user.id !== executorUser.id) {
                     await i.reply({ content: `${getEmoji("bluex")} You cannot use this menu.`, ephemeral: true }).catch(() => {});
                     return;
                 }
@@ -163,7 +196,7 @@ module.exports = {
 
             collector.on("end", (collected, reason) => {
                 if (reason !== "selected") {
-                    interaction.editReply({ embeds: [errorEmbed("Selection timed out.")], components: [] }).catch(() => {});
+                    safeEditReply({ embeds: [errorEmbed("Selection timed out.")], components: [] }).catch(() => {});
                 }
             });
         }
@@ -198,12 +231,12 @@ module.exports = {
             
             const cancelBtn = new ButtonBuilder()
                 .setCustomId("cancel_reapply")
-                .setEmoji("1410137736765243432") // bluex
+                .setEmoji("1532793683559186613") // gwrong
                 .setStyle(ButtonStyle.Danger);
                 
             const row = new ActionRowBuilder().addComponents(verifyBtn, cancelBtn);
 
-            const message = await interaction.editReply({ embeds: [confirmEmbed], components: [row] });
+            const message = await safeEditReply({ embeds: [confirmEmbed], components: [row] });
 
             const collector = message.createMessageComponentCollector({
                 filter: i => i.customId === "confirm_reapply" || i.customId === "cancel_reapply",
@@ -211,60 +244,160 @@ module.exports = {
             });
 
             collector.on("collect", async (i) => {
-                if (i.user.id !== interaction.user.id) {
+                if (i.user.id !== executorUser.id) {
                     await i.reply({ content: `${getEmoji("bluex")} You cannot interact with this.`, ephemeral: true }).catch(() => {});
                     return;
                 }
                 
-                await i.deferUpdate().catch(console.error);
-                
                 if (i.customId === "cancel_reapply") {
+                    await i.deferUpdate().catch(console.error);
                     collector.stop("cancelled");
-                    interaction.editReply({ embeds: [errorEmbed("Re-Application process cancelled.")], components: [] }).catch(console.error);
+                    safeEditReply({ embeds: [errorEmbed("Re-Application process cancelled.")], components: [] }).catch(console.error);
                     return;
                 }
 
-                collector.stop("confirmed");
-                executeLeaveLogic(i);
+                // If confirmed, popup the modal for reason
+                const modal = new ModalBuilder()
+                    .setCustomId('reapply_reason_modal')
+                    .setTitle('Reason for Re-Applying');
+
+                const reasonInput = new TextInputBuilder()
+                    .setCustomId('reason_input')
+                    .setLabel('Why is the user reapplying?')
+                    .setStyle(TextInputStyle.Paragraph)
+                    .setRequired(true)
+                    .setMaxLength(1000);
+
+                const firstActionRow = new ActionRowBuilder().addComponents(reasonInput);
+                modal.addComponents(firstActionRow);
+
+                await i.showModal(modal).catch(console.error);
+                
+                try {
+                    const submitted = await i.awaitModalSubmit({
+                        filter: mi => mi.customId === 'reapply_reason_modal' && mi.user.id === executorUser.id,
+                        time: 300000 // 5 mins to fill form
+                    });
+                    
+                    const reason = submitted.fields.getTextInputValue('reason_input');
+                    collector.stop("confirmed");
+                    
+                    await submitted.deferUpdate().catch(console.error);
+                    
+                    executeLeaveLogic(submitted, reason);
+                } catch (err) {
+                    if (err.code !== "InteractionCollectorError") {
+                        console.error("Modal submission error:", err);
+                    }
+                }
             });
 
             collector.on("end", (collected, reason) => {
                 if (reason !== "confirmed" && reason !== "cancelled") {
-                    interaction.editReply({ embeds: [errorEmbed("Confirmation timed out after 5 minutes.")], components: [] }).catch(() => {});
+                    safeEditReply({ embeds: [errorEmbed("Confirmation timed out after 5 minutes.")], components: [] }).catch(() => {});
                 }
             });
         }
 
-        async function executeLeaveLogic(i) {
+        async function executeLeaveLogic(i, reason) {
+            let rolesToRemove = [];
+            
+            // If the user explicitly selected a player and the API shows them still in a clan, 
+            // they are forcefully removing the role for THAT specific clan (API cache fallback).
+            if (selectedPlayer && selectedPlayer.clan) {
+                const cTag = selectedPlayer.clan.tag.toUpperCase();
+                if (monitoredClans[cTag]) {
+                    rolesToRemove.push(monitoredClans[cTag]);
+                }
+            }
+            
+            // If the above didn't match (e.g. they already left in-game so selectedPlayer.clan is null)
+            // Fallback to removing what the API detects they left
+            if (rolesToRemove.length === 0) {
+                rolesToRemove = clansLeft;
+            }
+
+            if (rolesToRemove.length === 0) {
+                return safeEditReply({ embeds: [errorEmbed("Could not determine which clan role to remove. The API shows they haven't left, and their selected account isn't in a monitored clan.")] }).catch(() => {});
+            }
+
+            // Determine if they still have OTHER accounts in family clans
+            // We consider them "still in" if clansStillIn has elements, 
+            // EXCEPT we must exclude the clan they are forcefully leaving from this count.
+            const otherClansStillIn = clansStillIn.filter(c => !rolesToRemove.some(r => r.tag === c.tag));
+
+            // Save the reason first
+            const clanNamesStr = rolesToRemove.map(c => c.nickName || c.tag).join(", ");
+            const reasonsData = data.getReapplyReasons();
+            if (!reasonsData[member.id]) reasonsData[member.id] = [];
+            
+            reasonsData[member.id].push({
+                reason: reason,
+                timestamp: Math.floor(Date.now() / 1000),
+                addedBy: executorUser.id,
+                clanName: clanNamesStr,
+                status: "ADDED"
+            });
+            data.saveReapplyReasons(reasonsData);
+
             // Action time
-            if (clansStillIn.length > 0) {
+            if (otherClansStillIn.length > 0) {
                 // Rule 2: User has another ID still inside any clan
-                for (const leftClan of clansLeft) {
+                for (const leftClan of rolesToRemove) {
                     await member.roles.remove(leftClan.roleId).catch(() => null);
                     if (leftClan.leaderRoleId) {
                         await member.roles.remove(leftClan.leaderRoleId).catch(() => null);
                     }
                 }
                 
-                const leftClanNames = clansLeft.map(c => c.nickName || c.tag).join(", ");
+                // Update nickname for remaining clans
+                const clanRolesList = data.getClanRoles();
+                const clanNicks = [];
+                for (const [tag, info] of Object.entries(clanRolesList)) {
+                    if (info.roleId && member.roles.cache.has(info.roleId) && !rolesToRemove.some(r => r.roleId === info.roleId)) {
+                        if (info.nickName && !clanNicks.includes(info.nickName)) {
+                            clanNicks.push(info.nickName);
+                        }
+                    }
+                }
                 
-                const currentEmbed = (await interaction.fetchReply()).embeds[0];
+                const clanNickStr = clanNicks.join(' • ');
+                let currentNick = member.nickname || member.user.username;
+                let playerName = currentNick;
+                if (currentNick.includes("|")) {
+                    const parts = currentNick.split("|");
+                    playerName = parts[1].split('•')[0].trim();
+                } else if (validPlayers.length > 0) {
+                    playerName = validPlayers[0].name;
+                }
+
+                let newNickname = clanNickStr 
+                    ? `BLOOD | ${playerName} • ${clanNickStr}` 
+                    : `BLOOD | ${playerName}`;
+
+                if (newNickname.length > 32) {
+                    newNickname = newNickname.substring(0, 32);
+                }
+
+                await member.setNickname(newNickname).catch(() => null);
+                
+                const currentEmbed = (await safeFetchReply()).embeds[0];
                 const updatedEmbed = EmbedBuilder.from(currentEmbed)
                     .setColor("Orange")
                     .setDescription(
                         currentEmbed.description +
                         `\n\n**${getEmoji("alaram")} Action Completed:**\n` +
-                        `Removed role(s) for **${leftClanNames}** because an account left.\n` +
+                        `Removed role(s) for **${clanNamesStr}** because an account left.\n` +
                         `*They still have accounts in other clans, so Re-Apply role was NOT given.*`
                     );
 
-                return interaction.editReply({ 
+                return safeEditReply({ 
                     embeds: [updatedEmbed],
                     components: []
                 }).catch(console.error);
             } else {
                 // Rule 3/4: All IDs have left all clans
-                for (const leftClan of clansLeft) {
+                for (const leftClan of rolesToRemove) {
                     await member.roles.remove(leftClan.roleId).catch(() => null);
                     if (leftClan.leaderRoleId) {
                         await member.roles.remove(leftClan.leaderRoleId).catch(() => null);
@@ -291,7 +424,7 @@ module.exports = {
                 const currentNick = member.nickname || member.user.username;
                 if (currentNick.includes("|")) {
                     const parts = currentNick.split("|");
-                    mainIdName = parts[1].trim();
+                    mainIdName = parts[1].split("•")[0].trim();
                 } else if (validPlayers.length > 0) {
                     mainIdName = validPlayers[0].name;
                 } else if (userAccounts.length > 0) {
@@ -300,8 +433,8 @@ module.exports = {
                     mainIdName = currentNick;
                 }
                 
-                let clanPrefix = clansLeft.map(c => (c.nickName || c.tag).toUpperCase()).join(" • ");
-                const separator = " | ";
+                let clanPrefix = clansLeft.map(c => (c.nickName || c.tag)).join(" • ");
+                const separator = " • BLOOD | ";
                 let maxNameLen = 32 - clanPrefix.length - separator.length;
                 
                 if (maxNameLen <= 0) {
@@ -326,11 +459,10 @@ module.exports = {
                     .setColor(0x00FFFF) // Cyan color matching the image
                     .setDescription(
                         `This is <#${targetChannel.id}> room. You're here because:\n\n` +
-                        `${bluedot} You might have left the clan without intimating us.\n` +
-                        `${bluedot} You might have dropped out of clan due to inactivity/deviating from rules/or exceeding the minimum set strike points.\n\n` +
+                        `${bluedot} **Reason:** ${reason}\n\n` +
                         `${bluedot} Please Open a ticket if you are intrested again to continue with us.`
                     )
-                    .setFooter({ text: "💎 - Blood Alliance" });
+                    .setFooter({ text: `Done by ${executorUser.tag} | 💎 Blood Alliance` });
 
                 await targetChannel.send({
                     content: `Hey <@${member.id}>`,
@@ -339,7 +471,7 @@ module.exports = {
                 
                 const nickNote = nickSuccess ? `\`${newNick}\`` : "*(Failed to change, missing permissions)*";
                 
-                const currentEmbed = (await interaction.fetchReply()).embeds[0];
+                const currentEmbed = (await safeFetchReply()).embeds[0];
                 let descText = currentEmbed.description +
                     `\n\n**${getEmoji("gtick")} Completed Re-Apply for ${member.user.tag}**\n` +
                     `${getEmoji("rarroww")} **Removed clan roles:** ${clanPrefix}\n`;
@@ -355,8 +487,16 @@ module.exports = {
                     .setColor("Green")
                     .setDescription(descText);
 
-                return interaction.editReply({ embeds: [updatedEmbed], components: [] }).catch(console.error);
+                return safeEditReply({ embeds: [updatedEmbed], components: [] }).catch(console.error);
             }
+        }
+        } catch (err) {
+            console.error("Error in reapply.js execute:", err);
+            try {
+                if (typeof source.reply === "function") {
+                    await source.reply(`An error occurred: ${err.message}`);
+                }
+            } catch (e) {}
         }
     }
 };
