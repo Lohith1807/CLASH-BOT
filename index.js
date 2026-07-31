@@ -438,45 +438,46 @@ client.on(Events.GuildMemberAdd, async (member) => {
   const channel = member.guild.channels.cache.get(WELCOME_CHANNEL_ID);
   if (!channel) return;
 
-  const welcomeImage = new AttachmentBuilder('./assets/images/welcome image.png', { name: 'welcome_image.png' });
-
   const embed = new EmbedBuilder()
     .setColor(randomColor())
     .setAuthor({ name: `✨ Welcome to 『✧ ${member.guild.name} ✧』`, iconURL: member.guild.iconURL({ dynamic: true, size: 1024 }) })
-    .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 1024 }))
     .setDescription(
-      `Hello **${member.user.username}**, welcome to **『✧ Blood Alliance ✧』** ${getEmoji("heart")}\n\n` +
-      `We are a proud family of FWA & WAR clans focused on\n` +
-      `Farm Wars, Serious Wars, CWL, growth, and organized gameplay.\n\n` +
-      `━━━━━━━━━━━━━━\n` +
-      `${getEmoji("alaram")} **Getting Started**\n\n` +
-      `${getEmoji("bluedot")} **Link Your Account** At <#1398351500895588352>\n` +
-      `Use:\n` +
-      '`;link #PlayerTag`\n\n' +
-      `Example:\n` +
-      '`;link #ABC123XYZ`\n\n' +
+      `Welcome **${member.user.username}** to **『✧ Blood Alliance ✧』** ${getEmoji("heart")}\n\n` +
+      `We Are A family of FWA & WAR clans focused on Farm Wars, Serious Wars, CWL, growth, and organized gameplay.\n\n` +
+      `**═══ ${getEmoji("alaram")} Getting Started ═══**\n\n` +
+      `${getEmoji("bluedot")} **Link Your Account** in <#1398351500895588352>\n` +
+      `Use \`;link #PlayerTag\`\n` +
+      `Example: \`;link #ABC123XYZ\`\n\n` +
       `${getEmoji("orangedot")} **Clan Verification**\n` +
-      `If you want to join a clan or you're already in one,\n` +
-      `head to <#1154111265258614795> and verify your ID.\n\n` +
-      `━━━━━━━━━━━━━━\n` +
-      `${getEmoji("chain")} **Official Websites**\n\n` +
-      `${getEmoji("bluedot")} **Alliance Overview Website** View alliance clans, players, CWL clans, and CWL players information:\n` +
+      `Joining or already in a clan? Verify your ID in <#1154111265258614795>.\n\n` +
+      `**═══ ${getEmoji("chain")} Official Website ═══**\n\n` +
+      `${getEmoji("bluedot")} **Blood Alliance Website**\n` +
+      `Explore clans, players, CWL info, and CWL registration.\n` +
       `${getEmoji("arrow")} [Click Here To redirect to webpage](https://blood-alliance.vercel.app)\n\n` +
-      `${getEmoji("orangedot")} **CWL Registration Website** - Active during CWL sign-ups! Log in via Discord to register and view assigned clans, or register directly in Discord—whichever is more convenient:\n` +
-      `${getEmoji("arrow")} [Click Here To redirect to webpage](https://bloodalliance-flax.vercel.app)\n\n` +
-      `━━━━━━━━━━━━━━\n` +
-      `${getEmoji("cocfight")} **Currently Recruiting:**\n` +
+      `**═══ ${getEmoji("cocfight")} Currently Recruiting ═══**\n` +
       `${require("./utils/dataManager.js").getRecruitingTHs().map(th => getEmoji(th.toLowerCase())).join(" ")}`
     )
-    .setImage('attachment://welcome_image.png')
     .setFooter({ text: "❤️ Enjoy your stay and welcome to the family!", iconURL: member.user.displayAvatarURL({ dynamic: true, size: 1024 }) })
     .setTimestamp();
 
   await channel.send({
     content: `Hey ${member}! 🎉`,
-    embeds: [embed],
-    files: [welcomeImage]
+    embeds: [embed]
   }).catch(() => null);
+
+  const joinLogChannelId = '1532810523937341672';
+  const joinLogChannel = member.guild.channels.cache.get(joinLogChannelId);
+  if (joinLogChannel) {
+    const joinLogEmbed = new EmbedBuilder()
+      .setColor('#2b2d31')
+      .setAuthor({ name: '👋 Member Joined' })
+      .setDescription(`${member.user.tag} ( ${member} ) has joined the server.`)
+      .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
+      .setFooter({ text: `User ID: ${member.id}` })
+      .setTimestamp();
+      
+    await joinLogChannel.send({ embeds: [joinLogEmbed] }).catch(() => null);
+  }
 });
 
 
