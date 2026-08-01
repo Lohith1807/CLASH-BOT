@@ -33,6 +33,9 @@ const {
 const cheerio = require("cheerio");
 const express = require("express");
 const axios = require("axios");
+const { createCanvas, loadImage } = require('@napi-rs/canvas');
+
+let cachedWelcomeBackground = null;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -270,6 +273,10 @@ client.on("messageCreate", async (message) => {
       const command = require("./commands/discord/channel/delete.js");
       await command.run(message, args, context);
 
+    } else if (commandName === "wel") {
+      const command = require("./commands/discord/moderation/wel.js");
+      await command.execute(message, args, context);
+
     } else if (commandName === "cwl") {
       const command = require("./commands/coc/war/cwl.js");
       await command.execute(message, args, context);
@@ -398,6 +405,29 @@ for (const file of commandFiles) {
 
 client.on("interactionCreate", async (interaction) => {
   try {
+    if (interaction.isButton() && interaction.customId.startsWith('view_welcome_details_')) {
+      await interaction.deferReply({ ephemeral: true });
+      const userId = interaction.customId.split('_')[3];
+      const targetMember = await interaction.guild.members.fetch(userId).catch(() => null);
+      const user = targetMember ? targetMember.user : await client.users.fetch(userId).catch(() => null);
+      
+      if (!user) {
+        return interaction.editReply({ content: "⚠️ Could not fetch user details." });
+      }
+
+      const detailsEmbed = new EmbedBuilder()
+        .setColor(getRandomColor())
+        .setAuthor({ name: `${user.username}'s Details`, iconURL: user.displayAvatarURL({ dynamic: true }) })
+        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
+        .addFields(
+          { name: "👤 Account Created", value: `<t:${Math.floor(user.createdTimestamp / 1000)}:R>`, inline: true },
+          { name: "📥 Joined Server", value: targetMember && targetMember.joinedTimestamp ? `<t:${Math.floor(targetMember.joinedTimestamp / 1000)}:R>` : "Unknown", inline: true }
+        )
+        .setTimestamp();
+        
+      return interaction.editReply({ embeds: [detailsEmbed] });
+    }
+
     if (interaction.isChatInputCommand()) {
       const command = client.commands.get(interaction.commandName);
       if (command) await command.execute(interaction, tools);
@@ -438,6 +468,52 @@ client.on(Events.GuildMemberAdd, async (member) => {
   const channel = member.guild.channels.cache.get(WELCOME_CHANNEL_ID);
   if (!channel) return;
 
+  let welcomeImage;
+  try {
+    if (!cachedWelcomeBackground) {
+      cachedWelcomeBackground = await loadImage('./assets/images/welcome image.png');
+    }
+
+    const width = 1500;
+    const height = 500;
+    const canvas = createCanvas(width, height);
+    const ctx = canvas.getContext('2d');
+
+    ctx.drawImage(cachedWelcomeBackground, 0, cachedWelcomeBackground.height / 2 - height / 2, cachedWelcomeBackground.width, height, 0, 0, width, height);
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, width, height);
+
+    const avatarUrl = member.user.displayAvatarURL({ extension: 'png', size: 1024 });
+    const avatar = await loadImage(avatarUrl);
+
+    const avatarSize = 300;
+    const centerX = width / 2;
+    const centerY = height / 2;
+    
+    const avatarX = centerX - avatarSize / 2;
+    const avatarY = centerY - avatarSize / 2;
+
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(centerX, centerY, avatarSize / 2, 0, Math.PI * 2, true);
+    ctx.closePath();
+    ctx.clip();
+    
+    ctx.drawImage(avatar, avatarX, avatarY, avatarSize, avatarSize);
+    
+    ctx.lineWidth = 10;
+    ctx.strokeStyle = '#ffffff';
+    ctx.stroke();
+    ctx.restore();
+
+    const buffer = await canvas.encode('jpeg');
+    welcomeImage = new AttachmentBuilder(buffer, { name: 'welcome_image.jpg' });
+  } catch (e) {
+    console.error('Error generating canvas welcome image:', e);
+    welcomeImage = new AttachmentBuilder('./assets/images/welcome image.png', { name: 'welcome_image.jpg' });
+  }
+
   const embed = new EmbedBuilder()
     .setColor(randomColor())
     .setAuthor({ name: `✨ Welcome to 『✧ ${member.guild.name} ✧』`, iconURL: member.guild.iconURL({ dynamic: true, size: 1024 }) })
@@ -452,37 +528,31 @@ client.on(Events.GuildMemberAdd, async (member) => {
       `Joining or already in a clan? Verify your ID in <#1154111265258614795>.\n\n` +
       `**═══ ${getEmoji("chain")} Official Website ═══**\n\n` +
       `${getEmoji("bluedot")} **Blood Alliance Website**\n` +
-      `Explore clans, players, CWL info, and CWL registration.\n` +
       `${getEmoji("arrow")} [Click Here To redirect to webpage](https://blood-alliance.vercel.app)\n\n` +
       `**═══ ${getEmoji("cocfight")} Currently Recruiting ═══**\n` +
       `${require("./utils/dataManager.js").getRecruitingTHs().map(th => getEmoji(th.toLowerCase())).join(" ")}`
     )
+    .setImage('attachment://welcome_image.jpg')
     .setFooter({ text: "❤️ Enjoy your stay and welcome to the family!", iconURL: member.user.displayAvatarURL({ dynamic: true, size: 1024 }) })
     .setTimestamp();
 
+  const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`view_welcome_details_${member.id}`)
+      .setLabel("View details")
+      .setStyle(ButtonStyle.Secondary)
+      .setEmoji("📄")
+  );
+
   await channel.send({
     content: `Hey ${member}! 🎉`,
-    embeds: [embed]
+    embeds: [embed],
+    components: [row],
+    files: [welcomeImage]
   }).catch(() => null);
 
-  const joinLogChannelId = '1532810523937341672';
-  const joinLogChannel = member.guild.channels.cache.get(joinLogChannelId);
-  if (joinLogChannel) {
-    const joinLogEmbed = new EmbedBuilder()
-      .setColor('#2b2d31')
-      .setAuthor({ name: '👋 Member Joined' })
-      .setDescription(`${member.user.tag} ( ${member} ) has joined the server.`)
-      .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))
-      .setFooter({ text: `User ID: ${member.id}` })
-      .setTimestamp();
-      
-    await joinLogChannel.send({ embeds: [joinLogEmbed] }).catch(() => null);
-  }
+
 });
-
-
-
-
 
 
 
