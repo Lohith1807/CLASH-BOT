@@ -233,17 +233,27 @@ module.exports = {
           if (action === 'check_approve') {
               const modal = new ModalBuilder()
                   .setCustomId(`chk_a:${interaction.user.id}:${playerTag}`)
-                  .setTitle('Confirm Base & Upload Screenshot');
+                  .setTitle('Approve Base / CC');
+
+              const reasonLabel = new LabelBuilder()
+                  .setLabel('Approval Reason')
+                  .setTextInputComponent(
+                      new TextInputBuilder()
+                          .setCustomId('reason')
+                          .setStyle(TextInputStyle.Paragraph)
+                          .setRequired(true)
+                          .setPlaceholder('Why are you approving this base?')
+                  );
 
               const fileLabel = new LabelBuilder()
-                  .setLabel('Upload Screenshot (image only)')
+                  .setLabel('Upload Screenshot (optional)')
                   .setFileUploadComponent(
                       new FileUploadBuilder()
                           .setCustomId('screenshot')
-                          .setRequired(true)
+                          .setRequired(false)
                   );
 
-              modal.addComponents(fileLabel);
+              modal.addComponents(reasonLabel, fileLabel);
               await interaction.showModal(modal);
 
           } else if (action === 'check_reject') {
@@ -262,11 +272,11 @@ module.exports = {
                   );
 
               const fileLabel = new LabelBuilder()
-                  .setLabel('Upload Screenshot (image only)')
+                  .setLabel('Upload Screenshot (optional)')
                   .setFileUploadComponent(
                       new FileUploadBuilder()
                           .setCustomId('screenshot')
-                          .setRequired(true)
+                          .setRequired(false)
                   );
 
               modal.addComponents(reasonLabel, fileLabel);
@@ -305,8 +315,12 @@ module.exports = {
 
       try {
           if (modalType === 'chk_a') {
-              const files = interaction.fields.getUploadedFiles('screenshot');
-              const file = files?.first() || null;
+              const reason = interaction.fields.getTextInputValue('reason');
+              let files, file = null;
+              try {
+                  files = interaction.fields.getUploadedFiles('screenshot');
+                  file = files?.first() || null;
+              } catch (e) {}
 
               if (file && !isImage(file)) {
                   return safeEphemeralReply(interaction, '❌ The uploaded file is not an image. Please upload a PNG, JPG, GIF, or WEBP.');
@@ -317,7 +331,7 @@ module.exports = {
                   : new EmbedBuilder();
 
               finalEmbed
-                  .setDescription(`✅ **Check Confirmed**\n\nHe is not a banned player and not from bl clan history confirmed by ${interaction.user}.\n\n**Proof :**`)
+                  .setDescription(`✅ **Check Confirmed**\n\nHe is not a banned player and not from bl clan history confirmed by ${interaction.user}.\n**Reason:** ${reason}\n\n**Proof :**`)
                   .setColor(0x2ECC71);
 
               if (file) finalEmbed.setImage(file.url);
@@ -344,8 +358,11 @@ module.exports = {
 
           } else if (modalType === 'chk_r') {
               const reason = interaction.fields.getTextInputValue('reason');
-              const files = interaction.fields.getUploadedFiles('screenshot');
-              const file = files?.first() || null;
+              let files, file = null;
+              try {
+                  files = interaction.fields.getUploadedFiles('screenshot');
+                  file = files?.first() || null;
+              } catch (e) {}
 
               if (file && !isImage(file)) {
                   return safeEphemeralReply(interaction, '❌ The uploaded file is not an image. Please upload a PNG, JPG, GIF, or WEBP.');

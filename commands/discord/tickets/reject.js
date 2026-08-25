@@ -24,6 +24,7 @@ module.exports = {
     // 1. Both commands must work only inside ticket channels.
     // 7. If the command is used outside a ticket channel, show "you cant use here noob"
     if (!channel.parentId || channel.parentId !== CATEGORY_ID) {
+        if (interaction.deferred || interaction.replied) return interaction.editReply({ content: 'you cant use here noob' });
         return interaction.reply({ content: 'you cant use here noob', ephemeral: true });
     }
 
@@ -34,10 +35,13 @@ module.exports = {
     const isWelExe = WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID);
 
     if (!isStaff && !isAdmin && !isWelExe) {
+        if (interaction.deferred || interaction.replied) return interaction.editReply({ content: '❌ Only Staff or Admins can use this command.' });
         return interaction.reply({ content: '❌ Only Staff or Admins can use this command.', ephemeral: true });
     }
 
-    await interaction.deferReply();
+    if (!interaction.deferred && !interaction.replied) {
+        await interaction.deferReply();
+    }
 
     // 2. Detect the ticket owner automatically (using logic from ticketHandler.js)
     let ticketOwnerId = channel.topic;
@@ -74,7 +78,7 @@ module.exports = {
     const type = baseChannelName.split('-')[0].toLowerCase();
     
     // 6. Get optional reason argument
-    const reason = interaction.options.getString('reason');
+    const reason = interaction.customReason || (interaction.options ? interaction.options.getString('reason') : null);
 
     const birdEmoji = emojiUtils.getEmojiObject('bird');
     const birdIconURL = birdEmoji && birdEmoji.id ? `https://cdn.discordapp.com/emojis/${birdEmoji.id}.${birdEmoji.animated ? 'gif' : 'png'}` : null;

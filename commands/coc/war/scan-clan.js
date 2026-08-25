@@ -80,7 +80,7 @@ async function buildScanClanEmbeds(clanTag, coc, dataManager, emoji) {
     };
 
     const linkedEmoji = emoji.getEmoji("gtick") || "✅";
-    const unlinkedEmoji = emoji.getEmoji("bluex") || "❌";
+    const unlinkedEmoji = emoji.getEmoji("gwrong") || "❌";
 
     function buildLinesByRole(membersArray, isLinked) {
         const lines = [];
@@ -318,7 +318,7 @@ async function buildStoredWarEmbeds(clanTag, clanName, clanBadgeUrl, storedWar, 
     const unlinkedMembers = members.filter(m => !linkedTags.has(m.tag));
 
     const linkedEmoji = emoji.getEmoji("gtick") || "✅";
-    const unlinkedEmoji = emoji.getEmoji("bluex") || "❌";
+    const unlinkedEmoji = emoji.getEmoji("gwrong") || "❌";
 
     function buildLinesByRole(membersArray, isLinked) {
         const lines = [];
@@ -493,7 +493,7 @@ function noWarEmbed(clan, emoji) {
     const embed = new EmbedBuilder()
         .setTitle(`${clan.name} — War Status`)
         .setColor(0xFF0000)
-        .setDescription(`${emoji.getEmoji("bluex") || "❌"} This clan is **not currently in a war**.`)
+        .setDescription(`${emoji.getEmoji("gwrong") || "❌"} This clan is **not currently in a war**.`)
         .setFooter({ text: "FWA War Scanner" })
         .setTimestamp();
     const badgeUrl = clan.badgeUrls?.large || clan.badgeUrls?.medium;
@@ -580,7 +580,6 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('scan-clan')
         .setDescription('Scan war roster for an FWA clan — linked vs unlinked members')
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option =>
             option.setName('clantag')
                 .setDescription('Select a clan tag or nickname')

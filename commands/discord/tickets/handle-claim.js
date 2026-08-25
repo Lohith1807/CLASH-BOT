@@ -27,13 +27,10 @@ module.exports = {
         const hasNameRole = memberRoles.some(r => allowedRoleNames.some(allowed => r.name.toLowerCase().includes(allowed)));
         const hasPerms = interaction.memberPermissions && interaction.memberPermissions.has(PermissionFlagsBits.ManageRoles);
         const isAdmin = (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => memberRoles.has(id))) || hasPerms || interaction.user.id === interaction.guild.ownerId;
-        const hasHelpRole = memberRoles.has('1514535148119392377');
-        const isHelpTicket = interaction.channel.name.startsWith('help-assistance');
+        const hasWelExeRole = config.WEL_EXE_STAFF_ID && memberRoles.has(config.WEL_EXE_STAFF_ID);
 
         let canUseCommand = false;
-        if (hasConfigRole || hasNameRole || hasPerms || interaction.user.id === interaction.guild.ownerId) {
-            canUseCommand = true;
-        } else if (hasHelpRole && isHelpTicket) {
+        if (hasConfigRole || hasNameRole || hasPerms || hasWelExeRole || interaction.user.id === interaction.guild.ownerId) {
             canUseCommand = true;
         }
 

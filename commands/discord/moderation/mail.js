@@ -123,15 +123,11 @@ async function dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clan
     const clanComp = (currentWar && currentWar.clan?.members) ? getComposition(currentWar.clan.members) : getComposition(clanData.memberList);
     const oppComp = (currentWar && currentWar.opponent?.members) ? getComposition(currentWar.opponent.members) : (opponentData ? getComposition(opponentData.memberList) : "N/A");
 
-    const getDuration = (endTime) => {
-        if (!endTime) return "N/A";
-        const formattedDate = endTime.replace(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/, "$1-$2-$3T$4:$5:$6");
-        const diff = new Date(formattedDate) - Date.now();
-        if (diff <= 0) return "Finished";
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-        return days > 0 ? `${days}d ${hours}h` : `${hours}h ${mins}m`;
+    const getDiscordTimestamp = (apiTime) => {
+        if (!apiTime) return "N/A";
+        const formattedDate = apiTime.replace(/(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})/, "$1-$2-$3T$4:$5:$6");
+        const unixTime = Math.floor(new Date(formattedDate).getTime() / 1000);
+        return `<t:${unixTime}:R>`;
     };
 
     let warRules = "";
@@ -139,9 +135,9 @@ async function dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clan
         warRules = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${emojiUtils.getEmoji('cocfight')} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!`;
     } else if (matchType === "FWA Match") {
         if (isWin) {
-            warRules = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n${emojiUtils.getEmoji('rarrow')} First attack on mirror – try for ⭐⭐⭐(3 Stars)\n${emojiUtils.getEmoji('rarrow')} First 16 hours – secure ⭐⭐(2 Stars) if needed\n${emojiUtils.getEmoji('rarrow')} Last 8 hours – go for ⭐⭐⭐(3 Stars) cleanups\n\n📌 **Important**\n\n${emojiUtils.getEmoji('rarrow')} Use both attacks\n${emojiUtils.getEmoji('rarrow')} Don’t rush attacks\n${emojiUtils.getEmoji('rarrow')} Ask if you need help`;
+            warRules = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n${emojiUtils.getEmoji('rarrow')} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n${emojiUtils.getEmoji('rarrow')} 2nd attack - ⭐(1 Star) on any base.\n${emojiUtils.getEmoji('rarrow')} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n${emojiUtils.getEmoji('rarrow')} Use both attacks\n${emojiUtils.getEmoji('rarrow')} Don’t rush attacks\n${emojiUtils.getEmoji('rarrow')} Ask if you need help`;
         } else {
-            warRules = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n${emojiUtils.getEmoji('rarrow')} First attack on mirror – secure ⭐⭐(2 Stars)\n${emojiUtils.getEmoji('rarrow')} First 16 hours – secure ⭐(1 Star) if needed\n${emojiUtils.getEmoji('rarrow')} Last 8 hours – go for ⭐⭐(2 Stars) cleanups\n\n📌 **Important**\n\n${emojiUtils.getEmoji('rarrow')} Use both attacks\n${emojiUtils.getEmoji('rarrow')} No extra attacks without permission\n${emojiUtils.getEmoji('rarrow')} Don’t rush attacks\n${emojiUtils.getEmoji('rarrow')} Ask if you need help`;
+            warRules = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n${emojiUtils.getEmoji('rarrow')} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n${emojiUtils.getEmoji('rarrow')} 2nd attack - ⭐(1 Star) on any base.\n${emojiUtils.getEmoji('rarrow')} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n${emojiUtils.getEmoji('rarrow')} Use both attacks\n${emojiUtils.getEmoji('rarrow')} No extra attacks without permission\n${emojiUtils.getEmoji('rarrow')} Don’t rush attacks\n${emojiUtils.getEmoji('rarrow')} Ask if you need help`;
         }
     }
 
@@ -155,7 +151,9 @@ async function dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clan
             `**Sync Number:** ${fwaData?.warInfo?.syncNumber || "N/A"}\n` +
             `**War ID:** ${fwaData?.warInfo?.warId || "N/A"}\n` +
             `**Team Size:** ${currentWar?.teamSize ? `${currentWar.teamSize} vs ${currentWar.teamSize}` : "50 vs 50"}\n` +
-            `**Ends in:** ${getDuration(currentWar?.endTime)}\n\n` +
+            (currentWar?.state === "preparation" 
+                ? `**Starts:** ${getDiscordTimestamp(currentWar?.startTime)}\n\n`
+                : `**Ends:** ${getDiscordTimestamp(currentWar?.endTime)}\n\n`) +
             `**Points Balance:** ${fwaData?.pointsSummary || "N/A"}${fwaData?.tieBreakerNote ? `\n${fwaData.tieBreakerNote}` : ""}\n\n` +
             `**${clanData.name} Composition**\n${clanComp}\n\n` +
             `**${opponentName} Composition**\n${oppComp}\n` +

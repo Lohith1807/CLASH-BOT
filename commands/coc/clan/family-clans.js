@@ -229,7 +229,8 @@ module.exports = {
                 .addChoices(
                     { name: 'FWA Clans', value: 'fwa' },
                     { name: 'WAR Clans', value: 'war' },
-                    { name: 'CWL Clans', value: 'cwl' }
+                    { name: 'CWL Clans', value: 'cwl' },
+                    { name: 'FF & NON - FF Clans', value: 'ff_non_ff' }
                 )
         ),
 
@@ -382,6 +383,101 @@ module.exports = {
                         throw err;
                     }
                 }
+            }
+
+            else if (category === 'ff_non_ff') {
+                let fwaTags = [];
+                for (let cTag in clanRoles) {
+                    if (clanRoles[cTag].clanType !== "war") fwaTags.push(cTag);
+                }
+
+                let ffClans = [];
+                let nonFfClans = [];
+                let errorClans = [];
+
+                // Fetch all parallel
+                const clanResults = await Promise.all(
+                    fwaTags.map(async (tag) => {
+                        try {
+                            const clan = await coc.getClan(tag);
+                            return { tag, clan, success: true };
+                        } catch (err) {
+                            return { tag, success: false };
+                        }
+                    })
+                );
+
+                for (const result of clanResults) {
+                    if (!result.success) {
+                        errorClans.push(result.tag);
+                        continue;
+                    }
+                    if (result.clan.isFamilyFriendly) {
+                        ffClans.push(result);
+                    } else {
+                        nonFfClans.push(result);
+                    }
+                }
+
+                // Sort by clanRoles.json order
+                ffClans.sort((a, b) => fwaTags.indexOf(a.tag) - fwaTags.indexOf(b.tag));
+                nonFfClans.sort((a, b) => fwaTags.indexOf(a.tag) - fwaTags.indexOf(b.tag));
+
+                let embeds = [];
+                let currentText = getEmoji("bluefwa") + " **FF & NON-FF FWA Clans**\n\n";
+                let options = [];
+
+                const processList = (list, title) => {
+                    if (list.length === 0) return;
+                    let header = `\n**━━━ ${title} ━━━**\n`;
+                    currentText += header;
+
+                    for (let idx = 0; idx < list.length; idx++) {
+                        let { tag, clan } = list[idx];
+                        let clanInfo = clanRoles[tag] || {};
+                        let clanNick = clanInfo.nickName ? clanInfo.nickName.toLowerCase() : "";
+                        let badgeEmojiStr = clanNick && getEmoji(clanNick) ? getEmoji(clanNick) : getEmoji("whitefwa");
+                        let badgeEmojiObj = clanNick && getEmojiObject(clanNick) ? getEmojiObject(clanNick) : getEmojiObject("whitefwa");
+
+                        const clanLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${clan.tag.replace("#", "%23")}`;
+                        let clanLine = (idx + 1) + ". " + badgeEmojiStr + " " + clan.name + " [(" + clan.members + "/50)](" + clanLink + ")\n";
+
+                        if (currentText.length + clanLine.length > 4000) {
+                            embeds.push(new EmbedBuilder().setTitle(embeds.length === 0 ? "FF & NON-FF Clans" : "FF & NON-FF Clans (Cont.)").setDescription(currentText).setColor(0x3498DB));
+                            currentText = "";
+                        }
+                        currentText += clanLine;
+                        
+                        if (options.length < 25) {
+                            options.push({ label: clan.name, description: (clan.isFamilyFriendly ? "FF | " : "NON-FF | ") + clan.tag, value: clan.tag.replace("#", ""), emoji: badgeEmojiObj });
+                        }
+                    }
+                };
+
+                processList(ffClans, "Family Friendly (FF)");
+                processList(nonFfClans, "Non-Family Friendly (NON-FF)");
+
+                if (errorClans.length > 0) {
+                    let errText = "\n**━━━ Errors ━━━**\n";
+                    for (let i = 0; i < errorClans.length; i++) {
+                        let clanLine = (i + 1) + ". ❌ " + errorClans[i] + " - Error\n";
+                        if (currentText.length + errText.length + clanLine.length > 4000) {
+                            embeds.push(new EmbedBuilder().setTitle(embeds.length === 0 ? "FF & NON-FF Clans" : "FF & NON-FF Clans (Cont.)").setDescription(currentText).setColor(0x3498DB));
+                            currentText = "";
+                            errText = "";
+                        }
+                        currentText += errText + clanLine;
+                        errText = "";
+                    }
+                }
+
+                if (currentText.trim()) {
+                    embeds.push(new EmbedBuilder().setTitle(embeds.length === 0 ? "FF & NON-FF Clans" : "FF & NON-FF Clans (Cont.)").setDescription(currentText.trim()).setColor(0x3498DB));
+                }
+
+                if (embeds.length === 0) return interaction.editReply("No clans found.");
+
+                return interaction.editReply({ embeds: embeds });
             }
 
             else if (category === 'cwl') {

@@ -10,7 +10,8 @@ const {
     TextInputBuilder,
     TextInputStyle,
     FileUploadBuilder,
-    LabelBuilder
+    LabelBuilder,
+    StringSelectMenuBuilder
 } = require('discord.js');
 const transcripts = require('discord-html-transcripts');
 
@@ -59,6 +60,51 @@ async function sendLog(guild, embed, config, file = null, content = null) {
     if (file) payload.files = [file];
 
     await logChannel.send(payload).catch(err => console.error('Log Error:', err));
+}
+
+async function generateCheckEmbed(tag, context, type) {
+    const { coc, emoji: emojiUtils, client } = context;
+    const { getEmoji, getEmojiObject } = emojiUtils;
+    let playerTag = tag.toUpperCase().replace(/O/g, '0');
+    if (!playerTag.startsWith('#')) playerTag = '#' + playerTag;
+
+    try {
+        const player = await coc.getPlayer(playerTag);
+        
+        const tagWithoutHash = playerTag.replace('#', '');
+        const thLevel = player.townHallLevel;
+        const thEmoji = getEmoji('th' + thLevel) || `TH${thLevel}`;
+
+        const embed = new EmbedBuilder()
+            .setColor(Math.floor(Math.random() * 0xFFFFFF))
+            .setTitle(`${player.name} ${player.tag}`)
+            .setDescription(`${thEmoji} Please confirm this player is **BANNED** or **NOT BANNED** By checking CC`)
+            .addFields(
+                { name: "Chocolate Clash", value: `[View FWA Link](https://fwa.chocolateclash.com/cc_n/member.php?tag=${tagWithoutHash})`, inline: true },
+                { name: "Clash of Stats", value: `[View Stats](https://www.clashofstats.com/players/${tagWithoutHash})`, inline: true }
+            )
+            .setFooter({ 
+                text: `Checked for Ticket. Please use the buttons below.`,
+                iconURL: client.user.displayAvatarURL()
+            });
+
+        const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId(`app_approve_${type}`)
+                .setLabel('Approve')
+                .setStyle(ButtonStyle.Success)
+                .setEmoji(getEmojiObject('gtick')?.id || '1410137697300775026'),
+            new ButtonBuilder()
+                .setCustomId(`app_reject_${type}`)
+                .setLabel('Reject')
+                .setEmoji(getEmojiObject('wrongbox')?.id || '1508465151182110841')
+                .setStyle(ButtonStyle.Danger)
+        );
+
+        return { embeds: [embed], components: [row] };
+    } catch (error) {
+        return null;
+    }
 }
 
 async function handleTicketInteraction(interaction, context) {
@@ -256,10 +302,32 @@ async function handleTicketInteraction(interaction, context) {
         let content = `**<@${interaction.user.id}> Application Submitted!**`;
         if (type === 'fwa-entry' || type === 'clan-entry' || type === 'war-entry') {
             const execStaffRole = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[2] ? `<@&${config.STAFF_ROLE_IDS[2].trim()}> ` : '';
-            content += `\n\n**🛑 CONFIRMATION REQUIRED:** ${execStaffRole}Player application completed please verify him by using \`?check #PLAYERTAG\` then move on`;
+            content += `\n\n**🛑 CONFIRMATION REQUIRED:** ${execStaffRole}Player application completed, please review the application using the buttons below.`;
         }
 
-        await interaction.reply({ content, embeds: embeds });
+        const approveOrCheckButton = (type === 'fwa-entry' || type === 'clan-entry') ?
+            new ButtonBuilder()
+                .setCustomId(`app_check_${type}`)
+                .setLabel('Check')
+                .setStyle(ButtonStyle.Primary)
+                .setEmoji('🔍')
+            :
+            new ButtonBuilder()
+                .setCustomId(`app_approve_${type}`)
+                .setLabel('Approve')
+                .setStyle(ButtonStyle.Success)
+                .setEmoji(emojiUtils.getEmojiObject('gtick')?.id || '1410137697300775026');
+
+        const actionRow = new ActionRowBuilder().addComponents(
+            approveOrCheckButton,
+            new ButtonBuilder()
+                .setCustomId(`app_reject_${type}`)
+                .setLabel('Reject')
+                .setStyle(ButtonStyle.Danger)
+                .setEmoji(emojiUtils.getEmojiObject('wrongbox')?.id || '1508465151182110841')
+        );
+
+        await interaction.reply({ content, embeds: embeds, components: [actionRow] });
         
         // Remove the "Start Application" button after submission
         try {
@@ -270,6 +338,281 @@ async function handleTicketInteraction(interaction, context) {
             }
         } catch(e) {}
         
+        return true;
+    }
+
+    if (interaction.isButton() && customId.startsWith('app_check_')) {
+        const type = customId.replace('app_check_', '');
+        
+        const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const hasWelExeRole = config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID);
+
+        if (!isStaff && !isAdmin && !hasWelExeRole) {
+            return interaction.reply({ content: '❌ Only Staff or Admins can use this button.', flags: [MessageFlags.Ephemeral] });
+        }
+        
+        const topicMatch = interaction.channel.topic ? interaction.channel.topic.match(/\d+/) : null;
+        const ownerId = topicMatch ? topicMatch[0] : null;
+
+        if (!ownerId) {
+            return interaction.reply({ content: '❌ Could not determine ticket owner.', flags: [MessageFlags.Ephemeral] });
+        }
+
+        const userData = context.data.getUserData();
+        const accounts = userData[ownerId] || [];
+
+        if (accounts.length === 0) {
+            return interaction.reply({ content: `❌ User <@${ownerId}> has no linked accounts. Please ask them to link their account first.`, flags: [MessageFlags.Ephemeral] });
+        }
+
+        if (accounts.length === 1) {
+            await interaction.deferReply();
+            const checkData = await generateCheckEmbed(accounts[0].tag, context, type);
+            if (!checkData) {
+                return interaction.editReply({ content: '❌ Failed to fetch player data from Clash of Clans API.', flags: [MessageFlags.Ephemeral] });
+            }
+            
+            // Edit original message to remove the Check button to prevent double-clicking?
+            // Actually it's fine, we can just edit the reply with the embed
+            return interaction.editReply(checkData);
+        } else {
+            const options = accounts.map(acc => ({
+                label: acc.name,
+                description: acc.tag,
+                value: `${acc.tag}_${type}`
+            })).slice(0, 25);
+            
+            const selectMenu = new StringSelectMenuBuilder()
+                .setCustomId(`app_check_sel_${ownerId}`)
+                .setPlaceholder('Select an account to check')
+                .addOptions(options);
+
+            const row = new ActionRowBuilder().addComponents(selectMenu);
+            return interaction.reply({ content: 'Select an account to check:', components: [row], flags: [MessageFlags.Ephemeral] });
+        }
+    }
+    
+    if (interaction.isStringSelectMenu() && customId.startsWith('app_check_sel_')) {
+        const selectedValue = interaction.values[0];
+        const [tag, type] = selectedValue.split('_');
+
+        await interaction.deferUpdate();
+        
+        const checkData = await generateCheckEmbed(tag, context, type);
+        if (!checkData) {
+            return interaction.followUp({ content: '❌ Failed to fetch player data from Clash of Clans API.', flags: [MessageFlags.Ephemeral] });
+        }
+        
+        // Remove the select menu
+        await interaction.editReply({ content: 'Account checked!', components: [] });
+        return interaction.channel.send(checkData);
+    }
+
+    if (interaction.isButton() && customId.startsWith('app_approve_')) {
+        const type = customId.replace('app_approve_', '');
+        
+        const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const hasWelExeRole = config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID);
+
+        if (!isStaff && !isAdmin && !hasWelExeRole) {
+            return interaction.reply({ content: '❌ Only Staff or Admins can use this button.', flags: [MessageFlags.Ephemeral] });
+        }
+
+        if (type === 'fwa-entry' || type === 'clan-entry') {
+            const modal = new ModalBuilder()
+                .setCustomId(`ticket_modal_approve_fwa_${type}`)
+                .setTitle('Approve Base / CC');
+
+            const reasonLabel = new LabelBuilder()
+                .setLabel('Approval Reason')
+                .setTextInputComponent(
+                    new TextInputBuilder()
+                        .setCustomId('reason')
+                        .setStyle(TextInputStyle.Paragraph)
+                        .setRequired(true)
+                        .setPlaceholder('Why are you approving this base?')
+                );
+
+            const fileLabel = new LabelBuilder()
+                .setLabel('Upload Screenshot (optional)')
+                .setFileUploadComponent(
+                    new FileUploadBuilder()
+                        .setCustomId('screenshot')
+                        .setRequired(false)
+                );
+
+            modal.addComponents(reasonLabel, fileLabel);
+            await interaction.showModal(modal);
+            return true;
+        } else if (type === 'staff-apply' || type === 'rep-apply' || type === 'alliance-join') {
+            const modal = new ModalBuilder()
+                .setCustomId(`ticket_modal_approve_reason_${type}`)
+                .setTitle('Approve Application');
+
+            const reasonLabel = new LabelBuilder()
+                .setLabel('Approval Reason')
+                .setTextInputComponent(
+                    new TextInputBuilder()
+                        .setCustomId('reason')
+                        .setStyle(TextInputStyle.Paragraph)
+                        .setRequired(true)
+                        .setPlaceholder('Why are you approving this application?')
+                );
+
+            modal.addComponents(reasonLabel);
+            await interaction.showModal(modal);
+            return true;
+        } else {
+            // war-entry and help-assistance: instant approve
+            try {
+                const approveCmd = require('../../commands/discord/tickets/approve.js');
+                await approveCmd.execute(interaction, context);
+                
+                // Disable buttons
+                try {
+                    const originalMsg = interaction.message;
+                    if (originalMsg) {
+                        const newComponents = originalMsg.components.map(row => {
+                            const newRow = new ActionRowBuilder();
+                            row.components.forEach(comp => {
+                                if (comp.type === 2) {
+                                    const newBtn = ButtonBuilder.from(comp);
+                                    newBtn.setDisabled(true);
+                                    newRow.addComponents(newBtn);
+                                }
+                            });
+                            return newRow;
+                        });
+                        await originalMsg.edit({ components: newComponents }).catch(()=>null);
+                    }
+                } catch(e) {}
+            } catch (err) {
+                console.error('Error auto-approving:', err);
+                if (!interaction.replied && !interaction.deferred) {
+                    await interaction.reply({ content: '❌ Failed to run approve command.', flags: [MessageFlags.Ephemeral] });
+                }
+            }
+            return true;
+        }
+    }
+
+    if (interaction.isButton() && customId.startsWith('app_reject_')) {
+        const type = customId.replace('app_reject_', '');
+        
+        const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const hasWelExeRole = config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID);
+
+        if (!isStaff && !isAdmin && !hasWelExeRole) {
+            return interaction.reply({ content: '❌ Only Staff or Admins can use this button.', flags: [MessageFlags.Ephemeral] });
+        }
+
+        const modal = new ModalBuilder()
+            .setCustomId(`ticket_modal_reject_${type}`)
+            .setTitle('Reject Application');
+
+        const reasonLabel = new LabelBuilder()
+            .setLabel('Rejection Reason')
+            .setTextInputComponent(
+                new TextInputBuilder()
+                    .setCustomId('reason')
+                    .setStyle(TextInputStyle.Paragraph)
+                    .setRequired(true)
+                    .setPlaceholder('Enter the reason for rejection...')
+            );
+
+        modal.addComponents(reasonLabel);
+        await interaction.showModal(modal);
+        return true;
+    }
+
+    if (interaction.isModalSubmit() && customId.startsWith('ticket_modal_approve_')) {
+        let type = customId.split('_').pop();
+        let isFwa = customId.includes('_fwa_');
+        
+        if (isFwa) {
+            const reason = interaction.fields.getTextInputValue('reason');
+            let files, file = null;
+            try {
+                files = interaction.fields.getUploadedFiles('screenshot');
+                file = files?.first() || null;
+            } catch (e) {}
+
+            const finalEmbed = new EmbedBuilder()
+                .setDescription(`✅ **Check Confirmed**\n\nHe is not a banned player and not from bl clan history confirmed by ${interaction.user}.\n**Reason:** ${reason}\n\n**Proof :**`)
+                .setColor(0x2ECC71);
+
+            if (file) finalEmbed.setImage(file.url);
+            
+            await interaction.channel.send({ embeds: [finalEmbed] }).catch(()=>null);
+        }
+
+        try {
+            const approveCmd = require('../../commands/discord/tickets/approve.js');
+            await approveCmd.execute(interaction, context);
+            
+            // Disable buttons
+            try {
+                const originalMsg = interaction.message;
+                if (originalMsg) {
+                    const newComponents = originalMsg.components.map(row => {
+                        const newRow = new ActionRowBuilder();
+                        row.components.forEach(comp => {
+                            if (comp.type === 2) {
+                                const newBtn = ButtonBuilder.from(comp);
+                                newBtn.setDisabled(true);
+                                newRow.addComponents(newBtn);
+                            }
+                        });
+                        return newRow;
+                    });
+                    await originalMsg.edit({ components: newComponents }).catch(()=>null);
+                }
+            } catch(e) {}
+        } catch (err) {
+            console.error('Error executing approve command from modal:', err);
+            if (!interaction.replied && !interaction.deferred) {
+                await interaction.reply({ content: '❌ Failed to execute approve command.', flags: [MessageFlags.Ephemeral] });
+            }
+        }
+        return true;
+    }
+
+    if (interaction.isModalSubmit() && customId.startsWith('ticket_modal_reject_')) {
+        const reasonValue = interaction.fields.getTextInputValue('reason');
+        
+        interaction.customReason = reasonValue;
+
+        try {
+            const rejectCmd = require('../../commands/discord/tickets/reject.js');
+            await rejectCmd.execute(interaction, context);
+            
+            // Disable buttons
+            try {
+                const originalMsg = interaction.message;
+                if (originalMsg) {
+                    const newComponents = originalMsg.components.map(row => {
+                        const newRow = new ActionRowBuilder();
+                        row.components.forEach(comp => {
+                            if (comp.type === 2) {
+                                const newBtn = ButtonBuilder.from(comp);
+                                newBtn.setDisabled(true);
+                                newRow.addComponents(newBtn);
+                            }
+                        });
+                        return newRow;
+                    });
+                    await originalMsg.edit({ components: newComponents }).catch(()=>null);
+                }
+            } catch(e) {}
+        } catch (err) {
+            console.error('Error executing reject command from modal:', err);
+            if (!interaction.replied && !interaction.deferred) {
+                await interaction.reply({ content: '❌ Failed to execute reject command.', flags: [MessageFlags.Ephemeral] });
+            }
+        }
         return true;
     }
 
@@ -729,18 +1072,18 @@ async function handleTicketInteraction(interaction, context) {
     if (customId === 'claim_ticket') {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
-        const hasHelpRole = member.roles.cache.has('1514535148119392377');
+        const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
         const isHelpTicket = interaction.channel.name.startsWith('help-assistance');
 
         let canClaim = false;
         if (isStaff || isAdmin) {
             canClaim = true;
-        } else if (hasHelpRole && isHelpTicket) {
+        } else if (hasWelExeRole && isHelpTicket) {
             canClaim = true;
         }
 
         if (!canClaim) {
-            if (hasHelpRole && !isHelpTicket && !isStaff && !isAdmin) {
+            if (hasWelExeRole && !isHelpTicket && !isStaff && !isAdmin) {
                 await interaction.reply({ content: '❌ You can only claim Help Assistance tickets.', flags: [MessageFlags.Ephemeral] });
             } else {
                 await interaction.reply({ content: '❌ Only Staff or Admins can claim this ticket.', flags: [MessageFlags.Ephemeral] });
@@ -784,8 +1127,9 @@ async function handleTicketInteraction(interaction, context) {
     if (customId === 'close_ticket') {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
 
-        if (!isStaff && !isAdmin) {
+        if (!isStaff && !isAdmin && !hasWelExeRole) {
             await interaction.reply({ content: '❌ Only Staff or Admins can delete this ticket.', flags: [MessageFlags.Ephemeral] });
             return true;
         }
@@ -819,8 +1163,9 @@ async function handleTicketInteraction(interaction, context) {
     if (customId === 'confirm_close_ticket') {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
 
-        if (!isStaff && !isAdmin) {
+        if (!isStaff && !isAdmin && !hasWelExeRole) {
             await interaction.reply({ content: '❌ Only Staff or Admins can delete this ticket.', flags: [MessageFlags.Ephemeral] });
             return true;
         }

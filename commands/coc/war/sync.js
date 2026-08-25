@@ -196,12 +196,9 @@ async function sendFillCheckEmbed(context) {
     if (fs.existsSync(statePath)) {
         try { syncState = JSON.parse(fs.readFileSync(statePath, "utf8")); } catch (e) { }
     }
-    if (syncState.fillCheckMessageId) {
-        const oldMsg = await syncChannel.messages.fetch(syncState.fillCheckMessageId).catch(() => null);
-        if (oldMsg) await oldMsg.delete().catch(() => {});
-        syncState.fillCheckMessageId = null;
-    }
-
+    // We no longer delete the old fill check message here
+    // so that all messages stay in the chat until preparation day.
+    
     let sentFillMsg = null;
     if (missingList.length > 0) {
         const embed = new EmbedBuilder()
@@ -243,54 +240,74 @@ async function cleanSyncMessages(context) {
 
         if (syncState.messageId) {
             const syncMsg = await channel.messages.fetch(syncState.messageId).catch(() => null);
-            if (syncMsg && syncMsg.embeds.length > 0) {
+            if (syncMsg && syncMsg.components.length > 0) {
+                const { ActionRowBuilder, ButtonBuilder, StringSelectMenuBuilder } = require("discord.js");
+                const disabledComponents = syncMsg.components.map(row => {
+                    const newRow = new ActionRowBuilder();
+                    row.components.forEach(c => {
+                        if (c.type === 2) { // Button
+                            newRow.addComponents(ButtonBuilder.from(c).setDisabled(true));
+                        } else if (c.type === 3) { // Select Menu
+                            newRow.addComponents(StringSelectMenuBuilder.from(c).setDisabled(true));
+                        }
+                    });
+                    return newRow;
+                });
                 await syncMsg.edit({ 
-                    content: syncMsg.content, 
-                    embeds: syncMsg.embeds, 
-                    components: [] 
+                    components: disabledComponents 
                 }).catch(() => {});
             }
         }
 
         if (syncState.fillCheckMessageId) {
-            const fillMsg = await channel.messages.fetch(syncState.fillCheckMessageId).catch(() => null);
-            if (fillMsg) await fillMsg.delete().catch(() => {});
             syncState.fillCheckMessageId = null;
             fs.writeFileSync(statePath, JSON.stringify(syncState, null, 2));
         }
 
-        let deletedThisPass;
-        do {
-            deletedThisPass = 0;
-            const fetched = await channel.messages.fetch({ limit: 100 }).catch(() => null);
-            if (!fetched) break;
+        let lastMessageId = null;
+        let hasMore = true;
+
+        while (hasMore) {
+            const options = { limit: 100 };
+            if (lastMessageId) options.before = lastMessageId;
+            
+            const fetched = await channel.messages.fetch(options).catch(() => null);
+            if (!fetched || fetched.size === 0) {
+                hasMore = false;
+                break;
+            }
 
             const toDelete = [];
             for (const [id, m] of fetched) {
+                lastMessageId = id; // advance cursor
+
                 if (id === syncState.messageId) continue; // keep sync embed
-                if (m.system) continue;                   // keep system messages
-                toDelete.push(m);
+                
+                const isThreadCreated = m.type === 18 || m.type === 21;
+                const isUserMessage = !m.author.bot;
+                
+                if (isThreadCreated || isUserMessage) {
+                    toDelete.push(m);
+                }
             }
 
-            if (toDelete.length === 0) break;
+            if (toDelete.length > 0) {
+                const recentIds = toDelete
+                    .filter(m => Date.now() - m.createdTimestamp < 14 * 24 * 60 * 60 * 1000)
+                    .map(m => m.id);
+                const oldMsgs = toDelete
+                    .filter(m => Date.now() - m.createdTimestamp >= 14 * 24 * 60 * 60 * 1000);
 
-            const recentIds = toDelete
-                .filter(m => Date.now() - m.createdTimestamp < 14 * 24 * 60 * 60 * 1000)
-                .map(m => m.id);
-            const oldMsgs = toDelete
-                .filter(m => Date.now() - m.createdTimestamp >= 14 * 24 * 60 * 60 * 1000);
-
-            if (recentIds.length > 0) {
-                await channel.bulkDelete(recentIds, true).catch(() => {});
-                deletedThisPass += recentIds.length;
+                if (recentIds.length > 0) {
+                    await channel.bulkDelete(recentIds, true).catch(() => {});
+                }
+                for (const m of oldMsgs) {
+                    await m.delete().catch(() => {});
+                }
             }
-            for (const m of oldMsgs) {
-                await m.delete().catch(() => {});
-                deletedThisPass++;
-            }
-        } while (deletedThisPass > 0);
+        }
 
-        await logToChannel(context, "🧹 Prep day: removed buttons from sync embed, deleted fill check & other messages.");
+        await logToChannel(context, "🧹 Prep day: disabled buttons on sync embed, deleted user and thread messages.");
     } catch (err) {
         console.error("Error clearing sync channel messages:", err);
     }
@@ -485,7 +502,6 @@ module.exports = {
     name: "sync",
     description: "Manual war sync check",
     async execute(message, args, context) {
-        if (message?.deletable) await message.delete().catch(() => { });
         await sendSyncMessage(context, message);
     },
     setupWarChecker(client, config, coc, emojiUtils, EmbedBuilder) {

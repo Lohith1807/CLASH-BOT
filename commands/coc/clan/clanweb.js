@@ -75,7 +75,7 @@ module.exports = {
             await Clan.findOneAndUpdate(
                 { tag: clanData.tag },
                 finalData,
-                { upsert: true, new: true, setDefaultsOnInsert: true }
+                { upsert: true, returnDocument: 'after', setDefaultsOnInsert: true }
             );
 
             const embed = new EmbedBuilder()
@@ -94,7 +94,7 @@ module.exports = {
             await interaction.editReply({ content: null, embeds: [embed] });
 
         } catch (error) {
-            console.error("Error in /addclantoweb command:", error);
+            console.error("Error in /addclantoweb command:", error.message);
             const errorMessage = error.response?.data?.message || error.message;
             
             if (interaction.deferred || interaction.replied) {

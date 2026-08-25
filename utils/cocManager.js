@@ -6,7 +6,7 @@ const cocApi = axios.create({
     headers: {
         Authorization: `Bearer ${config.COC_API_TOKEN}`,
     },
-    timeout: 5000, // 5 seconds timeout to prevent hanging
+    timeout: 15000, // 15 seconds timeout to prevent hanging
 });
 
 let discordClient = null;

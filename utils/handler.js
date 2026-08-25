@@ -27,15 +27,15 @@ async function handleInteraction(interaction, context) {
         return syncCommand.handleSyncButton(interaction, context);
     }
 
-    // ── /member-replacements handler ─────────────────────────────────────────
+    // ── /clan-members handler ───────────────────────────────────────────────
     if (
-        (interaction.isButton() || interaction.isStringSelectMenu()) &&
-        (interaction.customId.startsWith("memreplace_") || interaction.customId.startsWith("mr_"))
+        (interaction.isButton() || interaction.isStringSelectMenu() || interaction.isModalSubmit()) &&
+        (interaction.customId.startsWith("clanmem_") || interaction.customId.startsWith("cm_") || interaction.customId.startsWith("modal_cm_") || interaction.customId.startsWith("memreplace_") || interaction.customId.startsWith("mr_"))
     ) {
-        const memberReplacementsCmd = require("../commands/coc/clan/member-replacements.js");
-        return memberReplacementsCmd.handleMemberReplacements(interaction, context);
+        const clanMembersCmd = require("../commands/coc/clan/clan-members.js");
+        return clanMembersCmd.handleClanMembers(interaction, context);
     }
-    // ── end /member-replacements handler ────────────────────────────────────
+    // ── end /clan-members handler ───────────────────────────────────────────
 
     // ── /cwl-clan edit panel — select menu ───────────────────────────────────
     if (interaction.isStringSelectMenu() && interaction.customId === "cwl_clan_edit_sel") {

@@ -1,5 +1,15 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 
+// Wraps a promise so it can never hang forever — rejects with a clear
+// timeout error if the underlying call never resolves/rejects on its own.
+function withTimeout(promise, ms, label) {
+    let timer;
+    const timeout = new Promise((_, reject) => {
+        timer = setTimeout(() => reject(new Error(`Timed out after ${ms}ms waiting for: ${label}`)), ms);
+    });
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
+}
+
 module.exports = {
     name: "discord-links",
     description: "List all clan players and check if linked",
@@ -73,11 +83,11 @@ module.exports = {
         try {
             if (isInteraction && !isRefresh) await source.deferReply();
 
-            const clanData = await coc.getClan(clanTag).catch(e => {
+            const clanData = await withTimeout(coc.getClan(clanTag), 15000, "coc.getClan(clanTag)").catch(e => {
                 if (e?.response?.status === 404 || e?.status === 404) {
                     return null; // clan not found
                 }
-                throw e; // re-throw other errors
+                throw e; // re-throw other errors (including timeouts)
             });
             if (!clanData || !clanData.memberList) {
                 const err = `❌ Clan \`${clanTag}\` not found. Make sure the tag is correct.`;
@@ -93,17 +103,23 @@ module.exports = {
 
             const { Collection } = require('discord.js');
             const allMembers = new Collection();
-            if (source.guild) {
-                let lastId = '0';
-                while (true) {
-                    const members = await source.guild.members.fetch({ limit: 1000, after: lastId }).catch(() => null);
-                    if (!members || members.size === 0) break;
-                    for (const [id, member] of members) {
-                        allMembers.set(id, member);
+            if (source.guild && uniqueDiscordIds.size > 0) {
+                // Only fetch the specific members we actually need instead of
+                // paginating through the whole server — much faster on large guilds.
+                const idsToFetch = Array.from(uniqueDiscordIds);
+                const BATCH_SIZE = 100; // Discord's per-request limit for user-id fetches
+                for (let i = 0; i < idsToFetch.length; i += BATCH_SIZE) {
+                    const batch = idsToFetch.slice(i, i + BATCH_SIZE);
+                    const members = await withTimeout(
+                        source.guild.members.fetch({ user: batch }),
+                        15000,
+                        "guild.members.fetch (targeted batch)"
+                    ).catch(() => null);
+                    if (members) {
+                        for (const [id, member] of members) {
+                            allMembers.set(id, member);
+                        }
                     }
-                    if (members.size < 1000) break;
-                    const keys = Array.from(members.keys());
-                    lastId = keys[keys.length - 1];
                 }
             }
 
@@ -117,7 +133,7 @@ module.exports = {
             const resolvedUsernames = {};
             if (unresolvedIds.length > 0) {
                 await Promise.all(unresolvedIds.map(id =>
-                    client.users.fetch(id)
+                    withTimeout(client.users.fetch(id), 10000, `client.users.fetch(${id})`)
                         .then(u => { resolvedUsernames[id] = u.username; })
                         .catch(() => { resolvedUsernames[id] = "Unknown"; })
                 ));
