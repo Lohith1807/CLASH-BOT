@@ -608,7 +608,7 @@ module.exports = {
         const query = interaction.options.getString('clantag');
         if (!query) return interaction.reply({ content: "❌ Please provide a clan tag.", ephemeral: true });
 
-        await interaction.deferReply().catch(() => {});
+        try { await interaction.deferReply().catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const loadingEmoji = emoji.getEmoji("alaram") || "⏳";
         const loadingColor = Math.floor(Math.random() * 16777215);

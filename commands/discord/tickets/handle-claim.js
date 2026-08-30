@@ -45,7 +45,7 @@ module.exports = {
             });
         }
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         // Figure out who previously claimed this ticket.
         // Fetch recent messages in the channel to find the claim message or button

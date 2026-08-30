@@ -243,7 +243,7 @@ module.exports = {
             const { getEmoji, getEmojiObject } = emoji;
 
             const category = interaction.options.getString('category');
-            await interaction.deferReply();
+            try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
             const clanRoles = dataManager.getClanRoles();
 

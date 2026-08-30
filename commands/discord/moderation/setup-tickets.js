@@ -21,7 +21,7 @@ module.exports = {
             });
         }
 
-        await interaction.deferReply({ ephemeral: true });
+        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const getEmojiData = (name) => {
             const obj = emoji.getEmojiObject(name);

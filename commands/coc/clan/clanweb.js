@@ -32,7 +32,7 @@ module.exports = {
         const rawTag = interaction.options.getString('clantag');
         const clanTag = coc.formatTag(rawTag);
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             await connectToDatabase();

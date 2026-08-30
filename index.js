@@ -406,7 +406,7 @@ for (const file of commandFiles) {
 client.on("interactionCreate", async (interaction) => {
   try {
     if (interaction.isButton() && interaction.customId.startsWith('view_welcome_details_')) {
-      await interaction.deferReply({ ephemeral: true });
+      try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
       const userId = interaction.customId.split('_')[3];
       const targetMember = await interaction.guild.members.fetch(userId).catch(() => null);
       const user = targetMember ? targetMember.user : await client.users.fetch(userId).catch(() => null);

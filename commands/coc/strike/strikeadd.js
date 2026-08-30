@@ -47,7 +47,7 @@ module.exports = {
             });
         }
 
-        await interaction.deferReply({ ephemeral: false });
+        try { await interaction.deferReply({ ephemeral: false }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const playerTagInput = interaction.options.getString('playertag');
         const reason = interaction.options.getString('reason');

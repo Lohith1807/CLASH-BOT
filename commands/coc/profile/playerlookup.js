@@ -123,7 +123,7 @@ module.exports = {
             return interaction.reply({ content: "❌ Please provide either a `tag` or a `user`.", ephemeral: true });
         }
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const userData = dataManager.getUserData();
         let targetUserId = null;

@@ -11,7 +11,7 @@ module.exports = {
 
   async execute(interaction, context) {
     try {
-        if (!interaction.deferred && !interaction.replied) await interaction.deferReply();
+        if (!interaction.deferred && !interaction.replied) try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
     } catch (e) {
         return; // Interaction already expired due to network lag
     }

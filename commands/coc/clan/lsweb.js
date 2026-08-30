@@ -24,7 +24,7 @@ module.exports = {
             return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
         }
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             await connectToDatabase();

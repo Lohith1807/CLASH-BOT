@@ -172,7 +172,9 @@ function buildMainEmbed(clanRoles, clanMembersList, emojiUtils, page = 0) {
 
     // Sort the list by TH descending, then by Name
     list.sort((a, b) => {
-        if (b.thLevel !== a.thLevel) return b.thLevel - a.thLevel;
+        const aTH = a.thLevel || a.townHallLevel || 0;
+        const bTH = b.thLevel || b.townHallLevel || 0;
+        if (bTH !== aTH) return bTH - aTH;
         return a.name.localeCompare(b.name);
     });
 
@@ -184,10 +186,15 @@ function buildMainEmbed(clanRoles, clanMembersList, emojiUtils, page = 0) {
     // Group page items by TH
     const byTH = {};
     for (const entry of pageItems) {
-        if (!byTH[entry.thLevel]) byTH[entry.thLevel] = [];
-        byTH[entry.thLevel].push(entry);
+        const lvl = entry.thLevel || entry.townHallLevel || "?";
+        if (!byTH[lvl]) byTH[lvl] = [];
+        byTH[lvl].push(entry);
     }
-    const sortedTHs = Object.keys(byTH).map(Number).sort((a, b) => b - a);
+    const sortedTHs = Object.keys(byTH).sort((a, b) => {
+        const numA = a === "?" ? -1 : Number(a) || 0;
+        const numB = b === "?" ? -1 : Number(b) || 0;
+        return numB - numA;
+    });
 
     let description = `${clanEmoji} **${nick}** \`${tag}\`\n`;
 
@@ -800,8 +807,8 @@ async function handleClanMembers(interaction, context) {
         const clanTag = "#" + clanTagClean;
 
         try { 
-            if (action === "view") await interaction.deferReply({ ephemeral: true }); 
-            else await interaction.deferUpdate();
+            if (action === "view") try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; } 
+            else try { await interaction.deferUpdate(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
         } catch (e) { return; }
 
         let clanData;

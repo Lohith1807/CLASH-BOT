@@ -63,7 +63,7 @@ module.exports = {
                     filter: i => i.user.id === interaction.user.id && i.customId === 'select_account_ww', 
                     time: 60000,
                     componentType: ComponentType.StringSelect
-                });
+                }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
                 
                 selectedTag = selectInteraction.values[0];
                 await this.showWeightModal(selectInteraction, selectedTag, context);
@@ -120,7 +120,7 @@ module.exports = {
             return interaction.reply({ content: 'Weight must be 5 or 6 digits.', ephemeral: true });
         }
         
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
         
         try {
             const player = await context.coc.getPlayer(tag);

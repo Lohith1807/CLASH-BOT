@@ -93,7 +93,7 @@ module.exports = {
 
             const filter = i => i.user.id === interaction.user.id;
             try {
-                const confirmation = await response.awaitMessageComponent({ filter, time: 30000 });
+                const confirmation = await response.awaitMessageComponent({ filter, time: 30000 }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
 
                 if (confirmation.customId === "confirm_revoke") {
                     clanroles = dataManager.getClanRoles();

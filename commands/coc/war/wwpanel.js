@@ -24,7 +24,7 @@ module.exports = {
         const { getEmoji, getEmojiObject } = emojiUtils;
 
         // Defer to avoid timeout — we'll reply to the interaction privately
-        await interaction.deferReply({ ephemeral: true }).catch(() => {});
+        try { await interaction.deferReply({ ephemeral: true }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             const clanRoles = getClanRoles();

@@ -78,7 +78,7 @@ module.exports = {
                 return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
             }
 
-            await interaction.deferReply({ ephemeral: true });
+            try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
             const botMember = await interaction.guild.members.fetchMe();
             if (!botMember.permissions.has(PermissionFlagsBits.ManageRoles) || !botMember.permissions.has(PermissionFlagsBits.ManageChannels)) {
@@ -140,8 +140,8 @@ module.exports = {
             let finalRoleId, finalChannelId, finalMailChannelId, finalLeadChannelId, finalFeedChannelId;
             let setupWarnings = [];
 
-            let leaderIconPath = path.join(__dirname, "../../../../assets/leader.png");
-            let memberIconPath = path.join(__dirname, "../../../../assets/member.png");
+            let leaderIconPath = path.join(__dirname, "../../../assets/leader.png");
+            let memberIconPath = path.join(__dirname, "../../../assets/member.png");
 
             let leaderRoleOptions = {
                 name: `〢・🩸${officialClanName} Leader`,

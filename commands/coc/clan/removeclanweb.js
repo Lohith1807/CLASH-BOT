@@ -32,7 +32,7 @@ module.exports = {
         let clanTag = interaction.options.getString('clantag').toUpperCase().replace('O', '0');
         if (!clanTag.startsWith('#')) clanTag = `#${clanTag}`;
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             await connectToDatabase();

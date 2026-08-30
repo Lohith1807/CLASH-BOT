@@ -318,14 +318,17 @@ async function handleTicketInteraction(interaction, context) {
                 .setStyle(ButtonStyle.Success)
                 .setEmoji(emojiUtils.getEmojiObject('gtick')?.id || '1410137697300775026');
 
-        const actionRow = new ActionRowBuilder().addComponents(
-            approveOrCheckButton,
-            new ButtonBuilder()
-                .setCustomId(`app_reject_${type}`)
-                .setLabel('Reject')
-                .setStyle(ButtonStyle.Danger)
-                .setEmoji(emojiUtils.getEmojiObject('wrongbox')?.id || '1508465151182110841')
-        );
+        const actionRow = new ActionRowBuilder().addComponents(approveOrCheckButton);
+        
+        if (type !== 'fwa-entry' && type !== 'clan-entry') {
+            actionRow.addComponents(
+                new ButtonBuilder()
+                    .setCustomId(`app_reject_${type}`)
+                    .setLabel('Reject')
+                    .setStyle(ButtonStyle.Danger)
+                    .setEmoji(emojiUtils.getEmojiObject('wrongbox')?.id || '1508465151182110841')
+            );
+        }
 
         await interaction.reply({ content, embeds: embeds, components: [actionRow] });
         
@@ -367,7 +370,7 @@ async function handleTicketInteraction(interaction, context) {
         }
 
         if (accounts.length === 1) {
-            await interaction.deferReply();
+            try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
             const checkData = await generateCheckEmbed(accounts[0].tag, context, type);
             if (!checkData) {
                 return interaction.editReply({ content: '❌ Failed to fetch player data from Clash of Clans API.', flags: [MessageFlags.Ephemeral] });
@@ -397,7 +400,7 @@ async function handleTicketInteraction(interaction, context) {
         const selectedValue = interaction.values[0];
         const [tag, type] = selectedValue.split('_');
 
-        await interaction.deferUpdate();
+        try { await interaction.deferUpdate(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
         
         const checkData = await generateCheckEmbed(tag, context, type);
         if (!checkData) {
@@ -617,7 +620,7 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (interaction.isModalSubmit() && customId === 'alliance_apply_modal') {
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         let clanTag = interaction.fields.getTextInputValue('clan_tag_input').trim().toUpperCase();
         if (!clanTag.startsWith('#')) {
@@ -750,7 +753,7 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (customId && customId.startsWith('view_clan_ticket:')) {
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const clanTag = customId.split(':')[1];
         const claninfo = require('../../commands/coc/clan/claninfo');
@@ -828,7 +831,7 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (customId && customId.startsWith('show_player_ticket:')) {
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
         const playerTag = customId.split(':')[1];
 
         try {
@@ -853,7 +856,7 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (customId && customId.startsWith('ticket_user_profile:')) {
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
         const targetUserId = customId.split(':')[1];
 
         try {
@@ -908,7 +911,7 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (interaction.isModalSubmit() && customId === 'ticket_timer_modal') {
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
@@ -1032,7 +1035,7 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (customId === 'view_alliance_rules') {
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const wowEmoji = await getAppEmoji('wow');
         const pinkdot = await getAppEmoji('pinkdot');
@@ -1155,7 +1158,7 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (customId === 'cancel_close_ticket') {
-        await interaction.deferUpdate().catch(() => {});
+        try { await interaction.deferUpdate().catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
         await interaction.message.delete().catch(() => {});
         return true;
     }
@@ -1170,7 +1173,7 @@ async function handleTicketInteraction(interaction, context) {
             return true;
         }
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const channel = interaction.channel;
         const creationTime = channel.createdAt;
@@ -1258,7 +1261,7 @@ async function handleTicketInteraction(interaction, context) {
             return true;
         }
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const isApprove = customId === 'approve_ticket';
         const type = interaction.channel.name.split('-')[0].toLowerCase();

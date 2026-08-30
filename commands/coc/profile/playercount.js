@@ -17,7 +17,7 @@ module.exports = {
             return interaction.reply({ content: "❌ You do not have permission to use this command. Only Admin and Staff can use it.", ephemeral: true });
         }
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const userData = dataManager.getUserData();
         const users = Object.entries(userData);

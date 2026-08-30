@@ -111,7 +111,7 @@ module.exports = {
                     const chosen = JSON.parse(interaction.values[0]);
                     cleanTag = chosen.tag;
                     playerName = chosen.name;
-                    await interaction.deferUpdate();
+                    try { await interaction.deferUpdate(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
                     prompt.delete().catch(() => { });
                     runCheck(cleanTag, playerName, targetUser, message, clanroles, context);
                 });
@@ -221,7 +221,7 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                 return;
             }
             
-            await interaction.deferUpdate();
+            try { await interaction.deferUpdate(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
             let targetMember;
             try {

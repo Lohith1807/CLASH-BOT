@@ -36,7 +36,7 @@ module.exports = {
         const { data: dataManager, coc } = context;
         const selection = interaction.options.getString('view');
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         let finalStrikeList = [];
         let embedTitle = "";

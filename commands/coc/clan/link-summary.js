@@ -21,7 +21,7 @@ module.exports = {
             });
         }
 
-        await interaction.deferReply().catch(() => {});
+        try { await interaction.deferReply().catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         if (interaction.guild) {
             let lastId = '0';

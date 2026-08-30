@@ -127,7 +127,7 @@ module.exports = {
                     filter: i => i.customId === 'manage_ww_select' && i.user.id === interaction.user.id,
                     time: 60000,
                     componentType: ComponentType.StringSelect
-                });
+                }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
 
                 const selectedTh = selectInt.values[0];
                 
@@ -149,7 +149,7 @@ module.exports = {
                     filter: i => ['ww_btn_update', 'ww_btn_delete'].includes(i.customId) && i.user.id === interaction.user.id,
                     time: 60000,
                     componentType: ComponentType.Button
-                });
+                }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
 
                 if (btnInt.customId === 'ww_btn_delete') {
                     // Confirmation
@@ -163,7 +163,7 @@ module.exports = {
                         filter: i => ['ww_confirm_del', 'ww_cancel_del'].includes(i.customId) && i.user.id === interaction.user.id,
                         time: 30000,
                         componentType: ComponentType.Button
-                    });
+                    }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
                     
                     if (confInt.customId === 'ww_confirm_del') {
                         delete thresholds[selectedTh];

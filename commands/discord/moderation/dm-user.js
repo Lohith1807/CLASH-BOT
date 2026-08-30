@@ -45,7 +45,7 @@ module.exports = {
         const targetRole = interaction.options.getRole('role');
         const messageContent = interaction.options.getString('message');
 
-        await interaction.deferReply({ ephemeral: true });
+        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             // Fetch all members to ensure cache is populated

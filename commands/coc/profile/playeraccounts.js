@@ -24,7 +24,7 @@ module.exports = {
         const userData = dataManager.getUserData();
         const accounts = userData[targetUser.id] || [];
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         if (accounts.length === 0) {
             return interaction.editReply({ content: `❌ **${targetUser.username}** has no linked accounts.` });

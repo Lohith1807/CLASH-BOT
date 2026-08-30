@@ -251,7 +251,7 @@ module.exports = {
 
     async execute(interaction, context) {
         const { coc, emoji: emojiUtils, client } = context;
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        try { await interaction.deferReply({ flags: MessageFlags.Ephemeral }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const targetChannel = interaction.options.getChannel("channel");
         if (!targetChannel) return interaction.editReply("❌ Target channel not found.");

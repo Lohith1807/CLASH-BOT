@@ -131,7 +131,7 @@ module.exports = {
             });
         }
 
-        await interaction.deferReply().catch(() => {});
+        try { await interaction.deferReply().catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const { embed, success } = await getInviteDetailsAndEmbed(inviteCode, interaction.guild, interaction.client);
 

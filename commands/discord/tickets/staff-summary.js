@@ -32,7 +32,7 @@ module.exports = {
             });
         }
 
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         // Get tracking data
         const trackingData = staffTicketTracker.getSummary();

@@ -39,7 +39,7 @@ module.exports = {
         return interaction.reply({ content: '❌ Invalid format. Please use formats like `5m`, `1h`, or `1d`.', ephemeral: true });
     }
 
-    await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+    try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
     const value = parseInt(match[1], 10);
     const unit = match[2];

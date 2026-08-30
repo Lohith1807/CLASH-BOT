@@ -188,7 +188,7 @@ module.exports = {
             return interaction.reply({ content: "❌ Clan not found.", ephemeral: true });
         }
 
-        await interaction.deferReply({ ephemeral: true });
+        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const badge = await fetchBadge(coc, clanTag);
 

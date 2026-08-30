@@ -114,7 +114,7 @@ module.exports = {
     }
     
     // Defer the interaction immediately to buy time (especially for checking all clans)
-    await interaction.deferReply().catch(() => {});
+    try { await interaction.deferReply().catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
     
     const clanArg = interaction.options.getString('clan');
     

@@ -76,7 +76,7 @@ module.exports = {
             });
         }
 
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const targetUser   = interaction.options.getUser('user');
         const ticketTypeKey = interaction.options.getString('type');

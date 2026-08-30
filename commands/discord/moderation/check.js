@@ -121,7 +121,7 @@ module.exports = {
                     filter: i => i.user.id === message.author.id && i.customId === `select_account_check_${message.author.id}`,
                     time: 60000,
                     componentType: ComponentType.StringSelect
-                });
+                }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
                 
                 input = response.values[0];
                 await response.update({ content: `✅ Account selected: **${input}**`, components: [] });

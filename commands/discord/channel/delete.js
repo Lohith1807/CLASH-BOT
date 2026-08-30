@@ -236,7 +236,7 @@ module.exports = {
             return interaction.showModal(modal);
         }
 
-        await interaction.deferReply({ ephemeral: true });
+        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             if (deleteAll) {
@@ -299,7 +299,7 @@ module.exports = {
             return interaction.reply({ content: '❌ Please enter a valid number of messages between 1 and 1000.', ephemeral: true });
         }
 
-        await interaction.deferReply({ ephemeral: true });
+        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             const targetUser = await client.users.fetch(userId).catch(() => null);

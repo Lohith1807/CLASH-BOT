@@ -358,53 +358,6 @@ async function sendWarNotification(client, coc, emojiUtils, clanTag, roleData, a
             warState[clanTag] = warUniqueId;
             fs.writeFileSync(STATE_PATH, JSON.stringify(warState, null, 2));
 
-            const filter = i => i.customId.startsWith('manwar_');
-            const collector = promptMsg.createMessageComponentCollector({ filter, time: 24 * 60 * 60 * 1000 });
-
-            collector.on('collect', async i => {
-                if (roleData.leaderRoleId && !i.member.roles.cache.has(roleData.leaderRoleId)) {
-                    return i.reply({ content: "❌ Only clan leaders can confirm this.", flags: MessageFlags.Ephemeral });
-                }
-                await i.deferUpdate();
-
-                let manualMatchType = "FWA Match";
-                let manualIsWin = false;
-
-                if (i.customId === 'manwar_win') {
-                    manualIsWin = true;
-                } else if (i.customId === 'manwar_lose') {
-                    manualIsWin = false;
-                } else if (i.customId === 'manwar_bl') {
-                    manualMatchType = "Blacklisted Match";
-                    manualIsWin = false;
-                } else if (i.customId === 'manwar_mis') {
-                    manualMatchType = "Mismatch";
-                    manualIsWin = false;
-                }
-
-                const finalFwaData = fwaData || {
-                    warInfo: { syncNumber: "N/A", warId: "N/A", opponentTag: opponentTagFromApi, opponentName: opponentName },
-                    pointsSummary: "N/A",
-                    tieBreakerNote: ""
-                };
-
-                await dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clanData, currentWar, manualMatchType, manualIsWin, finalFwaData, apiLogger);
-
-                const confirmedText = manualIsWin ? "Win" : (manualMatchType === "Blacklisted Match" ? "Blacklisted/Miss" : (manualMatchType === "Mismatch" ? "Mismatch" : "Lose"));
-                await i.editReply({
-                    content: `✅ War result manually confirmed as **${confirmedText}** by ${i.user}`,
-                    embeds: [],
-                    components: []
-                });
-                collector.stop();
-            });
-
-            collector.on('end', collected => {
-                if (collected.size === 0) {
-                    promptMsg.edit({ components: [] }).catch(() => { });
-                }
-            });
-
             return true;
 
         } catch (promptErr) {
@@ -424,7 +377,7 @@ module.exports = {
 
     async execute(interaction, context) {
         const { coc, emoji: emojiUtils, client } = context;
-        await interaction.deferReply({ flags: MessageFlags.Ephemeral });
+        try { await interaction.deferReply({ flags: MessageFlags.Ephemeral }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
@@ -522,5 +475,72 @@ module.exports = {
                 }
             } catch (error) { }
         }, 10 * 60 * 1000);
+
+        client.on('interactionCreate', async interaction => {
+            if (!interaction.isButton() || !interaction.customId.startsWith('manwar_')) return;
+            
+            try {
+                const description = interaction.message.embeds[0]?.description || "";
+                const tagMatch = description.match(/\`(#.*?)\`/);
+                if (!tagMatch) {
+                    return interaction.reply({ content: "❌ Could not determine the clan for this interaction.", flags: MessageFlags.Ephemeral });
+                }
+                const clanTag = tagMatch[1];
+
+                if (!fs.existsSync(CLAN_ROLES_PATH)) return interaction.reply({ content: "❌ Clan roles not found.", flags: MessageFlags.Ephemeral });
+                const clanRoles = JSON.parse(fs.readFileSync(CLAN_ROLES_PATH, "utf-8"));
+                const roleData = clanRoles[clanTag];
+                if (!roleData) return interaction.reply({ content: "❌ Clan roles not configured for this clan.", flags: MessageFlags.Ephemeral });
+
+                if (roleData.leaderRoleId && !interaction.member.roles.cache.has(roleData.leaderRoleId)) {
+                    return interaction.reply({ content: "❌ Only clan leaders can confirm this.", flags: MessageFlags.Ephemeral });
+                }
+
+                try { await interaction.deferUpdate(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+
+                let manualMatchType = "FWA Match";
+                let manualIsWin = false;
+
+                if (interaction.customId === 'manwar_win') {
+                    manualIsWin = true;
+                } else if (interaction.customId === 'manwar_lose') {
+                    manualIsWin = false;
+                } else if (interaction.customId === 'manwar_bl') {
+                    manualMatchType = "Blacklisted Match";
+                    manualIsWin = false;
+                } else if (interaction.customId === 'manwar_mis') {
+                    manualMatchType = "Mismatch";
+                    manualIsWin = false;
+                }
+
+                const clanData = await coc.getClan(clanTag).catch(() => null);
+                const currentWar = await coc.getCurrentWar(clanTag).catch(() => null);
+                
+                if (!clanData || !currentWar) {
+                     return interaction.editReply({ content: "❌ Could not fetch clan data or current war data.", components: [] }).catch(()=>{});
+                }
+
+                const opponentTagFromApi = currentWar?.opponent?.tag || "N/A";
+                const opponentName = currentWar?.opponent?.name || "Unknown";
+
+                const finalFwaData = {
+                    warInfo: { syncNumber: "N/A", warId: "N/A", opponentTag: opponentTagFromApi, opponentName: opponentName },
+                    pointsSummary: "N/A",
+                    tieBreakerNote: ""
+                };
+
+                await dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clanData, currentWar, manualMatchType, manualIsWin, finalFwaData, apiLogger);
+
+                const confirmedText = manualIsWin ? "Win" : (manualMatchType === "Blacklisted Match" ? "Blacklisted/Miss" : (manualMatchType === "Mismatch" ? "Mismatch" : "Lose"));
+                await interaction.editReply({
+                    content: `✅ War result manually confirmed as **${confirmedText}** by ${interaction.user}`,
+                    embeds: [],
+                    components: []
+                }).catch(()=>{});
+            } catch (err) {
+                console.error("Global manwar error:", err);
+                interaction.editReply({ content: "❌ An error occurred processing the result.", components: [] }).catch(()=>{});
+            }
+        });
     }
 };

@@ -12,7 +12,7 @@ module.exports = {
   async execute(interaction, context) {
     const { emoji: emojiUtils } = context;
 
-    await interaction.deferReply({ ephemeral: true });
+    try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
     try {
       const appEmojis = await interaction.client.application.emojis.fetch();

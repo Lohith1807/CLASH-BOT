@@ -124,7 +124,7 @@ module.exports = {
         const member = interaction.member;
 
         // Defer interaction to allow processing time
-        await interaction.deferReply({ ephemeral: true }).catch(() => {});
+        try { await interaction.deferReply({ ephemeral: true }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         // Build monitored clans list
         const clanRoles = dataManager.getClanRoles();

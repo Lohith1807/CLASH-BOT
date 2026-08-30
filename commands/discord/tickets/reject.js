@@ -40,7 +40,7 @@ module.exports = {
     }
 
     if (!interaction.deferred && !interaction.replied) {
-        await interaction.deferReply();
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
     }
 
     // 2. Detect the ticket owner automatically (using logic from ticketHandler.js)

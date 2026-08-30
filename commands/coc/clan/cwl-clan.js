@@ -193,7 +193,7 @@ module.exports = {
                 await interaction.showModal(modal);
 
             } else if (action === 'edit') {
-                await interaction.deferReply({ ephemeral: true });
+                try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
                 const data = loadData();
                 pendingSelections.delete(interaction.user.id);
                 pendingSearch.delete(interaction.user.id);
@@ -269,7 +269,7 @@ module.exports = {
 
             // ── DELETE ────────────────────────────────────────────────────────
             if (id === "cwl_clan_edit_delete") {
-                await interaction.deferUpdate();
+                try { await interaction.deferUpdate(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
                 const removed = [];
                 const notFound = [];
@@ -362,7 +362,7 @@ module.exports = {
                     });
                 }
 
-                await interaction.deferReply({ ephemeral: true });
+                try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
                 const data = loadData();
 
                 if (!data[clanTag]) {
@@ -402,7 +402,7 @@ module.exports = {
                     });
                 }
 
-                await interaction.deferReply({ ephemeral: true });
+                try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
                 const data = loadData();
 
                 if (data[clanTag]) {
