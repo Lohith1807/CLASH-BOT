@@ -80,7 +80,7 @@ async function generateCheckEmbed(tag, context, type) {
             .setTitle(`${player.name} ${player.tag}`)
             .setDescription(`${thEmoji} Please confirm this player is **BANNED** or **NOT BANNED** By checking CC`)
             .addFields(
-                { name: "Chocolate Clash", value: `[View FWA Link](https://fwa.chocolateclash.com/cc_n/member.php?tag=${tagWithoutHash})`, inline: true },
+                { name: "Chocolate Clash", value: `[View FWA Link](https://cc.fwafarm.com/cc_n/member.php?tag=${tagWithoutHash})`, inline: true },
                 { name: "Clash of Stats", value: `[View Stats](https://www.clashofstats.com/players/${tagWithoutHash})`, inline: true }
             )
             .setFooter({ 
@@ -216,7 +216,7 @@ async function handleTicketInteraction(interaction, context) {
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q4').setLabel('4.Clan Members in server or bringing?').setStyle(TextInputStyle.Short).setRequired(true)),
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q5').setLabel('5.Are You Okay with alliance rules?').setStyle(TextInputStyle.Short).setRequired(true))
             );
-        } else if (type === 'help-assistance') {
+        } else if (type === 'help-assistance' || type === 'cwl-assistance' || type === 'clan-assistance') {
             modal.addComponents(
                 new ActionRowBuilder().addComponents(new TextInputBuilder().setCustomId('q1').setLabel('How can we help?').setStyle(TextInputStyle.Paragraph).setRequired(true))
             );
@@ -293,7 +293,7 @@ async function handleTicketInteraction(interaction, context) {
                 { name: 'Members already in server?', value: q4 || 'N/A' },
                 { name: 'Okay with alliance rules?', value: q5 || 'N/A' }
             );
-        } else if (type === 'help-assistance') {
+        } else if (type === 'help-assistance' || type === 'cwl-assistance' || type === 'clan-assistance') {
             embed.addFields(
                 { name: 'Issue Description', value: q1 || 'N/A' }
             );
@@ -417,9 +417,10 @@ async function handleTicketInteraction(interaction, context) {
         
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
-        const hasWelExeRole = config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID);
+        const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
+        const hasCwlStaffRole = member.roles.cache.has('1448265928503726161');
 
-        if (!isStaff && !isAdmin && !hasWelExeRole) {
+        if (!isStaff && !isAdmin && !hasWelExeRole && !hasCwlStaffRole) {
             return interaction.reply({ content: '❌ Only Staff or Admins can use this button.', flags: [MessageFlags.Ephemeral] });
         }
 
@@ -506,9 +507,10 @@ async function handleTicketInteraction(interaction, context) {
         
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
-        const hasWelExeRole = config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID);
+        const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
+        const hasCwlStaffRole = member.roles.cache.has('1448265928503726161');
 
-        if (!isStaff && !isAdmin && !hasWelExeRole) {
+        if (!isStaff && !isAdmin && !hasWelExeRole && !hasCwlStaffRole) {
             return interaction.reply({ content: '❌ Only Staff or Admins can use this button.', flags: [MessageFlags.Ephemeral] });
         }
 
@@ -1075,22 +1077,15 @@ async function handleTicketInteraction(interaction, context) {
     if (customId === 'claim_ticket') {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        // Welcomer staff can claim any ticket type
         const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
-        const isHelpTicket = interaction.channel.name.startsWith('help-assistance');
+        // CWL staff can also claim any ticket
+        const hasCwlStaffRole = member.roles.cache.has('1448265928503726161');
 
-        let canClaim = false;
-        if (isStaff || isAdmin) {
-            canClaim = true;
-        } else if (hasWelExeRole && isHelpTicket) {
-            canClaim = true;
-        }
+        const canClaim = isStaff || isAdmin || hasWelExeRole || hasCwlStaffRole;
 
         if (!canClaim) {
-            if (hasWelExeRole && !isHelpTicket && !isStaff && !isAdmin) {
-                await interaction.reply({ content: '❌ You can only claim Help Assistance tickets.', flags: [MessageFlags.Ephemeral] });
-            } else {
-                await interaction.reply({ content: '❌ Only Staff or Admins can claim this ticket.', flags: [MessageFlags.Ephemeral] });
-            }
+            await interaction.reply({ content: '❌ Only Staff or Admins can claim this ticket.', flags: [MessageFlags.Ephemeral] });
             return true;
         }
 
@@ -1255,8 +1250,10 @@ async function handleTicketInteraction(interaction, context) {
     if (customId === 'approve_ticket' || customId === 'decline_ticket') {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
+        const hasCwlStaffRole = member.roles.cache.has('1448265928503726161');
 
-        if (!isStaff && !isAdmin) {
+        if (!isStaff && !isAdmin && !hasWelExeRole && !hasCwlStaffRole) {
             await interaction.reply({ content: '❌ Only Staff or Admins can use these buttons.', flags: [MessageFlags.Ephemeral] });
             return true;
         }
@@ -1374,8 +1371,56 @@ async function handleTicketInteraction(interaction, context) {
         'rep_apply': { type: 'Rep-Apply', embed: repApply, label: 'Rep Apply' },
         'staff_apply': { type: 'Staff-Apply', embed: staffApply, label: 'Staff Apply' },
         'alliance_apply': { type: 'Alliance-Join', embed: allianceJoin, label: 'Alliance apply' },
-        'help_assistance': { type: 'Help-Assistance', embed: helpAssistance, label: 'Help Assistance' }
+        'help_assistance': { type: 'Help-Assistance', embed: helpAssistance, label: 'Help Assistance' },
+        'help_general':    { type: 'Help-Assistance', embed: helpAssistance, label: 'General Support' },
+        'help_cwl':        { type: 'cwl-assistance',  embed: helpAssistance, label: 'CWL Assistance' },
+        'help_clan_change':{ type: 'clan-assistance', embed: helpAssistance, label: 'Clan Change' },
     };
+
+    // ── Help Assistance sub-menu — ephemeral in-channel ──────────────────────
+    if (customId === 'help_assistance') {
+        // Use emoji.js IDs directly (sync, no async fetch needed)
+        const cwlEmoji   = emojiUtils.getEmojiObject('cocfight');
+        const helpEmoji  = emojiUtils.getEmojiObject('question');
+        const clanEmoji  = emojiUtils.getEmojiObject('coc');
+
+        const menuEmbed = new EmbedBuilder()
+            .setTitle(`${getEmoji('question')} Help & Assistance`)
+            .setDescription(
+                `> Please select the type of support you need below.\n\n` +
+                `${getEmoji('cocfight')} **CWL** — For CWL-related queries and issues\n` +
+                `${getEmoji('question')} **General Support** — For general questions or server help\n` +
+                `${getEmoji('coc')} **Clan Change** — To request a clan transfer or change`
+            )
+            .setColor(0x5865F2)
+            .setFooter({ text: 'Blood Alliance Support', iconURL: guild.iconURL() })
+            .setTimestamp();
+
+        const menuRow = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId('help_cwl')
+                .setLabel('CWL')
+                .setEmoji({ id: cwlEmoji?.id, animated: cwlEmoji?.animated ?? false })
+                .setStyle(ButtonStyle.Danger),
+            new ButtonBuilder()
+                .setCustomId('help_general')
+                .setLabel('General Support')
+                .setEmoji({ id: helpEmoji?.id, animated: helpEmoji?.animated ?? false })
+                .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
+                .setCustomId('help_clan_change')
+                .setLabel('Clan Change')
+                .setEmoji({ id: clanEmoji?.id, animated: clanEmoji?.animated ?? false })
+                .setStyle(ButtonStyle.Secondary)
+        );
+
+        await interaction.reply({
+            embeds: [menuEmbed],
+            components: [menuRow],
+            flags: [MessageFlags.Ephemeral]
+        });
+        return true;
+    }
 
     if (customId === 'alliance_apply') {
         const modal = new ModalBuilder()
@@ -1550,8 +1595,10 @@ async function handleTicketInteraction(interaction, context) {
         ];
 
         if (config.STAFF_ROLE_IDS && Array.isArray(config.STAFF_ROLE_IDS)) {
-            config.STAFF_ROLE_IDS.forEach(roleId => {
+            config.STAFF_ROLE_IDS.forEach((roleId, index) => {
                 if (roleId && roleId.trim()) {
+                    // help_general: only server mod (0) + t-mod (1) — exec staff (2+) excluded
+                    if (customId === 'help_general' && index >= 2) return;
                     overwrites.push({
                         id: roleId.trim(),
                         allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
@@ -1560,11 +1607,48 @@ async function handleTicketInteraction(interaction, context) {
             });
         }
 
-        if (customId === 'help_assistance') {
+        if (customId === 'help_assistance' || customId === 'help_general' || customId === 'help_clan_change') {
             overwrites.push({
                 id: '1514535148119392377',
                 allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
             });
+        }
+
+        // CWL ticket — restrict to CWL staff role + server mod + admins only (no general staff)
+        if (customId === 'help_cwl') {
+            const CWL_STAFF_ROLE_ID = '1448265928503726161';
+            // Remove all general STAFF_ROLE_IDS overwrites that were added above, keep only the user overwrite
+            const userOverwrite = overwrites.find(o => o.id === user.id);
+            const everyoneOverwrite = overwrites.find(o => o.id === guild.id);
+            overwrites.length = 0;
+            if (everyoneOverwrite) overwrites.push(everyoneOverwrite);
+            if (userOverwrite) overwrites.push(userOverwrite);
+
+            // Add CWL staff role
+            overwrites.push({
+                id: CWL_STAFF_ROLE_ID,
+                allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+            });
+
+            // Add server mod role (STAFF_ROLE_IDS[0])
+            if (config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] && config.STAFF_ROLE_IDS[0].trim()) {
+                overwrites.push({
+                    id: config.STAFF_ROLE_IDS[0].trim(),
+                    allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                });
+            }
+
+            // Add admin roles
+            if (config.ADMIN_ROLE_IDS && Array.isArray(config.ADMIN_ROLE_IDS)) {
+                config.ADMIN_ROLE_IDS.forEach(roleId => {
+                    if (roleId && roleId.trim() && !overwrites.find(o => o.id === roleId.trim())) {
+                        overwrites.push({
+                            id: roleId.trim(),
+                            allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                        });
+                    }
+                });
+            }
         }
 
         if (recruitmentTag) {
@@ -1608,13 +1692,32 @@ async function handleTicketInteraction(interaction, context) {
             }
         }
 
+        // Determine channel name — CWL and clan-change have custom prefixes
+        let channelName;
+        if (customId === 'help_cwl') {
+            channelName = `cwl-assistance-${user.username}`;
+        } else if (customId === 'help_clan_change') {
+            channelName = `clan-assistance-${user.username}`;
+        } else {
+            channelName = `${ticketType}-${user.username}`;
+        }
+
         const channel = await guild.channels.create({
-            name: `${ticketType}-${user.username}`,
+            name: channelName,
             type: ChannelType.GuildText,
             topic: user.id,
             parent: CATEGORY_ID,
             permissionOverwrites: overwrites,
         });
+
+        // Override embed title for sub-types of help assistance
+        if (customId === 'help_cwl') {
+            welcomeEmbed.setTitle('⚔️ CWL Assistance');
+        } else if (customId === 'help_clan_change') {
+            welcomeEmbed.setTitle('🏯 Clan Change Request');
+        } else if (customId === 'help_general') {
+            welcomeEmbed.setTitle('💬 General Support');
+        }
 
         welcomeEmbed
             .setThumbnail(user.displayAvatarURL({ dynamic: true }))
@@ -1663,7 +1766,8 @@ async function handleTicketInteraction(interaction, context) {
         const mentionRoles = [];
         mentionRoles.push(user.toString());
         const execStaffRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[2] ? config.STAFF_ROLE_IDS[2].trim() : null;
-        if (execStaffRoleId) {
+        // help_general: exec staff excluded — only server mod + welcomer staff handle these
+        if (execStaffRoleId && customId !== 'help_general') {
             mentionRoles.push(`<@&${execStaffRoleId}>`);
         }
 
@@ -1698,7 +1802,9 @@ async function handleTicketInteraction(interaction, context) {
         const serverModRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? config.STAFF_ROLE_IDS[0].trim() : null;
         let ghostPingRoles = [];
         if (serverModRoleId) ghostPingRoles.push(`<@&${serverModRoleId}>`);
-        if (customId === 'help_assistance') ghostPingRoles.push(`<@&1514535148119392377>`);
+        if (customId === 'help_assistance' || customId === 'help_general' || customId === 'help_clan_change') ghostPingRoles.push(`<@&1514535148119392377>`);
+        // CWL: ghost-ping CWL staff role + server mod (server mod already added above)
+        if (customId === 'help_cwl') ghostPingRoles.push(`<@&1448265928503726161>`);
         
         const ghostPing = ghostPingRoles.length > 0 ? ` ||${ghostPingRoles.join(' ')}||` : "";
 
@@ -1718,7 +1824,18 @@ async function handleTicketInteraction(interaction, context) {
     }
 };
 
-module.exports = handleTicketInteraction;
+// Safe wrapper to silently handle expired/acknowledged interaction errors
+async function safeHandleTicketInteraction(interaction, context) {
+    try {
+        return await handleTicketInteraction(interaction, context);
+    } catch (error) {
+        // Silently ignore expired or already-acknowledged interactions
+        if (error.code === 10062 || error.code === 40060) return false;
+        throw error;
+    }
+}
+
+module.exports = safeHandleTicketInteraction;
 
 module.exports.checkTimers = async function (client, config, context) {
     const dataManager = context.data;

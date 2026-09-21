@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, PermissionFlagsBits , MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -31,7 +31,7 @@ module.exports = {
                 .setTitle("❌ Access Denied")
                 .setDescription("Only staff and admins can use this command.")
                 .setColor(0xE74C3C);
-            return interaction.reply({ embeds: [errorEmbed], ephemeral: true });
+            return interaction.reply({ embeds: [errorEmbed], flags: [MessageFlags.Ephemeral] });
         }
 
         const action = interaction.options.getString('action');
@@ -58,7 +58,7 @@ module.exports = {
         const response = await interaction.reply({ 
             embeds: [embed], 
             components: [row], 
-            ephemeral: true // Only the user who ran the command can see this
+            flags: [MessageFlags.Ephemeral] // Only the user who ran the command can see this
         });
 
         // Set up a collector to listen for the button click

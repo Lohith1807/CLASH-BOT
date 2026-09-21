@@ -8,7 +8,7 @@ const {
     UserSelectMenuBuilder,
     ComponentType,
     PermissionFlagsBits 
-} = require("discord.js");
+, MessageFlags } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -53,14 +53,14 @@ module.exports = {
         const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
+            return interaction.reply({ content: "❌ You do not have permission to use this command.", flags: [MessageFlags.Ephemeral] });
         }
         const clanTag = interaction.options.getString("clan");
         const clanRoles = dataManager.getClanRoles();
         const clanData = clanRoles[clanTag];
 
         if (!clanData) {
-            return interaction.reply({ content: "❌ This clan is not registered.", ephemeral: true });
+            return interaction.reply({ content: "❌ This clan is not registered.", flags: [MessageFlags.Ephemeral] });
         }
 
         const formatList = (list) => (list && list.length > 0) ? list.join("\n") : "*None*";
@@ -92,7 +92,7 @@ module.exports = {
         const response = await interaction.reply({
             embeds: [buildMainEmbed()],
             components: [mainRow],
-            ephemeral: true
+            flags: [MessageFlags.Ephemeral]
         });
 
         const collector = response.createMessageComponentCollector({
@@ -132,7 +132,7 @@ module.exports = {
             } else if (i.customId === "add_coleaders") {
                 const coLeaders = currentData.coLeaders || [];
                 if (coLeaders.length >= 4) {
-                    return i.reply({ content: "❌ This clan already has the maximum (4) Co-Leaders.", ephemeral: true });
+                    return i.reply({ content: "❌ This clan already has the maximum (4) Co-Leaders.", flags: [MessageFlags.Ephemeral] });
                 }
 
                 const userSelectRow = new ActionRowBuilder().addComponents(

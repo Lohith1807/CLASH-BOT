@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const { syncUser } = require('../../../utils/autoRoleManager.js');
 
 /**
@@ -125,7 +125,7 @@ async function sendChunkedList(interaction, title, list) {
             if (currentMessage.endsWith(", ")) {
                 currentMessage = currentMessage.slice(0, -2);
             }
-            await interaction.followUp({ content: currentMessage, ephemeral: true }).catch(() => {});
+            await interaction.followUp({ content: currentMessage, flags: [MessageFlags.Ephemeral] }).catch(() => {});
             currentMessage = "";
         }
         currentMessage += itemStr;
@@ -134,7 +134,7 @@ async function sendChunkedList(interaction, title, list) {
         if (currentMessage.endsWith(", ")) {
             currentMessage = currentMessage.slice(0, -2);
         }
-        await interaction.followUp({ content: currentMessage, ephemeral: true }).catch(() => {});
+        await interaction.followUp({ content: currentMessage, flags: [MessageFlags.Ephemeral] }).catch(() => {});
     }
 }
 
@@ -161,7 +161,7 @@ module.exports = {
         const member = interaction.member;
 
         // Defer interaction to allow processing time
-        try { await interaction.deferReply({ ephemeral: true }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         // Build monitored clans list
         const clanRoles = dataManager.getClanRoles();
@@ -175,7 +175,7 @@ module.exports = {
         const LOG_CHANNEL_ID = config.AUTOROLE_LOG_CHANNEL_ID || process.env.AUTOROLE_LOG_CHANNEL_ID;
         const logChannel = await client.channels.fetch(LOG_CHANNEL_ID).catch(() => null);
 
-        // Fetch guild members to populate cache
+        // Fetch guild members to populate cache (silently fall back to cache if rate limited)
         await interaction.guild.members.fetch().catch(() => {});
         const botMember = await interaction.guild.members.fetchMe().catch(() => null);
 

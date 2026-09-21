@@ -251,6 +251,9 @@ client.on("messageCreate", async (message) => {
     } else if (commandName === "ww") {
       const command = require("./commands/coc/war/ww.js");
       await command.execute(message, args, context);
+    } else if (commandName === "rww") {
+      const command = require("./commands/coc/war/rww.js");
+      await command.execute(message, args, context);
     } else if (commandName === "crinfo") {
       const command = require('./commands/discord/roles/clanroleinfo.js');
       await command.execute(message, args, context);
@@ -314,6 +317,15 @@ client.on("messageCreate", async (message) => {
         message.channel.send(`✅ Changed nickname for **${member.user.tag}**`);
       } catch (err) {
         message.channel.send(`❌ Error: \`${err.message}\``);
+      }
+    } else {
+      const clanRolesData = tools.data.getClanRoles();
+      const matchedClanTag = Object.keys(clanRolesData).find(tag => 
+        clanRolesData[tag].nickName && clanRolesData[tag].nickName.toLowerCase() === commandName
+      );
+      if (matchedClanTag) {
+        const command = require("./commands/discord/roles/forceclan.js");
+        await command.execute(message, args, context, clanRolesData[matchedClanTag], matchedClanTag);
       }
     }
 
@@ -406,7 +418,7 @@ for (const file of commandFiles) {
 client.on("interactionCreate", async (interaction) => {
   try {
     if (interaction.isButton() && interaction.customId.startsWith('view_welcome_details_')) {
-      try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+      try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
       const userId = interaction.customId.split('_')[3];
       const targetMember = await interaction.guild.members.fetch(userId).catch(() => null);
       const user = targetMember ? targetMember.user : await client.users.fetch(userId).catch(() => null);
@@ -440,6 +452,7 @@ client.on("interactionCreate", async (interaction) => {
       await handleInteraction(interaction, tools);
     }
   } catch (error) {
+    if (error.code === 10062 || error.code === 40060) return;
     console.error("❌ Interaction Error:", error);
   }
 });

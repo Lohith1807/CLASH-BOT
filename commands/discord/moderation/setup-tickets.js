@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, AttachmentBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, AttachmentBuilder , MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -17,11 +17,11 @@ module.exports = {
         if (!isAuthorized) {
             return interaction.reply({
                 content: '❌ You do not have the required permissions to use this command.',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const getEmojiData = (name) => {
             const obj = emoji.getEmojiObject(name);

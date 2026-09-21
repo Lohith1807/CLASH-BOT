@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ComponentType } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ComponentType , MessageFlags } = require('discord.js');
 
 function formatRole(role) {
     if (!role) return "None";
@@ -120,7 +120,7 @@ module.exports = {
         const userOption = interaction.options.getUser('user');
 
         if (!tagOption && !userOption) {
-            return interaction.reply({ content: "❌ Please provide either a `tag` or a `user`.", ephemeral: true });
+            return interaction.reply({ content: "❌ Please provide either a `tag` or a `user`.", flags: [MessageFlags.Ephemeral] });
         }
 
         try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
@@ -187,7 +187,7 @@ module.exports = {
 
             collector.on('collect', async (i) => {
                 if (i.user.id !== interaction.user.id) {
-                    return i.reply({ content: "❌ You cannot use this menu.", ephemeral: true });
+                    return i.reply({ content: "❌ You cannot use this menu.", flags: [MessageFlags.Ephemeral] });
                 }
 
                 try {
@@ -213,7 +213,7 @@ module.exports = {
                     });
                 } catch (err) {
                     console.error("Selection error:", err);
-                    await i.followUp({ content: "❌ Error switching accounts.", ephemeral: true }).catch(() => {});
+                    await i.followUp({ content: "❌ Error switching accounts.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
                 }
             });
 

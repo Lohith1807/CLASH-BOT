@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -24,7 +24,7 @@ module.exports = {
         const { getEmoji, getEmojiObject } = emojiUtils;
 
         // Defer to avoid timeout — we'll reply to the interaction privately
-        try { await interaction.deferReply({ ephemeral: true }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             const clanRoles = getClanRoles();

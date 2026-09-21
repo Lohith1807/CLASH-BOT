@@ -20,7 +20,7 @@ module.exports = {
     const CATEGORY_ID = config.TICKET_CATEGORY_ID || config.ADMIN_CATEGORY_ID;
 
     if (!channel.parentId || channel.parentId !== CATEGORY_ID) {
-        return interaction.reply({ content: '❌ This command can only be used inside a ticket channel.', ephemeral: true });
+        return interaction.reply({ content: '❌ This command can only be used inside a ticket channel.', flags: [MessageFlags.Ephemeral] });
     }
 
     const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
@@ -29,14 +29,14 @@ module.exports = {
     const isWelExe = WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID);
 
     if (!isStaff && !isAdmin && !isWelExe) {
-        return interaction.reply({ content: '❌ Only Staff or Admins can set timers.', ephemeral: true });
+        return interaction.reply({ content: '❌ Only Staff or Admins can set timers.', flags: [MessageFlags.Ephemeral] });
     }
 
     const durationStr = interaction.options.getString('duration').trim().toLowerCase();
     const match = durationStr.match(/^(\d+)\s*(m|min|h|hr|d|day)s?$/);
 
     if (!match) {
-        return interaction.reply({ content: '❌ Invalid format. Please use formats like `5m`, `1h`, or `1d`.', ephemeral: true });
+        return interaction.reply({ content: '❌ Invalid format. Please use formats like `5m`, `1h`, or `1d`.', flags: [MessageFlags.Ephemeral] });
     }
 
     try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }

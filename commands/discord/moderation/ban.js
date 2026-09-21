@@ -5,7 +5,7 @@ const {
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle
-} = require('discord.js');
+, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -42,7 +42,7 @@ module.exports = {
         const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         const target = interaction.options.getMember('target');
@@ -51,15 +51,15 @@ module.exports = {
         const deleteDays = interaction.options.getInteger('delete_days') ?? 0;
 
         if (!targetUser) {
-            return interaction.reply({ content: '❌ Could not find that user.', ephemeral: true });
+            return interaction.reply({ content: '❌ Could not find that user.', flags: [MessageFlags.Ephemeral] });
         }
 
         if (target && !target.bannable) {
-            return interaction.reply({ content: '❌ I cannot ban that user. They may have higher permissions than me.', ephemeral: true });
+            return interaction.reply({ content: '❌ I cannot ban that user. They may have higher permissions than me.', flags: [MessageFlags.Ephemeral] });
         }
 
         if (targetUser.id === interaction.user.id) {
-            return interaction.reply({ content: '❌ You cannot ban yourself.', ephemeral: true });
+            return interaction.reply({ content: '❌ You cannot ban yourself.', flags: [MessageFlags.Ephemeral] });
         }
 
         const confirmEmbed = new EmbedBuilder()
@@ -86,7 +86,7 @@ module.exports = {
                 .setStyle(ButtonStyle.Secondary)
         );
 
-        await interaction.reply({ embeds: [confirmEmbed], components: [row], ephemeral: true });
+        await interaction.reply({ embeds: [confirmEmbed], components: [row], flags: [MessageFlags.Ephemeral] });
 
         const filter = i => i.user.id === interaction.user.id && i.customId.endsWith(interaction.id);
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000, max: 1 });

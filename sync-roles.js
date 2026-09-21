@@ -29,6 +29,25 @@ client.once("ready", async () => {
     const leaderIconPath = path.join(__dirname, "assets", "leader.png");
     const memberIconPath = path.join(__dirname, "assets", "member.png");
 
+    const canAddRoleIcon = Boolean(guild.features && guild.features.includes("ROLE_ICONS"));
+
+    const editRoleSafely = async (role, options) => {
+        const editOptions = { ...options };
+        if (!canAddRoleIcon && editOptions.icon) {
+            delete editOptions.icon;
+        }
+        try {
+            return await role.edit(editOptions);
+        } catch (err) {
+            if (editOptions.icon) {
+                console.warn(`Failed to set icon on role ${role.id}, retrying without icon: ${err.message}`);
+                delete editOptions.icon;
+                return await role.edit(editOptions);
+            }
+            throw err;
+        }
+    };
+
     let updatedCount = 0;
 
     for (const [clanTag, data] of Object.entries(clanroles)) {
@@ -39,13 +58,13 @@ client.once("ready", async () => {
                 const leaderRole = await guild.roles.fetch(data.leaderRoleId).catch(() => null);
                 if (leaderRole) {
                     let editOptions = {
-                        color: 0xfd0303,
+                        colors: 0xfd0303,
                         hoist: true
                     };
-                    if (fs.existsSync(leaderIconPath)) {
+                    if (canAddRoleIcon && fs.existsSync(leaderIconPath)) {
                         editOptions.icon = leaderIconPath;
                     }
-                    await leaderRole.edit(editOptions);
+                    await editRoleSafely(leaderRole, editOptions);
                     console.log(` ✅ Updated Leader Role for ${clanTag}`);
                 }
             } catch (err) {
@@ -58,13 +77,13 @@ client.once("ready", async () => {
                 const memberRole = await guild.roles.fetch(data.roleId).catch(() => null);
                 if (memberRole) {
                     let editOptions = {
-                        color: 0xe99898,
+                        colors: 0xe99898,
                         hoist: true
                     };
-                    if (fs.existsSync(memberIconPath)) {
+                    if (canAddRoleIcon && fs.existsSync(memberIconPath)) {
                         editOptions.icon = memberIconPath;
                     }
-                    await memberRole.edit(editOptions);
+                    await editRoleSafely(memberRole, editOptions);
                     console.log(` ✅ Updated Member Role for ${clanTag}`);
                 }
             } catch (err) {

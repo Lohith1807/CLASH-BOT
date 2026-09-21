@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
     PermissionFlagsBits
-} = require('discord.js');
+, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -32,7 +32,7 @@ module.exports = {
         const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         const userId = interaction.options.getString('userid').trim();
@@ -41,11 +41,11 @@ module.exports = {
         if (!/^\d{17,20}$/.test(userId)) {
             return interaction.reply({
                 content: '❌ Invalid User ID. Please provide a valid Discord User ID (17–20 digits).',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             const banEntry = await interaction.guild.bans.fetch(userId).catch(() => null);

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -25,7 +25,7 @@ module.exports = {
         if (!isStaff) {
             return interaction.reply({
                 content: '❌ You do not have the required permissions to add members or roles to tickets.',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 
@@ -33,7 +33,7 @@ module.exports = {
         if (!target) {
             return interaction.reply({
                 content: '❌ Please select a **user** or a **role**.',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 
@@ -41,7 +41,7 @@ module.exports = {
         if (channel.parentId !== CATEGORY_ID) {
             return interaction.reply({
                 content: '❌ This command can only be used inside a ticket channel.',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 

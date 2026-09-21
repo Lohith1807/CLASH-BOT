@@ -6,7 +6,7 @@ const {
     ButtonStyle,
     EmbedBuilder,
     UserSelectMenuBuilder
-} = require('discord.js');
+, MessageFlags } = require('discord.js');
 const { getEmoji } = require('../../../utils/emoji.js');
 
 const POSITIONS = [
@@ -63,7 +63,7 @@ module.exports = {
             if (!canManage) {
                 return interaction.reply({
                     content: `${getEmoji('tickred')} You do not have permission to manage trainee staff. (Requires Admin or Server Moderator role)`,
-                    ephemeral: true
+                    flags: [MessageFlags.Ephemeral]
                 });
             }
             if (action === 'add') await handleAdd(interaction, context);
@@ -72,7 +72,7 @@ module.exports = {
             if (!canList) {
                 return interaction.reply({
                     content: `${getEmoji('tickred')} You do not have permission to view the trainee list.`,
-                    ephemeral: true
+                    flags: [MessageFlags.Ephemeral]
                 });
             }
             await handleList(interaction, context);
@@ -95,7 +95,7 @@ async function handleAdd(interaction, context) {
     await interaction.reply({
         content: `${getEmoji('bluedot')} **Step 1/3:** Select the Trainer to train the new staff member.`,
         components: [row],
-        ephemeral: true
+        flags: [MessageFlags.Ephemeral]
     });
 
     const clientRef = interaction.client;
@@ -280,7 +280,7 @@ async function handleUpdateRemove(interaction, context) {
     const trainersWithTrainees = Object.keys(traineeData).filter(trainerId => traineeData[trainerId] && traineeData[trainerId].length > 0);
 
     if (trainersWithTrainees.length === 0) {
-        return interaction.reply({ content: `${getEmoji('tickred')} No trainee staff members have been added yet.`, ephemeral: true });
+        return interaction.reply({ content: `${getEmoji('tickred')} No trainee staff members have been added yet.`, flags: [MessageFlags.Ephemeral] });
     }
 
     const clientRef = interaction.client;
@@ -308,7 +308,7 @@ async function handleUpdateRemove(interaction, context) {
     await interaction.reply({
         content: `${getEmoji('bluedot')} Select the **Trainer** to manage trainees.`,
         components: [row],
-        ephemeral: true
+        flags: [MessageFlags.Ephemeral]
     });
 
     const handleTrainerSelect = async (i) => {
@@ -675,7 +675,7 @@ async function handleList(interaction, context) {
     const traineeData = dataManager.getStaffTrainees();
 
     try {
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply();
     } catch (e) {
         return;
     }

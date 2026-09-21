@@ -112,7 +112,10 @@ const emojis = {
   replace: "1535290749355167774",
   cv: "1541739904143200256",
   c2w: "1541739909981675530",
-  th10: "1542203306242478211"
+  th10: "1542203306242478211",
+  white_right: "1543655440733184102",
+  blue_right: "1543655458181611560",
+  yellow_right: "1543655487290081380"
 };
 // Function to get animated emoji (with <a:>), else static emoji (<:>)
 const animatedEmojis = new Set([

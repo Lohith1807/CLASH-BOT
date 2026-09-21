@@ -3,7 +3,7 @@ const {
     EmbedBuilder,
     PermissionFlagsBits,
     ChannelType
-} = require('discord.js');
+, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -34,7 +34,7 @@ module.exports = {
         const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         const channel = interaction.options.getChannel('channel') || interaction.channel;
@@ -44,7 +44,14 @@ module.exports = {
         const botMember = await interaction.guild.members.fetchMe();
         const botPerms = channel.permissionsFor(botMember);
         if (!botPerms.has(PermissionFlagsBits.ManageChannels)) {
-            return interaction.reply({ content: `❌ I don't have **Manage Channel** permission in ${channel}.`, ephemeral: true });
+            return interaction.reply({ content: `❌ I don't have **Manage Channel** permission in ${channel}.`, flags: [MessageFlags.Ephemeral] });
+        }
+
+        try {
+            await interaction.deferReply();
+        } catch (err) {
+            if (err.code === 10062) return;
+            throw err;
         }
 
         try {
@@ -67,7 +74,7 @@ module.exports = {
                 )
                 .setTimestamp();
 
-            await interaction.reply({ embeds: [unlockEmbed] });
+            await interaction.editReply({ embeds: [unlockEmbed] });
 
             if (channel.id !== interaction.channel.id) {
                 await channel.send({
@@ -85,7 +92,12 @@ module.exports = {
                 if (logChannel) await logChannel.send({ embeds: [unlockEmbed] }).catch(() => null);
             }
         } catch (err) {
-            await interaction.reply({ content: `❌ Failed to unlock channel: ${err.message}`, ephemeral: true });
+            if (err.code === 10062) return;
+            if (interaction.deferred || interaction.replied) {
+                await interaction.editReply({ content: `❌ Failed to unlock channel: ${err.message}` }).catch(() => null);
+            } else {
+                await interaction.reply({ content: `❌ Failed to unlock channel: ${err.message}`, flags: [MessageFlags.Ephemeral] }).catch(() => null);
+            }
         }
     }
 };

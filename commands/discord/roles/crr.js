@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits , MessageFlags } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -41,7 +41,7 @@ module.exports = {
             const ALLOWED_ROLES = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
 
             if (!interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) {
-                return interaction.reply({ content: "❌ You do not have permission (Staff/Admin) to use this command.", ephemeral: true });
+                return interaction.reply({ content: "❌ You do not have permission (Staff/Admin) to use this command.", flags: [MessageFlags.Ephemeral] });
             }
 
             var clanTag = interaction.options.getString("clan").toUpperCase();
@@ -58,7 +58,7 @@ module.exports = {
                             .setColor(0xe74c3c)
                             .setTimestamp()
                     ],
-                    ephemeral: true
+                    flags: [MessageFlags.Ephemeral]
                 });
             }
 
@@ -88,19 +88,27 @@ module.exports = {
             const response = await interaction.reply({
                 embeds: [embed],
                 components: [row],
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
 
             const filter = i => i.user.id === interaction.user.id;
             try {
-                const confirmation = await response.awaitMessageComponent({ filter, time: 30000 }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
+                const confirmation = await response.awaitMessageComponent({ filter, time: 30000 }).catch(err => { 
+                    if (err.code === 'InteractionCollectorError' || err.name === 'Error [InteractionCollectorError]') return null; 
+                    throw err; 
+                });
+
+                if (!confirmation) {
+                    await interaction.editReply({ content: "⌛ Confirmation timed out. No changes made.", embeds: [], components: [] }).catch(() => {});
+                    return;
+                }
 
                 if (confirmation.customId === "confirm_revoke") {
                     clanroles = dataManager.getClanRoles();
                     if (clanroles[clanTag]) {
                         var entryData = clanroles[clanTag];
                         
-                        await confirmation.deferUpdate();
+                        await confirmation.deferUpdate().catch(() => {});
 
                         const guild = interaction.guild;
                         const roleId = entryData.roleId;
@@ -155,9 +163,9 @@ module.exports = {
                                     .setTimestamp()
                             ],
                             components: []
-                        });
+                        }).catch(() => {});
                     } else {
-                        await confirmation.update({ content: "❌ Clan already removed.", embeds: [], components: [] });
+                        await confirmation.update({ content: "❌ Clan already removed.", embeds: [], components: [] }).catch(() => {});
                     }
                 } else if (confirmation.customId === "cancel_revoke") {
                     await confirmation.update({
@@ -169,19 +177,19 @@ module.exports = {
                                 .setTimestamp()
                         ],
                         components: []
-                    });
+                    }).catch(() => {});
                 }
             } catch (e) {
-                await interaction.editReply({ content: "⌛ Confirmation timed out. No changes made.", embeds: [], components: [] });
+                // Catch internal block errors silently if they are unhandled above
             }
 
         } catch (error) {
             console.error("❌ Error in clanrevoke command:", error);
             try {
                 if (interaction.replied || interaction.deferred) {
-                    await interaction.followUp({ content: "❌ An error occurred.", ephemeral: true });
+                    await interaction.followUp({ content: "❌ An error occurred.", flags: [MessageFlags.Ephemeral] });
                 } else {
-                    await interaction.reply({ content: "❌ An error occurred.", ephemeral: true });
+                    await interaction.reply({ content: "❌ An error occurred.", flags: [MessageFlags.Ephemeral] });
                 }
             } catch (e) {}
         }

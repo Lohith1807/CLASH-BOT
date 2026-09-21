@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder , MessageFlags } = require('discord.js');
 
 function parseDMY(dateStr) {
     const parts = dateStr.split('/');
@@ -196,11 +196,11 @@ module.exports = {
         const isAuthorized = ALLOWED_ROLES.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAuthorized) {
-            return interaction.reply({ content: '❌ You cannot use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You cannot use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {
-            return interaction.reply({ content: '❌ You need the **Manage Messages** permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You need the **Manage Messages** permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         const amount = options.getInteger('amount');
@@ -212,7 +212,7 @@ module.exports = {
         if (!amount && !dateStr && !onDateStr && !targetUser && !deleteAll) {
             return interaction.reply({
                 content: '❌ Please provide at least one option (amount, date, on_date, user, or all).',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 
@@ -236,7 +236,7 @@ module.exports = {
             return interaction.showModal(modal);
         }
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             if (deleteAll) {
@@ -285,21 +285,21 @@ module.exports = {
         const isAuthorized = ALLOWED_ROLES.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAuthorized) {
-            return interaction.reply({ content: '❌ You cannot use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You cannot use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         if (!member.permissions.has(PermissionFlagsBits.ManageMessages)) {
-            return interaction.reply({ content: '❌ You need the **Manage Messages** permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You need the **Manage Messages** permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         const amountStr = interaction.fields.getTextInputValue('delete_amount_input');
         const amount = parseInt(amountStr.trim(), 10);
 
         if (isNaN(amount) || amount < 1 || amount > 1000) {
-            return interaction.reply({ content: '❌ Please enter a valid number of messages between 1 and 1000.', ephemeral: true });
+            return interaction.reply({ content: '❌ Please enter a valid number of messages between 1 and 1000.', flags: [MessageFlags.Ephemeral] });
         }
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
             const targetUser = await client.users.fetch(userId).catch(() => null);

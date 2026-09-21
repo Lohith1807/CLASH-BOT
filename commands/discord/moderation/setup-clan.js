@@ -6,7 +6,7 @@ const {
     ButtonStyle,
     ComponentType,
     PermissionFlagsBits,
-} = require("discord.js");
+    MessageFlags } = require("discord.js");
 const { getEmoji } = require("../../../utils/emoji.js");
 
 // ─────────────────────────────────────────────
@@ -18,16 +18,23 @@ const SETTING_LABELS = {
     autorole: "Auto Role Removal",
     tracker:  "Join / Leave Tracker",
     welcome:  "Welcome Messages",
+    status:   "Clan Status",
 };
 
 const SETTING_FIELDS = {
     autorole: "autoRole",
     tracker:  "joinLeaveTracker",
     welcome:  "welcomeMessage",
+    status:   "clanStatus",
 };
 
 function statusTag(val) {
     return val ? `${getEmoji("greendot")} **Enabled**` : `${getEmoji("reddot")} **Disabled**`;
+}
+
+function clanStatusTag(val) {
+    const isOfficial = (val || "official") === "official";
+    return isOfficial ? `${getEmoji("greendot")} **Official**` : `${getEmoji("reddot")} **Unofficial**`;
 }
 
 /** Build the main panel embed for a clan */
@@ -60,6 +67,11 @@ function buildPanelEmbed(clanTag, info, clanBadge) {
                 name:   `👋 Welcome Messages`,
                 value:  statusTag(info.welcomeMessage),
                 inline: true,
+            },
+            {
+                name:   `🏛️ Clan Status`,
+                value:  clanStatusTag(info.clanStatus),
+                inline: true,
             }
         )
         .setFooter({ text: "Click a button below to toggle a setting" })
@@ -83,12 +95,28 @@ function buildButtonRow(clanTag) {
             .setCustomId(`setup_clan:welcome:${clanTag}`)
             .setLabel("Welcome Messages")
             .setStyle(ButtonStyle.Secondary),
+
+        new ButtonBuilder()
+            .setCustomId(`setup_clan:status:${clanTag}`)
+            .setLabel("Clan Status")
+            .setStyle(ButtonStyle.Secondary),
     );
 }
 
 /** Confirm embed shown in a private follow-up */
-function buildConfirmEmbed(settingLabel, currentVal) {
+function buildConfirmEmbed(settingKey, settingLabel, currentVal) {
     const parrow = getEmoji("parrow");
+    if (settingKey === "status") {
+        const curStatus = currentVal || "official";
+        const newStatus = curStatus === "official" ? "unofficial" : "official";
+        return new EmbedBuilder()
+            .setColor(0xF39C12)
+            .setTitle(`${parrow} Confirm Change`)
+            .setDescription(
+                `You are about to change **${settingLabel}** from ${clanStatusTag(curStatus)} to ${clanStatusTag(newStatus)}.\n\n` +
+                `Are you sure you want to make this change?`
+            );
+    }
     const action = currentVal ? "disable" : "enable";
     return new EmbedBuilder()
         .setColor(0xF39C12)
@@ -176,7 +204,7 @@ module.exports = {
         if (!isAdmin && !hasAllowedRole) {
             return interaction.reply({
                 content: "❌ You do not have permission to use this command.",
-                ephemeral: true,
+                flags: [MessageFlags.Ephemeral],
             });
         }
 
@@ -185,10 +213,10 @@ module.exports = {
         const clanInfo  = clanRoles[clanTag];
 
         if (!clanInfo) {
-            return interaction.reply({ content: "❌ Clan not found.", ephemeral: true });
+            return interaction.reply({ content: "❌ Clan not found.", flags: [MessageFlags.Ephemeral] });
         }
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const badge = await fetchBadge(coc, clanTag);
 
@@ -207,22 +235,22 @@ module.exports = {
 
         collector.on("collect", async (btn) => {
             if (btn.user.id !== interaction.user.id) {
-                return btn.reply({ content: "❌ This panel is not for you.", ephemeral: true });
+                return btn.reply({ content: "❌ This panel is not for you.", flags: [MessageFlags.Ephemeral] });
             }
 
             const [, settingKey, tag] = btn.customId.split(":");
 
             const freshRoles   = dataManager.getClanRoles();
             const freshInfo    = freshRoles[tag];
-            const currentVal   = !!freshInfo[SETTING_FIELDS[settingKey]];
+            const currentVal   = settingKey === "status" ? (freshInfo.clanStatus || "official") : !!freshInfo[SETTING_FIELDS[settingKey]];
             const settingLabel = SETTING_LABELS[settingKey];
-            const confirmEmbed = buildConfirmEmbed(settingLabel, currentVal);
+            const confirmEmbed = buildConfirmEmbed(settingKey, settingLabel, currentVal);
             const confirmRow   = buildConfirmRow(settingKey, tag);
 
             await btn.reply({
                 embeds:     [confirmEmbed],
                 components: [confirmRow],
-                ephemeral:  true,
+                flags: [MessageFlags.Ephemeral],
             });
             const confirmMsg = await btn.fetchReply();
 
@@ -247,22 +275,36 @@ module.exports = {
                 }
 
                 // Apply toggle
-                const roles      = dataManager.getClanRoles();
-                const field      = SETTING_FIELDS[key];
-                roles[clanTagInner][field] = !roles[clanTagInner][field];
-                dataManager.saveClanRoles(roles);
+                const roles = dataManager.getClanRoles();
+                let confirmColor;
+                let confirmDescription;
 
-                const newVal   = roles[clanTagInner][field];
+                if (key === "status") {
+                    const curStatus = roles[clanTagInner].clanStatus || "official";
+                    const newStatus = curStatus === "official" ? "unofficial" : "official";
+                    roles[clanTagInner].clanStatus = newStatus;
+                    dataManager.saveClanRoles(roles);
+
+                    confirmColor = (newStatus === "official") ? 0x2ECC71 : 0xE74C3C;
+                    confirmDescription = `${getEmoji("tickbox")} **Clan Status** is now ${clanStatusTag(newStatus)} for **${roles[clanTagInner].nickName || clanTagInner}**.`;
+                } else {
+                    const field = SETTING_FIELDS[key];
+                    roles[clanTagInner][field] = !roles[clanTagInner][field];
+                    dataManager.saveClanRoles(roles);
+
+                    const newVal = roles[clanTagInner][field];
+                    confirmColor = newVal ? 0x2ECC71 : 0xE74C3C;
+                    confirmDescription = `${getEmoji("tickbox")} **${SETTING_LABELS[key]}** is now ${statusTag(newVal)} for **${roles[clanTagInner].nickName || clanTagInner}**.`;
+                }
+
                 const newBadge = await fetchBadge(coc, clanTagInner);
 
                 // Update confirm to success
                 await confirmBtn.update({
                     embeds: [
                         new EmbedBuilder()
-                            .setColor(newVal ? 0x2ECC71 : 0xE74C3C)
-                            .setDescription(
-                                `${getEmoji("tickbox")} **${SETTING_LABELS[key]}** is now ${statusTag(newVal)} for **${roles[clanTagInner].nickName || clanTagInner}**.`
-                            ),
+                            .setColor(confirmColor)
+                            .setDescription(confirmDescription),
                     ],
                     components: [],
                 });

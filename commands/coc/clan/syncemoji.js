@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder , MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -12,7 +12,7 @@ module.exports = {
   async execute(interaction, context) {
     const { emoji: emojiUtils } = context;
 
-    try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+    try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
     try {
       const appEmojis = await interaction.client.application.emojis.fetch();
@@ -109,14 +109,14 @@ module.exports = {
       const chunks = finalMsg.match(/[\s\S]{1,1999}/g) || [];
       for (let i = 0; i < chunks.length; i++) {
         if (i === 0) await interaction.editReply({ content: chunks[i] });
-        else await interaction.followUp({ content: chunks[i], ephemeral: true });
+        else await interaction.followUp({ content: chunks[i], flags: [MessageFlags.Ephemeral] });
       }
 
     } catch (error) {
       console.error('[syncemoji]', error);
       const msg = `❌ Error: ${error.message}`;
       if (interaction.deferred || interaction.replied) await interaction.editReply(msg);
-      else await interaction.reply({ content: msg, ephemeral: true });
+      else await interaction.reply({ content: msg, flags: [MessageFlags.Ephemeral] });
     }
   }
 };

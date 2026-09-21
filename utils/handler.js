@@ -3,6 +3,7 @@ const proxyFetch = require("./proxyFetch"); // Assuming it's in utils
 const ticketHandler = require("./tickets/ticketHandler");
 const fs = require("fs");
 const path = require("path");
+const { MessageFlags } = require("discord.js");
 
 function getCwlClans() {
     try {
@@ -74,13 +75,14 @@ async function handleInteraction(interaction, context) {
         if (id === "clans10_btn_fwa" || id === "clans10_btn_war" || id === "clans10_btn_cwl") {
             if (interaction.replied || interaction.deferred) return;
             try {
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
                 const clanRoles = dataManager.getClanRoles();
 
                 if (id === "clans10_btn_fwa") {
                     var fwaTags = [];
                     for (var cTag in clanRoles) {
-                        if (clanRoles[cTag].clanType !== "war") fwaTags.push(cTag);
+                        const status = clanRoles[cTag].clanStatus || "official";
+                        if (status === "official" && clanRoles[cTag].clanType !== "war") fwaTags.push(cTag);
                     }
 
                     var embeds = [];
@@ -149,7 +151,8 @@ async function handleInteraction(interaction, context) {
                 else if (id === "clans10_btn_war") {
                     var warTags = [];
                     for (var cTag in clanRoles) {
-                        if (clanRoles[cTag].clanType === "war") warTags.push(cTag);
+                        const status = clanRoles[cTag].clanStatus || "official";
+                        if (status === "official" && clanRoles[cTag].clanType === "war") warTags.push(cTag);
                     }
 
                     var embeds = [];
@@ -251,7 +254,7 @@ async function handleInteraction(interaction, context) {
                 await interaction.editReply({ embeds: result.embeds, components: result.components });
             } catch (err) {
                 console.error("CWL refresh error:", err);
-                try { await interaction.followUp({ content: "❌ Error updating CWL clans.", ephemeral: true }); } catch(e) {}
+                try { await interaction.followUp({ content: "❌ Error updating CWL clans.", flags: [MessageFlags.Ephemeral] }); } catch(e) {}
             }
             return;
         }
@@ -260,7 +263,7 @@ async function handleInteraction(interaction, context) {
             const parts = id.split(":");
             const targetUserId = parts[1];
             
-            try { await interaction.deferReply({ ephemeral: true }); } catch (e) { return; }
+            try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (e) { return; }
 
             const userData = dataManager.getUserData();
             const accounts = userData[targetUserId] || [];
@@ -343,7 +346,7 @@ async function handleInteraction(interaction, context) {
                 await interaction.editReply({ embeds: [embed], components: components });
             } catch (err) {
                 console.error("Error refreshing player accounts:", err);
-                await interaction.followUp({ content: "❌ Error refreshing account details.", ephemeral: true }).catch(() => {});
+                await interaction.followUp({ content: "❌ Error refreshing account details.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
             }
             return;
         }
@@ -384,7 +387,7 @@ async function handleInteraction(interaction, context) {
                 await interaction.editReply({ embeds: [embed], components: components });
             } catch (err) {
                 console.error("Error refreshing profile accounts:", err);
-                await interaction.followUp({ content: "❌ Error refreshing profile details.", ephemeral: true }).catch(() => {});
+                await interaction.followUp({ content: "❌ Error refreshing profile details.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
             }
             return;
         }
@@ -449,7 +452,7 @@ async function handleInteraction(interaction, context) {
                 }
             } catch (err) {
                 console.error(err);
-                await interaction.followUp({ content: "❌ Error refreshing clan data.", ephemeral: true }).catch(function() {});
+                await interaction.followUp({ content: "❌ Error refreshing clan data.", flags: [MessageFlags.Ephemeral] }).catch(function() {});
             }
             return;
         }
@@ -464,7 +467,7 @@ async function handleInteraction(interaction, context) {
                     "✅ **Benefits:** Fast progression, easy loot, and hero upgrades are always available since you don't need them for war!"
                 )
                 .setTimestamp();
-            return interaction.reply({ embeds: [fwaEmbed], ephemeral: true });
+            return interaction.reply({ embeds: [fwaEmbed], flags: [MessageFlags.Ephemeral] });
         }
 
         if (id === "clans_info_cwl") {
@@ -478,14 +481,14 @@ async function handleInteraction(interaction, context) {
                     "🎫 Check your clan's specific pins for sign-up details!"
                 )
                 .setTimestamp();
-            return interaction.reply({ embeds: [cwlEmbed], ephemeral: true });
+            return interaction.reply({ embeds: [cwlEmbed], flags: [MessageFlags.Ephemeral] });
         }
 
         if (id === "clans_info_stats") {
             try {
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
                 const clanRoles = dataManager.getClanRoles();
-                const clanTags = Object.keys(clanRoles);
+                const clanTags = Object.keys(clanRoles).filter(tag => (clanRoles[tag].clanStatus || "official") === "official");
                 
                 const clansData = await Promise.all(
                     clanTags.map(async (tag) => {
@@ -552,7 +555,7 @@ async function handleInteraction(interaction, context) {
                 if (embeds.length > 10) {
                     await interaction.editReply({ embeds: embeds.slice(0, 10) });
                     for (let i = 10; i < embeds.length; i += 10) {
-                        await interaction.followUp({ embeds: embeds.slice(i, i + 10), ephemeral: true });
+                        await interaction.followUp({ embeds: embeds.slice(i, i + 10), flags: [MessageFlags.Ephemeral] });
                     }
                 } else {
                     await interaction.editReply({ embeds: embeds });
@@ -568,7 +571,7 @@ async function handleInteraction(interaction, context) {
             if (interaction.replied || interaction.deferred) return;
             const clanTag = "#" + id.replace("clan_availability_", "");
 
-            try { await interaction.deferReply({ ephemeral: true }); } catch(e) { return; }
+            try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch(e) { return; }
 
             try {
                 const clan = await coc.getClan(clanTag);
@@ -653,7 +656,7 @@ async function handleInteraction(interaction, context) {
                 await linkedlistclanCmd.run(interaction, clanTag, context, true, true);
             } catch (err) {
                 console.error(err);
-                try { await interaction.followUp({ content: "❌ Error refreshing discord links.", ephemeral: true }); } catch(e) {}
+                try { await interaction.followUp({ content: "❌ Error refreshing discord links.", flags: [MessageFlags.Ephemeral] }); } catch(e) {}
             }
             return;
         }
@@ -670,11 +673,11 @@ async function handleInteraction(interaction, context) {
                 if (embeds) {
                     await interaction.editReply({ embeds });
                 } else {
-                    await interaction.followUp({ content: "❌ Error refreshing clan CC data.", ephemeral: true }).catch(() => {});
+                    await interaction.followUp({ content: "❌ Error refreshing clan CC data.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
                 }
             } catch (err) {
                 console.error(err);
-                try { await interaction.followUp({ content: "❌ Error refreshing clan CC data.", ephemeral: true }); } catch(e) {}
+                try { await interaction.followUp({ content: "❌ Error refreshing clan CC data.", flags: [MessageFlags.Ephemeral] }); } catch(e) {}
             }
             return;
         }
@@ -757,7 +760,7 @@ async function handleInteraction(interaction, context) {
                 await interaction.editReply({ embeds: [compoEmbed], components: [compoBtnRow] });
             } catch (err) {
                 console.error(err);
-                try { await interaction.followUp({ content: "❌ Error refreshing compo data.", ephemeral: true }); } catch(e) {}
+                try { await interaction.followUp({ content: "❌ Error refreshing compo data.", flags: [MessageFlags.Ephemeral] }); } catch(e) {}
             }
             return;
         }
@@ -794,9 +797,10 @@ async function handleInteraction(interaction, context) {
                 });
                 
                 var fwaClanData = require("./fwadata.js");
-                var pages = await fwaClanData(compoTag, context);
+                var guild = interaction.guild || (interaction.client && interaction.client.guilds.cache.get('1153720899715993681'));
+                var pages = await fwaClanData(compoTag, { ...context, guild }).catch(() => null);
                 var eqvDesc = "";
-                var eqvCounts = pages.eqvCounts || {};
+                var eqvCounts = (pages && pages.eqvCounts) ? pages.eqvCounts : {};
                 var sortedEqvTH = Object.entries(eqvCounts).sort(function(a, b) { return b[0] - a[0]; });
                 sortedEqvTH.forEach(function(entry) {
                     var emojiStr = thEmojis[entry[0]] || "🏰";
@@ -832,7 +836,7 @@ async function handleInteraction(interaction, context) {
                 await interaction.editReply({ embeds: [compoEmbed], components: [compoBtnRow] });
             } catch (err) {
                 console.error(err);
-                try { await interaction.followUp({ content: "❌ Error refreshing compo data.", ephemeral: true }); } catch(e) {}
+                try { await interaction.followUp({ content: "❌ Error refreshing compo data.", flags: [MessageFlags.Ephemeral] }); } catch(e) {}
             }
             return;
         }
@@ -893,7 +897,7 @@ async function handleInteraction(interaction, context) {
                 const actionRow = new ActionRowBuilder().addComponents(disabledBtn);
 
                 await interaction.update({ components: [actionRow] });
-                await interaction.followUp({ content: `${getEmoji("gtick")} Successfully updated war weight submission time for ${clanTag} to ${todayStr}!`, ephemeral: true });
+                await interaction.followUp({ content: `${getEmoji("gtick")} Successfully updated war weight submission time for ${clanTag} to ${todayStr}!`, flags: [MessageFlags.Ephemeral] });
 
                 try {
                     const logChannel = await interaction.client.channels.fetch("1516719047348326493").catch(() => null);
@@ -906,7 +910,7 @@ async function handleInteraction(interaction, context) {
             } catch (err) {
                 console.error(err);
                 if (!interaction.replied && !interaction.deferred) {
-                    await interaction.reply({ content: "❌ Error updating war weight submission time.", ephemeral: true }).catch(()=>{});
+                    await interaction.reply({ content: "❌ Error updating war weight submission time.", flags: [MessageFlags.Ephemeral] }).catch(()=>{});
                 }
             }
             return;
@@ -956,11 +960,11 @@ async function handleInteraction(interaction, context) {
 
                     await scanClanCmd.sendBatchedEmbeds(interaction, result.embeds, [btnRow]);
                 } else {
-                    await interaction.followUp({ content: "❌ Error refreshing war roster.", ephemeral: true }).catch(() => {});
+                    await interaction.followUp({ content: "❌ Error refreshing war roster.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
                 }
             } catch (err) {
                 console.error(err);
-                try { await interaction.followUp({ content: "❌ Error refreshing war roster.", ephemeral: true }); } catch(e) {}
+                try { await interaction.followUp({ content: "❌ Error refreshing war roster.", flags: [MessageFlags.Ephemeral] }); } catch(e) {}
             }
             return;
         }
@@ -970,7 +974,7 @@ async function handleInteraction(interaction, context) {
             const cleanTag = id.replace("scanclan_lastwars_", "");
             const clanTag = "#" + cleanTag;
 
-            try { await interaction.deferReply({ ephemeral: true }); } catch(e) { return; }
+            try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch(e) { return; }
 
             try {
                 const scanClanCmd = require("../commands/coc/war/scan-clan.js");
@@ -1018,13 +1022,13 @@ async function handleInteraction(interaction, context) {
             const hasStaff = interaction.member && interaction.member.roles && interaction.member.roles.cache.some(r => config.STAFF_ROLE_IDS.includes(r.id));
             
             if (!isOwner && !hasAdmin && !hasStaff) {
-                return interaction.reply({ content: "❌ You do not have permission to change this user's main ID.", ephemeral: true });
+                return interaction.reply({ content: "❌ You do not have permission to change this user's main ID.", flags: [MessageFlags.Ephemeral] });
             }
             
             const userData = dataManager.getUserData();
             const accounts = userData[targetUserId] || [];
             if (accounts.length <= 1) {
-                return interaction.reply({ content: "❌ This user doesn't have multiple accounts to choose from.", ephemeral: true });
+                return interaction.reply({ content: "❌ This user doesn't have multiple accounts to choose from.", flags: [MessageFlags.Ephemeral] });
             }
             
             const options = accounts.map(acc => ({
@@ -1042,7 +1046,7 @@ async function handleInteraction(interaction, context) {
                     .addOptions(selectOptions)
             );
             
-            return interaction.reply({ content: "Select the account to set as Main:", components: [selectRow], ephemeral: true });
+            return interaction.reply({ content: "Select the account to set as Main:", components: [selectRow], flags: [MessageFlags.Ephemeral] });
         }
     } else if (interaction.isModalSubmit()) {
         const id = interaction.customId;
@@ -1078,13 +1082,13 @@ async function handleInteraction(interaction, context) {
             return;
         }
 
-        if (id === "clans10_sel_fwa" || id === "clans10_sel_war" || id === "clans10_sel_cwl") {
+        if (id === "clans10_sel_fwa" || id === "clans10_sel_war" || id === "clans10_sel_cwl" || id === "clans10_sel_unofficial") {
             if (interaction.replied || interaction.deferred) return;
             const clans1 = require("../commands/coc/clan/clan.js");
             var selectedTag = "#" + interaction.values[0];
 
             try { 
-                await interaction.deferReply({ ephemeral: true }); 
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); 
             } catch(e) { 
                 if (e.code === 10062 || e.code === 40060) return;
                 console.error("Error deferring select menu:", e);
@@ -1104,12 +1108,17 @@ async function handleInteraction(interaction, context) {
                         .setEmoji(getEmojiObject("sheild") || "🛡️")
                 );
 
-                if (id === "clans10_sel_fwa") {
+                const normTag = selectedTag.toUpperCase();
+                const matchedTag = Object.keys(clanRoles).find(t => t.toUpperCase() === normTag) || selectedTag;
+                const clanEntry = clanRoles[matchedTag] || clanRoles[selectedTag] || {};
+                const isWarType = (clanEntry.clanType || "").toLowerCase() === "war";
+
+                if (id === "clans10_sel_fwa" || (id === "clans10_sel_unofficial" && !isWarType)) {
                     clanEmbed = await clans1.buildClanEmbed(selectedTag, clanRoles, clanData, context);
                     await interaction.editReply({ embeds: [clanEmbed], components: [availBtnRow] });
                 }
 
-                else if (id === "clans10_sel_war") {
+                else if (id === "clans10_sel_war" || (id === "clans10_sel_unofficial" && isWarType)) {
                     clanEmbed = await clans1.buildWarClanEmbed(selectedTag, context);
                     
                     var warSelectRow = buildClanSelectRow(clanData, getEmojiObject, StringSelectMenuBuilder, ActionRowBuilder);
@@ -1338,7 +1347,7 @@ async function handleInteraction(interaction, context) {
             var clanTag = "#" + selectedValue.replace("fwa_", "").replace("war_", "");
 
             try {
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
             } catch (e) {
                 console.error("Failed to defer clans_dashboard_select:", e.message);
                 return;
@@ -1478,7 +1487,7 @@ async function handleInteraction(interaction, context) {
                 await interaction.editReply({ embeds: [embed], components: [selectRow, buttonRow] });
             } catch (err) {
                 console.error(err);
-                await interaction.followUp({ content: "❌ Error fetching details for this clan.", ephemeral: true }).catch(function() {});
+                await interaction.followUp({ content: "❌ Error fetching details for this clan.", flags: [MessageFlags.Ephemeral] }).catch(function() {});
             }
             return;
         }
@@ -1500,7 +1509,7 @@ async function handleInteraction(interaction, context) {
                     .setDescription(`Loading war weight of players...\n\`\`\`ansi\n[${getBar(0)}] (0%)\n\`\`\``)
                     .setColor("Random");
                 
-                await interaction.reply({ embeds: [loadEmbed], ephemeral: true });
+                await interaction.reply({ embeds: [loadEmbed], flags: [MessageFlags.Ephemeral] });
 
                 const progressInterval = setInterval(() => {
                     progress++;
@@ -1638,7 +1647,7 @@ async function handleInteraction(interaction, context) {
             const clanTag = "#" + id.replace("wclans_select_", "");
             const selection = interaction.values[0];
 
-            try { await interaction.deferReply({ ephemeral: true }); } catch(e) { return; }
+            try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch(e) { return; }
 
             try {
                 const clan = await coc.getClan(clanTag);
@@ -1748,7 +1757,7 @@ async function handleInteraction(interaction, context) {
             const weight = parseInt(weightStr.replace(/,/g, '').trim(), 10);
 
             if (isNaN(weight)) {
-                return interaction.reply({ content: "⚠️ Invalid number entered. Please enter a valid number.", ephemeral: true });
+                return interaction.reply({ content: "⚠️ Invalid number entered. Please enter a valid number.", flags: [MessageFlags.Ephemeral] });
             }
 
             const total = weight * 5;
@@ -1757,7 +1766,7 @@ async function handleInteraction(interaction, context) {
                 .setTitle("War Weight Calculation")
                 .setDescription(`**Entered Weight:** ${weightStr}\n**Total War Weight:** ${total.toLocaleString()}`);
 
-            return interaction.reply({ embeds: [resEmbed], ephemeral: true });
+            return interaction.reply({ embeds: [resEmbed], flags: [MessageFlags.Ephemeral] });
         }
 
         if (id.startsWith("delete_user_modal:")) {

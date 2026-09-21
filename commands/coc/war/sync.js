@@ -47,7 +47,7 @@ async function logToChannel(context, msg) {
 
 async function sendSyncMessage(context, message = null) {
     const { client, config, emoji: emojiUtils, EmbedBuilder } = context;
-    const { ChannelType } = require("discord.js");
+    const { ChannelType , MessageFlags } = require("discord.js");
     const SYNC_CHANNEL_ID = config.SYNC_CHANNEL_ID;
     const CUSTOM_ROLE_ID = "1407320183760224347";
     const LOG_CHANNEL_ID = config.LOG_CHANNEL_ID;
@@ -542,7 +542,7 @@ module.exports = {
 
         if (interaction.customId === "sync_check") {
             try {
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
             } catch (e) {
                 return;
             }
@@ -625,7 +625,7 @@ module.exports = {
 
         if (["sync_yes", "sync_maybe", "sync_no"].includes(interaction.customId)) {
             try {
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
             } catch (e) {
                 return;
             }
@@ -785,7 +785,7 @@ module.exports = {
 
         if (interaction.customId === "sync_fillers") {
             try {
-                await interaction.deferReply({ ephemeral: true });
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
             } catch (e) {
                 return;
             }
@@ -849,14 +849,14 @@ module.exports = {
 
             const syncChannel = await interaction.client.channels.fetch(SYNC_CHANNEL_ID).catch(() => null);
             if (!syncChannel?.isTextBased()) {
-                return interaction.followUp({ content: "❌ Could not find the sync channel.", ephemeral: true }).catch(() => { });
+                return interaction.followUp({ content: "❌ Could not find the sync channel.", flags: [MessageFlags.Ephemeral] }).catch(() => { });
             }
 
             const threadName = `📣 Fillers Needed — ${clanName}`.slice(0, 90);
             const activeThreads = await syncChannel.threads.fetchActive().catch(() => ({ threads: new Map() }));
             const existingThread = activeThreads.threads.find(t => t.name === threadName);
             if (existingThread) {
-                return interaction.followUp({ content: `⚠️ A filler thread for **${clanName}** already exists: <#${existingThread.id}>`, ephemeral: true }).catch(() => { });
+                return interaction.followUp({ content: `⚠️ A filler thread for **${clanName}** already exists: <#${existingThread.id}>`, flags: [MessageFlags.Ephemeral] }).catch(() => { });
             }
 
             const thread = await syncChannel.threads.create({
@@ -866,7 +866,7 @@ module.exports = {
             }).catch(() => null);
 
             if (!thread) {
-                return interaction.followUp({ content: "❌ Failed to create thread.", ephemeral: true }).catch(() => { });
+                return interaction.followUp({ content: "❌ Failed to create thread.", flags: [MessageFlags.Ephemeral] }).catch(() => { });
             }
 
             const tagEncoded = clanTag.replace("#", "%23");
@@ -902,11 +902,11 @@ module.exports = {
             await thread.send({ content: pingContent, embeds: [fillerEmbed], components: [threadButtons] });
             await thread.members.add(interaction.user.id).catch(() => { });
 
-            return interaction.followUp({ content: `✅ Filler thread created: <#${thread.id}>`, ephemeral: true }).catch(() => { });
+            return interaction.followUp({ content: `✅ Filler thread created: <#${thread.id}>`, flags: [MessageFlags.Ephemeral] }).catch(() => { });
         }
 
         if (interaction.customId.startsWith("sync_showclan_")) {
-            try { await interaction.deferReply({ ephemeral: true }); } catch (e) { return; }
+            try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (e) { return; }
             const clanTagRaw = "#" + interaction.customId.replace("sync_showclan_", "");
             try {
                 const clanData = await context.coc.getClan(clanTagRaw);
@@ -931,7 +931,7 @@ module.exports = {
         }
 
         if (interaction.customId.startsWith("sync_timer_")) {
-            try { await interaction.reply({ content: "⏰ Timer feature coming soon! Use this thread to coordinate manually.", ephemeral: true }); } catch (e) { }
+            try { await interaction.reply({ content: "⏰ Timer feature coming soon! Use this thread to coordinate manually.", flags: [MessageFlags.Ephemeral] }); } catch (e) { }
             return;
         }
 
@@ -940,11 +940,11 @@ module.exports = {
             const staffRoles = (context.config.STAFF_ROLE_IDS || []);
             const isStaff = staffRoles.some(roleId => roleId && member.roles.cache.has(roleId));
             if (!isAdmin && !isStaff) {
-                try { await interaction.reply({ content: "❌ Only staff or admins can delete this thread.", ephemeral: true }); } catch (e) { }
+                try { await interaction.reply({ content: "❌ Only staff or admins can delete this thread.", flags: [MessageFlags.Ephemeral] }); } catch (e) { }
                 return;
             }
             const threadToDelete = interaction.channel;
-            try { await interaction.reply({ content: "🗑️ Deleting thread...", ephemeral: true }); } catch (e) { }
+            try { await interaction.reply({ content: "🗑️ Deleting thread...", flags: [MessageFlags.Ephemeral] }); } catch (e) { }
             await threadToDelete.delete().catch(() => { });
             return;
         }

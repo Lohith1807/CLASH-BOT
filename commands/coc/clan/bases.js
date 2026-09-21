@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 
 const basesPath = path.join(__dirname, '../../../data/fwa_bases.json');
 
@@ -94,7 +94,7 @@ module.exports = {
         const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: "❌ You do not have permission to update base links.", ephemeral: true });
+            return interaction.reply({ content: "❌ You do not have permission to update base links.", flags: [MessageFlags.Ephemeral] });
         }
 
         const thInput = interaction.options.getString('th');
@@ -102,7 +102,7 @@ module.exports = {
         const link = interaction.options.getString('link');
 
         if (!link.startsWith("https://link.clashofclans.com")) {
-            return interaction.reply({ content: "❌ Invalid link format.", ephemeral: true });
+            return interaction.reply({ content: "❌ Invalid link format.", flags: [MessageFlags.Ephemeral] });
         }
 
         try {
@@ -123,7 +123,7 @@ module.exports = {
 
             await interaction.reply({ embeds: [embed] });
         } catch (err) {
-            await interaction.reply({ content: "❌ Error saving data.", ephemeral: true });
+            await interaction.reply({ content: "❌ Error saving data.", flags: [MessageFlags.Ephemeral] });
         }
     }
 };

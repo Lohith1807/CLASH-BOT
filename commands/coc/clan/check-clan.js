@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 
 // In-memory cache for clan names to speed up autocomplete responses
 const clanNameCache = new Map();
@@ -109,7 +109,7 @@ module.exports = {
     if (!isAuthorized) {
       return interaction.reply({
         content: "❌ You cannot use this command.",
-        ephemeral: true
+        flags: [MessageFlags.Ephemeral]
       });
     }
     

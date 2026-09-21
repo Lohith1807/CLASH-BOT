@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder , MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -29,7 +29,7 @@ module.exports = {
         const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
         
         const addInput = interaction.options.getString('add');
@@ -82,7 +82,7 @@ module.exports = {
             try {
                 dataManager.saveRecruitingTHs(currentTHs);
             } catch (error) {
-                return interaction.reply({ content: '❌ Failed to save to database.', ephemeral: true });
+                return interaction.reply({ content: '❌ Failed to save to database.', flags: [MessageFlags.Ephemeral] });
             }
         }
 

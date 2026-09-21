@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, StringSelectMenuBuilder, ComponentType, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, StringSelectMenuBuilder, ComponentType, ButtonBuilder, ButtonStyle, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -35,7 +35,7 @@ module.exports = {
 
     async execute(interaction, context) {
         if (!interaction.guildId || interaction.guildId !== context.config.GUILD_ID) {
-            return interaction.reply({ content: '❌ This command can only be used in the main server.', ephemeral: true });
+            return interaction.reply({ content: '❌ This command can only be used in the main server.', flags: [MessageFlags.Ephemeral] });
         }
 
         const action = interaction.options.getString('action');
@@ -72,14 +72,15 @@ module.exports = {
                 const weight = modalSubmit.fields.getTextInputValue('weight_val');
                 
                 if (isNaN(th) || isNaN(weight) || weight.length < 5) {
-                    return modalSubmit.reply({ content: 'Invalid input.', ephemeral: true });
+                    return modalSubmit.reply({ content: 'Invalid input.', flags: [MessageFlags.Ephemeral] });
                 }
                 
                 thresholds[th] = parseInt(weight, 10);
                 saveThresholds(thresholds);
                 
-                return modalSubmit.reply({ content: `✅ Added/Updated TH${th} threshold to ${weight}`, ephemeral: true });
+                return modalSubmit.reply({ content: `✅ Added/Updated TH${th} threshold to ${weight}`, flags: [MessageFlags.Ephemeral] });
             } catch(e) {
+                if (e.code === 'InteractionCollectorError' || e.code === 10062 || e.message?.includes('reason: time')) return;
                 console.error(e);
             }
         }
@@ -95,12 +96,12 @@ module.exports = {
                 }
             }
             embed.setDescription(desc);
-            return interaction.reply({ embeds: [embed], ephemeral: true });
+            return interaction.reply({ embeds: [embed], flags: [MessageFlags.Ephemeral] });
         }
         else if (action === 'manage') {
             const sorted = Object.keys(thresholds).sort((a,b) => parseInt(b) - parseInt(a));
             if (sorted.length === 0) {
-                return interaction.reply({ content: 'No thresholds stored.', ephemeral: true });
+                return interaction.reply({ content: 'No thresholds stored.', flags: [MessageFlags.Ephemeral] });
             }
 
             const options = sorted.map(th => ({
@@ -115,12 +116,12 @@ module.exports = {
 
             const row = new ActionRowBuilder().addComponents(selectMenu);
 
-            const msg = await interaction.reply({
+            await interaction.reply({
                 content: 'Select a Town Hall threshold to manage:',
                 components: [row],
-                ephemeral: true,
-                fetchReply: true
+                flags: [MessageFlags.Ephemeral]
             });
+            const msg = await interaction.fetchReply();
 
             try {
                 const selectInt = await msg.awaitMessageComponent({
@@ -129,6 +130,7 @@ module.exports = {
                     componentType: ComponentType.StringSelect
                 }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
 
+                if (!selectInt) return;
                 const selectedTh = selectInt.values[0];
                 
                 const updateBtn = new ButtonBuilder()
@@ -151,6 +153,8 @@ module.exports = {
                     componentType: ComponentType.Button
                 }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
 
+                if (!btnInt) return;
+
                 if (btnInt.customId === 'ww_btn_delete') {
                     // Confirmation
                     const confirmBtn = new ButtonBuilder().setCustomId('ww_confirm_del').setLabel('Confirm Delete').setStyle(ButtonStyle.Danger);
@@ -165,6 +169,8 @@ module.exports = {
                         componentType: ComponentType.Button
                     }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
                     
+                    if (!confInt) return;
+
                     if (confInt.customId === 'ww_confirm_del') {
                         delete thresholds[selectedTh];
                         saveThresholds(thresholds);
@@ -198,7 +204,7 @@ module.exports = {
                         const weight = modalSubmit.fields.getTextInputValue('weight_val');
                         
                         if (isNaN(weight) || weight.length < 5) {
-                            return modalSubmit.reply({ content: 'Invalid input.', ephemeral: true });
+                            return modalSubmit.reply({ content: 'Invalid input.', flags: [MessageFlags.Ephemeral] });
                         }
                         
                         thresholds[selectedTh] = parseInt(weight, 10);
@@ -206,8 +212,9 @@ module.exports = {
                         
                         // Clean up main message
                         await interaction.editReply({ content: `✅ Updated TH${selectedTh} threshold to ${weight}`, components: [] }).catch(()=>{});
-                        return modalSubmit.reply({ content: `Successfully updated TH${selectedTh} threshold to ${weight}!`, ephemeral: true });
+                        return modalSubmit.reply({ content: `Successfully updated TH${selectedTh} threshold to ${weight}!`, flags: [MessageFlags.Ephemeral] });
                     } catch(e) {
+                        if (e.code === 'InteractionCollectorError' || e.code === 10062 || e.message?.includes('reason: time')) return;
                         console.error(e);
                     }
                 }

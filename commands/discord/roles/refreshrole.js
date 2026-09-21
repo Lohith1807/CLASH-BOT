@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const { syncUser } = require('../../../utils/autoRoleManager.js');
 
 /**
@@ -124,7 +124,7 @@ module.exports = {
         const member = interaction.member;
 
         // Defer interaction to allow processing time
-        try { await interaction.deferReply({ ephemeral: true }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         // Build monitored clans list
         const clanRoles = dataManager.getClanRoles();
@@ -219,10 +219,29 @@ module.exports = {
                 .setColor((result.hasChanges || nicknameUpdated) ? 0xE74C3C : 0x2ECC71)
                 .setTimestamp();
 
-            const accountLines = accountDetails.map(a =>
+            const accountStrings = accountDetails.map(a =>
                 `${a.inAlliance ? '✅' : '❌'} \`${a.tag}\` — **${a.name}** → ${a.clan}${a.allianceName ? ` *(${a.allianceName})*` : ''}`
-            ).join('\n') || 'No linked accounts';
-            statusEmbed.addFields({ name: '🔗 Linked Accounts', value: accountLines, inline: false });
+            );
+
+            if (accountStrings.length === 0) {
+                statusEmbed.addFields({ name: '🔗 Linked Accounts', value: 'No linked accounts', inline: false });
+            } else {
+                let currentChunk = '';
+                let chunkIndex = 1;
+                for (let i = 0; i < accountStrings.length; i++) {
+                    const line = accountStrings[i];
+                    if (currentChunk.length + line.length + 1 > 1024) {
+                        statusEmbed.addFields({ name: chunkIndex === 1 ? '🔗 Linked Accounts' : `🔗 Linked Accounts (Pt ${chunkIndex})`, value: currentChunk.trim(), inline: false });
+                        currentChunk = line + '\n';
+                        chunkIndex++;
+                    } else {
+                        currentChunk += line + '\n';
+                    }
+                }
+                if (currentChunk.length > 0) {
+                    statusEmbed.addFields({ name: chunkIndex === 1 ? '🔗 Linked Accounts' : `🔗 Linked Accounts (Pt ${chunkIndex})`, value: currentChunk.trim(), inline: false });
+                }
+            }
 
             const rolesValue = currentAllianceRoles.length > 0
                 ? currentAllianceRoles.join('\n')

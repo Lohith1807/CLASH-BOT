@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder , MessageFlags } = require('discord.js');
 
 const pendingStrikes = new Map(); // Kept for backwards compatibility with old select menus
 
@@ -43,11 +43,11 @@ module.exports = {
         if (!interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) {
             return interaction.reply({
                 content: "❌ You do not have permission to use this command.",
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 
-        try { await interaction.deferReply({ ephemeral: false }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const playerTagInput = interaction.options.getString('playertag');
         const reason = interaction.options.getString('reason');

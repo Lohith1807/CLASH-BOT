@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ModalBuilder, TextInputBuilder, TextInputStyle , MessageFlags } = require('discord.js');
 
 module.exports = {
     name: 'warweight',
@@ -51,7 +51,7 @@ module.exports = {
             console.error('❌ Error in warweight command:', error);
             const errMsg = '⚠️ Error loading war weight instructions.';
             if (isInteraction && !input.replied && !input.deferred) {
-                return input.reply({ content: errMsg, ephemeral: true }).catch(() => {});
+                return input.reply({ content: errMsg, flags: [MessageFlags.Ephemeral] }).catch(() => {});
             } else if (isInteraction) {
                 return input.editReply({ content: errMsg }).catch(() => {});
             } else {

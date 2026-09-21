@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder , MessageFlags } = require('discord.js');
 
 
 async function buildClanEmbed(clan, { EmbedBuilder, emoji }) {
@@ -188,7 +188,7 @@ module.exports = {
 
           if (isInteraction) {
             await input.deleteReply().catch(() => {});
-            await input.followUp({ embeds: [helpEmbed], ephemeral: true });
+            await input.followUp({ embeds: [helpEmbed], flags: [MessageFlags.Ephemeral] });
           } else {
             try {
               await input.author.send({ embeds: [helpEmbed] });

@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const { connectToDatabase, Clan } = require('../../../utils/mongodb.js');
 
 module.exports = {
@@ -26,7 +26,7 @@ module.exports = {
         const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
+            return interaction.reply({ content: "❌ You do not have permission to use this command.", flags: [MessageFlags.Ephemeral] });
         }
 
         let clanTag = interaction.options.getString('clantag').toUpperCase().replace('O', '0');

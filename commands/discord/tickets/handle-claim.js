@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder , MessageFlags } = require("discord.js");
 const staffTicketTracker = require("../../../utils/staffTicketTracker");
 
 module.exports = {
@@ -27,10 +27,12 @@ module.exports = {
         const hasNameRole = memberRoles.some(r => allowedRoleNames.some(allowed => r.name.toLowerCase().includes(allowed)));
         const hasPerms = interaction.memberPermissions && interaction.memberPermissions.has(PermissionFlagsBits.ManageRoles);
         const isAdmin = (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => memberRoles.has(id))) || hasPerms || interaction.user.id === interaction.guild.ownerId;
-        const hasWelExeRole = config.WEL_EXE_STAFF_ID && memberRoles.has(config.WEL_EXE_STAFF_ID);
+        const hasWelExeRole = config.WEL_EXE_STAFF_ID && memberRoles.has(config.WEL_EXE_STAFF_ID)
+            || memberRoles.has('1514535148119392377');
+        const hasCwlStaffRole = memberRoles.has('1448265928503726161');
 
         let canUseCommand = false;
-        if (hasConfigRole || hasNameRole || hasPerms || hasWelExeRole || interaction.user.id === interaction.guild.ownerId) {
+        if (hasConfigRole || hasNameRole || hasPerms || hasWelExeRole || hasCwlStaffRole || interaction.user.id === interaction.guild.ownerId) {
             canUseCommand = true;
         }
 
@@ -41,7 +43,7 @@ module.exports = {
                         .setColor("Red")
                         .setDescription(`${getEmoji("bluex") || '❌'} You do not have the required roles to use this command here.`)
                 ], 
-                ephemeral: true 
+                flags: [MessageFlags.Ephemeral] 
             });
         }
 

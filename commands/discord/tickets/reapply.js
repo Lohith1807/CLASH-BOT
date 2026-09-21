@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle , MessageFlags } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -58,7 +58,7 @@ module.exports = {
         };
 
         if (!hasConfigRole && !hasNameRole && !hasPerms && executorUser.id !== source.guild.ownerId) {
-            return safeReply({ embeds: [errorEmbed("You do not have the required roles to use this command.")], ephemeral: true });
+            return safeReply({ embeds: [errorEmbed("You do not have the required roles to use this command.")], flags: [MessageFlags.Ephemeral] });
         }
 
         let member = null;
@@ -67,23 +67,23 @@ module.exports = {
             member = source.options.getMember('member');
         } else {
             if (!args[0]) {
-                return safeReply({ embeds: [errorEmbed("Please mention a member or provide their ID.")], ephemeral: true });
+                return safeReply({ embeds: [errorEmbed("Please mention a member or provide their ID.")], flags: [MessageFlags.Ephemeral] });
             }
             const targetId = args[0].replace(/[<@!>]/g, "");
             member = source.guild.members.cache.get(targetId);
         }
         
         if (!member) {
-            return safeReply({ embeds: [errorEmbed("Could not resolve the selected member.")], ephemeral: true });
+            return safeReply({ embeds: [errorEmbed("Could not resolve the selected member.")], flags: [MessageFlags.Ephemeral] });
         }
 
         if (member.user.bot) {
-            return safeReply({ embeds: [errorEmbed("Bots cannot be processed.")], ephemeral: true });
+            return safeReply({ embeds: [errorEmbed("Bots cannot be processed.")], flags: [MessageFlags.Ephemeral] });
         }
 
         const targetChannel = source.guild.channels.cache.get(TARGET_CHANNEL_ID);
         if (!targetChannel) {
-            return safeReply({ embeds: [errorEmbed("Target channel not found. Check CHANNEL ID.")], ephemeral: true });
+            return safeReply({ embeds: [errorEmbed("Target channel not found. Check CHANNEL ID.")], flags: [MessageFlags.Ephemeral] });
         }
 
         await safeDeferReply();
@@ -185,7 +185,7 @@ module.exports = {
 
             collector.on("collect", async (i) => {
                 if (i.user.id !== executorUser.id) {
-                    await i.reply({ content: `${getEmoji("bluex")} You cannot use this menu.`, ephemeral: true }).catch(() => {});
+                    await i.reply({ content: `${getEmoji("bluex")} You cannot use this menu.`, flags: [MessageFlags.Ephemeral] }).catch(() => {});
                     return;
                 }
                 await i.deferUpdate().catch(() => {});
@@ -245,7 +245,7 @@ module.exports = {
 
             collector.on("collect", async (i) => {
                 if (i.user.id !== executorUser.id) {
-                    await i.reply({ content: `${getEmoji("bluex")} You cannot interact with this.`, ephemeral: true }).catch(() => {});
+                    await i.reply({ content: `${getEmoji("bluex")} You cannot interact with this.`, flags: [MessageFlags.Ephemeral] }).catch(() => {});
                     return;
                 }
                 
@@ -282,11 +282,13 @@ module.exports = {
                     const reason = submitted.fields.getTextInputValue('reason_input');
                     collector.stop("confirmed");
                     
-                    await submitted.deferUpdate().catch(console.error);
+                    if (!submitted.replied && !submitted.deferred) {
+                        await submitted.deferUpdate().catch(() => {});
+                    }
                     
                     executeLeaveLogic(submitted, reason);
                 } catch (err) {
-                    if (err.code !== "InteractionCollectorError") {
+                    if (err.code !== "InteractionCollectorError" && err.code !== 10062 && !err.message?.includes('reason: time')) {
                         console.error("Modal submission error:", err);
                     }
                 }

@@ -28,7 +28,7 @@ module.exports = {
     let loadingMsg;
     let progressInterval;
     try {
-      const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
+      const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType , MessageFlags } = require('discord.js');
 
       let progress = 0;
       const getBar = (p) => `\u001b[1;32m${"▰".repeat(p)}\u001b[0m\u001b[30m${"▱".repeat(5 - p)}\u001b[0m`;
@@ -118,11 +118,11 @@ module.exports = {
       collector.on("collect", async (i) => {
         try {
           if (i.user.id !== message.author.id) {
-            return i.reply({ content: "⚠️ You cannot use these buttons!", ephemeral: true });
+            return i.reply({ content: "⚠️ You cannot use these buttons!", flags: [MessageFlags.Ephemeral] });
           }
 
           if (i.customId === 'ww_compo') {
-            await i.deferReply({ ephemeral: true });
+            await i.deferReply({ flags: [MessageFlags.Ephemeral] });
             try {
               const clan = await context.coc.getClan(tag);
               const thEmojis = {

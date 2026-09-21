@@ -542,5 +542,11 @@ module.exports = {
                 interaction.editReply({ content: "❌ An error occurred processing the result.", components: [] }).catch(()=>{});
             }
         });
-    }
+    },
+
+    dispatchWarEmbed,
+    fetchDetailedWarData,
+    sendWarNotification,
+    fwaFetch,
+    stripHtml
 };

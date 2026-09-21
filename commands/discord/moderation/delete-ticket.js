@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const transcripts = require('discord-html-transcripts');
 
 async function sendLog(guild, embed, config, file = null, content = null) {
@@ -26,7 +26,7 @@ module.exports = {
         if (channel.deleting) {
             return interaction.reply({
                 content: 'noob pervert go to chrome and tap there not here again and again ',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             }).catch(() => null);
         }
 
@@ -37,7 +37,7 @@ module.exports = {
         if (!isStaff) {
             return interaction.reply({
                 content: '❌ Only Staff or Admins can delete this ticket.',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 
@@ -45,7 +45,7 @@ module.exports = {
         if (channel.parentId !== CATEGORY_ID) {
             return interaction.reply({
                 content: '❌ This command can only be used inside a ticket channel.',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 

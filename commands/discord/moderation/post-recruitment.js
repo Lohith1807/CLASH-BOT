@@ -6,7 +6,7 @@ const {
     TextInputStyle,
     EmbedBuilder,
     PermissionFlagsBits
-} = require('discord.js');
+, MessageFlags } = require('discord.js');
 const { getEmoji } = require('../../../utils/emoji.js');
 
 module.exports = {
@@ -60,7 +60,7 @@ module.exports = {
             if (!hasPermission) {
                 return interaction.reply({ 
                     content: '❌ You must have the Leaders role to use this command.', 
-                    ephemeral: true 
+                    flags: [MessageFlags.Ephemeral] 
                 });
             }
 
@@ -69,7 +69,7 @@ module.exports = {
             
             const clanRoles = dataManager.getClanRoles();
             if (!clanRoles[clanTag]) {
-                return interaction.reply({ content: '❌ Invalid clan selected.', ephemeral: true });
+                return interaction.reply({ content: '❌ Invalid clan selected.', flags: [MessageFlags.Ephemeral] });
             }
 
             // Check if recruitment already active
@@ -77,7 +77,7 @@ module.exports = {
             if (recruitments[clanTag]) {
                 return interaction.reply({ 
                     content: '❌ Already posted. To add/remove use `/edit-recruitment`.', 
-                    ephemeral: true 
+                    flags: [MessageFlags.Ephemeral] 
                 });
             }
 
@@ -87,10 +87,10 @@ module.exports = {
                 .filter(t => t !== '');
                 
             if (thList.length === 0) {
-                return interaction.reply({ content: '❌ Please provide at least one valid TH (e.g., 13,14).', ephemeral: true });
+                return interaction.reply({ content: '❌ Please provide at least one valid TH (e.g., 13,14).', flags: [MessageFlags.Ephemeral] });
             }
             if (thList.length > 5) {
-                return interaction.reply({ content: '❌ You can specify a maximum of 5 Townhalls at once due to discord limits.', ephemeral: true });
+                return interaction.reply({ content: '❌ You can specify a maximum of 5 Townhalls at once due to discord limits.', flags: [MessageFlags.Ephemeral] });
             }
 
             // Create Modal
@@ -130,7 +130,7 @@ module.exports = {
 
                 try {
                     // deferReply IMMEDIATELY — this is the critical fix
-                    await submitted.deferReply({ ephemeral: true });
+                    await submitted.deferReply({ flags: [MessageFlags.Ephemeral] });
                 } catch (deferErr) {
                     console.error('Failed to defer modal reply (post-recruitment):', deferErr.message);
                     return; // interaction expired, nothing we can do
@@ -244,9 +244,9 @@ module.exports = {
             console.error(error);
             try {
                 if (interaction.replied || interaction.deferred) {
-                    await interaction.followUp({ content: '❌ An error occurred.', ephemeral: true });
+                    await interaction.followUp({ content: '❌ An error occurred.', flags: [MessageFlags.Ephemeral] });
                 } else {
-                    await interaction.reply({ content: '❌ An error occurred.', ephemeral: true });
+                    await interaction.reply({ content: '❌ An error occurred.', flags: [MessageFlags.Ephemeral] });
                 }
             } catch (e) {}
         }

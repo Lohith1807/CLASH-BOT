@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 
 module.exports = {
     name: "link-summary",
@@ -17,7 +17,7 @@ module.exports = {
         if (!isAuthorized) {
             return interaction.reply({
                 content: "❌ You cannot use this command.",
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 

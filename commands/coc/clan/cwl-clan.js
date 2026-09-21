@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder , MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -161,7 +161,7 @@ module.exports = {
             const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
 
             if (!isAdmin && !hasAllowedRole) {
-                return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
+                return interaction.reply({ content: "❌ You do not have permission to use this command.", flags: [MessageFlags.Ephemeral] });
             }
 
             const action = interaction.options.getString('action');
@@ -193,7 +193,7 @@ module.exports = {
                 await interaction.showModal(modal);
 
             } else if (action === 'edit') {
-                try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+                try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
                 const data = loadData();
                 pendingSelections.delete(interaction.user.id);
                 pendingSearch.delete(interaction.user.id);
@@ -208,7 +208,7 @@ module.exports = {
         } catch (error) {
             console.error("Error in /cwl-clan execute:", error);
             if (!interaction.replied && !interaction.deferred) {
-                await interaction.reply({ content: "❌ Failed to open the panel.", ephemeral: true }).catch(() => {});
+                await interaction.reply({ content: "❌ Failed to open the panel.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
             } else {
                 await interaction.editReply({ content: "❌ Failed to open the panel." }).catch(() => {});
             }
@@ -231,7 +231,7 @@ module.exports = {
             });
         } catch (error) {
             console.error("Error in cwl_clan_edit_sel select menu:", error);
-            await interaction.reply({ content: "❌ Error processing selection.", ephemeral: true }).catch(() => {});
+            await interaction.reply({ content: "❌ Error processing selection.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
         }
     },
 
@@ -261,7 +261,7 @@ module.exports = {
             if (!selected || selected.length === 0) {
                 return interaction.reply({
                     content: "⚠️ Please select at least one clan from the dropdown first.",
-                    ephemeral: true
+                    flags: [MessageFlags.Ephemeral]
                 });
             }
 
@@ -300,7 +300,7 @@ module.exports = {
                 if (selected.length > 1) {
                     return interaction.reply({
                         content: "⚠️ Please select **only one clan** to update. Deselect extras from the dropdown first.",
-                        ephemeral: true
+                        flags: [MessageFlags.Ephemeral]
                     });
                 }
 
@@ -328,7 +328,7 @@ module.exports = {
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: "❌ An error occurred.", embeds: [], components: [] }).catch(() => {});
             } else {
-                await interaction.reply({ content: "❌ An error occurred.", ephemeral: true }).catch(() => {});
+                await interaction.reply({ content: "❌ An error occurred.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
             }
         }
     },
@@ -358,11 +358,11 @@ module.exports = {
                             .setTitle("❌ Invalid Type")
                             .setDescription(`Clan type must be **Lazy** or **Serious**. You entered \`${typeInput}\`.`)
                             .setColor(0xE74C3C)],
-                        ephemeral: true
+                        flags: [MessageFlags.Ephemeral]
                     });
                 }
 
-                try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+                try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
                 const data = loadData();
 
                 if (!data[clanTag]) {
@@ -398,11 +398,11 @@ module.exports = {
                             .setTitle("❌ Invalid Type")
                             .setDescription(`Clan type must be **Lazy** or **Serious**. You entered \`${typeInput}\`.`)
                             .setColor(0xE74C3C)],
-                        ephemeral: true
+                        flags: [MessageFlags.Ephemeral]
                     });
                 }
 
-                try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+                try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
                 const data = loadData();
 
                 if (data[clanTag]) {
@@ -444,7 +444,7 @@ module.exports = {
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply({ content: "❌ An error occurred.", embeds: [] }).catch(() => {});
             } else {
-                await interaction.reply({ content: "❌ An error occurred.", ephemeral: true }).catch(() => {});
+                await interaction.reply({ content: "❌ An error occurred.", flags: [MessageFlags.Ephemeral] }).catch(() => {});
             }
         }
     }

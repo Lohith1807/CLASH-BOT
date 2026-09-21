@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType , MessageFlags } = require('discord.js');
 
 module.exports = {
     name: "playercount",
@@ -14,7 +14,7 @@ module.exports = {
         const hasPermission = interaction.member.roles.cache.some(role => allowedRoles.includes(role.id));
 
         if (!hasPermission) {
-            return interaction.reply({ content: "❌ You do not have permission to use this command. Only Admin and Staff can use it.", ephemeral: true });
+            return interaction.reply({ content: "❌ You do not have permission to use this command. Only Admin and Staff can use it.", flags: [MessageFlags.Ephemeral] });
         }
 
         try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
@@ -110,7 +110,7 @@ module.exports = {
         collector.on('collect', async (i) => {
             const canInteract = i.member.roles.cache.some(role => allowedRoles.includes(role.id));
             if (!canInteract) {
-                return i.reply({ content: "❌ Only Admin and Staff members can interact with these buttons.", ephemeral: true });
+                return i.reply({ content: "❌ Only Admin and Staff members can interact with these buttons.", flags: [MessageFlags.Ephemeral] });
             }
 
             try {

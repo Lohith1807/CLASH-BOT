@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, StringSelectMenuBuilder, ComponentType } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, StringSelectMenuBuilder, ComponentType , MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -29,7 +29,7 @@ module.exports = {
         const accounts = userData[targetUser.id] || [];
         
         if (accounts.length === 0) {
-            return interaction.reply({ content: `❌ **${targetUser.username}** has no linked accounts.`, ephemeral: true });
+            return interaction.reply({ content: `❌ **${targetUser.username}** has no linked accounts.`, flags: [MessageFlags.Ephemeral] });
         }
 
         let selectedTag = null;
@@ -51,12 +51,12 @@ module.exports = {
                 
             const row = new ActionRowBuilder().addComponents(selectMenu);
             
-            const msg = await interaction.reply({ 
+            await interaction.reply({ 
                 content: `Please select an account for **${targetUser.username}**:`, 
                 components: [row],
-                ephemeral: true,
-                fetchReply: true
+                flags: [MessageFlags.Ephemeral]
             });
+            const msg = await interaction.fetchReply();
             
             try {
                 const selectInteraction = await msg.awaitMessageComponent({ 
@@ -65,6 +65,7 @@ module.exports = {
                     componentType: ComponentType.StringSelect
                 }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
                 
+                if (!selectInteraction) return;
                 selectedTag = selectInteraction.values[0];
                 await this.showWeightModal(selectInteraction, selectedTag, context);
                 
@@ -104,6 +105,9 @@ module.exports = {
             const weightValue = modalInteraction.fields.getTextInputValue('weight_input');
             await this.handleWeightLogic(modalInteraction, tag, weightValue, context);
         } catch (err) {
+            if (err.code === 'InteractionCollectorError' || err.code === 10062 || err.message?.includes('reason: time')) {
+                return;
+            }
             console.error('Modal submit error:', err);
         }
     },
@@ -111,13 +115,13 @@ module.exports = {
     async handleWeightLogic(interaction, tag, weightValue, context) {
         let weight = parseInt(weightValue, 10);
         if (isNaN(weight)) {
-            return interaction.reply({ content: 'Invalid weight entered.', ephemeral: true });
+            return interaction.reply({ content: 'Invalid weight entered.', flags: [MessageFlags.Ephemeral] });
         }
         
         if (weightValue.length === 5) {
             weight = weight * 5;
         } else if (weightValue.length !== 6) {
-            return interaction.reply({ content: 'Weight must be 5 or 6 digits.', ephemeral: true });
+            return interaction.reply({ content: 'Weight must be 5 or 6 digits.', flags: [MessageFlags.Ephemeral] });
         }
         
         try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }

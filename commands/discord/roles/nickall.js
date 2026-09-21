@@ -45,14 +45,8 @@ module.exports = {
       }
 
       const userData = dataManager.getUserData();
-            try {
-        await message.guild.members.fetch();
-      } catch (err) {
-        if (err.name === 'GatewayRateLimitError' || err.message.includes('rate limit')) {
-          return message.channel.send("?? Discord is rate-limiting member fetching right now. Please try again in a few minutes.");
-        }
-        throw err;
-      }
+      // Fetch guild members to populate cache (silently fall back to cache if rate limited)
+      await message.guild.members.fetch().catch(() => {});
 
       const logChannel = message.guild.channels.cache.get(config.LOG_CHANNEL_ID || logChannelId);
       if (!logChannel) {

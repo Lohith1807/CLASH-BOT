@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle , MessageFlags } = require('discord.js');
 const { getLeagueEmoji, getCwlLeagueEmoji } = require('../../../utils/emoji.js');
 const fs = require('fs');
 const path = require('path');
@@ -230,7 +230,8 @@ module.exports = {
                     { name: 'FWA Clans', value: 'fwa' },
                     { name: 'WAR Clans', value: 'war' },
                     { name: 'CWL Clans', value: 'cwl' },
-                    { name: 'FF & NON - FF Clans', value: 'ff_non_ff' }
+                    { name: 'FF & NON - FF Clans', value: 'ff_non_ff' },
+                    { name: 'Un-Official Clans', value: 'unofficial' }
                 )
         ),
 
@@ -250,7 +251,8 @@ module.exports = {
             if (category === 'fwa') {
                 let fwaTags = [];
                 for (let cTag in clanRoles) {
-                    if (clanRoles[cTag].clanType !== "war") fwaTags.push(cTag);
+                    const status = clanRoles[cTag].clanStatus || "official";
+                    if (status === "official" && clanRoles[cTag].clanType !== "war") fwaTags.push(cTag);
                 }
 
                 let embeds = [];
@@ -319,7 +321,8 @@ module.exports = {
             else if (category === 'war') {
                 let warTags = [];
                 for (let cTag in clanRoles) {
-                    if (clanRoles[cTag].clanType === "war") warTags.push(cTag);
+                    const status = clanRoles[cTag].clanStatus || "official";
+                    if (status === "official" && clanRoles[cTag].clanType === "war") warTags.push(cTag);
                 }
 
                 let embeds = [];
@@ -388,7 +391,8 @@ module.exports = {
             else if (category === 'ff_non_ff') {
                 let fwaTags = [];
                 for (let cTag in clanRoles) {
-                    if (clanRoles[cTag].clanType !== "war") fwaTags.push(cTag);
+                    const status = clanRoles[cTag].clanStatus || "official";
+                    if (status === "official" && clanRoles[cTag].clanType !== "war") fwaTags.push(cTag);
                 }
 
                 let ffClans = [];
@@ -485,12 +489,100 @@ module.exports = {
                 if (!result) return interaction.editReply("No CWL clans found.");
                 await interaction.editReply({ embeds: result.embeds, components: result.components });
             }
+
+            else if (category === 'unofficial') {
+                let unofficialFwaTags = [];
+                let unofficialWarTags = [];
+
+                for (let cTag in clanRoles) {
+                    if (clanRoles[cTag].clanStatus === "unofficial") {
+                        if (clanRoles[cTag].clanType === "war") {
+                            unofficialWarTags.push(cTag);
+                        } else {
+                            unofficialFwaTags.push(cTag);
+                        }
+                    }
+                }
+
+                const totalUnofficial = unofficialFwaTags.length + unofficialWarTags.length;
+                if (totalUnofficial === 0) return interaction.editReply("No Un-Official clans found.");
+
+                let embeds = [];
+                let currentText = getEmoji("sheild") + " **Un-Official Clans**\n\n**Total Un-Official Clans - " + totalUnofficial + "**\n";
+                let options = [];
+
+                const processList = async (tags, title, defaultEmojiKey, typeLabel) => {
+                    if (tags.length === 0) return;
+                    let header = `\n**━━━ ${title} (${tags.length}) ━━━**\n`;
+                    currentText += header;
+
+                    for (let idx = 0; idx < tags.length; idx++) {
+                        let tag = tags[idx];
+                        try {
+                            let clanInfo = clanRoles[tag] || {};
+                            let clanNick = clanInfo.nickName ? clanInfo.nickName.toLowerCase() : "";
+                            let badgeEmojiStr = clanNick && getEmoji(clanNick) ? getEmoji(clanNick) : getEmoji(defaultEmojiKey);
+                            let badgeEmojiObj = clanNick && getEmojiObject(clanNick) ? getEmojiObject(clanNick) : getEmojiObject(defaultEmojiKey);
+
+                            let clan = await coc.getClan(tag);
+                            const clanLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${clan.tag.replace("#", "")}`;
+                            let clanLine = (idx + 1) + ". " + badgeEmojiStr + " [**" + clan.name + "** (" + clan.members + "/50)](" + clanLink + ") — *" + typeLabel + "*\n";
+
+                            if (currentText.length + clanLine.length > 4000) {
+                                embeds.push(new EmbedBuilder().setTitle(embeds.length === 0 ? "Un-Official Clans" : "Un-Official Clans (Cont.)").setDescription(currentText).setColor(0xE67E22));
+                                currentText = "";
+                            }
+
+                            currentText += clanLine;
+                            if (options.length < 25) {
+                                options.push({ label: clan.name, description: typeLabel + " | " + clan.tag, value: clan.tag.replace("#", ""), emoji: badgeEmojiObj });
+                            }
+                        } catch (err) {
+                            let clanLine = (idx + 1) + ". ❌ " + tag + " - Error\n";
+                            if (currentText.length + clanLine.length > 4000) {
+                                embeds.push(new EmbedBuilder().setTitle(embeds.length === 0 ? "Un-Official Clans" : "Un-Official Clans (Cont.)").setDescription(currentText).setColor(0xE67E22));
+                                currentText = "";
+                            }
+                            currentText += clanLine;
+                        }
+                    }
+                };
+
+                await processList(unofficialFwaTags, "Un-Official FWA Clans", "bluefwa", "FWA");
+                await processList(unofficialWarTags, "Un-Official WAR Clans", "cocfight", "WAR");
+
+                if (currentText.trim()) {
+                    embeds.push(new EmbedBuilder().setTitle(embeds.length === 0 ? "Un-Official Clans" : "Un-Official Clans (Cont.)").setDescription(currentText.trim()).setColor(0xE67E22));
+                }
+
+                if (options.length === 0) {
+                    return interaction.editReply({ embeds: embeds });
+                }
+
+                let selectRow = new ActionRowBuilder().addComponents(
+                    new StringSelectMenuBuilder().setCustomId("clans10_sel_unofficial").setPlaceholder("Select an Un-Official Clan").addOptions(options)
+                );
+                
+                try {
+                    await interaction.editReply({ embeds: embeds, components: [selectRow] });
+                } catch (err) {
+                    if (err.code === 50035) {
+                        options.forEach(opt => delete opt.emoji);
+                        let retryRow = new ActionRowBuilder().addComponents(
+                            new StringSelectMenuBuilder().setCustomId("clans10_sel_unofficial").setPlaceholder("Select an Un-Official Clan").addOptions(options)
+                        );
+                        await interaction.editReply({ embeds: embeds, components: [retryRow] }).catch(e => console.error("Retry failed:", e));
+                    } else {
+                        throw err;
+                    }
+                }
+            }
         } catch (error) {
             console.error("Error in /family-clans command:", error);
             if (interaction.deferred || interaction.replied) {
                 await interaction.editReply("❌ An error occurred while fetching clan details.").catch(() => { });
             } else {
-                await interaction.reply({ content: "❌ An error occurred while fetching clan details.", ephemeral: true }).catch(() => { });
+                await interaction.reply({ content: "❌ An error occurred while fetching clan details.", flags: [MessageFlags.Ephemeral] }).catch(() => { });
             }
         }
     }

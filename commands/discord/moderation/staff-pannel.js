@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits , MessageFlags } = require("discord.js");
 const { getEmoji, getEmojiObject } = require("../../../utils/emoji.js");
 
 module.exports = {
@@ -60,7 +60,7 @@ module.exports = {
                 const errEmbed = new EmbedBuilder()
                     .setColor("Red")
                     .setDescription("⛔ You aren't Mod/T-Mod to use this");
-                return interaction.reply({ embeds: [errEmbed], ephemeral: true });
+                return interaction.reply({ embeds: [errEmbed], flags: [MessageFlags.Ephemeral] });
             }
 
             const modEmbed = new EmbedBuilder()
@@ -96,7 +96,7 @@ module.exports = {
                 )
                 .setTimestamp();
 
-            return interaction.reply({ embeds: [modEmbed], ephemeral: true });
+            return interaction.reply({ embeds: [modEmbed], flags: [MessageFlags.Ephemeral] });
         }
 
         if (id === "staffpannel_executive") {
@@ -104,7 +104,7 @@ module.exports = {
                 const errEmbed = new EmbedBuilder()
                     .setColor("Red")
                     .setDescription("⛔ You aren't Executive to use this");
-                return interaction.reply({ embeds: [errEmbed], ephemeral: true });
+                return interaction.reply({ embeds: [errEmbed], flags: [MessageFlags.Ephemeral] });
             }
 
             const execEmbed = new EmbedBuilder()
@@ -121,7 +121,7 @@ module.exports = {
                 )
                 .setTimestamp();
 
-            return interaction.reply({ embeds: [execEmbed], ephemeral: true });
+            return interaction.reply({ embeds: [execEmbed], flags: [MessageFlags.Ephemeral] });
         }
     }
 };

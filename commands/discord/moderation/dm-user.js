@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
     PermissionFlagsBits
-} = require('discord.js');
+, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -24,7 +24,7 @@ module.exports = {
         
         // Ensure the command is executed within a guild
         if (!interaction.guild) {
-            return interaction.reply({ content: '❌ This command can only be used in a server.', ephemeral: true });
+            return interaction.reply({ content: '❌ This command can only be used in a server.', flags: [MessageFlags.Ephemeral] });
         }
 
         const allLeadsRoleId = config.ALL_LEADS_ID || process.env.ALL_LEADS_ID;
@@ -39,17 +39,17 @@ module.exports = {
         const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         const targetRole = interaction.options.getRole('role');
         const messageContent = interaction.options.getString('message');
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
-            // Fetch all members to ensure cache is populated
-            await interaction.guild.members.fetch();
+            // Fetch all members to ensure cache is populated (silently fall back to cache if rate limited)
+            await interaction.guild.members.fetch().catch(() => {});
             
             const membersWithRole = targetRole.members;
             

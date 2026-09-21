@@ -190,9 +190,9 @@ module.exports = {
                 return await interaction.editReply({ embeds: [noWarEmbed] });
             }
             
-            const parroww = emoji.getEmoji('parrow') || '🏹';
-            const yarrow = emoji.getEmoji('yarrow') || '➡️';
-            const rarroww = emoji.getEmoji('rarroww') || '➡️';
+            const white_right = emoji.getEmoji('white_right') || '🏹';
+            const blue_right = emoji.getEmoji('blue_right') || '➡️';
+            const yellow_right = emoji.getEmoji('yellow_right') || '➡️';
             const cocfight = emoji.getEmoji('cocfight') || '⚔️';
             
             let descriptionChunks = [""];
@@ -207,8 +207,8 @@ module.exports = {
                 let block = "";
                 
                 if (!war || war.state === "notInWar") {
-                    block += `${parroww} ${clanBadge} **[${clanData.name}](${ourLink})** vs **NO WAR ONGOING**\n`;
-                    block += `${yarrow} **Match type :** ${matchType}\n\n`;
+                    block += `${white_right} ${clanBadge} **[${clanData.name}](${ourLink})** vs **NO WAR ONGOING**\n`;
+                    block += `${blue_right} **Match type :** ${matchType}\n\n`;
                 } else {
                     const state = war.state;
                     const timeStr = state === "preparation" ? "Starts in:" : "End time:";
@@ -227,9 +227,9 @@ module.exports = {
                         mailText = result === "win" ? `Win ${dot}` : (result === "lose" ? `Lose ${dot}` : "Unknown");
                     }
                     
-                    block += `${parroww} ${clanBadge} **[${clanData.name}](${ourLink})** vs ${oppBadge} **[${war.opponent.name}](${oppLink})**\n`;
-                    block += `${yarrow} **Match type :** ${matchType}\n`;
-                    block += `${rarroww} **War :** ${mailText}\n`;
+                    block += `${white_right} ${clanBadge} **[${clanData.name}](${ourLink})** vs ${oppBadge} **[${war.opponent.name}](${oppLink})**\n`;
+                    block += `${blue_right} **Match type :** ${matchType}\n`;
+                    block += `${yellow_right} **War :** ${mailText}\n`;
                     block += `${cocfight} **${timeStr}** ${timeVal}\n\n`;
                 }
                 
@@ -296,7 +296,6 @@ module.exports = {
                 const oppComp = (war && war.opponent?.members) ? getComposition(war.opponent.members, emoji) : (opponentData ? getComposition(opponentData.memberList, emoji) : "N/A");
                 
                 const stateFormatted = war.state === "preparation" ? "In Prep" : (war.state === "inWar" ? "In War" : "War Ended");
-                const rarroww = emoji.getEmoji('rarroww') || '➡️';
                 
                 const singleEmbed = new EmbedBuilder()
                     .setTitle(clanData.name)

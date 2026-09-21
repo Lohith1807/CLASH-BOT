@@ -7,7 +7,7 @@ const {
     EmbedBuilder,
     UserSelectMenuBuilder,
     PermissionFlagsBits
-} = require('discord.js');
+, MessageFlags } = require('discord.js');
 const { getEmoji } = require('../../../utils/emoji.js');
 
 const POSITIONS = [
@@ -91,7 +91,7 @@ module.exports = {
             if (!canManage) {
                 return interaction.reply({
                     content: `${getEmoji('tickred')} You do not have permission to manage staff members. (Requires Admin or Moderator role)`,
-                    ephemeral: true
+                    flags: [MessageFlags.Ephemeral]
                 });
             }
             if (action === 'add') await handleAdd(interaction, context);
@@ -100,7 +100,7 @@ module.exports = {
             if (!canList) {
                 return interaction.reply({
                     content: `${getEmoji('tickred')} You do not have permission to view the staff list.`,
-                    ephemeral: true
+                    flags: [MessageFlags.Ephemeral]
                 });
             }
             await handleList(interaction, context);
@@ -116,7 +116,7 @@ async function handleAdd(interaction, context) {
     const clanTags = Object.keys(clanRoles);
 
     if (clanTags.length === 0) {
-        return interaction.reply({ content: `${getEmoji('tickred')} No clans configured.`, ephemeral: true });
+        return interaction.reply({ content: `${getEmoji('tickred')} No clans configured.`, flags: [MessageFlags.Ephemeral] });
     }
 
     // Step 1: Select a clan
@@ -139,7 +139,7 @@ async function handleAdd(interaction, context) {
     await interaction.reply({
         content: `${getEmoji('bluedot')} **Step 1/3:** Select the clan you want to add a staff member to.`,
         components: [row],
-        ephemeral: true
+        flags: [MessageFlags.Ephemeral]
     });
 
     // Handle clan selection
@@ -317,7 +317,7 @@ async function handleUpdateRemove(interaction, context) {
     const clansWithStaff = Object.keys(staffData).filter(tag => staffData[tag] && staffData[tag].length > 0);
 
     if (clansWithStaff.length === 0) {
-        return interaction.reply({ content: `${getEmoji('tickred')} No staff members have been added yet.`, ephemeral: true });
+        return interaction.reply({ content: `${getEmoji('tickred')} No staff members have been added yet.`, flags: [MessageFlags.Ephemeral] });
     }
 
     // Step 1: Select a clan
@@ -340,7 +340,7 @@ async function handleUpdateRemove(interaction, context) {
     await interaction.reply({
         content: `${getEmoji('bluedot')} **Select the clan** to update/remove staff from.`,
         components: [row],
-        ephemeral: true
+        flags: [MessageFlags.Ephemeral]
     });
 
     const clientRef = interaction.client;
@@ -641,7 +641,7 @@ async function handleList(interaction, context) {
     const staffData = dataManager.getStaffMembers();
 
     try {
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply();
     } catch (e) {
         return;
     }

@@ -155,7 +155,7 @@ module.exports = {
             .setTitle(`${player.name} ${player.tag}`)
             .setDescription(`${thEmoji} Please confirm this player is **BANNED** or **NOT BANNED** By checking CC`)
             .addFields(
-                { name: "Chocolate Clash", value: `[View FWA Link](https://fwa.chocolateclash.com/cc_n/member.php?tag=${tagWithoutHash})`, inline: true },
+                { name: "Chocolate Clash", value: `[View FWA Link](https://cc.fwafarm.com/cc_n/member.php?tag=${tagWithoutHash})`, inline: true },
                 { name: "Clash of Stats", value: `[View Stats](https://www.clashofstats.com/players/${tagWithoutHash})`, inline: true }
             )
             .setFooter({ 

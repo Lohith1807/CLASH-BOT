@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder, EmbedBuilder, ActionRowBuilder,
     ButtonBuilder, ButtonStyle, StringSelectMenuBuilder,
     PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle
-} = require("discord.js");
+, MessageFlags } = require("discord.js");
 const fs   = require("fs");
 const path = require("path");
 
@@ -309,7 +309,7 @@ async function handleClanMembers(interaction, context) {
         const hasLeaderRole = clanInfo.leaderRoleId && interaction.member.roles.cache.has(clanInfo.leaderRoleId);
 
         if (!hasManageServer && !hasLeaderRole) {
-            return interaction.reply({ content: `❌ You must have the **Manage Server** permission or the <@&${clanInfo.leaderRoleId}> role to manage replacements for this clan.`, ephemeral: true });
+            return interaction.reply({ content: `❌ You must have the **Manage Server** permission or the <@&${clanInfo.leaderRoleId}> role to manage replacements for this clan.`, flags: [MessageFlags.Ephemeral] });
         }
 
         try { await interaction.deferUpdate(); } catch (e) { return; }
@@ -335,10 +335,10 @@ async function handleClanMembers(interaction, context) {
         const hasLeaderRole = clanInfo.leaderRoleId && interaction.member.roles.cache.has(clanInfo.leaderRoleId);
 
         if (!hasManageServer && !hasLeaderRole) {
-            return interaction.reply({ content: `❌ You must have the **Manage Server** permission or the <@&${clanInfo.leaderRoleId}> role to manage replacements for this clan.`, ephemeral: true });
+            return interaction.reply({ content: `❌ You must have the **Manage Server** permission or the <@&${clanInfo.leaderRoleId}> role to manage replacements for this clan.`, flags: [MessageFlags.Ephemeral] });
         }
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (e) { return; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (e) { return; }
         
         let clanData;
         try { clanData = await coc.getClan(clanTag); } 
@@ -593,10 +593,10 @@ async function handleClanMembers(interaction, context) {
         const hasLeaderRole = clanInfo.leaderRoleId && interaction.member.roles.cache.has(clanInfo.leaderRoleId);
 
         if (!hasManageServer && !hasLeaderRole) {
-            return interaction.reply({ content: `❌ You must have the **Manage Server** permission or the <@&${clanInfo.leaderRoleId}> role to manage replacements for this clan.`, ephemeral: true });
+            return interaction.reply({ content: `❌ You must have the **Manage Server** permission or the <@&${clanInfo.leaderRoleId}> role to manage replacements for this clan.`, flags: [MessageFlags.Ephemeral] });
         }
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (e) { return; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (e) { return; }
 
         const membersReplace = getMembersReplace();
         const nick           = clanInfo.nickName || clanTag;
@@ -772,7 +772,7 @@ async function handleClanMembers(interaction, context) {
         const clanTagClean = id.replace("clanmem_replacements_", "");
         const clanTag = "#" + clanTagClean;
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (e) { return; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (e) { return; }
 
         const clanRoles = dataManager.getClanRoles();
         const membersReplace = getMembersReplace();
@@ -807,7 +807,7 @@ async function handleClanMembers(interaction, context) {
         const clanTag = "#" + clanTagClean;
 
         try { 
-            if (action === "view") try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; } 
+            if (action === "view") try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; } 
             else try { await interaction.deferUpdate(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
         } catch (e) { return; }
 
@@ -910,7 +910,7 @@ async function handleClanMembers(interaction, context) {
         const clanTagClean = id.replace("clanmem_pingmissing_", "");
         const clanTag = "#" + clanTagClean;
 
-        try { await interaction.deferReply({ ephemeral: true }); } catch (e) { return; }
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (e) { return; }
 
         let clanData;
         try { clanData = await coc.getClan(clanTag); }
@@ -986,7 +986,7 @@ async function handleClanMembers(interaction, context) {
 
         if (!hasLeaderRole) {
             const roleMsg = clanInfo.leaderRoleId ? `<@&${clanInfo.leaderRoleId}>` : "Clan Leader";
-            return interaction.reply({ content: `❌ You must have the ${roleMsg} role to manage members for this clan.`, ephemeral: true });
+            return interaction.reply({ content: `❌ You must have the ${roleMsg} role to manage members for this clan.`, flags: [MessageFlags.Ephemeral] });
         }
 
         const row = new ActionRowBuilder().addComponents(
@@ -1017,7 +1017,7 @@ async function handleClanMembers(interaction, context) {
             .setColor(0x2B2D31)
             .setDescription("Select an action to manage members for this clan.");
 
-        return interaction.reply({ embeds: [embed], components: [row], ephemeral: true });
+        return interaction.reply({ embeds: [embed], components: [row], flags: [MessageFlags.Ephemeral] });
     }
 
     if (id.startsWith("clanmem_refreshmsg_")) {
@@ -1077,7 +1077,7 @@ async function handleClanMembers(interaction, context) {
 
         if (!hasLeaderRole) {
             const roleMsg = clanInfo.leaderRoleId ? `<@&${clanInfo.leaderRoleId}>` : "Clan Leader";
-            return interaction.reply({ content: `❌ You must have the ${roleMsg} role to manage members for this clan.`, ephemeral: true });
+            return interaction.reply({ content: `❌ You must have the ${roleMsg} role to manage members for this clan.`, flags: [MessageFlags.Ephemeral] });
         }
 
         try { await interaction.deferUpdate(); } catch (e) { return; }
@@ -1188,7 +1188,7 @@ async function handleClanMembers(interaction, context) {
 
         if (!hasLeaderRole) {
             const roleMsg = clanInfo.leaderRoleId ? `<@&${clanInfo.leaderRoleId}>` : "Clan Leader";
-            return interaction.reply({ content: `❌ You must have the ${roleMsg} role to manage members for this clan.`, ephemeral: true });
+            return interaction.reply({ content: `❌ You must have the ${roleMsg} role to manage members for this clan.`, flags: [MessageFlags.Ephemeral] });
         }
 
         try { await interaction.deferUpdate(); } catch (e) { return; }
@@ -1443,7 +1443,7 @@ async function handleClanMembers(interaction, context) {
 
         if (!hasLeaderRole) {
             const roleMsg = clanInfo.leaderRoleId ? `<@&${clanInfo.leaderRoleId}>` : "Clan Leader";
-            return interaction.reply({ content: `❌ You must have the ${roleMsg} role to manage members for this clan.`, ephemeral: true });
+            return interaction.reply({ content: `❌ You must have the ${roleMsg} role to manage members for this clan.`, flags: [MessageFlags.Ephemeral] });
         }
 
         try { await interaction.deferUpdate(); } catch (e) { return; }

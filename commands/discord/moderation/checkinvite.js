@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle , MessageFlags } = require('discord.js');
 const emojiUtils = require('../../../utils/emoji.js');
 
 // Helper to extract invite code from a URL or raw input
@@ -127,7 +127,7 @@ module.exports = {
         if (!inviteCode) {
             return interaction.reply({
                 content: "❌ Invalid invite code format. Please provide a valid invite link or code.",
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 

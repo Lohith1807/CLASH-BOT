@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, PermissionsBitField } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, PermissionsBitField , MessageFlags } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
 module.exports = {
@@ -16,6 +16,15 @@ module.exports = {
             option.setName("nickname")
                 .setDescription("Short nickname for the clan (e.g. BB, TL)")
                 .setRequired(true)
+        )
+        .addStringOption(option =>
+            option.setName("clanstatus")
+                .setDescription("Clan status")
+                .setRequired(true)
+                .addChoices(
+                    { name: "Official", value: "official" },
+                    { name: "Unofficial", value: "unofficial" }
+                )
         )
         .addStringOption(option =>
             option.setName("clantype")
@@ -75,10 +84,10 @@ module.exports = {
             const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
             if (!isAdmin && !hasAllowedRole) {
-                return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
+                return interaction.reply({ content: "❌ You do not have permission to use this command.", flags: [MessageFlags.Ephemeral] });
             }
 
-            try { await interaction.deferReply({ ephemeral: true }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
+            try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
             const botMember = await interaction.guild.members.fetchMe();
             if (!botMember.permissions.has(PermissionFlagsBits.ManageRoles) || !botMember.permissions.has(PermissionFlagsBits.ManageChannels)) {
@@ -90,6 +99,7 @@ module.exports = {
 
 
             var nickName = interaction.options.getString("nickname");
+            var clanStatus = interaction.options.getString("clanstatus");
             var clanType = interaction.options.getString("clantype");
             var welcomeMsgOpt = interaction.options.getString("welcomemessage");
             var leader = interaction.options.getUser("leader");
@@ -112,6 +122,7 @@ module.exports = {
                 console.warn(`⚠️ Could not fetch clan data for ${clanTag}:`, err.message);
             }
 
+            var finalStatus = clanStatus || existing.clanStatus || "official";
             var finalType = clanType || existing.clanType || "fwa";
 
             var leaders = existing.leaders || [];
@@ -143,25 +154,49 @@ module.exports = {
             let leaderIconPath = path.join(__dirname, "../../../assets/leader.png");
             let memberIconPath = path.join(__dirname, "../../../assets/member.png");
 
+            const canAddRoleIcon = Boolean(interaction.guild.features && interaction.guild.features.includes("ROLE_ICONS"));
+
+            const createRoleSafely = async (options) => {
+                const roleOptions = { ...options };
+                if (!canAddRoleIcon && roleOptions.icon) {
+                    delete roleOptions.icon;
+                }
+                try {
+                    return await interaction.guild.roles.create(roleOptions);
+                } catch (err) {
+                    if (roleOptions.icon) {
+                        console.warn(`Could not create role "${roleOptions.name}" with icon:`, err.message);
+                        delete roleOptions.icon;
+                        setupWarnings.push(`⚠️ Skipped role icon for "${roleOptions.name}" (server boost level insufficient or expired).`);
+                        return await interaction.guild.roles.create(roleOptions);
+                    }
+                    throw err;
+                }
+            };
+
             let leaderRoleOptions = {
                 name: `〢・🩸${officialClanName} Leader`,
-                color: 0xfd0303,
+                colors: 0xfd0303,
                 hoist: true,
                 reason: `Automated setup for ${clanTag}`
             };
-            if (fs.existsSync(leaderIconPath)) leaderRoleOptions.icon = leaderIconPath;
+            if (canAddRoleIcon && fs.existsSync(leaderIconPath)) {
+                leaderRoleOptions.icon = leaderIconPath;
+            }
 
-            let leaderRole = await interaction.guild.roles.create(leaderRoleOptions);
+            let leaderRole = await createRoleSafely(leaderRoleOptions);
 
             let memberRoleOptions = {
                 name: `〢・🩸${officialClanName} Member`,
-                color: 0xe99898,
+                colors: 0xe99898,
                 hoist: true,
                 reason: `Automated setup for ${clanTag}`
             };
-            if (fs.existsSync(memberIconPath)) memberRoleOptions.icon = memberIconPath;
+            if (canAddRoleIcon && fs.existsSync(memberIconPath)) {
+                memberRoleOptions.icon = memberIconPath;
+            }
 
-            let memberRole = await interaction.guild.roles.create(memberRoleOptions);
+            let memberRole = await createRoleSafely(memberRoleOptions);
             finalRoleId = memberRole.id;
 
             const assignRoles = async (user) => {
@@ -344,6 +379,7 @@ module.exports = {
                 mailChannelId: finalMailChannelId,
                 leadChannelId: finalLeadChannelId,
                 feedChannelId: finalFeedChannelId,
+                clanStatus: finalStatus,
                 clanType: finalType,
                 welcomeMessage: (welcomeMsgOpt === "yes")
             };
@@ -362,6 +398,7 @@ module.exports = {
                 "• **Mail Channel:** <#" + finalMailChannelId + ">\n" +
                 "• **Leadership Chat:** <#" + finalLeadChannelId + ">\n" +
                 "• **Clan Feed:** <#" + finalFeedChannelId + ">\n" +
+                "• **Clan Status:** " + (finalStatus === "official" ? "Official" : "Unofficial") + "\n" +
                 "• **Clan Type:** " + finalType + "\n" +
                 "• **Welcome Messages:** " + (welcomeMsgOpt === "yes" ? "Enabled ✅" : "Disabled ❌") + "\n";
 
@@ -385,9 +422,9 @@ module.exports = {
             console.error("❌ Error in clanentry command:", error);
             try {
                 if (interaction.replied || interaction.deferred) {
-                    await interaction.followUp({ content: "❌ An error occurred.", ephemeral: true });
+                    await interaction.followUp({ content: "❌ An error occurred.", flags: [MessageFlags.Ephemeral] });
                 } else {
-                    await interaction.reply({ content: "❌ An error occurred.", ephemeral: true });
+                    await interaction.reply({ content: "❌ An error occurred.", flags: [MessageFlags.Ephemeral] });
                 }
             } catch (e) {}
         }

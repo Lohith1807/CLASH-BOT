@@ -1,3 +1,4 @@
+const { MessageFlags } = require('discord.js');
 
 const tick = "1410137697300775026";
 const tickEmoji = `<:tick:${tick}>`;
@@ -203,7 +204,7 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                         .setColor(0x5865F2)
                         .setDescription(`I think you can't wait, be calm or I will complaint too dexter 😢`)
                 ],
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             }).catch(() => {});
             return; // Don't consume the collector
         }

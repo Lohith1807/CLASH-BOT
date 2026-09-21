@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const dataManager = require('../../../utils/dataManager.js');
 
 /**
@@ -606,7 +606,7 @@ module.exports = {
         const { coc, emoji, data: dm } = context;
 
         const query = interaction.options.getString('clantag');
-        if (!query) return interaction.reply({ content: "❌ Please provide a clan tag.", ephemeral: true });
+        if (!query) return interaction.reply({ content: "❌ Please provide a clan tag.", flags: [MessageFlags.Ephemeral] });
 
         try { await interaction.deferReply().catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 

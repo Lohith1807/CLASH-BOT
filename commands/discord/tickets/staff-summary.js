@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require("discord.js");
 const staffTicketTracker = require("../../../utils/staffTicketTracker");
 
 module.exports = {
@@ -28,7 +28,7 @@ module.exports = {
                         .setColor("Red")
                         .setDescription(`${getEmoji("bluex")} You do not have the required roles to use this command.`)
                 ], 
-                ephemeral: true 
+                flags: [MessageFlags.Ephemeral] 
             });
         }
 

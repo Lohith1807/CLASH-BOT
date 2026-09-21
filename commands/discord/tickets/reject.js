@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const ticketConfigs = require('../../../utils/tickets/ticketConfigs.js');
 
 module.exports = {
@@ -25,18 +25,19 @@ module.exports = {
     // 7. If the command is used outside a ticket channel, show "you cant use here noob"
     if (!channel.parentId || channel.parentId !== CATEGORY_ID) {
         if (interaction.deferred || interaction.replied) return interaction.editReply({ content: 'you cant use here noob' });
-        return interaction.reply({ content: 'you cant use here noob', ephemeral: true });
+        return interaction.reply({ content: 'you cant use here noob', flags: [MessageFlags.Ephemeral] });
     }
 
     // 9. Restrict these commands to staff/admin roles only.
     const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
     const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
     const WEL_EXE_STAFF_ID = config.WEL_EXE_STAFF_ID || process.env.WEL_EXE_STAFF_ID;
-    const isWelExe = WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID);
+    const isWelExe = (WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
+    const isCwlStaff = member.roles.cache.has('1448265928503726161');
 
-    if (!isStaff && !isAdmin && !isWelExe) {
+    if (!isStaff && !isAdmin && !isWelExe && !isCwlStaff) {
         if (interaction.deferred || interaction.replied) return interaction.editReply({ content: '❌ Only Staff or Admins can use this command.' });
-        return interaction.reply({ content: '❌ Only Staff or Admins can use this command.', ephemeral: true });
+        return interaction.reply({ content: '❌ Only Staff or Admins can use this command.', flags: [MessageFlags.Ephemeral] });
     }
 
     if (!interaction.deferred && !interaction.replied) {

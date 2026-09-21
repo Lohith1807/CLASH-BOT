@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
     PermissionFlagsBits
-} = require('discord.js');
+, MessageFlags } = require('discord.js');
 
 function parseDuration(str) {
     const match = str.match(/^(\d+)(s|m|h|d)$/i);
@@ -46,7 +46,7 @@ module.exports = {
         const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
 
         if (!isAdmin && !hasAllowedRole) {
-            return interaction.reply({ content: '❌ You do not have permission to use this command.', ephemeral: true });
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 
         const target = interaction.options.getMember('target');
@@ -55,28 +55,35 @@ module.exports = {
         const reason = interaction.options.getString('reason') || 'No reason provided';
 
         if (!target) {
-            return interaction.reply({ content: '❌ Could not find that member in this server.', ephemeral: true });
+            return interaction.reply({ content: '❌ Could not find that member in this server.', flags: [MessageFlags.Ephemeral] });
         }
 
         if (targetUser.id === interaction.user.id) {
-            return interaction.reply({ content: '❌ You cannot mute yourself.', ephemeral: true });
+            return interaction.reply({ content: '❌ You cannot mute yourself.', flags: [MessageFlags.Ephemeral] });
         }
 
         if (!target.moderatable) {
-            return interaction.reply({ content: '❌ I cannot timeout that user. They may have higher permissions than me.', ephemeral: true });
+            return interaction.reply({ content: '❌ I cannot timeout that user. They may have higher permissions than me.', flags: [MessageFlags.Ephemeral] });
         }
 
         const durationMs = parseDuration(durationStr);
         if (!durationMs) {
             return interaction.reply({
                 content: '❌ Invalid duration format. Use: `10s`, `10m`, `1h`, `2d` (max 28 days).',
-                ephemeral: true
+                flags: [MessageFlags.Ephemeral]
             });
         }
 
         const MAX_TIMEOUT_MS = 28 * 24 * 60 * 60 * 1000;
         if (durationMs > MAX_TIMEOUT_MS) {
-            return interaction.reply({ content: '❌ Timeout duration cannot exceed **28 days**.', ephemeral: true });
+            return interaction.reply({ content: '❌ Timeout duration cannot exceed **28 days**.', flags: [MessageFlags.Ephemeral] });
+        }
+
+        try {
+            await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+        } catch (err) {
+            if (err.code === 10062) return;
+            throw err;
         }
 
         try {
@@ -111,7 +118,7 @@ module.exports = {
                 .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
                 .setTimestamp();
 
-            await interaction.reply({ embeds: [successEmbed], ephemeral: true });
+            await interaction.editReply({ embeds: [successEmbed] });
 
             const logChannelId = config.LOG_CHANNEL_ID;
             if (logChannelId) {
@@ -119,7 +126,12 @@ module.exports = {
                 if (logChannel) await logChannel.send({ embeds: [successEmbed] }).catch(() => null);
             }
         } catch (err) {
-            await interaction.reply({ content: `❌ Failed to mute: ${err.message}`, ephemeral: true });
+            if (err.code === 10062) return;
+            if (interaction.deferred || interaction.replied) {
+                await interaction.editReply({ content: `❌ Failed to mute: ${err.message}` }).catch(() => null);
+            } else {
+                await interaction.reply({ content: `❌ Failed to mute: ${err.message}`, flags: [MessageFlags.Ephemeral] }).catch(() => null);
+            }
         }
     }
 };

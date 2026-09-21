@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder , MessageFlags } = require('discord.js');
 const { getEmoji } = require('../../../utils/emoji.js');
 
 module.exports = {
@@ -31,7 +31,7 @@ module.exports = {
 
         const ALLOWED_ROLES = [...config.ADMIN_ROLE_IDS, ...config.STAFF_ROLE_IDS].filter(id => id.trim() !== "");
         if (!interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) {
-            return interaction.reply({ content: "❌ You do not have permission to use this command.", ephemeral: true });
+            return interaction.reply({ content: "❌ You do not have permission to use this command.", flags: [MessageFlags.Ephemeral] });
         }
 
         try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
