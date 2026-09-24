@@ -123,6 +123,12 @@ module.exports = {
                     componentType: ComponentType.StringSelect
                 }).catch(err => { if (err.code === 'InteractionCollectorError') return null; throw err; });
                 
+                if (!response) {
+                    await selectMsg.edit({ content: "⌛ Selection timed out.", components: [] }).catch(() => {});
+                    setTimeout(() => selectMsg.delete().catch(()=>null), 3000);
+                    return;
+                }
+
                 input = response.values[0];
                 await response.update({ content: `✅ Account selected: **${input}**`, components: [] });
                 setTimeout(() => selectMsg.delete().catch(()=>null), 3000);

@@ -13,6 +13,64 @@ let discordClient = null;
 let isInMaintenance = false;
 let maintenanceCheckUntil = 0;
 
+/**
+ * Custom error class for CoC API errors with user-friendly messages.
+ */
+class CocApiError extends Error {
+    constructor(friendlyMessage, originalError = null) {
+        super(friendlyMessage);
+        this.name = "CocApiError";
+        this.friendlyMessage = friendlyMessage;
+        this.originalError = originalError;
+        this.statusCode = originalError?.response?.status || null;
+    }
+}
+
+/**
+ * Classify a CoC API error into a user-friendly message.
+ * @param {Error} error - The raw error from axios / interceptor.
+ * @param {"player"|"clan"|"war"|"general"} type - What kind of request failed.
+ * @returns {CocApiError}
+ */
+function handleCocError(error, type = "general") {
+    // Maintenance pause
+    if (error.message === "API_MAINTENANCE_PAUSE") {
+        return new CocApiError("⛔ Clash of Clans is under maintenance. Please try again later.", error);
+    }
+
+    const status = error.response?.status;
+
+    // 404 — invalid tag
+    if (status === 404) {
+        if (type === "player") return new CocApiError("⛔ Invalid Player Tag", error);
+        if (type === "clan")   return new CocApiError("⛔ Invalid Clan Tag", error);
+        return new CocApiError("⛔ Not found — the tag may be invalid.", error);
+    }
+
+    // 403 — access denied (IP mismatch / bad token)
+    if (status === 403) {
+        return new CocApiError("⛔ Access denied by Clash of Clans API. The API token may be invalid or IP-restricted.", error);
+    }
+
+    // 429 — rate limited
+    if (status === 429) {
+        return new CocApiError("⛔ Clash of Clans API Network issue.", error);
+    }
+
+    // 500+ server errors
+    if (status && status >= 500) {
+        return new CocApiError("⛔ Clash of Clans API server error.", error);
+    }
+
+    // Network / timeout errors
+    if (error.code === "ECONNABORTED" || error.code === "ETIMEDOUT" || error.code === "ECONNRESET" || error.message?.includes("timeout")) {
+        return new CocApiError("⛔ Clash of Clans API Network issue. (timeout)", error);
+    }
+
+    // Catch-all
+    return new CocApiError("⛔ Some error from Clash Of Clans", error);
+}
+
 function init(client) {
     discordClient = client;
 }
@@ -87,7 +145,7 @@ async function getPlayer(tag) {
         const response = await cocApi.get(`/players/${encodeTag(tag)}`);
         return response.data;
     } catch (error) {
-        throw error;
+        throw handleCocError(error, "player");
     }
 }
 
@@ -101,7 +159,7 @@ async function getClan(tag) {
         const response = await cocApi.get(`/clans/${encodeTag(tag)}`);
         return response.data;
     } catch (error) {
-        throw error;
+        throw handleCocError(error, "clan");
     }
 }
 
@@ -115,7 +173,7 @@ async function getWarLog(tag) {
         const response = await cocApi.get(`/clans/${encodeTag(tag)}/warlog`);
         return response.data;
     } catch (error) {
-        throw error;
+        throw handleCocError(error, "clan");
     }
 }
 
@@ -129,7 +187,7 @@ async function getCurrentWar(tag) {
         const response = await cocApi.get(`/clans/${encodeTag(tag)}/currentwar`);
         return response.data;
     } catch (error) {
-        throw error;
+        throw handleCocError(error, "clan");
     }
 }
 
@@ -143,7 +201,7 @@ async function getClanMembers(tag) {
         const response = await cocApi.get(`/clans/${encodeTag(tag)}/members`);
         return response.data;
     } catch (error) {
-        throw error;
+        throw handleCocError(error, "clan");
     }
 }
 
@@ -160,7 +218,7 @@ async function searchClans(name, limit = 10) {
         });
         return response.data;
     } catch (error) {
-        throw error;
+        throw handleCocError(error, "general");
     }
 }
 
@@ -174,7 +232,7 @@ async function getCapitalRaidSeason(tag) {
         const response = await cocApi.get(`/clans/${encodeTag(tag)}/capitalraidseasons`);
         return response.data;
     } catch (error) {
-        throw error;
+        throw handleCocError(error, "clan");
     }
 }
 
@@ -188,7 +246,7 @@ async function getClanWarLeagueGroup(tag) {
         const response = await cocApi.get(`/clans/${encodeTag(tag)}/currentwar/leaguegroup`);
         return response.data;
     } catch (error) {
-        throw error;
+        throw handleCocError(error, "clan");
     }
 }
 
@@ -203,4 +261,5 @@ module.exports = {
     searchClans,
     formatTag,
     init,
+    CocApiError,
 };

@@ -19,7 +19,7 @@ module.exports = {
     const { getEmoji } = emojiUtils;
     const { guild, member, channel, user: moderator } = interaction;
 
-    const CATEGORY_ID = config.TICKET_CATEGORY_ID || config.ADMIN_CATEGORY_ID;
+    const CATEGORY_ID = config.TICKET_CATEGORY_ID;
 
     // 1. Both commands must work only inside ticket channels.
     // 7. If the command is used outside a ticket channel, show "you cant use here noob"

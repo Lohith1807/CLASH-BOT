@@ -89,7 +89,8 @@ module.exports = {
 
             const logChannelId = config.LOG_CHANNEL_ID;
             if (logChannelId) {
-                const logChannel = interaction.guild.channels.cache.get(logChannelId);
+                const logChannel = interaction.guild.channels.cache.get(logChannelId)
+                    || await interaction.guild.channels.fetch(logChannelId).catch(() => null);
                 if (logChannel) await logChannel.send({ embeds: [successEmbed] }).catch(() => null);
             }
         } catch (err) {

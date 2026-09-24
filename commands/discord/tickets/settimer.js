@@ -17,7 +17,7 @@ module.exports = {
     const { client, config } = context;
     const { guild, member, channel } = interaction;
 
-    const CATEGORY_ID = config.TICKET_CATEGORY_ID || config.ADMIN_CATEGORY_ID;
+    const CATEGORY_ID = config.TICKET_CATEGORY_ID;
 
     if (!channel.parentId || channel.parentId !== CATEGORY_ID) {
         return interaction.reply({ content: '❌ This command can only be used inside a ticket channel.', flags: [MessageFlags.Ephemeral] });
@@ -114,7 +114,7 @@ module.exports = {
         try {
             const logChannelId = config.TICKET_LOG_CHANNEL_ID || config.LOG_CHANNEL_ID;
             if (logChannelId) {
-                const logChannel = guild.channels.cache.get(logChannelId);
+                const logChannel = guild.channels.cache.get(logChannelId) || await guild.channels.fetch(logChannelId).catch(() => null);
                 if (logChannel) {
                     const payload = { embeds: [closeEmbed] };
                     if (attachment) payload.files = [attachment];

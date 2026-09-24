@@ -1,16 +1,27 @@
 const path = require("path");
 const fs = require("fs");
 
-// Global override to silently skip CoC API maintenance errors in the console
+// Global override: suppress all CoC API errors from console, only log real internal bugs
 const originalConsoleError = console.error;
 console.error = function (...args) {
-  const isMaintenanceError = args.some(arg =>
+  // Suppress our custom CocApiError — these are expected, user gets a reply
+  if (args.some(arg => arg && arg.name === "CocApiError")) return;
+
+  // Suppress maintenance errors
+  if (args.some(arg =>
     (arg instanceof Error && (arg.message === "API_MAINTENANCE_PAUSE" || (arg.response && arg.response.status === 503))) ||
     (typeof arg === "string" && (arg.includes("API_MAINTENANCE_PAUSE") || arg.includes("status code 503") || arg.includes("503 Service Unavailable")))
-  );
-  if (isMaintenanceError) return; // Skip silently
+  )) return;
+
+  // Suppress raw Axios errors from the CoC API
+  if (args.some(arg =>
+    arg instanceof Error && arg.config && arg.config.baseURL === "https://api.clashofclans.com/v1"
+  )) return;
+
+  // Everything else = real internal error, log fully
   originalConsoleError.apply(console, args);
 };
+
 
 const config = require("./config/config.js");
 const {
@@ -472,13 +483,13 @@ function randomColor() {
 }
 
 async function sendLog(guild, embed) {
-  const logChannel = guild.channels.cache.get(LOG_CHANNEL_ID);
+  const logChannel = guild.channels.cache.get(LOG_CHANNEL_ID) || await guild.channels.fetch(LOG_CHANNEL_ID).catch(() => null);
   if (logChannel) await logChannel.send({ embeds: [embed] }).catch(() => null);
 }
 
 
 client.on(Events.GuildMemberAdd, async (member) => {
-  const channel = member.guild.channels.cache.get(WELCOME_CHANNEL_ID);
+  const channel = member.guild.channels.cache.get(WELCOME_CHANNEL_ID) || await member.guild.channels.fetch(WELCOME_CHANNEL_ID).catch(() => null);
   if (!channel) return;
 
   let welcomeImage;

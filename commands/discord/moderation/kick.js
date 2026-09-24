@@ -83,6 +83,7 @@ module.exports = {
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000, max: 1 });
 
         collector.on('collect', async i => {
+            await i.deferUpdate().catch(() => {});
             if (i.customId.startsWith('kick_confirm_')) {
                 try {
                     await target.send({
@@ -93,7 +94,8 @@ module.exports = {
                             .setTimestamp()]
                     }).catch(() => null);
 
-                    await target.kick(`${reason} | Kicked by: ${interaction.user.tag}`);
+                    const auditReason = `${reason.slice(0, 450)} | Kicked by: ${interaction.user.tag}`;
+                    await target.kick(auditReason);
 
                     const successEmbed = new EmbedBuilder()
                         .setTitle('👢 Member Kicked')
@@ -104,21 +106,22 @@ module.exports = {
                             { name: '👮 Moderator', value: `${interaction.user.tag}`, inline: true },
                             { name: '📋 Reason', value: reason, inline: false }
                         )
-                        .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
+                        .setThumbnail(targetUser.displayAvatarURL())
                         .setTimestamp();
 
-                    await i.update({ embeds: [successEmbed], components: [] });
+                    await i.editReply({ embeds: [successEmbed], components: [] });
 
                     const logChannelId = config.LOG_CHANNEL_ID;
                     if (logChannelId) {
-                        const logChannel = interaction.guild.channels.cache.get(logChannelId);
+                        const logChannel = interaction.guild.channels.cache.get(logChannelId)
+                            || await interaction.guild.channels.fetch(logChannelId).catch(() => null);
                         if (logChannel) await logChannel.send({ embeds: [successEmbed] }).catch(() => null);
                     }
                 } catch (err) {
-                    await i.update({ content: `❌ Failed to kick: ${err.message}`, embeds: [], components: [] });
+                    await i.editReply({ content: `❌ Failed to kick: ${err.message}`, embeds: [], components: [] });
                 }
             } else {
-                await i.update({ content: '❎ Kick cancelled.', embeds: [], components: [] });
+                await i.editReply({ content: '❎ Kick cancelled.', embeds: [], components: [] });
             }
         });
 

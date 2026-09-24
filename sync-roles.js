@@ -58,7 +58,7 @@ client.once("ready", async () => {
                 const leaderRole = await guild.roles.fetch(data.leaderRoleId).catch(() => null);
                 if (leaderRole) {
                     let editOptions = {
-                        colors: 0xfd0303,
+                        color: 0xfd0303,
                         hoist: true
                     };
                     if (canAddRoleIcon && fs.existsSync(leaderIconPath)) {
@@ -77,7 +77,7 @@ client.once("ready", async () => {
                 const memberRole = await guild.roles.fetch(data.roleId).catch(() => null);
                 if (memberRole) {
                     let editOptions = {
-                        colors: 0xe99898,
+                        color: 0xe99898,
                         hoist: true
                     };
                     if (canAddRoleIcon && fs.existsSync(memberIconPath)) {

@@ -35,7 +35,7 @@ module.exports = {
     // Check if there is a mention
     if (message.mentions.users.size > 0) {
       const user = message.mentions.users.first();
-      targetMember = message.guild.members.cache.get(user.id);
+      targetMember = message.guild.members.cache.get(user.id) || await message.guild.members.fetch(user.id).catch(() => null);
     }
     
     if (count > 20) count = 20;

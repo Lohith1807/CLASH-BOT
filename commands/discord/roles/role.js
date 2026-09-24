@@ -176,7 +176,7 @@ module.exports = {
 
             let leaderRoleOptions = {
                 name: `〢・🩸${officialClanName} Leader`,
-                colors: 0xfd0303,
+                color: 0xfd0303,
                 hoist: true,
                 reason: `Automated setup for ${clanTag}`
             };
@@ -188,7 +188,7 @@ module.exports = {
 
             let memberRoleOptions = {
                 name: `〢・🩸${officialClanName} Member`,
-                colors: 0xe99898,
+                color: 0xe99898,
                 hoist: true,
                 reason: `Automated setup for ${clanTag}`
             };

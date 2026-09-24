@@ -4,7 +4,7 @@ const transcripts = require('discord-html-transcripts');
 async function sendLog(guild, embed, config, file = null, content = null) {
     const logChannelId = config.TICKET_LOG_CHANNEL_ID || config.LOG_CHANNEL_ID;
     if (!logChannelId) return;
-    const logChannel = guild.channels.cache.get(logChannelId);
+    const logChannel = guild.channels.cache.get(logChannelId) || await guild.channels.fetch(logChannelId).catch(() => null);
     if (!logChannel) return;
 
     const payload = { embeds: [embed] };
@@ -41,7 +41,7 @@ module.exports = {
             });
         }
 
-        const CATEGORY_ID = conf.TICKET_CATEGORY_ID || conf.ADMIN_CATEGORY_ID;
+        const CATEGORY_ID = conf.TICKET_CATEGORY_ID;
         if (channel.parentId !== CATEGORY_ID) {
             return interaction.reply({
                 content: '❌ This command can only be used inside a ticket channel.',

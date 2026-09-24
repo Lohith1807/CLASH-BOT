@@ -19,6 +19,7 @@ module.exports = {
   GLOBAL_ROLE_ID: process.env.GLOBAL_ROLE_ID,
   MEMBER_ROLE_IDS: (process.env.MEMBER_ROLE_IDS || "").split(","),
   ALL_LEAD_ROLE_ID: process.env.ALL_LEAD_ROLE_ID,
+  ALL_LEADS_ID: process.env.ALL_LEADS_ID,
 
   TICKET_CATEGORY_ID: process.env.TICKET_CATEGORY_ID,
   PANEL_CHANNEL_ID: process.env.PANEL_CHANNEL_ID,

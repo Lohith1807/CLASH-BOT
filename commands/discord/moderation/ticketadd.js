@@ -37,7 +37,7 @@ module.exports = {
             });
         }
 
-        const CATEGORY_ID = config.TICKET_CATEGORY_ID || config.ADMIN_CATEGORY_ID;
+        const CATEGORY_ID = config.TICKET_CATEGORY_ID;
         if (channel.parentId !== CATEGORY_ID) {
             return interaction.reply({
                 content: '❌ This command can only be used inside a ticket channel.',

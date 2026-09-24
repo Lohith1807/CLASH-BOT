@@ -88,7 +88,7 @@ module.exports = {
             return interaction.editReply({ content: 'Unknown ticket type.' });
         }
 
-        const CATEGORY_ID = config.TICKET_CATEGORY_ID || config.ADMIN_CATEGORY_ID;
+        const CATEGORY_ID = config.TICKET_CATEGORY_ID;
         const { type: ticketType, embed: embedModule, appId, cwlOnly } = ticketConfig;
 
         // ticketType already has the correct prefix (cwl-assistance, clan-assistance, Help-Assistance)
@@ -243,7 +243,7 @@ module.exports = {
             // Log
             const logChannelId = config.TICKET_LOG_CHANNEL_ID || config.LOG_CHANNEL_ID;
             if (logChannelId) {
-                const logChannel = guild.channels.cache.get(logChannelId);
+                const logChannel = guild.channels.cache.get(logChannelId) || await guild.channels.fetch(logChannelId).catch(() => null);
                 if (logChannel) {
                     const logEmbed = new EmbedBuilder()
                         .setAuthor({ name: interaction.user.username, iconURL: interaction.user.displayAvatarURL() })

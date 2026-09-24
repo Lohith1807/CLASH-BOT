@@ -92,6 +92,7 @@ module.exports = {
         const collector = interaction.channel.createMessageComponentCollector({ filter, time: 30000, max: 1 });
 
         collector.on('collect', async i => {
+            await i.deferUpdate().catch(() => {});
             if (i.customId.startsWith('ban_confirm_')) {
                 try {
                     if (target) {
@@ -104,8 +105,9 @@ module.exports = {
                         }).catch(() => null);
                     }
 
+                    const auditReason = `${reason.slice(0, 450)} | Banned by: ${interaction.user.tag}`;
                     await interaction.guild.members.ban(targetUser.id, {
-                        reason: `${reason} | Banned by: ${interaction.user.tag}`,
+                        reason: auditReason,
                         deleteMessageSeconds: deleteDays * 86400
                     });
 
@@ -119,21 +121,22 @@ module.exports = {
                             { name: '📋 Reason', value: reason, inline: false },
                             { name: '🗑️ Messages Deleted', value: `${deleteDays} day(s)`, inline: true }
                         )
-                        .setThumbnail(targetUser.displayAvatarURL({ dynamic: true }))
+                        .setThumbnail(targetUser.displayAvatarURL())
                         .setTimestamp();
 
-                    await i.update({ embeds: [successEmbed], components: [] });
+                    await i.editReply({ embeds: [successEmbed], components: [] });
 
-                    const logChannelId = "1531220741075243190";
+                    const logChannelId = config.LOG_CHANNEL_ID;
                     if (logChannelId) {
-                        const logChannel = interaction.guild.channels.cache.get(logChannelId);
+                        const logChannel = interaction.guild.channels.cache.get(logChannelId)
+                            || await interaction.guild.channels.fetch(logChannelId).catch(() => null);
                         if (logChannel) await logChannel.send({ embeds: [successEmbed] }).catch(() => null);
                     }
                 } catch (err) {
-                    await i.update({ content: `❌ Failed to ban: ${err.message}`, embeds: [], components: [] });
+                    await i.editReply({ content: `❌ Failed to ban: ${err.message}`, embeds: [], components: [] });
                 }
             } else {
-                await i.update({ content: '❎ Ban cancelled.', embeds: [], components: [] });
+                await i.editReply({ content: '❎ Ban cancelled.', embeds: [], components: [] });
             }
         });
 

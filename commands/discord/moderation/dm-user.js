@@ -94,7 +94,8 @@ module.exports = {
 
             const logChannelId = config.LOG_CHANNEL_ID;
             if (logChannelId) {
-                const logChannel = interaction.guild.channels.cache.get(logChannelId);
+                const logChannel = interaction.guild.channels.cache.get(logChannelId)
+                    || await interaction.guild.channels.fetch(logChannelId).catch(() => null);
                 if (logChannel) {
                     const logEmbed = new EmbedBuilder()
                         .setTitle('📢 Mass DM Command Used (/dm-user)')

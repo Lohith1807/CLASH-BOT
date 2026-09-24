@@ -1775,13 +1775,6 @@ async function handleInteraction(interaction, context) {
             return deleteCmd.handleModalSubmit(interaction, context, userId);
         }
 
-        if (id.startsWith("wwtrack_edit_modal:")) {
-            const parts = id.split(":");
-            const clanTag = parts[1];
-            const oldPlayerTag = parts[2];
-            const wwTrackCmd = require("../commands/coc/war/ww-tracklist.js");
-            return wwTrackCmd.handleModalSubmit(interaction, context, clanTag, oldPlayerTag);
-        }
 
         if (id.startsWith("cwl_clan_modal_") || id.startsWith("cwl_clan_modal_update:")) {
             const cwlClanCmd = require("../commands/coc/clan/cwl-clan.js");

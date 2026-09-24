@@ -161,10 +161,10 @@ module.exports = {
                         
                         let matchType = "Unknown";
                         try {
-                            const controller = new AbortController();
-                            const timeoutId = setTimeout(() => controller.abort(), 5000);
-                            matchType = await determineMatchType(tag, war.opponent.tag);
-                            clearTimeout(timeoutId);
+                            matchType = await Promise.race([
+                                determineMatchType(tag, war.opponent.tag),
+                                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000))
+                            ]);
                         } catch (e) {
                             const savedTypes = dataManager.getWarType();
                             if (savedTypes[tag] && savedTypes[tag].wartype) {

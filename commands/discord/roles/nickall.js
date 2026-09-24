@@ -48,7 +48,8 @@ module.exports = {
       // Fetch guild members to populate cache (silently fall back to cache if rate limited)
       await message.guild.members.fetch().catch(() => {});
 
-      const logChannel = message.guild.channels.cache.get(config.LOG_CHANNEL_ID || logChannelId);
+      const logChannelId = config.LOG_CHANNEL_ID;
+      const logChannel = logChannelId ? (message.guild.channels.cache.get(logChannelId) || await message.guild.channels.fetch(logChannelId).catch(() => null)) : null;
       if (!logChannel) {
         return message.channel.send("❌ Log channel not found.");
       }

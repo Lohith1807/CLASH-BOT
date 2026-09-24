@@ -121,6 +121,7 @@ async function puppeteerFetch(url, logger = null) {
         try {
             let executablePath;
             let launchArgs = [];
+            let headlessMode;
             const userDataDir = path.join(customTmpDir, `puppeteer_user_data_shared`);
 
             if (process.platform === "win32") {

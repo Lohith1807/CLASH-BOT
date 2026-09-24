@@ -52,7 +52,7 @@ const EMOJI_NAMES = {
 async function sendLog(guild, embed, config, file = null, content = null) {
     const logChannelId = config.TICKET_LOG_CHANNEL_ID || config.LOG_CHANNEL_ID;
     if (!logChannelId) return;
-    const logChannel = guild.channels.cache.get(logChannelId);
+    const logChannel = guild.channels.cache.get(logChannelId) || await guild.channels.fetch(logChannelId).catch(() => null);
     if (!logChannel) return;
 
     const payload = { embeds: [embed] };
@@ -122,7 +122,7 @@ async function handleTicketInteraction(interaction, context) {
 
     const STAFF_ROLE_ID = config.STAFF_ROLE_IDS ? config.STAFF_ROLE_IDS[0] : null;
     const ADMIN_ROLE_ID = config.ADMIN_ROLE_IDS ? config.ADMIN_ROLE_IDS[0] : null;
-    const CATEGORY_ID = config.TICKET_CATEGORY_ID || config.ADMIN_CATEGORY_ID;
+    const CATEGORY_ID = config.TICKET_CATEGORY_ID;
 
     let appEmojis = null;
     const getAppEmoji = async (name) => {
@@ -1187,7 +1187,7 @@ async function handleTicketInteraction(interaction, context) {
 
         let ticketOwnerId = channel.topic;
         let ownerMention = '';
-        if (ticketOwnerId && /^\\d+$/.test(ticketOwnerId)) {
+        if (ticketOwnerId && /^\d+$/.test(ticketOwnerId)) {
             const owner = await guild.members.fetch(ticketOwnerId).catch(() => null);
             if (owner) {
                 ownerMention = `<@${ticketOwnerId}>(${owner.user.username})`;
@@ -1848,7 +1848,7 @@ module.exports.checkTimers = async function (client, config, context) {
 
         const guild = client.guilds.cache.get(guildId);
         if (!guild) continue;
-        const channel = guild.channels.cache.get(channelId);
+        const channel = guild.channels.cache.get(channelId) || await guild.channels.fetch(channelId).catch(() => null);
 
         if (!channel) {
             delete timersData[channelId];

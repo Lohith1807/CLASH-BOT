@@ -2,7 +2,7 @@ const { ChannelType, PermissionFlagsBits } = require('discord.js');
 
 module.exports = (client, config) => {
     const updateStats = async () => {
-        const GUILD_ID = client.guilds.cache.first()?.id;
+        const GUILD_ID = config.GUILD_ID || client.guilds.cache.first()?.id;
         if (!GUILD_ID) return;
 
         const guild = client.guilds.cache.get(GUILD_ID);

@@ -1,6 +1,110 @@
 const fs = require("fs");
 const path = require("path");
+const { MessageFlags } = require("discord.js");
 const syncStatePath = path.join(__dirname, "../../../data/syncState.json");
+
+const VOTE_HISTORY_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
+
+function pruneVoteHistory(state) {
+    if (!state.voteHistory || !Array.isArray(state.voteHistory)) {
+        state.voteHistory = [];
+        return { state, expired: [] };
+    }
+    const cutoff = Date.now() - VOTE_HISTORY_MAX_AGE_MS;
+    const expired = state.voteHistory.filter(entry => !entry.timestamp || entry.timestamp <= cutoff);
+    state.voteHistory = state.voteHistory.filter(entry => entry.timestamp && entry.timestamp > cutoff);
+    return { state, expired };
+}
+
+async function cleanExpiredVoteMessages(context, expired) {
+    if (!expired || expired.length === 0) return;
+    const { client, config } = context;
+    const SYNC_CHANNEL_ID = config.SYNC_CHANNEL_ID;
+
+    let channel = null;
+    try {
+        channel = await client.channels.fetch(SYNC_CHANNEL_ID).catch(() => null);
+    } catch (e) { }
+
+    let deletedCount = 0;
+    for (const entry of expired) {
+        if (entry.messageId && channel?.isTextBased()) {
+            try {
+                const msg = await channel.messages.fetch(entry.messageId).catch(() => null);
+                if (msg) {
+                    await msg.delete().catch(() => {});
+                    deletedCount++;
+                }
+            } catch (e) { }
+        }
+    }
+
+    // Log the date range of deleted entries
+    const timestamps = expired.filter(e => e.timestamp).map(e => e.timestamp).sort((a, b) => a - b);
+    if (timestamps.length > 0) {
+        const oldest = new Date(timestamps[0]);
+        const newest = new Date(timestamps[timestamps.length - 1]);
+        const fmt = (d) => d.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" }) + " " + d.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+        const logMsg = `🗑️ **Cleaned expired vote history** (older than 7 days)\n` +
+            `📅 **From:** ${fmt(oldest)}\n` +
+            `📅 **To:** ${fmt(newest)}\n` +
+            `📊 **Sessions removed:** ${expired.length} | **Messages deleted:** ${deletedCount}`;
+        await logToChannel(context, logMsg);
+    }
+}
+
+function archiveCurrentVotes(state) {
+    if (!state.starters || state.starters.length === 0) return state;
+    const hasAnyVotes = state.starters.some(s => (s.entries || []).length > 0);
+    if (!hasAnyVotes) return state;
+    if (!state.voteHistory) state.voteHistory = [];
+    state.voteHistory.push({
+        timestamp: Date.now(),
+        messageId: state.messageId || null,
+        starters: JSON.parse(JSON.stringify(state.starters)),
+        voteCounts: state.voteCounts ? JSON.parse(JSON.stringify(state.voteCounts)) : {}
+    });
+    const { state: prunedState } = pruneVoteHistory(state);
+    return prunedState;
+}
+
+function buildDetectiveFields(starters, tickEmoji, questionEmoji, wrongEmoji) {
+    const fields = [];
+    for (const clan of starters) {
+        const entries = clan.entries || [];
+        if (entries.length === 0) {
+            fields.push({
+                name: `${clan.emojiStr || ""} ${clan.name}`,
+                value: "No votes yet"
+            });
+            continue;
+        }
+
+        const ableUsers = entries.filter(e => e.status === tickEmoji);
+        const maybeUsers = entries.filter(e => e.status === questionEmoji);
+        const cannotUsers = entries.filter(e => e.status === wrongEmoji);
+
+        let fieldValue = "";
+        if (ableUsers.length > 0) {
+            fieldValue += `✅ **Able:** ${ableUsers.map(e => `<@${e.userId}>`).join(", ")}\n`;
+        }
+        if (maybeUsers.length > 0) {
+            fieldValue += `❓ **Maybe:** ${maybeUsers.map(e => `<@${e.userId}>`).join(", ")}\n`;
+        }
+        if (cannotUsers.length > 0) {
+            fieldValue += `❌ **Cannot:** ${cannotUsers.map(e => `<@${e.userId}>`).join(", ")}\n`;
+        }
+
+        let val = fieldValue.trim() || "No votes yet";
+        if (val.length > 1024) val = val.slice(0, 1020) + "...";
+
+        fields.push({
+            name: `${clan.emojiStr || ""} ${clan.name}`,
+            value: val
+        });
+    }
+    return fields;
+}
 
 function getLastWarId() {
     try {
@@ -100,7 +204,7 @@ async function sendSyncMessage(context, message = null) {
         .setColor(randomColor)
         .setTitle("Are you able to start?")
         .setDescription(
-            `**War Availability Clans:**\n${fwaDesc || "No FWA Clans configured."}`
+            `**War Starters Availability Clans:**\n${fwaDesc || "No FWA Clans configured."}`
         );
 
     let sentMessage;
@@ -110,25 +214,46 @@ async function sendSyncMessage(context, message = null) {
             new ButtonBuilder().setCustomId("sync_yes").setLabel("Able").setEmoji(emojiUtils.getEmojiObject("gtick") || "✅").setStyle(ButtonStyle.Success),
             new ButtonBuilder().setCustomId("sync_maybe").setLabel("Maybe").setEmoji(emojiUtils.getEmojiObject("question") || "❗").setStyle(ButtonStyle.Secondary),
             new ButtonBuilder().setCustomId("sync_no").setLabel("Cannot").setEmoji(emojiUtils.getEmojiObject("bluex") || "❌").setStyle(ButtonStyle.Danger),
-            new ButtonBuilder().setCustomId("sync_check").setLabel("Check Clans").setEmoji(emojiUtils.getEmojiObject("refresh") || "🔍").setStyle(ButtonStyle.Primary)
+            new ButtonBuilder().setCustomId("sync_check").setLabel("Re-Check").setEmoji(emojiUtils.getEmojiObject("refresh") || "🔍").setStyle(ButtonStyle.Primary)
         );
         const row2 = new ActionRowBuilder().addComponents(
             new ButtonBuilder().setCustomId("sync_fillers").setLabel("Need Fillers").setEmoji(emojiUtils.getEmojiObject("alaram") || "📣").setStyle(ButtonStyle.Secondary)
+        );
+        const row3 = new ActionRowBuilder().addComponents(
+            new ButtonBuilder().setCustomId("sync_detective").setEmoji("🕵️").setStyle(ButtonStyle.Secondary)
         );
 
         sentMessage = await channel.send({
             content: `<@&${roleId}> Choose before 10 hours`,
             embeds: [embed],
-            components: [row1, row2]
+            components: [row1, row2, row3]
         });
 
-        const existingState = fs.existsSync(statePath) ? (() => { try { return JSON.parse(fs.readFileSync(statePath, "utf8")); } catch (e) { return {}; } })() : {};
+        let existingState = fs.existsSync(statePath) ? (() => { try { return JSON.parse(fs.readFileSync(statePath, "utf8")); } catch (e) { return {}; } })() : {};
+        // Archive current votes before resetting for the new sync session
+        existingState = archiveCurrentVotes(existingState);
+        const { state: prunedSendState, expired: expiredSend } = pruneVoteHistory(existingState);
+        existingState = prunedSendState;
+
+        let currentWarId = null;
+        try {
+            const CLAN_TAG = "#2L90V8PYY";
+            const currentWar = await context.coc.getCurrentWar(CLAN_TAG);
+            if (currentWar && currentWar.clan && currentWar.opponent && currentWar.endTime) {
+                currentWarId = `${currentWar.clan.tag}-${currentWar.opponent.tag}-${currentWar.endTime}`;
+            }
+        } catch (e) { }
+
         fs.writeFileSync(statePath, JSON.stringify({
             ...existingState,
+            syncWarId: currentWarId || existingState.syncWarId || null,
             messageId: sentMessage.id,
             starters: initialStarters.map(s => ({ ...s, entries: [] })),
-            voteCounts: {}
+            voteCounts: {},
+            syncExpired: false
         }, null, 2));
+        // Delete expired vote messages from Discord and log
+        await cleanExpiredVoteMessages(context, expiredSend);
 
     } catch (err) {
         await logToChannel(context, `Failed to send sync message: ${err.message}`);
@@ -196,8 +321,15 @@ async function sendFillCheckEmbed(context) {
     if (fs.existsSync(statePath)) {
         try { syncState = JSON.parse(fs.readFileSync(statePath, "utf8")); } catch (e) { }
     }
-    // We no longer delete the old fill check message here
-    // so that all messages stay in the chat until preparation day.
+
+    // Delete the previous fill-check message before sending a new one
+    if (syncState.fillCheckMessageId) {
+        try {
+            const oldMsg = await syncChannel.messages.fetch(syncState.fillCheckMessageId).catch(() => null);
+            if (oldMsg) await oldMsg.delete().catch(() => {});
+        } catch (e) { }
+        syncState.fillCheckMessageId = null;
+    }
     
     let sentFillMsg = null;
     if (missingList.length > 0) {
@@ -226,13 +358,23 @@ async function cleanSyncMessages(context) {
     const { client, config } = context;
     const SYNC_CHANNEL_ID = config.SYNC_CHANNEL_ID;
     const statePath = path.join(__dirname, "../../../data/syncState.json");
-    const guild = client.guilds.cache.first();
-    if (!guild) return;
-
     let syncState = {};
     if (fs.existsSync(statePath)) {
         try { syncState = JSON.parse(fs.readFileSync(statePath, "utf8")); } catch (e) { }
     }
+
+    // Archive current votes to history now that new war prep has arrived
+    syncState = archiveCurrentVotes(syncState);
+    const { state: prunedState, expired: expiredClean } = pruneVoteHistory(syncState);
+    syncState = prunedState;
+    syncState.syncExpired = true;
+    try {
+        fs.writeFileSync(statePath, JSON.stringify(syncState, null, 2));
+    } catch (e) { }
+    await cleanExpiredVoteMessages(context, expiredClean);
+
+    const guild = client.guilds.cache.first();
+    if (!guild) return;
 
     try {
         const channel = await guild.channels.fetch(SYNC_CHANNEL_ID).catch(() => null);
@@ -246,20 +388,30 @@ async function cleanSyncMessages(context) {
                     const newRow = new ActionRowBuilder();
                     row.components.forEach(c => {
                         if (c.type === 2) { // Button
-                            newRow.addComponents(ButtonBuilder.from(c).setDisabled(true));
+                            const btn = ButtonBuilder.from(c);
+                            // Keep detective button always enabled
+                            if (c.customId !== "sync_detective") btn.setDisabled(true);
+                            newRow.addComponents(btn);
                         } else if (c.type === 3) { // Select Menu
                             newRow.addComponents(StringSelectMenuBuilder.from(c).setDisabled(true));
                         }
                     });
                     return newRow;
                 });
+                // Preserve embeds and content when disabling buttons to prevent Discord from trashing the message
                 await syncMsg.edit({ 
+                    content: syncMsg.content || undefined,
+                    embeds: syncMsg.embeds || [],
                     components: disabledComponents 
                 }).catch(() => {});
             }
         }
 
         if (syncState.fillCheckMessageId) {
+            try {
+                const fillMsg = await channel.messages.fetch(syncState.fillCheckMessageId).catch(() => null);
+                if (fillMsg) await fillMsg.delete().catch(() => {});
+            } catch (e) { }
             syncState.fillCheckMessageId = null;
             fs.writeFileSync(statePath, JSON.stringify(syncState, null, 2));
         }
@@ -348,18 +500,7 @@ async function cleanSyncChannel(context) {
             console.error("Failed to delete threads in sync channel:", threadErr);
         }
 
-        try {
-            let state = {};
-            const syncStatePath = require("path").join(__dirname, "../../../data/syncState.json");
-            const fs = require("fs");
-            if (fs.existsSync(syncStatePath)) {
-                try { state = JSON.parse(fs.readFileSync(syncStatePath, "utf8")); } catch (e) { }
-            }
-            const lastWarId = state.lastWarId || null;
-            fs.writeFileSync(syncStatePath, JSON.stringify({ lastWarId }, null, 2));
-        } catch (e) { }
-
-        await logToChannel(context, "🧼 Cleaned up threads and reset sync state (messages kept).");
+        await logToChannel(context, "🧼 Cleaned up threads in sync channel.");
     } catch (err) {
         console.error("Error during sync channel cleanup:", err);
     }
@@ -449,6 +590,7 @@ async function checkWarStatus(context) {
         }
         const lastWarId = syncState.lastWarId || null;
 
+        // ONLY trigger expiration & cleanup when a NEW preparation day is detected after this war
         if (data.state === "preparation") {
             const prepId = `${baseWarId}-prep`;
             if (syncState.prepCleanId !== prepId) {
@@ -456,7 +598,15 @@ async function checkWarStatus(context) {
                 fs.writeFileSync(syncStatePath, JSON.stringify(syncState, null, 2));
                 await logToChannel(context, "📋 Preparation day detected! Clearing sync channel messages and storing war rosters...");
                 await cleanSyncMessages(context);
-                // Preparation day message handling
+            }
+        } else if (data.state === "inWar" && syncState.syncWarId && syncState.syncWarId !== baseWarId) {
+            // New war already moved to battle day (e.g. if bot was offline during preparation day)
+            const prepId = `${baseWarId}-prep`;
+            if (syncState.prepCleanId !== prepId && syncState.syncExpired !== true) {
+                syncState.prepCleanId = prepId;
+                fs.writeFileSync(syncStatePath, JSON.stringify(syncState, null, 2));
+                await logToChannel(context, "📋 New war in battle day detected! Expiring previous sync messages...");
+                await cleanSyncMessages(context);
             }
         }
 
@@ -464,6 +614,7 @@ async function checkWarStatus(context) {
             const warId = `${baseWarId}-8hr`;
             if (lastWarId !== warId) {
                 syncState.lastWarId = warId;
+                syncState.syncWarId = baseWarId;
                 syncState.fillCheck4hrId = null; // reset 4hr check for new cycle
                 fs.writeFileSync(syncStatePath, JSON.stringify(syncState, null, 2));
 
@@ -488,7 +639,7 @@ async function checkWarStatus(context) {
             if (lastWarId !== warId) {
                 syncState.lastWarId = warId;
                 fs.writeFileSync(syncStatePath, JSON.stringify(syncState, null, 2));
-                await logToChannel(context, "🏁 War ended! Cleaning sync channel threads and resetting state...");
+                await logToChannel(context, "🏁 War ended! Cleaning sync channel threads...");
                 await cleanSyncChannel(context);
             }
         }
@@ -539,6 +690,57 @@ module.exports = {
         const tickEmoji = emojiUtils.getEmoji("gtick") || "✅";
         const questionEmoji = emojiUtils.getEmoji("question") || "❗";
         const wrongEmoji = emojiUtils.getEmoji("bluex") || "❌";
+
+        // Server-side expiration guard: block all voting/action interactions after sync has expired or if no active sync exists
+        const EXPIRED_WARNING = "🛑 **War has already started, fool! Come back for the next sync confirmation.**";
+        const actionIds = ["sync_yes", "sync_maybe", "sync_no", "sync_check", "sync_fillers"];
+        const isActionButton = actionIds.includes(interaction.customId);
+        const isSelectAction = interaction.customId.startsWith("sync_select_") || interaction.customId.startsWith("sync_filler_select_");
+
+        if (isActionButton || isSelectAction) {
+            let isExpired = false;
+
+            // 1. If explicitly marked expired or if no active sync session exists
+            if (state.syncExpired === true || !state.messageId) {
+                isExpired = true;
+            }
+            // 2. If clicking action buttons on an old/stale sync message (not the current active one)
+            else if (isActionButton && interaction.message?.id && interaction.message.id !== state.messageId) {
+                isExpired = true;
+            }
+            // 3. If submitting a clan select dropdown from an old/stale sync message
+            else if (interaction.customId.startsWith("sync_select_")) {
+                const targetMsgId = interaction.customId.split("_").slice(3).join("_");
+                if (targetMsgId && targetMsgId !== state.messageId) {
+                    isExpired = true;
+                }
+            }
+            // 4. If submitting a filler clan select dropdown from an old/stale sync message
+            else if (interaction.customId.startsWith("sync_filler_select_")) {
+                const targetMsgId = interaction.customId.replace("sync_filler_select_", "");
+                if (targetMsgId && targetMsgId !== state.messageId) {
+                    isExpired = true;
+                }
+            }
+
+            if (isExpired) {
+                try {
+                    if (isSelectAction) {
+                        if (interaction.deferred || interaction.replied) {
+                            return interaction.editReply({ content: EXPIRED_WARNING, embeds: [], components: [] }).catch(() => {});
+                        }
+                        return interaction.update({ content: EXPIRED_WARNING, embeds: [], components: [] }).catch(() => {});
+                    } else {
+                        if (interaction.deferred || interaction.replied) {
+                            return interaction.editReply({ content: EXPIRED_WARNING }).catch(() => {});
+                        }
+                        return interaction.reply({ content: EXPIRED_WARNING, flags: [MessageFlags.Ephemeral] }).catch(() => {});
+                    }
+                } catch (e) {
+                    return;
+                }
+            }
+        }
 
         if (interaction.customId === "sync_check") {
             try {
@@ -623,6 +825,136 @@ module.exports = {
             return interaction.editReply({ embeds: [checkEmbed] });
         }
 
+        if (interaction.customId === "sync_detective") {
+            // Accessible by anyone — show ALL votes for every clan
+            try {
+                await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+            } catch (e) {
+                return;
+            }
+
+            // Prune old history
+            const { state: prunedDetState, expired: expiredDet } = pruneVoteHistory(state);
+            state = prunedDetState;
+            // Delete expired vote messages from Discord and log
+            await cleanExpiredVoteMessages(context, expiredDet);
+
+            const hasCurrentVotes = state.starters && state.starters.length > 0 && state.starters.some(s => (s.entries || []).length > 0);
+            const historyEntries = (state.voteHistory || []).filter(h => h.starters && h.starters.length > 0 && h.starters.some(s => (s.entries || []).length > 0));
+
+            if (!hasCurrentVotes && historyEntries.length === 0) {
+                return interaction.editReply({ content: "No vote data available yet." }).catch(() => {});
+            }
+
+            // Build current votes embed
+            const embeds = [];
+            if (hasCurrentVotes) {
+                const currentFields = buildDetectiveFields(state.starters, tickEmoji, questionEmoji, wrongEmoji);
+                let currentEmbed = new EmbedBuilder()
+                    .setTitle("🕵️ Current Vote Audit")
+                    .setColor(0x2b2d31);
+                let charCount = 30, fieldCount = 0;
+                for (const field of currentFields) {
+                    const fieldChars = field.name.length + field.value.length;
+                    if (fieldCount >= 25 || charCount + fieldChars > 5800) {
+                        embeds.push(currentEmbed);
+                        currentEmbed = new EmbedBuilder()
+                            .setTitle("🕵️ Current Vote Audit (continued)")
+                            .setColor(0x2b2d31);
+                        charCount = 40; fieldCount = 0;
+                    }
+                    currentEmbed.addFields(field);
+                    charCount += fieldChars; fieldCount++;
+                }
+                currentEmbed.setTimestamp();
+                embeds.push(currentEmbed);
+            } else {
+                embeds.push(new EmbedBuilder()
+                    .setTitle("🕵️ Vote Audit")
+                    .setDescription("No current session votes. Select a past session below.")
+                    .setColor(0x2b2d31)
+                    .setTimestamp());
+            }
+
+            // Build dropdown of past sessions
+            const components = [];
+            if (historyEntries.length > 0) {
+                const { StringSelectMenuBuilder, ActionRowBuilder } = require("discord.js");
+                const sortedHistory = [...historyEntries].sort((a, b) => b.timestamp - a.timestamp);
+                const options = sortedHistory.slice(0, 25).map((entry, i) => {
+                    const histDate = new Date(entry.timestamp);
+                    const timeAgo = Math.round((Date.now() - entry.timestamp) / (1000 * 60 * 60));
+                    const dateStr = histDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+                    const timeStr = histDate.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+                    const totalVotes = entry.starters.reduce((sum, s) => sum + (s.entries || []).length, 0);
+                    return {
+                        label: `${dateStr} ${timeStr} (~${timeAgo}h ago)`.slice(0, 100),
+                        description: `${totalVotes} vote(s) across ${entry.starters.length} clan(s)`.slice(0, 100),
+                        value: `${entry.timestamp}`,
+                        emoji: "📜"
+                    };
+                });
+
+                const selectMenu = new StringSelectMenuBuilder()
+                    .setCustomId("sync_history_select")
+                    .setPlaceholder("📜 View past vote sessions...")
+                    .setMinValues(1)
+                    .setMaxValues(1)
+                    .addOptions(options);
+
+                components.push(new ActionRowBuilder().addComponents(selectMenu));
+            }
+
+            await interaction.editReply({ embeds: embeds.slice(0, 10), components }).catch(() => {});
+        }
+
+        if (interaction.customId === "sync_history_select") {
+            try {
+                await interaction.deferUpdate();
+            } catch (e) {
+                return;
+            }
+
+            const selectedTimestamp = parseInt(interaction.values[0]);
+            const historyEntries = (state.voteHistory || []).filter(h => h.starters && h.starters.length > 0);
+            const entry = historyEntries.find(h => h.timestamp === selectedTimestamp);
+
+            if (!entry) {
+                await interaction.editReply({ content: "⚠️ Could not find that vote session.", embeds: [], components: [] }).catch(() => {});
+                return;
+            }
+
+            const histDate = new Date(entry.timestamp);
+            const timeAgo = Math.round((Date.now() - entry.timestamp) / (1000 * 60 * 60));
+            const dateStr = histDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
+            const timeStr = histDate.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+
+            const histFields = buildDetectiveFields(entry.starters, tickEmoji, questionEmoji, wrongEmoji);
+            const embeds = [];
+            let histEmbed = new EmbedBuilder()
+                .setTitle(`📜 Past Votes — ${dateStr} ${timeStr} (~${timeAgo}h ago)`)
+                .setColor(0x5865F2);
+            let charCount = 60, fieldCount = 0;
+
+            for (const field of histFields) {
+                const fieldChars = field.name.length + field.value.length;
+                if (fieldCount >= 25 || charCount + fieldChars > 5800) {
+                    embeds.push(histEmbed);
+                    histEmbed = new EmbedBuilder()
+                        .setTitle(`📜 Past Votes (continued)`)
+                        .setColor(0x5865F2);
+                    charCount = 40; fieldCount = 0;
+                }
+                histEmbed.addFields(field);
+                charCount += fieldChars; fieldCount++;
+            }
+            histEmbed.setTimestamp(histDate);
+            embeds.push(histEmbed);
+
+            // Keep the dropdown so user can switch between sessions
+            await interaction.editReply({ embeds: embeds.slice(0, 10), components: interaction.message.components }).catch(() => {});
+        }
+
         if (["sync_yes", "sync_maybe", "sync_no"].includes(interaction.customId)) {
             try {
                 await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
@@ -688,6 +1020,14 @@ module.exports = {
         }
 
         if (interaction.customId.startsWith("sync_select_")) {
+            const parts = interaction.customId.split("_");
+            const actionType = parts[2];
+            const targetMsgId = parts.slice(3).join("_");
+
+            if (state.syncExpired === true || !state.messageId || (targetMsgId && targetMsgId !== state.messageId)) {
+                return interaction.editReply({ content: EXPIRED_WARNING, embeds: [], components: [] }).catch(() => {});
+            }
+
             try {
                 await interaction.deferUpdate();
             } catch (e) {
@@ -695,10 +1035,6 @@ module.exports = {
             }
 
             state.voteCounts[interaction.user.id] = (state.voteCounts[interaction.user.id] || 0) + 1;
-
-            const parts = interaction.customId.split("_");
-            const actionType = parts[2];
-            const targetMsgId = parts.slice(3).join("_");
 
             let statusEmoji = actionType === "yes" ? tickEmoji : actionType === "maybe" ? questionEmoji : wrongEmoji;
             let statusText = actionType === "yes" ? "able to start" : actionType === "maybe" ? "maybe" : "not able to start";
@@ -735,18 +1071,35 @@ module.exports = {
 
                     state.starters.forEach((clan, i) => {
                         const entries = clan.entries || [];
-                        const entryStr = entries.length > 0
-                            ? entries.map(e => `<@${e.userId}> ${e.status}`).join(" ")
-                            : "";
+                        const ableEntries = entries.filter(e => e.status === tickEmoji);
+                        const otherEntries = entries.filter(e => e.status !== tickEmoji);
+
+                        let entryStr = "";
+                        if (ableEntries.length > 0) {
+                            // Once someone is able, only show able players
+                            entryStr = ableEntries.map(e => `<@${e.userId}> ${e.status}`).join(" ");
+                        } else if (otherEntries.length > 0) {
+                            // No able player yet, show unavailable/maybe entries
+                            entryStr = otherEntries.map(e => `<@${e.userId}> ${e.status}`).join(" ");
+                        }
                         description += `${i + 1}. ${clan.emojiStr} ${clan.name} - ${entryStr}\n`;
                     });
+
+                    // Handle Discord's 4096 character embed description limit
+                    if (description.length > 4096) {
+                        description = description.slice(0, 4090) + "\n...";
+                    }
 
                     const newEmbed = new EmbedBuilder()
                         .setColor(originalMsg.embeds[0]?.color ?? 0x2b2d31)
                         .setTitle(originalMsg.embeds[0]?.title ?? "Are you able to start?")
                         .setDescription(description);
 
-                    await originalMsg.edit({ embeds: [newEmbed] }).catch(() => { });
+                    await originalMsg.edit({ 
+                        content: originalMsg.content || undefined,
+                        embeds: [newEmbed],
+                        components: originalMsg.components || []
+                    }).catch(() => { });
                 }
             } catch (e) {
                 console.error("Failed to edit original sync message", e);
@@ -827,6 +1180,11 @@ module.exports = {
         }
 
         if (interaction.customId.startsWith("sync_filler_select_")) {
+            const fillerTargetMsgId = interaction.customId.replace("sync_filler_select_", "");
+            if (state.syncExpired === true || !state.messageId || (fillerTargetMsgId && fillerTargetMsgId !== state.messageId)) {
+                return interaction.editReply({ content: EXPIRED_WARNING, embeds: [], components: [] }).catch(() => {});
+            }
+
             try {
                 await interaction.deferUpdate();
             } catch (e) {

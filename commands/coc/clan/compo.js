@@ -101,7 +101,11 @@ module.exports = {
         const allTags = Object.keys(clanData);
 
         if (allTags.length === 0) {
-          return message.channel.send("⚠ No clan tags found in `clandata.json`.");
+          if (isInteraction) {
+            return input.editReply("⚠ No clan tags found in my data.");
+          } else {
+            return input.channel.send("⚠ No clan tags found in my data.");
+          }
         }
 
         for (const tag of allTags) {
