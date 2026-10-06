@@ -4,8 +4,19 @@ const fs = require("fs");
 // Global override: suppress all CoC API errors from console, only log real internal bugs
 const originalConsoleError = console.error;
 console.error = function (...args) {
-  // Suppress our custom CocApiError — these are expected, user gets a reply
-  if (args.some(arg => arg && arg.name === "CocApiError")) return;
+  // Suppress our custom CocApiError and expected CoC errors — these are expected, user gets a reply
+  if (args.some(arg =>
+    (arg && arg.name === "CocApiError") ||
+    (typeof arg === "string" && (
+      arg.includes("Invalid Clan Tag") ||
+      arg.includes("Invalid Player Tag") ||
+      arg.includes("showWarClanDetail")
+    )) ||
+    (arg instanceof Error && (
+      arg.message?.includes("Invalid Clan Tag") ||
+      arg.message?.includes("Invalid Player Tag")
+    ))
+  )) return;
 
   // Suppress maintenance errors
   if (args.some(arg =>
@@ -241,7 +252,15 @@ client.on("messageCreate", async (message) => {
   try {
     const context = { ...tools, commandName, prefix: PREFIX };
 
-    if (commandName === "link") {
+    if (commandName === "help" || commandName === "h") {
+      const command = require("./commands/info/help.js");
+      await command.execute(message, args, context);
+
+    } else if (commandName === "ping") {
+      const command = require("./commands/info/ping.js");
+      await command.execute(message, args, context);
+
+    } else if (commandName === "link") {
       const command = require("./commands/coc/profile/link.js");
       await command.execute(message, args, context);
 
@@ -354,7 +373,13 @@ client.on("messageCreate", async (message) => {
   try {
     const context = { ...tools, commandName, prefix: prefix };
 
-    if (commandName === "fwa") {
+    if (commandName === "help" || commandName === "h") {
+      const command = require("./commands/info/help.js");
+      await command.execute(message, args, context);
+    } else if (commandName === "ping") {
+      const command = require("./commands/info/ping.js");
+      await command.execute(message, args, context);
+    } else if (commandName === "fwa") {
       const command = require("./commands/coc/clan/fwa.js");
       await command.execute(message, args, context);
     } else if (commandName === "bases") {
@@ -370,7 +395,18 @@ client.on("messageCreate", async (message) => {
     } else if (commandName === "war" || commandName === "warweight") {
       const command = require("./commands/coc/war/warweight.js");
       await command.execute(message, args, context);
-
+    } else if (commandName === "as") {
+      const command = require("./commands/discord/roles/as.js");
+      await command.execute(message, args, context);
+    } else {
+      const clanRolesData = tools.data.getClanRoles();
+      const matchedClanTag = Object.keys(clanRolesData).find(tag => 
+        clanRolesData[tag].nickName && clanRolesData[tag].nickName.toLowerCase() === commandName
+      );
+      if (matchedClanTag) {
+        const command = require("./commands/discord/roles/forceclan.js");
+        await command.execute(message, args, context, clanRolesData[matchedClanTag], matchedClanTag);
+      }
     }
   } catch (err) {
     console.error(err);
@@ -474,9 +510,9 @@ client.on("interactionCreate", async (interaction) => {
 
 
 
-const WELCOME_CHANNEL_ID = "1154293306637946890";
+const WELCOME_CHANNEL_ID = config.WELCOME_CHANNEL_ID || process.env.WELCOME_CHANNEL_ID || "1154293306637946890";
 const SUPPORT_ROLE_ID = "1154276716982833154";
-const LOG_CHANNEL_ID = "1410188192065257522";
+const LOG_CHANNEL_ID = config.LOG_CHANNEL_ID || "1410188192065257522";
 
 function randomColor() {
   return Math.floor(Math.random() * 0xffffff);
@@ -612,8 +648,8 @@ async function getClanName(clanTag) {
 
 
 client.on("guildMemberRemove", async (member) => {
-  const channelId = "1154294780969373786";
-  const channel = member.guild.channels.cache.get(channelId);
+  const channelId = config.LEAVE_CHANNEL_ID || process.env.LEAVE_CHANNEL_ID || "1154294780969373786";
+  const channel = member.guild.channels.cache.get(channelId) || await member.guild.channels.fetch(channelId).catch(() => null);
   if (!channel) return;
 
   const embed = new EmbedBuilder()

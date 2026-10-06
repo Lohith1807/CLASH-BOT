@@ -862,19 +862,30 @@ async function handleTicketInteraction(interaction, context) {
         const targetUserId = customId.split(':')[1];
 
         try {
-            const targetUser = await client.users.fetch(targetUserId);
+            const targetUser = (await client.users.fetch(targetUserId).catch(() => null)) || { id: targetUserId, username: `User (${targetUserId})` };
             const profileCmd = require('../../commands/coc/profile/profile.js');
-            const mockMessage = {
-                author: targetUser,
-                mentions: { users: new Map() },
-                delete: async () => { },
-                channel: {
-                    send: async (payload) => {
-                        return interaction.editReply(payload).catch(() => { });
-                    }
-                }
-            };
-            await profileCmd.execute(mockMessage, [], context);
+            const dataManager = context.data;
+            const userData = dataManager.getUserData();
+
+            if (!userData[targetUserId] || userData[targetUserId].length === 0) {
+                return interaction.editReply({
+                    content: `⚠️ **${targetUser.username || targetUserId}** has not linked any Clash of Clans accounts yet.`,
+                    embeds: [],
+                    components: []
+                });
+            }
+
+            const accounts = await profileCmd.getProfileAccounts(targetUserId, userData, coc, emojiUtils);
+            const embed = profileCmd.buildProfileEmbed(targetUser, accounts, 0);
+            const components = profileCmd.buildProfileComponents(
+                targetUserId,
+                0,
+                emojiUtils.getEmojiObject("larrow"),
+                emojiUtils.getEmojiObject("rarrow"),
+                accounts.length
+            );
+
+            await interaction.editReply({ embeds: [embed], components: components });
         } catch (err) {
             console.error("❌ Error showing user profile:", err);
             const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ An error occurred while fetching user profile.");
@@ -1126,8 +1137,10 @@ async function handleTicketInteraction(interaction, context) {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
         const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
+        const CWL_STAFF_ROLE_ID = config.CWL_STAFF_ROLE_ID || process.env.CWL_STAFF_ROLE_ID || '1448265928503726161';
+        const hasCwlStaffRole = member.roles.cache.has(CWL_STAFF_ROLE_ID) || member.roles.cache.has('1448265928503726161');
 
-        if (!isStaff && !isAdmin && !hasWelExeRole) {
+        if (!isStaff && !isAdmin && !hasWelExeRole && !hasCwlStaffRole) {
             await interaction.reply({ content: '❌ Only Staff or Admins can delete this ticket.', flags: [MessageFlags.Ephemeral] });
             return true;
         }
@@ -1162,8 +1175,10 @@ async function handleTicketInteraction(interaction, context) {
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
         const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
+        const CWL_STAFF_ROLE_ID = config.CWL_STAFF_ROLE_ID || process.env.CWL_STAFF_ROLE_ID || '1448265928503726161';
+        const hasCwlStaffRole = member.roles.cache.has(CWL_STAFF_ROLE_ID) || member.roles.cache.has('1448265928503726161');
 
-        if (!isStaff && !isAdmin && !hasWelExeRole) {
+        if (!isStaff && !isAdmin && !hasWelExeRole && !hasCwlStaffRole) {
             await interaction.reply({ content: '❌ Only Staff or Admins can delete this ticket.', flags: [MessageFlags.Ephemeral] });
             return true;
         }

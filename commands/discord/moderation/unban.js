@@ -2,7 +2,7 @@ const {
     SlashCommandBuilder,
     EmbedBuilder,
     PermissionFlagsBits
-, MessageFlags } = require('discord.js');
+    , MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -71,7 +71,7 @@ module.exports = {
 
             await interaction.editReply({ embeds: [successEmbed] });
 
-            const logChannelId = config.LOG_CHANNEL_ID;
+            const logChannelId = config.BAN_LOG_CHANNEL_ID || process.env.BAN_LOG_CHANNEL_ID;
             if (logChannelId) {
                 const logChannel = interaction.guild.channels.cache.get(logChannelId)
                     || await interaction.guild.channels.fetch(logChannelId).catch(() => null);

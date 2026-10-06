@@ -21,7 +21,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('update-ww')
         .setDescription('Manage TH war weight thresholds for the test server')
-        .setDefaultMemberPermissions(PermissionFlagsBits.Administrator)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option => 
             option.setName('action')
                 .setDescription('Action to perform')

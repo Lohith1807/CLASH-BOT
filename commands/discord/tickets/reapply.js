@@ -18,8 +18,8 @@ module.exports = {
         const { config, data, coc, emoji } = context;
         const { getEmoji } = emoji;
         const GLOBAL_ROLE_ID = config.GLOBAL_ROLE_ID;
-        const REAPPLY_ROLE_ID = "1523186839509401701"; // fallback if not in config
-        const TARGET_CHANNEL_ID = "1523186791950323824"; // fallback if not in config
+        const REAPPLY_ROLE_ID = config.REAPPLY_ROLE_ID || process.env.REAPPLY_ROLE_ID || "1523186839509401701";
+        const TARGET_CHANNEL_ID = config.REAPPLY_CHANNEL_ID || process.env.REAPPLY_CHANNEL_ID || "1523186791950323824";
 
         const errorEmbed = (desc) => new EmbedBuilder().setColor("Red").setDescription(`${getEmoji("bluex")} ${desc}`);
         const loadingEmbed = (desc) => new EmbedBuilder().setColor("Blue").setDescription(`**${desc}**\n\`\`\`ansi\n\u001b[30m[▱▱▱▱▱]\u001b[0m\n\`\`\``);

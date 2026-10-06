@@ -38,6 +38,9 @@ module.exports = {
     let tagArg = null;
     await message.delete().catch(() => { });
 
+    const client = context.client || message.client;
+    const userData = dataManager.getUserData();
+
     if (args.length === 0) {
       targetUser = message.author;
     } else if (message.mentions.users.size > 0) {
@@ -45,10 +48,23 @@ module.exports = {
     } else if (args[0].startsWith("#")) {
       tagArg = args[0];
     } else {
-      targetUser = message.author;
+      const cleanId = args[0].replace(/[<@!>]/g, "");
+      if (/^\d+$/.test(cleanId)) {
+        if (client && client.users) {
+          targetUser = await client.users.fetch(cleanId).catch(() => null);
+        }
+        if (!targetUser && userData[cleanId]) {
+          targetUser = { id: cleanId, username: `User (${cleanId})` };
+        }
+        if (!targetUser) {
+          return message.channel.send(`❌ Could not find a Discord user with ID \`${cleanId}\`.`);
+        }
+      } else if (/^[0289PYLQGRJCUV]+$/i.test(args[0])) {
+        tagArg = `#${args[0]}`;
+      } else {
+        targetUser = message.author;
+      }
     }
-
-    const userData = dataManager.getUserData();
 
     if (tagArg) {
       let loadingMessage = await message.channel.send({ 
@@ -121,12 +137,12 @@ module.exports = {
           )
           .setTimestamp();
 
-        return loadingMessage.edit({ embeds: [embed] });
+        return loadingMessage.edit({ embeds: [embed] }).catch(() => {});
       } catch (err) {
         if (err.response && err.response.status === 503) {
-            return loadingMessage.edit({ content: `❌ The Clash of Clans API is currently in maintenance. Please try again later.`, embeds: [] });
+            return loadingMessage.edit({ content: `❌ The Clash of Clans API is currently in maintenance. Please try again later.`, embeds: [] }).catch(() => {});
         }
-        return loadingMessage.edit({ content: `❌ Could not fetch tag ${tagArg}: ${err.message}`, embeds: [] });
+        return loadingMessage.edit({ content: `❌ Could not fetch tag ${tagArg}: ${err.message}`, embeds: [] }).catch(() => {});
       }
     }
 
@@ -148,7 +164,18 @@ module.exports = {
     const embed = module.exports.buildProfileEmbed(targetUser, accounts, page);
     const components = module.exports.buildProfileComponents(targetUser.id, page, leftEmoji, rightEmoji, accounts.length);
 
-    await loadingMessage.edit({ embeds: [embed], components: components });
+    try {
+      if (loadingMessage && typeof loadingMessage.edit === "function") {
+        await loadingMessage.edit({ embeds: [embed], components: components });
+      } else if (message.channel && typeof message.channel.send === "function") {
+        await message.channel.send({ embeds: [embed], components: components });
+      }
+    } catch (editErr) {
+      if (editErr.code !== 10008) console.error("Error editing profile loading message:", editErr.message);
+      if (message.channel && typeof message.channel.send === "function") {
+        await message.channel.send({ embeds: [embed], components: components }).catch(() => {});
+      }
+    }
   },
 
   async getProfileAccounts(userId, userData, coc, emojiUtils, loadingMessage) {

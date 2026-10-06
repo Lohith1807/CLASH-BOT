@@ -301,12 +301,48 @@ async function checkFWAWeights(client) {
 
     const keysToCheck = new Set(Object.keys(wwData));
 
+    // Automatically include all FWA clans registered in clanrole.json
+    for (const [tag, info] of Object.entries(clanRoles)) {
+        if (info && info.clanType && info.clanType.toLowerCase() === "fwa") {
+            const formattedTag = tag.startsWith("#") ? tag.toUpperCase() : `#${tag.toUpperCase()}`;
+            keysToCheck.add(formattedTag);
+            if (!wwData[formattedTag]) {
+                wwData[formattedTag] = {
+                    clanName: info.nickName || formattedTag,
+                    lastUpdated: todayStr
+                };
+                updated = true;
+            }
+        }
+    }
+
+    if (updated) {
+        try {
+            fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
+        } catch (err) {
+            console.error("checkFWAWeights wwData write error:", err);
+        }
+    }
+
     for (const clanTag of keysToCheck) {
         if (lastCheckData[clanTag] === todayStr) {
             continue;
         }
 
         const record = wwData[clanTag];
+        const tagMatch = clanTag.match(/#([A-Z0-9]+)/i);
+        const cleanTag = tagMatch ? tagMatch[1].toUpperCase() : clanTag.replace("#", "").toUpperCase();
+        const normalizedClanTag = `#${cleanTag}`;
+        const roleData = clanRoles[normalizedClanTag] || clanRoles[clanTag];
+
+        if (!roleData) {
+            continue;
+        }
+
+        const targetChannelId = roleData.leadChannelId && roleData.leadChannelId.trim() !== ""
+            ? roleData.leadChannelId
+            : roleData.channelId;
+        if (!targetChannelId) continue;
 
         // Check FWA Weight Reminder (25 days ago)
         if (record && record.lastUpdated) {
@@ -325,83 +361,96 @@ async function checkFWAWeights(client) {
                 diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
             }
 
-            const tagMatch = clanTag.match(/#([A-Z0-9]+)/i);
-            const cleanTag = tagMatch ? tagMatch[1].toUpperCase() : clanTag.replace("#", "").toUpperCase();
-            const normalizedClanTag = `#${cleanTag}`;
-            const roleData = clanRoles[normalizedClanTag] || clanRoles[clanTag];
-
             if (diffDays === 25) {
-                if (roleData) {
-                    const targetChannelId = roleData.leadChannelId && roleData.leadChannelId.trim() !== ""
-                        ? roleData.leadChannelId
-                        : roleData.channelId;
-                    if (targetChannelId) {
-                        try {
-                            const channel = await client.channels.fetch(targetChannelId).catch(() => null);
-                            if (channel) {
-                                const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
-                                const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
+                try {
+                    const channel = await client.channels.fetch(targetChannelId).catch(() => null);
+                    if (channel) {
+                        const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
+                        const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
 
-                                const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
-                                const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡️";
-                                const heartEmoji = emojiUtils.getEmoji("heart") || "❤️";
+                        const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
+                        const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡️";
+                        const heartEmoji = emojiUtils.getEmoji("heart") || "❤️";
 
-                                const reminderEmbed = new EmbedBuilder()
-                                    .setTitle(`${alaramEmoji} **War Weight Submission Reminder**`)
-                                    .setDescription(
-                                        `Hey Cheif ,\n` +
-                                        `the war weight submission done before 25 days  this is just a reminder , make sure submit it on time \n\n` +
-                                        `**Submission Link :** ${arrowEmoji} [Click here](${submissionUrl})\n\n` +
-                                        `Yours Truly\n` +
-                                        `${heartEmoji} **Blood Team**`
-                                    )
-                                    .setColor("Orange")
-                                    .setTimestamp();
+                        const reminderEmbed = new EmbedBuilder()
+                            .setTitle(`${alaramEmoji} **War Weight Submission Reminder**`)
+                            .setDescription(
+                                `Hey Cheif ,\n` +
+                                `the war weight submission done before 25 days  this is just a reminder , make sure submit it on time \n\n` +
+                                `**Submission Link :** ${arrowEmoji} [Click here](${submissionUrl})\n\n` +
+                                `Yours Truly\n` +
+                                `${heartEmoji} **Blood Team**`
+                            )
+                            .setColor("Orange")
+                            .setTimestamp();
 
-                                const submittedBtn = new ButtonBuilder()
-                                    .setCustomId(`ww_submit_update_${cleanTag}`)
-                                    .setLabel("Submitted")
-                                    .setStyle(ButtonStyle.Success)
-                                    .setEmoji(emojiUtils.getEmojiObject("gtick") || "✅");
-                                const btnRow = new ActionRowBuilder().addComponents(submittedBtn);
+                        const submittedBtn = new ButtonBuilder()
+                            .setCustomId(`ww_submit_update_${cleanTag}`)
+                            .setLabel("Submitted")
+                            .setStyle(ButtonStyle.Success)
+                            .setEmoji(emojiUtils.getEmojiObject("gtick") || "✅");
+                        const btnRow = new ActionRowBuilder().addComponents(submittedBtn);
 
-                                await channel.send({
-                                    content: leaderRolePing,
-                                    embeds: [reminderEmbed],
-                                    components: [btnRow]
-                                });
-                            }
-                        } catch (sendErr) {
-                            console.error(`Failed to send reminder for ${clanTag}:`, sendErr);
-                        }
+                        await channel.send({
+                            content: leaderRolePing,
+                            embeds: [reminderEmbed],
+                            components: [btnRow]
+                        });
                     }
+                } catch (sendErr) {
+                    console.error(`Failed to send reminder for ${clanTag}:`, sendErr);
                 }
-            } else if (diffDays === 27) {
-                if (roleData) {
-                    const targetChannelId = roleData.leadChannelId && roleData.leadChannelId.trim() !== ""
-                        ? roleData.leadChannelId
-                        : roleData.channelId;
-                    if (targetChannelId) {
-                        try {
-                            const channel = await client.channels.fetch(targetChannelId).catch(() => null);
-                            if (channel) {
-                                const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
-                                
-                                const lazyEmbed = new EmbedBuilder()
-                                    .setTitle(`⚠️ **War Weight Submission Overdue**`)
-                                    .setDescription(`I think you guys are lazy to submit war weight 😭`)
-                                    .setColor("Red")
-                                    .setTimestamp();
-                                    
-                                await channel.send({
-                                    content: leaderRolePing,
-                                    embeds: [lazyEmbed]
-                                });
-                            }
-                        } catch (sendErr) {
-                            console.error(`Failed to send overdue reminder for ${clanTag}:`, sendErr);
-                        }
+            } else if (diffDays >= 27) {
+                try {
+                    const channel = await client.channels.fetch(targetChannelId).catch(() => null);
+                    if (channel) {
+                        const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
+                        const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
+
+                        const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
+                        const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡️";
+                        const heartEmoji = emojiUtils.getEmoji("heart") || "❤️";
+
+                        // 1. Missing / overdue warning message
+                        const lazyEmbed = new EmbedBuilder()
+                            .setTitle(`⚠️ **War Weight Submission Overdue**`)
+                            .setDescription(`I think you guys are lazy to submit war weight 😭\nIt has been **${diffDays} days** since your last submission!`)
+                            .setColor("Red")
+                            .setTimestamp();
+                            
+                        await channel.send({
+                            content: leaderRolePing,
+                            embeds: [lazyEmbed]
+                        });
+
+                        // 2. Immediately send the submission message with link & button
+                        const submissionEmbed = new EmbedBuilder()
+                            .setTitle(`${alaramEmoji} **War Weight Submission Reminder**`)
+                            .setDescription(
+                                `Hey Cheif ,\n` +
+                                `the war weight submission is overdue! Make sure to submit it now.\n\n` +
+                                `**Submission Link :** ${arrowEmoji} [Click here](${submissionUrl})\n\n` +
+                                `After submitting, click the button below to update records.\n\n` +
+                                `Yours Truly\n` +
+                                `${heartEmoji} **Blood Team**`
+                            )
+                            .setColor("Red")
+                            .setTimestamp();
+
+                        const submittedBtn = new ButtonBuilder()
+                            .setCustomId(`ww_submit_update_${cleanTag}`)
+                            .setLabel("Submitted")
+                            .setStyle(ButtonStyle.Success)
+                            .setEmoji(emojiUtils.getEmojiObject("gtick") || "✅");
+                        const btnRow = new ActionRowBuilder().addComponents(submittedBtn);
+
+                        await channel.send({
+                            embeds: [submissionEmbed],
+                            components: [btnRow]
+                        });
                     }
+                } catch (sendErr) {
+                    console.error(`Failed to send overdue reminder for ${clanTag}:`, sendErr);
                 }
             }
         }

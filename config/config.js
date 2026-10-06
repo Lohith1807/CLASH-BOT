@@ -10,7 +10,10 @@ module.exports = {
   mongoURI: process.env.MONGO_URI || '',
 
   LOG_CHANNEL_ID: process.env.LOG_CHANNEL_ID,
+  BAN_LOG_CHANNEL_ID: process.env.BAN_LOG_CHANNEL_ID,
   SYNC_CHANNEL_ID: process.env.SYNC_CHANNEL_ID,
+  SYNC_LOG_ID: process.env.SYNC_LOG_ID,
+  API_LOGS: process.env.API_LOGS,
   ADMIN_CATEGORY_ID: process.env.ADMIN_CATEGORY_ID,
 
   ADMIN_ROLE_IDS: (process.env.ADMIN_ROLE_IDS || "").split(",").map(id => id.trim()).filter(Boolean),
@@ -35,4 +38,13 @@ module.exports = {
   STAFF_CHANNEL_ID: process.env.STAFF_CHANNEL_ID || '1417528968294174740',
   FAMILY_ROLE_ID: process.env.FAMILY_ROLE_ID || '1528073821343584387',
   WEL_EXE_STAFF_ID: process.env.WEL_EXE_STAFF_ID,
+  CWL_STAFF_ROLE_ID: process.env.CWL_STAFF_ROLE_ID || '1448265928503726161',
+
+  REAPPLY_CHANNEL_ID: process.env.REAPPLY_CHANNEL_ID,
+  FWA_LOG_CHANNEL_ID: process.env.FWA_LOG_CHANNEL_ID,
+  WELCOME_CHANNEL_ID: process.env.WELCOME_CHANNEL_ID,
+  LEAVE_CHANNEL_ID: process.env.LEAVE_CHANNEL_ID,
+  RECRUIT_CHANNEL_ID: process.env.RECRUIT_CHANNEL_ID,
+  USER_LOG_CHANNEL_ID: process.env.USER_LOG_CHANNEL_ID,
+  REPORT_CHANNEL_ID: process.env.REPORT_CHANNEL_ID,
 };

@@ -9,6 +9,59 @@ function getRandomColor() {
     return Math.floor(Math.random() * 16777215);
 }
 
+function hasLeaderOrStaffPermission(member, config, data) {
+    if (!member) return false;
+
+    if (member.permissions && typeof member.permissions.has === "function") {
+        try {
+            if (member.permissions.has("Administrator") || member.permissions.has(8n)) return true;
+        } catch (e) {}
+    }
+
+    const memberRoles = member.roles?.cache;
+    if (!memberRoles) return false;
+
+    const allowedRoleIds = [
+        ...(config?.ADMIN_ROLE_IDS || []),
+        ...(config?.STAFF_ROLE_IDS || []),
+        ...(config?.ALL_STAFF_ROLE_IDS || []),
+        config?.ALL_LEAD_ROLE_ID,
+        config?.ALL_LEADS_ID,
+        process.env.ALL_LEAD_ROLE_ID,
+        process.env.ALL_LEADS_ID,
+        "1394230094675050616", // FWA leads
+        "1510301412280635585", // Crimson leads
+        "1513940638909988874", // Server Moderator
+        "1513942017196167389", // T-Moderator
+        "1154276716982833154", // Staff
+        "1466103376642314445", // All Staff
+        "1511650426343133274", // All Staff 2
+        config?.TRAINEE_ROLE_ID,
+        config?.CWL_STAFF_ROLE_ID
+    ].map(id => id ? id.toString().trim() : null).filter(Boolean);
+
+    if (data && typeof data.getClanRoles === "function") {
+        try {
+            const clanRoles = data.getClanRoles();
+            for (const tag in clanRoles) {
+                if (clanRoles[tag]?.leaderRoleId) {
+                    allowedRoleIds.push(clanRoles[tag].leaderRoleId.toString().trim());
+                }
+            }
+        } catch (e) {}
+    }
+
+    if (typeof memberRoles.some === "function") {
+        return memberRoles.some(r => allowedRoleIds.includes(r.id));
+    }
+
+    for (const [id] of memberRoles) {
+        if (allowedRoleIds.includes(id)) return true;
+    }
+
+    return false;
+}
+
 module.exports = {
     name: "as",
     description: "Check Clash of Clans base and assign clan roles",
@@ -17,13 +70,7 @@ module.exports = {
         if (message.deletable) message.delete().catch(() => { });
 
         const member = message.member;
-        const allowedRoles = [
-  ...config.ADMIN_ROLE_IDS,
-  ...config.STAFF_ROLE_IDS
-];
-
-
-        if (!allowedRoles.some(roleId => member.roles.cache.has(roleId))) {
+        if (!hasLeaderOrStaffPermission(member, config, data)) {
             return message.channel.send("❌ You do not have permission to use this command.");
         }
 
@@ -146,12 +193,8 @@ module.exports = {
 };
 
 async function runCheck(cleanTag, playerName, targetUser, message, clanroles, context) {
-    const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, coc, config } = context;
+    const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, coc, config, data } = context;
     const GLOBAL_ROLE_ID = config.GLOBAL_ROLE_ID;
-    const allowedRoles = [
-        ...config.ADMIN_ROLE_IDS,
-        ...config.STAFF_ROLE_IDS
-    ];
 
     let playerData = null;
     try {
@@ -212,7 +255,7 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
         try {
             const verifierMember = await message.guild.members.fetch(verifier.id);
 
-            if (!allowedRoles.some(r => verifierMember.roles.cache.has(r))) {
+            if (!hasLeaderOrStaffPermission(verifierMember, config, data)) {
                 const deniedEmbed = EmbedBuilder.from(embed)
                     .spliceFields(2, 1, { name: "Actions", value: `❌ ${verifier.tag} does not have permission.`, inline: false })
                     .setColor(0xFF0000)

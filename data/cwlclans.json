@@ -1,0 +1,414 @@
+{
+    "#2RYYL0Y0R": {
+        "name": "Blood Ascension",
+        "type": "cwl",
+        "style": "serious",
+        "active": false
+    },
+    "#2CVGV0C20": {
+        "name": "Blood Champions",
+        "type": "cwl",
+        "style": "serious",
+        "active": false
+    },
+    "#2CQ2L2JYR": {
+        "name": "Blood Sugar",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CC0R2PRP": {
+        "name": "Blood Pressure",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CY0UYY8Y": {
+        "name": "Blood Shot",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RQUR2U2Q": {
+        "name": "Blood Reaper",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CY2YJLR2": {
+        "name": "Blood Period",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CQP2VY9C": {
+        "name": "Blood Moon",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2U09JL9PC": {
+        "name": "Blood Kitkat",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2J00P2QUP": {
+        "name": "CLASHING VIPERS",
+        "type": "cwl",
+        "style": "serious",
+        "active": false
+    },
+    "#2CUQ99G2L": {
+        "name": "Blood Veins",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CY8P0G8R": {
+        "name": "Blood Rules",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CVY0RYUJ": {
+        "name": "Blood Donors",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2U0VLQ2GU": {
+        "name": "Blood Biryani",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2J9VVUL9R": {
+        "name": "Blood Khalifa",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RL80VJC8": {
+        "name": "Blood Void",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CQUJU2QC": {
+        "name": "Blood Sir",
+        "type": "cwl",
+        "style": "lazy",
+        "active": false
+    },
+    "#2GV8R8VLL": {
+        "name": "BLOOD LEGEND",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RJ8UGYPQ": {
+        "name": "Blood AFW",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CQG82CCQ": {
+        "name": "Blood Alien",
+        "style": "lazy",
+        "active": false
+    },
+    "#2J2VRL8YC": {
+        "name": "Blood Babitaji",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CJQRYPUJ": {
+        "name": "Blood Champklal",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C8PRCG8V": {
+        "name": "Blood Cutie",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CCP0P0RQ": {
+        "name": "Blood Dustin",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RYYVPUYQ": {
+        "name": "Blood Dhurandar",
+        "style": "lazy",
+        "active": false
+    },
+    "#2GVCPVLPG": {
+        "name": "Blood Dexter",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CCYPQYG0": {
+        "name": "Blood Demons",
+        "style": "lazy",
+        "active": false
+    },
+    "#2J2CJQGC2": {
+        "name": "Blood Lord",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C2YCJ0P0": {
+        "name": "Blood Jethalal",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RCPGUVR2": {
+        "name": "Blood Hounds",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C2YQC0JC": {
+        "name": "Blood Hole",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JRU2UPUR": {
+        "name": "Blood Oracle",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C8YURQ8P": {
+        "name": "Blood Onepiece",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C2UP99PQ": {
+        "name": "Blood Nur",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JQ99UQVL": {
+        "name": "Blood Note",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CCPLVCPQ": {
+        "name": "Blood Naruto",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RU9Q2LG9": {
+        "name": "Blood Muthi",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JYCURRPG": {
+        "name": "Blood Messi",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CV0RRG8Y": {
+        "name": "Blood battel",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CC2JJG2C": {
+        "name": "Blood Veteran",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CJGGG8L2": {
+        "name": "Blood Vasuli",
+        "style": "lazy",
+        "active": false
+    },
+    "#2GYU2GJ2R": {
+        "name": "Blood United",
+        "style": "lazy",
+        "active": false
+    },
+    "#2J8JYR2GP": {
+        "name": "Blood Test",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RVP29GVY": {
+        "name": "Blood Sword",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JQQVUJP9": {
+        "name": "Blood Queen",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JLQ2JYQ0": {
+        "name": "Blood Princess",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C2CCYVRC": {
+        "name": "Blood Prince",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CPRJ08JY": {
+        "name": "Blood Prime",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CJPV9CY9": {
+        "name": "Blood Panther",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JGRVLYP2": {
+        "name": "BloodX",
+        "style": "lazy",
+        "active": false
+    },
+    "#2R9L92UVL": {
+        "name": "BloodOps",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RQCRYR2G": {
+        "name": "BloodNova",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JCJU8GQ8": {
+        "name": "Blood legion9",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CLUQP0PQ": {
+        "name": "Blood God",
+        "style": "lazy",
+        "active": false
+    },
+    "#2RVPCLJG0": {
+        "name": "Blood Popat",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C2YJGJ88": {
+        "name": "Blood Bank",
+        "style": "lazy",
+        "active": false
+    },
+    "#2U29JL2J8": {
+        "name": "Blood Pact",
+        "style": "lazy",
+        "active": false
+    },
+    "#2U80RYJVP": {
+        "name": "Blood Chaiwala",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CVCPGL9J": {
+        "name": "Blood Spiderman",
+        "style": "lazy",
+        "active": false
+    },
+    "#2U9VURCLQ": {
+        "name": "Blood Ironman",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C99889RU": {
+        "name": "Blood Godzilla",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CQ2CJR9Q": {
+        "name": "Blood Godfather",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CVJRGLUR": {
+        "name": "Blood Mirzapur",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CGRGYQQ8": {
+        "name": "Blood Golmal",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C9802Q9R": {
+        "name": "Blood Lagaan",
+        "style": "lazy",
+        "active": false
+    },
+    "#2U2Q8VLVP": {
+        "name": "Blood Khichadi",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CQYJQCJ0": {
+        "name": "Blood Titanic",
+        "style": "lazy",
+        "active": false
+    },
+    "#2C98V8V28": {
+        "name": "Blood Friends",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CP9C0RRJ": {
+        "name": "Blood Daru",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JGG8U0C0": {
+        "name": "Blood Spaghetti",
+        "style": "lazy",
+        "active": false
+    },
+    "#2U9CVVQP8": {
+        "name": "Blood Rasgula",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CPJ9YYQY": {
+        "name": "Blood Biscuit",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CP9CQYJP": {
+        "name": "Blood Maggi",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JV0UVUVC": {
+        "name": "Blood Momos",
+        "style": "lazy",
+        "active": false
+    },
+    "#2CUYJUV82": {
+        "name": "Blood Chatni",
+        "style": "lazy",
+        "active": false
+    },
+    "#2UYLLU800": {
+        "name": "Blood Kimchi",
+        "style": "lazy",
+        "active": false
+    },
+    "#2JPCULPJL": {
+        "name": "Blood Pakoda",
+        "style": "lazy",
+        "active": false
+    },
+    "#2UYLLUQ98": {
+        "name": "Blood Paan",
+        "style": "lazy",
+        "active": false
+    },
+    "#2U909PJUU": {
+        "name": "Blood Rasmalai",
+        "style": "lazy",
+        "active": false
+    }
+}

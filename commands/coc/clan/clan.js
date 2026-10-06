@@ -247,13 +247,7 @@ module.exports = {
 
           await message.channel.send({ embeds: [embed], components: [btnRow] });
         } catch (err) {
-          if (err.response) {
-            if (err.response.status !== 404) {
-              console.error(`Error fetching FWA clan info for @user: Clash API returned status ${err.response.status}`);
-            }
-          } else {
-            console.error("Error fetching FWA clan info for @user:", err.message || err);
-          }
+          // Suppress expected errors when checking clans for mentioned user
         }
       }
 
@@ -273,13 +267,7 @@ module.exports = {
 
           await message.channel.send({ embeds: [embed], components: [btnRow] });
         } catch (err) {
-          if (err.response) {
-            if (err.response.status !== 404) {
-              console.error(`Error fetching WAR clan info for @user: Clash API returned status ${err.response.status}`);
-            }
-          } else {
-            console.error("Error fetching WAR clan info for @user:", err.message || err);
-          }
+          // Suppress expected errors when checking clans for mentioned user
         }
       }
 
@@ -324,48 +312,24 @@ module.exports = {
 
         return message.channel.send({ embeds: [embed], components: [btnRow] });
       } catch (err) {
-        if (err.response) {
-          if (err.response.status !== 404) {
-            console.error(`Clash API Error: ${err.config?.method?.toUpperCase()} ${err.config?.url} returned status ${err.response.status}`);
-          }
-        } else {
-          console.error("Error in clan execute:", err.message || err);
+        if (err.name === "CocApiError" || err.friendlyMessage) {
+          return message.channel.send(err.friendlyMessage || err.message);
         }
 
-        if (err.response) {
-          const status = err.response.status;
-          if (status === 404) {
-            const embed = new EmbedBuilder()
-              .setTitle("❌ Clan Not Found")
-              .setDescription(`Clan is not found with nickname: \`${arg}\``)
-              .setColor(0xFF0000)
-              .setTimestamp();
-            return message.channel.send({ embeds: [embed] });
-          }
-          if (status === 503) {
-            const embed = new EmbedBuilder()
-              .setTitle("❌ API Maintenance")
-              .setDescription("Clash of Clans API is currently in maintenance. Please try again later.")
-              .setColor(0xFF0000)
-              .setTimestamp();
-            return message.channel.send({ embeds: [embed] });
-          }
-          if (status === 403) {
-            const embed = new EmbedBuilder()
-              .setTitle("❌ Access Denied")
-              .setDescription("Can't access Clash of Clans API. Please contact server admins.")
-              .setColor(0xFF0000)
-              .setTimestamp();
-            return message.channel.send({ embeds: [embed] });
-          }
+        const status = err.statusCode || err.response?.status || err.originalError?.response?.status;
+        if (status === 404 || (err.message && err.message.includes("Invalid Clan Tag"))) {
+          return message.channel.send("⛔ Invalid Clan Tag");
         }
 
-        const embed = new EmbedBuilder()
-          .setTitle("❌ Error")
-          .setDescription("An error occurred while fetching clan data. Please re-check the tag/nickname and try again.")
-          .setColor(0xFF0000)
-          .setTimestamp();
-        return message.channel.send({ embeds: [embed] });
+        if (status === 503 || err.message === "API_MAINTENANCE_PAUSE") {
+          return message.channel.send("⛔ Clash of Clans is under maintenance. Please try again later.");
+        }
+
+        if (status === 403) {
+          return message.channel.send("⛔ Access denied by Clash of Clans API. The API token may be invalid or IP-restricted.");
+        }
+
+        return message.channel.send("❌ Error fetching clan data. Re-check once.");
       }
     }
 
@@ -504,65 +468,23 @@ async function showWarClanDetail(message, clanTag, context, originalArg) {
 
     await message.channel.send({ embeds: [embed], components: [selectRow, buttonRow] });
   } catch (err) {
-    if (err.response) {
-      if (err.response.status !== 404) {
-        console.error(`Clash API Error: ${err.config?.method?.toUpperCase()} ${err.config?.url} returned status ${err.response.status}`);
-      }
-    } else {
-      console.error("Error in showWarClanDetail:", err.message || err);
+    if (err.name === "CocApiError" || err.friendlyMessage) {
+      return message.channel.send(err.friendlyMessage || err.message);
     }
 
-    if (err.response) {
-      if (err.response.status === 404) {
-        if (originalArg && originalArg.startsWith("#")) {
-          const embed = new EmbedBuilder()
-            .setTitle("❌ Clan Not Found")
-            .setDescription(`Clan is not found with tag: \`${originalArg}\``)
-            .setColor(0xFF0000)
-            .setTimestamp();
-          return message.channel.send({ embeds: [embed] });
-        } else {
-          const clanRoles = dataManager.getClanRoles();
-          const tags = Object.keys(clanRoles);
-          let nickList = [];
-          for (let i = 0; i < tags.length; i++) {
-            const info = clanRoles[tags[i]];
-            if (info.nickName) nickList.push(`• **${info.nickName}** (\`${tags[i]}\`)`);
-          }
-
-          const helpEmbed = new EmbedBuilder()
-            .setTitle("❌ Clan Not Found")
-            .setDescription(`Clan is not found with nickname: \`${originalArg || clanTag}\`\n\n**Available Nicknames:**\n${nickList.join("\n") || "No nicknames configured."}`)
-            .setColor(0xFF0000)
-            .setFooter({ text: "Tip: Use the nicknames above or a full clan tag (#TAG)" })
-            .setTimestamp();
-
-          return message.channel.send({ embeds: [helpEmbed] });
-        }
-      }
-      if (err.response.status === 503) {
-        const embed = new EmbedBuilder()
-          .setTitle("❌ API Maintenance")
-          .setDescription("Clash of Clans API is currently in maintenance. Please try again later.")
-          .setColor(0xFF0000)
-          .setTimestamp();
-        return message.channel.send({ embeds: [embed] });
-      }
-      if (err.response.status === 403) {
-        const embed = new EmbedBuilder()
-          .setTitle("❌ Access Denied")
-          .setDescription("Can't access Clash of Clans API. Please contact server admins.")
-          .setColor(0xFF0000)
-          .setTimestamp();
-        return message.channel.send({ embeds: [embed] });
-      }
+    const status = err.statusCode || err.response?.status || err.originalError?.response?.status;
+    if (status === 404 || (err.message && err.message.includes("Invalid Clan Tag"))) {
+      return message.channel.send("⛔ Invalid Clan Tag");
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle("❌ Error")
-      .setDescription("❌ Error fetching detailed clan data. Re-check once.")
-      .setColor(0xFF0000)
-      .setTimestamp();
-    message.channel.send({ embeds: [embed] });
+    if (status === 503 || err.message === "API_MAINTENANCE_PAUSE") {
+      return message.channel.send("⛔ Clash of Clans is under maintenance. Please try again later.");
+    }
+
+    if (status === 403) {
+      return message.channel.send("⛔ Access denied by Clash of Clans API. The API token may be invalid or IP-restricted.");
+    }
+
+    return message.channel.send("❌ Error fetching detailed clan data. Re-check once.");
   }
 }

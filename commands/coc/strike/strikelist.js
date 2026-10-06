@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, MessageFlags } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -165,20 +165,13 @@ module.exports = {
         }
 
         const { getEmoji } = require("../../../utils/emoji.js");
-        let embeds = [];
-        let currentEmbed = new EmbedBuilder()
-            .setTitle(embedTitle)
-            .setColor(0xFF0000)
-            .setTimestamp();
-
-        let description = "";
+        let pages = [];
+        let currentDesc = "";
 
         for (const p of finalStrikeList) {
             const thEmoji = getEmoji(`th${p.townHallLevel || 0}`);
             const nlTag = p.isUnlinked ? " **(N/L)**" : "";
-            const playerLabel = p.isUnlinked
-                ? `**${p.name}**${nlTag}`
-                : `**${p.name}**${nlTag}`;
+            const playerLabel = `**${p.name}**${nlTag}`;
 
             let playerSection = `${thEmoji} ${playerLabel} | ${p.clanName}, ${p.role}\n`;
             playerSection += `No of Strikes: ${p.strikeHistory ? p.strikeHistory.length : 0}, Weight: ${p.totalStrikes}\n`;
@@ -193,22 +186,110 @@ module.exports = {
             }
             playerSection += `\n`;
 
-            if ((description.length + playerSection.length) > 3800) {
-                currentEmbed.setDescription(description);
-                embeds.push(currentEmbed);
-                currentEmbed = new EmbedBuilder()
-                    .setTitle(`${embedTitle} (Continued)`)
-                    .setColor(0xFF0000)
-                    .setTimestamp();
-                description = playerSection;
+            if ((currentDesc.length + playerSection.length) > 3500) {
+                if (currentDesc.trim().length > 0) {
+                    pages.push(currentDesc);
+                    currentDesc = "";
+                }
+            }
+
+            if (playerSection.length > 3500) {
+                const lines = playerSection.split("\n");
+                for (const line of lines) {
+                    if ((currentDesc.length + line.length + 1) > 3500) {
+                        if (currentDesc.trim().length > 0) {
+                            pages.push(currentDesc);
+                            currentDesc = "";
+                        }
+                    }
+                    currentDesc += line + "\n";
+                }
             } else {
-                description += playerSection;
+                currentDesc += playerSection;
             }
         }
 
-        currentEmbed.setDescription(description);
-        embeds.push(currentEmbed);
+        if (currentDesc.trim().length > 0) {
+            pages.push(currentDesc);
+        }
 
-        await interaction.editReply({ embeds: embeds.slice(0, 10) });
+        if (pages.length === 0) {
+            return interaction.editReply({ content: "✅ No strike records to display." });
+        }
+
+        const totalPages = pages.length;
+        const embeds = pages.map((desc, idx) => {
+            return new EmbedBuilder()
+                .setTitle(totalPages > 1 ? `${embedTitle} (${idx + 1}/${totalPages})` : embedTitle)
+                .setDescription(desc)
+                .setColor(0xFF0000)
+                .setFooter({ text: `Page ${idx + 1} of ${totalPages} • Total Players: ${finalStrikeList.length}` })
+                .setTimestamp();
+        });
+
+        const getRow = (currPage, total) => {
+            if (total <= 1) return [];
+            return [
+                new ActionRowBuilder().addComponents(
+                    new ButtonBuilder()
+                        .setCustomId('strikelist_prev')
+                        .setLabel('◀ Previous')
+                        .setStyle(ButtonStyle.Primary)
+                        .setDisabled(currPage === 0),
+                    new ButtonBuilder()
+                        .setCustomId('strikelist_page')
+                        .setLabel(`${currPage + 1}/${total}`)
+                        .setStyle(ButtonStyle.Secondary)
+                        .setDisabled(true),
+                    new ButtonBuilder()
+                        .setCustomId('strikelist_next')
+                        .setLabel('Next ▶')
+                        .setStyle(ButtonStyle.Primary)
+                        .setDisabled(currPage === total - 1)
+                )
+            ];
+        };
+
+        let currentPage = 0;
+        const msg = await interaction.editReply({
+            embeds: [embeds[currentPage]],
+            components: getRow(currentPage, totalPages)
+        });
+
+        if (totalPages > 1 && msg && typeof msg.createMessageComponentCollector === 'function') {
+            const collector = msg.createMessageComponentCollector({
+                componentType: ComponentType.Button,
+                time: 15 * 60 * 1000 // 15 minutes
+            });
+
+            collector.on('collect', async (i) => {
+                try {
+                    if (i.user.id !== interaction.user.id) {
+                        return i.reply({ content: "⚠️ You cannot use these pagination controls.", flags: [MessageFlags.Ephemeral] });
+                    }
+
+                    if (i.customId === 'strikelist_prev' && currentPage > 0) {
+                        currentPage--;
+                    } else if (i.customId === 'strikelist_next' && currentPage < totalPages - 1) {
+                        currentPage++;
+                    }
+
+                    await i.update({
+                        embeds: [embeds[currentPage]],
+                        components: getRow(currentPage, totalPages)
+                    });
+                } catch (btnErr) {
+                    if (btnErr.code !== 10062 && btnErr.code !== 40060) {
+                        console.error("strikelist button error:", btnErr);
+                    }
+                }
+            });
+
+            collector.on('end', async () => {
+                try {
+                    await interaction.editReply({ components: [] });
+                } catch {}
+            });
+        }
     }
 };

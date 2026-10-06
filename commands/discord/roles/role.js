@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, PermissionsBitField , MessageFlags } = require("discord.js");
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ChannelType, PermissionsBitField, MessageFlags, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
+const emojiUtils = require("../../../utils/emoji.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("clanentry")
@@ -390,6 +391,34 @@ module.exports = {
 
             dataManager.saveClanRoles(clanroles);
 
+            // If registered clan is an FWA clan, automatically add to ww.json for war weight reminders
+            if (finalType && finalType.toLowerCase() === "fwa") {
+                try {
+                    const wwPath = path.join(__dirname, "../../../data/ww.json");
+                    let wwData = {};
+                    if (fs.existsSync(wwPath)) {
+                        try {
+                            wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
+                        } catch (e) {}
+                    }
+                    if (!wwData[clanTag]) {
+                        const now = new Date();
+                        const day = String(now.getDate()).padStart(2, '0');
+                        const month = String(now.getMonth() + 1).padStart(2, '0');
+                        const year = now.getFullYear();
+                        const todayStr = `${day}/${month}/${year}`;
+                        
+                        wwData[clanTag] = {
+                            clanName: officialClanName || nickName || clanTag,
+                            lastUpdated: todayStr
+                        };
+                        fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
+                    }
+                } catch (wwErr) {
+                    console.error("Error auto-adding FWA clan to ww.json:", wwErr);
+                }
+            }
+
             var desc =
                 "✅ Clan **" + clanTag + "** has been registered:\n\n" +
                 "• **Member Role:** <@&" + finalRoleId + ">\n" +
@@ -417,6 +446,52 @@ module.exports = {
                 .setTimestamp();
 
             await interaction.editReply({ embeds: [embed] });
+
+            // If registered clan is an FWA clan, immediately send war weight submission prompt to leadership chat
+            if (finalType && finalType.toLowerCase() === "fwa" && finalLeadChannelId) {
+                try {
+                    const leadChannel = await interaction.guild.channels.fetch(finalLeadChannelId).catch(() => null);
+                    if (leadChannel) {
+                        const tagMatch = clanTag.match(/#([A-Z0-9]+)/i);
+                        const cleanTag = tagMatch ? tagMatch[1].toUpperCase() : clanTag.replace("#", "").toUpperCase();
+                        const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
+                        const leaderRolePing = leaderRole && leaderRole.id ? `<@&${leaderRole.id}>` : "";
+
+                        const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
+                        const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡️";
+                        const heartEmoji = emojiUtils.getEmoji("heart") || "❤️";
+
+                        const submissionEmbed = new EmbedBuilder()
+                            .setTitle(`${alaramEmoji} **War Weight Submission Required**`)
+                            .setDescription(
+                                `Hey Chief,\n` +
+                                `Welcome to FWA! Please make sure to submit the war weight for **${officialClanName || nickName || clanTag}**.\n\n` +
+                                `**Submission Link :** ${arrowEmoji} [Click here](${submissionUrl})\n\n` +
+                                `After submitting on FWA Stats, click the **Submitted** button below to update records.\n\n` +
+                                `Yours Truly\n` +
+                                `${heartEmoji} **Blood Team**`
+                            )
+                            .setColor("Orange")
+                            .setTimestamp();
+
+                        const submittedBtn = new ButtonBuilder()
+                            .setCustomId(`ww_submit_update_${cleanTag}`)
+                            .setLabel("Submitted")
+                            .setStyle(ButtonStyle.Success)
+                            .setEmoji(emojiUtils.getEmojiObject("gtick") || "✅");
+
+                        const btnRow = new ActionRowBuilder().addComponents(submittedBtn);
+
+                        await leadChannel.send({
+                            content: leaderRolePing,
+                            embeds: [submissionEmbed],
+                            components: [btnRow]
+                        });
+                    }
+                } catch (leadMsgErr) {
+                    console.error("Failed to send war weight prompt to leadership chat:", leadMsgErr);
+                }
+            }
 
         } catch (error) {
             console.error("❌ Error in clanentry command:", error);

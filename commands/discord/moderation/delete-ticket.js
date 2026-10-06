@@ -32,7 +32,12 @@ module.exports = {
 
         const STAFF_ROLE_IDS = conf.STAFF_ROLE_IDS || [];
         const WEL_EXE_STAFF_ID = conf.WEL_EXE_STAFF_ID || process.env.WEL_EXE_STAFF_ID;
-        const isStaff = STAFF_ROLE_IDS.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator) || (WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID));
+        const CWL_STAFF_ROLE_ID = conf.CWL_STAFF_ROLE_ID || process.env.CWL_STAFF_ROLE_ID || '1448265928503726161';
+        const isCwlStaff = member.roles.cache.has(CWL_STAFF_ROLE_ID) || member.roles.cache.has('1448265928503726161');
+        const isStaff = STAFF_ROLE_IDS.some(id => member.roles.cache.has(id)) || 
+                        member.permissions.has(PermissionFlagsBits.Administrator) || 
+                        (WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID)) ||
+                        isCwlStaff;
 
         if (!isStaff) {
             return interaction.reply({

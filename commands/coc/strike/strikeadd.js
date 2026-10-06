@@ -83,8 +83,23 @@ module.exports = {
 
         let clanNick = "UNK";
         const clanRoles = dataManager.getClanRoles();
-        if (clanTag && clanRoles[clanTag] && clanRoles[clanTag].nickName) {
-            clanNick = clanRoles[clanTag].nickName.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Ensure it's uppercase alphanumeric
+        let matchedClanConfig = null;
+        if (clanTag) {
+            const normalizedTag = clanTag.toUpperCase();
+            const tagWithHash = normalizedTag.startsWith('#') ? normalizedTag : `#${normalizedTag}`;
+            const tagWithoutHash = normalizedTag.startsWith('#') ? normalizedTag.slice(1) : normalizedTag;
+            matchedClanConfig = clanRoles[tagWithHash] || clanRoles[tagWithoutHash] || clanRoles[clanTag];
+        }
+        if (!matchedClanConfig && clanName) {
+            for (const [t, info] of Object.entries(clanRoles)) {
+                if (info.nickName && info.nickName.trim().toLowerCase() === clanName.trim().toLowerCase()) {
+                    matchedClanConfig = info;
+                    break;
+                }
+            }
+        }
+        if (matchedClanConfig && matchedClanConfig.nickName) {
+            clanNick = matchedClanConfig.nickName.toUpperCase().replace(/[^A-Z0-9]/g, ''); // Ensure it's uppercase alphanumeric
         }
 
         const counters = dataManager.getStrikeCounters();
@@ -114,6 +129,7 @@ module.exports = {
                 totalAtTime: totalStrikes,
                 addedBy: interaction.user.id,
                 clan: clanName,
+                clanTag: clanTag,
                 date: dateStr
             });
 
@@ -147,11 +163,18 @@ module.exports = {
                 totalAtTime: totalStrikes,
                 addedBy: interaction.user.id,
                 clan: clanName,
+                clanTag: clanTag,
                 date: dateStr
             });
 
             dataManager.saveStrikePlayers(strikePlayers);
             await this.sendUnlinkedAlert(interaction, clanTag, playerName, tag, reason, weight, totalStrikes, dataManager);
+
+            if (totalStrikes >= 6 && !account.sixStrikeAlertSent) {
+                account.sixStrikeAlertSent = true;
+                dataManager.saveStrikePlayers(strikePlayers);
+                await this.sendSixStrikeAlert(interaction, clanTag, playerName, totalStrikes, clanName, dataManager);
+            }
         }
 
         let dmStatus = "Notified in DM";
@@ -195,16 +218,47 @@ module.exports = {
     },
 
     async sendSixStrikeAlert(interaction, clanTag, playerName, totalStrikes, clanName, dataManager) {
-        if (!clanTag) return;
+        if (!clanTag && !clanName) return;
         const { EmbedBuilder } = require('discord.js');
         const clanRoles = dataManager.getClanRoles();
-        const clanConfig = clanRoles[clanTag];
+        let clanConfig = null;
+
+        if (clanTag) {
+            const normalizedTag = clanTag.toUpperCase();
+            const tagWithHash = normalizedTag.startsWith('#') ? normalizedTag : `#${normalizedTag}`;
+            const tagWithoutHash = normalizedTag.startsWith('#') ? normalizedTag.slice(1) : normalizedTag;
+            clanConfig = clanRoles[tagWithHash] || clanRoles[tagWithoutHash] || clanRoles[clanTag];
+        }
+
+        if (!clanConfig && clanName) {
+            for (const [tag, info] of Object.entries(clanRoles)) {
+                if (info.nickName && info.nickName.trim().toLowerCase() === clanName.trim().toLowerCase()) {
+                    clanConfig = info;
+                    break;
+                }
+            }
+        }
+
         if (clanConfig && clanConfig.mailChannelId) {
             const mailChannel = await interaction.client.channels.fetch(clanConfig.mailChannelId).catch(() => null);
             if (mailChannel) {
-                const leaderRole = interaction.guild.roles.cache.find(r => r.name.toLowerCase() === "leader") || 
-                                   interaction.guild.roles.cache.find(r => r.name.toLowerCase().includes("leader"));
-                const mention = leaderRole ? `<@&${leaderRole.id}>` : "@Leader";
+                let leaderRole = null;
+                if (clanConfig.leaderRoleId && interaction.guild) {
+                    leaderRole = interaction.guild.roles.cache.get(clanConfig.leaderRoleId) || 
+                                 await interaction.guild.roles.fetch(clanConfig.leaderRoleId).catch(() => null);
+                }
+
+                let mention;
+                if (leaderRole) {
+                    mention = `<@&${leaderRole.id}>`;
+                } else if (clanConfig.leaderRoleId) {
+                    mention = `<@&${clanConfig.leaderRoleId}>`;
+                } else {
+                    const fallbackRole = interaction.guild?.roles.cache.find(r => r.name.toLowerCase() === "leader") || 
+                                         interaction.guild?.roles.cache.find(r => r.name.toLowerCase().includes("leader"));
+                    mention = fallbackRole ? `<@&${fallbackRole.id}>` : "@Leader";
+                }
+
                 const alertEmbed = new EmbedBuilder()
                     .setTitle("⚠️ Player reached 6 strikes")
                     .setColor(0xFF0000)
@@ -221,16 +275,48 @@ module.exports = {
     },
 
     async sendUnlinkedAlert(interaction, clanTag, playerName, tag, reason, weight, totalStrikes, dataManager) {
-        if (!clanTag) return;
+        if (!clanTag && !playerName) return;
         const { EmbedBuilder } = require('discord.js');
         const clanRoles = dataManager.getClanRoles();
-        const clanConfig = clanRoles[clanTag];
+        let clanConfig = null;
+
+        if (clanTag) {
+            const normalizedTag = clanTag.toUpperCase();
+            const tagWithHash = normalizedTag.startsWith('#') ? normalizedTag : `#${normalizedTag}`;
+            const tagWithoutHash = normalizedTag.startsWith('#') ? normalizedTag.slice(1) : normalizedTag;
+            clanConfig = clanRoles[tagWithHash] || clanRoles[tagWithoutHash] || clanRoles[clanTag];
+        }
+
+        if (!clanConfig && tag) {
+            // Check if player has a clan name stored or if clanRoles can be matched
+            for (const [t, info] of Object.entries(clanRoles)) {
+                if (info.nickName && info.nickName.trim().toLowerCase() === (clanName || "").trim().toLowerCase()) {
+                    clanConfig = info;
+                    break;
+                }
+            }
+        }
+
         if (clanConfig && clanConfig.mailChannelId) {
             const mailChannel = await interaction.client.channels.fetch(clanConfig.mailChannelId).catch(() => null);
             if (mailChannel) {
-                const leaderRole = interaction.guild.roles.cache.find(r => r.name.toLowerCase() === "leader") || 
-                                   interaction.guild.roles.cache.find(r => r.name.toLowerCase().includes("leader"));
-                const mention = leaderRole ? `<@&${leaderRole.id}>` : "@Leader";
+                let leaderRole = null;
+                if (clanConfig.leaderRoleId && interaction.guild) {
+                    leaderRole = interaction.guild.roles.cache.get(clanConfig.leaderRoleId) || 
+                                 await interaction.guild.roles.fetch(clanConfig.leaderRoleId).catch(() => null);
+                }
+
+                let mention;
+                if (leaderRole) {
+                    mention = `<@&${leaderRole.id}>`;
+                } else if (clanConfig.leaderRoleId) {
+                    mention = `<@&${clanConfig.leaderRoleId}>`;
+                } else {
+                    const fallbackRole = interaction.guild?.roles.cache.find(r => r.name.toLowerCase() === "leader") || 
+                                         interaction.guild?.roles.cache.find(r => r.name.toLowerCase().includes("leader"));
+                    mention = fallbackRole ? `<@&${fallbackRole.id}>` : "@Leader";
+                }
+
                 const alertEmbed = new EmbedBuilder()
                     .setTitle("⚠️ Strike Added (Unlinked Player)")
                     .setColor(0xFF0000)

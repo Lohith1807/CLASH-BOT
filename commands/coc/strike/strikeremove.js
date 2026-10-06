@@ -130,6 +130,7 @@ module.exports = {
             }
 
             account.totalStrikes -= actualRemove;
+            if (account.totalStrikes < 6) account.sixStrikeAlertSent = false;
             newStrikes = account.totalStrikes;
             dataManager.saveStrikePlayers(strikePlayers);
 
@@ -162,15 +163,43 @@ module.exports = {
         }
 
         // --- Clan mail channel notification ---
-        if (clanTag) {
+        if (clanTag || clanName) {
             const clanRoles = dataManager.getClanRoles();
-            const clanConfig = clanRoles[clanTag];
+            let clanConfig = null;
+            if (clanTag) {
+                const normalizedTag = clanTag.toUpperCase();
+                const tagWithHash = normalizedTag.startsWith('#') ? normalizedTag : `#${normalizedTag}`;
+                const tagWithoutHash = normalizedTag.startsWith('#') ? normalizedTag.slice(1) : normalizedTag;
+                clanConfig = clanRoles[tagWithHash] || clanRoles[tagWithoutHash] || clanRoles[clanTag];
+            }
+            if (!clanConfig && clanName) {
+                for (const [t, info] of Object.entries(clanRoles)) {
+                    if (info.nickName && info.nickName.trim().toLowerCase() === clanName.trim().toLowerCase()) {
+                        clanConfig = info;
+                        break;
+                    }
+                }
+            }
+
             if (clanConfig && clanConfig.mailChannelId) {
                 const mailChannel = await interaction.client.channels.fetch(clanConfig.mailChannelId).catch(() => null);
                 if (mailChannel) {
-                    const leaderRole = interaction.guild.roles.cache.find(r => r.name.toLowerCase() === "leader") ||
-                                       interaction.guild.roles.cache.find(r => r.name.toLowerCase().includes("leader"));
-                    const mention = leaderRole ? `<@&${leaderRole.id}>` : "@Leader";
+                    let leaderRole = null;
+                    if (clanConfig.leaderRoleId && interaction.guild) {
+                        leaderRole = interaction.guild.roles.cache.get(clanConfig.leaderRoleId) ||
+                                     await interaction.guild.roles.fetch(clanConfig.leaderRoleId).catch(() => null);
+                    }
+                    let mention;
+                    if (leaderRole) {
+                        mention = `<@&${leaderRole.id}>`;
+                    } else if (clanConfig.leaderRoleId) {
+                        mention = `<@&${clanConfig.leaderRoleId}>`;
+                    } else {
+                        const fallbackRole = interaction.guild?.roles.cache.find(r => r.name.toLowerCase() === "leader") ||
+                                             interaction.guild?.roles.cache.find(r => r.name.toLowerCase().includes("leader"));
+                        mention = fallbackRole ? `<@&${fallbackRole.id}>` : "@Leader";
+                    }
+
                     const alertEmbed = new EmbedBuilder()
                         .setTitle("🟢 Strike Removed")
                         .setColor(0x2ECC71)

@@ -27,6 +27,14 @@ module.exports = {
             const user = ctx.mentions.users.first();
             accounts = data[user.id] || [];
         }
+        else if (!isInteraction && args[0]) {
+            const cleanId = args[0].replace(/[<@!>]/g, "");
+            if (/^\d+$/.test(cleanId)) {
+                accounts = data[cleanId] || [];
+            } else {
+                accounts = data[ctx.author.id] || [];
+            }
+        }
         else if (!isInteraction) {
             accounts = data[ctx.author.id] || [];
         }

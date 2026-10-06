@@ -23,6 +23,13 @@ async function handleInteraction(interaction, context) {
         return staffPannelCmd.handleButtonPress(interaction, context);
     }
 
+    if (interaction.isButton() && interaction.customId.startsWith("help_")) {
+        const helpCmd = require("../commands/info/help.js");
+        if (helpCmd && typeof helpCmd.handleButton === "function") {
+            return helpCmd.handleButton(interaction, context);
+        }
+    }
+
     if ((interaction.isButton() || interaction.isStringSelectMenu()) && interaction.customId.startsWith("sync_")) {
         const syncCommand = require("../commands/coc/war/sync.js");
         return syncCommand.handleSyncButton(interaction, context);
@@ -38,18 +45,18 @@ async function handleInteraction(interaction, context) {
     }
     // ── end /clan-members handler ───────────────────────────────────────────
 
-    // ── /cwl-clan edit panel — select menu ───────────────────────────────────
-    if (interaction.isStringSelectMenu() && interaction.customId === "cwl_clan_edit_sel") {
+    // ── /cwl-clan edit / active / inactive panel — select menu ──────────────
+    if (interaction.isStringSelectMenu() && (interaction.customId === "cwl_clan_edit_sel" || interaction.customId.startsWith("cwl_clan_active_") || interaction.customId.startsWith("cwl_clan_inactive_"))) {
         const cwlClanCmd = require("../commands/coc/clan/cwl-clan.js");
         return cwlClanCmd.handleSelectMenu(interaction, context);
     }
 
-    // ── /cwl-clan edit panel — buttons ───────────────────────────────────────
-    if (interaction.isButton() && interaction.customId.startsWith("cwl_clan_edit_")) {
+    // ── /cwl-clan edit / active / inactive panel — buttons ──────────────────
+    if (interaction.isButton() && (interaction.customId.startsWith("cwl_clan_edit_") || interaction.customId.startsWith("cwl_clan_active_") || interaction.customId.startsWith("cwl_clan_inactive_"))) {
         const cwlClanCmd = require("../commands/coc/clan/cwl-clan.js");
         return cwlClanCmd.handleButton(interaction, context);
     }
-    // ── end /cwl-clan edit panel handler ─────────────────────────────────────
+    // ── end /cwl-clan panel handler ─────────────────────────────────────────
 
     const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, data: dataManager, coc, config, emoji } = context;
     const { getEmoji, getEmojiObject } = emoji;
@@ -378,7 +385,7 @@ async function handleInteraction(interaction, context) {
 
             try {
                 const profileCmd = require("../commands/coc/profile/profile.js");
-                const targetUser = await interaction.client.users.fetch(targetUserId);
+                const targetUser = (await interaction.client.users.fetch(targetUserId).catch(() => null)) || { id: targetUserId, username: `User (${targetUserId})` };
                 
                 const accounts = await profileCmd.getProfileAccounts(targetUserId, userData, coc, emoji);
                 const embed = profileCmd.buildProfileEmbed(targetUser, accounts, page);
@@ -765,6 +772,29 @@ async function handleInteraction(interaction, context) {
             return;
         }
 
+        if (id.startsWith("cwlcompo_refresh_")) {
+            if (interaction.replied || interaction.deferred) return;
+
+            try { await interaction.deferUpdate(); } catch(e) { return; }
+
+            try {
+                const cwlCompoCmd = require("../commands/coc/clan/cwl-compo.js");
+                // Build a mock interaction that reuses editReply
+                const clanValue = id === "cwlcompo_refresh_all" ? "all" : "#" + id.replace("cwlcompo_refresh_", "");
+                const mockInteraction = {
+                    options: { getString: () => clanValue },
+                    reply: async (data) => { await interaction.editReply(data).catch(() => {}); return {}; },
+                    editReply: async (data) => await interaction.editReply(data).catch(() => {}),
+                    followUp: async (data) => await interaction.followUp(data).catch(() => {}),
+                };
+                await cwlCompoCmd.execute(mockInteraction, context);
+            } catch (err) {
+                console.error("cwlcompo refresh error:", err);
+                try { await interaction.followUp({ content: "❌ Error refreshing CWL compo data.", flags: [MessageFlags.Ephemeral] }); } catch(e) {}
+            }
+            return;
+        }
+
         if (id.startsWith("ww_compo_refresh_")) {
             if (interaction.replied || interaction.deferred) return;
             var compoTag = "#" + id.replace("ww_compo_refresh_", "");
@@ -900,7 +930,8 @@ async function handleInteraction(interaction, context) {
                 await interaction.followUp({ content: `${getEmoji("gtick")} Successfully updated war weight submission time for ${clanTag} to ${todayStr}!`, flags: [MessageFlags.Ephemeral] });
 
                 try {
-                    const logChannel = await interaction.client.channels.fetch("1516719047348326493").catch(() => null);
+                    const fwaLogId = process.env.FWA_LOG_CHANNEL_ID || "1516719047348326493";
+                    const logChannel = await interaction.client.channels.fetch(fwaLogId).catch(() => null);
                     if (logChannel) {
                         await logChannel.send(`📢 **FWA Weight Update Detected!**\nClan: **${wwData[clanTag].clanName || clanTag}** (${clanTag})\nNew weight update submitted on: **${todayStr}**`).catch(() => {});
                     }
@@ -1232,6 +1263,7 @@ async function handleInteraction(interaction, context) {
                 totalAtTime: account.totalStrikes,
                 addedBy: addedBy,
                 clan: clanName,
+                clanTag: clanTag,
                 date: dateStr
             };
 
@@ -1264,32 +1296,7 @@ async function handleInteraction(interaction, context) {
                 account.sixStrikeAlertSent = true;
                 dataManager.saveUserData(userData);
 
-                const clanRoles = dataManager.getClanRoles();
-                const clanConfig = clanRoles[clanTag];
-                
-                if (clanConfig && clanConfig.mailChannelId) {
-                    const mailChannel = await interaction.client.channels.fetch(clanConfig.mailChannelId).catch(function() { return null; });
-                    if (mailChannel) {
-                        const guild = interaction.guild;
-                        const leaderRole = guild.roles.cache.find(function(r) { return r.name.toLowerCase() === "leader"; }) || 
-                                           guild.roles.cache.find(function(r) { return r.name.toLowerCase().includes("leader"); });
-                        
-                        const mention = leaderRole ? "<@&" + leaderRole.id + ">" : "@Leader";
-                        
-                        const alertEmbed = new EmbedBuilder()
-                            .setTitle("⚠️ Player reached 6 strikes")
-                            .setColor(0xFF0000)
-                            .setDescription(
-                                mention + "\n\n" +
-                                "**Player:** " + account.name + "\n" +
-                                "**Clan:** " + clanName + "\n" +
-                                "**Current Strikes:** " + account.totalStrikes
-                            )
-                            .setTimestamp();
-
-                        await mailChannel.send({ content: mention, embeds: [alertEmbed] }).catch(function() { return null; });
-                    }
-                }
+                await strikeaddFile.sendSixStrikeAlert(interaction, clanTag, account.name, account.totalStrikes, clanName, dataManager);
             }
             return;
         }
