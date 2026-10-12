@@ -60,8 +60,7 @@
     ],
     "coLeaders": [
       "<@1427304113225338990>",
-      "<@910063105403400243>",
-      "<@1179429119524610058>"
+      "<@910063105403400243>"
     ],
     "joinLeaveTracker": true,
     "autoRole": true,
@@ -125,7 +124,8 @@
       "<@1393061101838532630>"
     ],
     "coLeaders": [
-      "<@1299282477076058156>"
+      "<@1299282477076058156>",
+      "<@1508850684613890209>"
     ],
     "joinLeaveTracker": true,
     "clanStatus": "official"
@@ -133,7 +133,7 @@
   "#2L80LY0CP": {
     "roleId": "1429740872614023309",
     "leaderRoleId": "1429740775918407840",
-    "channelId": "1429783311529545810",
+    "channelId": "1489315546850656447",
     "mailChannelId": "1429783310653198336",
     "leadChannelId": "1429783309382189219",
     "feedChannelId": "1429783312360013896",
@@ -148,7 +148,7 @@
       "<@855449588228161548>",
       "<@976081743859822612>"
     ],
-    "joinLeaveTracker": true,
+    "joinLeaveTracker": false,
     "clanStatus": "official"
   },
   "#VYPQC9YP": {
@@ -270,7 +270,7 @@
       "<@895919742563545118>",
       "<@976081743859822612>"
     ],
-    "joinLeaveTracker": true,
+    "joinLeaveTracker": false,
     "clanStatus": "official"
   },
   "#2RUJCRPVJ": {
@@ -289,7 +289,66 @@
     "coLeaders": [
       "<@667011170229682201>"
     ],
-    "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "joinLeaveTracker": true,
+    "clanStatus": "official",
+    "autoRole": true
+  },
+  "#2LRGQ2L9L": {
+    "roleId": "1549799401168306206",
+    "leaderRoleId": "1549799399633453168",
+    "channelId": "1549799419933753394",
+    "mailChannelId": "1549799417211523133",
+    "leadChannelId": "1549799415236132945",
+    "feedChannelId": "1549799422328709290",
+    "clanStatus": "unofficial",
+    "clanType": "fwa",
+    "welcomeMessage": true,
+    "nickName": "ASR",
+    "leaders": [
+      "<@965295354805383228>"
+    ],
+    "coLeaders": [
+      "<@1454102900631666815>",
+      "<@922410685269434389>"
+    ],
+    "joinLeaveTracker": false
+  },
+  "#2U09UQL80": {
+    "roleId": "1551610577007149071",
+    "leaderRoleId": "1551610572921901157",
+    "channelId": "1551610594371698850",
+    "mailChannelId": "1551610589908832298",
+    "leadChannelId": "1551610586520100884",
+    "feedChannelId": "1551610595931979846",
+    "clanStatus": "unofficial",
+    "clanType": "fwa",
+    "welcomeMessage": true,
+    "nickName": "DH",
+    "leaders": [
+      "<@965295354805383228>"
+    ],
+    "coLeaders": [
+      "<@965295354805383228>"
+    ],
+    "joinLeaveTracker": false
+  },
+  "#2LQ2PRJL9": {
+    "roleId": "1553773099999039488",
+    "leaderRoleId": "1553773091954364436",
+    "channelId": "1553773126398115891",
+    "mailChannelId": "1553773123998978061",
+    "leadChannelId": "1553773122254151782",
+    "feedChannelId": "1553773128063254718",
+    "clanStatus": "unofficial",
+    "clanType": "fwa",
+    "welcomeMessage": true,
+    "nickName": "AU",
+    "leaders": [
+      "<@780062937611763743>"
+    ],
+    "coLeaders": [
+      "<@1445096112838148269>"
+    ],
+    "joinLeaveTracker": false
   }
 }

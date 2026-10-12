@@ -22,6 +22,7 @@ const allianceJoin = require('./embeds/allianceJoin');
 const helpAssistance = require('./embeds/helpAssistance');
 const warClanEntry = require('./embeds/warClanEntry');
 const staffTicketTracker = require('../staffTicketTracker');
+const ticketDataStore = require('../ticketDataStore');
 
 const EMOJI_NAMES = {
     check: 'coc',
@@ -51,15 +52,18 @@ const EMOJI_NAMES = {
  */
 async function sendLog(guild, embed, config, file = null, content = null) {
     const logChannelId = config.TICKET_LOG_CHANNEL_ID || config.LOG_CHANNEL_ID;
-    if (!logChannelId) return;
+    if (!logChannelId) return null;
     const logChannel = guild.channels.cache.get(logChannelId) || await guild.channels.fetch(logChannelId).catch(() => null);
-    if (!logChannel) return;
+    if (!logChannel) return null;
 
     const payload = { embeds: [embed] };
     if (content) payload.content = content;
     if (file) payload.files = [file];
 
-    await logChannel.send(payload).catch(err => console.error('Log Error:', err));
+    return await logChannel.send(payload).catch(err => {
+        console.error('Log Error:', err);
+        return null;
+    });
 }
 
 async function generateCheckEmbed(tag, context, type) {
@@ -744,6 +748,13 @@ async function handleTicketInteraction(interaction, context) {
                 components: [appRow, actionRow1]
             });
 
+            // Save ticket data for Alliance-Join
+            const tdCategory = ticketDataStore.resolveCategory(channel.name);
+            if (tdCategory) {
+                const ownerName = member?.nickname || member?.displayName || user.displayName || user.globalName || user.username;
+                ticketDataStore.createTicket(tdCategory, user.id, channel.id, ownerName);
+            }
+
             await interaction.editReply({ content: `Successfully created your ticket: ${channel}` });
             return true;
 
@@ -1017,7 +1028,11 @@ async function handleTicketInteraction(interaction, context) {
                 .setColor(0x2b2d31);
 
             try {
-                await sendLog(guild, closeEmbed, config, attachment, closeContent);
+                const logMsg = await sendLog(guild, closeEmbed, config, attachment, closeContent);
+                const transcriptUrl = logMsg?.attachments?.first()?.url;
+                if (transcriptUrl) {
+                    ticketDataStore.setTranscript(channel.id, transcriptUrl);
+                }
             } catch (err) {
                 console.error('Failed to send log with attachment:', err);
                 await sendLog(guild, closeEmbed, config).catch(e => console.error('Final Log Error:', e));
@@ -1109,6 +1124,18 @@ async function handleTicketInteraction(interaction, context) {
         const ticketType = staffTicketTracker.resolveTicketType(interaction.channel.name);
         staffTicketTracker.recordClaim(user, ticketType);
 
+        // Save claim to ticket data store
+        const staffNickname = member?.nickname || member?.displayName || user.displayName || user.globalName || user.username;
+        let ownerName = null;
+        const ownerId = interaction.channel?.topic;
+        if (ownerId && interaction.guild) {
+            const ownerMember = interaction.guild.members.cache.get(ownerId);
+            if (ownerMember) {
+                ownerName = ownerMember.nickname || ownerMember.displayName || ownerMember.user?.displayName || ownerMember.user?.username;
+            }
+        }
+        ticketDataStore.setClaimed(interaction.channel.id, user.id, staffNickname, ownerName);
+
         try {
             const msg = interaction.message;
             if (msg && msg.components) {
@@ -1129,6 +1156,24 @@ async function handleTicketInteraction(interaction, context) {
                 await msg.edit({ components: newComponents });
             }
         } catch (e) {}
+
+        // Add green dot at start of ticket channel name
+        try {
+            const currentName = interaction.channel.name;
+            if (!currentName.startsWith('🟢')) {
+                const cleanName = currentName.replace(/^[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '');
+                const newChannelName = `🟢-${cleanName}`;
+                await interaction.channel.setName(newChannelName);
+            }
+        } catch (e) {
+            console.error('Failed to update ticket channel name on claim:', e);
+        }
+
+        // Send private message in this ticket visible only to the claimed person
+        await interaction.followUp({
+            content: 'Claim Succes , Name also updated',
+            flags: [MessageFlags.Ephemeral]
+        }).catch(() => {});
 
         return true;
     }
@@ -1231,7 +1276,11 @@ async function handleTicketInteraction(interaction, context) {
             .setColor(0x2b2d31);
 
         try {
-            await sendLog(guild, closeEmbed, config, attachment, closeContent);
+            const logMsg = await sendLog(guild, closeEmbed, config, attachment, closeContent);
+            const transcriptUrl = logMsg?.attachments?.first()?.url;
+            if (transcriptUrl) {
+                ticketDataStore.setTranscript(channel.id, transcriptUrl);
+            }
         } catch (err) {
             console.error('Failed to send log with attachment:', err);
             await sendLog(guild, closeEmbed, config).catch(e => console.error('Final Log Error:', e));
@@ -1829,6 +1878,13 @@ async function handleTicketInteraction(interaction, context) {
             components: [appRow, actionRow]
         });
 
+        // Save ticket data for tracked categories (fwa, warEntry, allianceApply)
+        const tdCat = ticketDataStore.resolveCategory(channel.name);
+        if (tdCat) {
+            const ownerName = member?.nickname || member?.displayName || user.displayName || user.globalName || user.username;
+            ticketDataStore.createTicket(tdCat, user.id, channel.id, ownerName);
+        }
+
         await interaction.editReply({ content: `Successfully created your ticket: ${channel}` });
         return true;
 
@@ -1894,7 +1950,11 @@ module.exports.checkTimers = async function (client, config, context) {
                 .setTitle('Ticket Closed')
                 .setDescription(`• By: Bot Auto-Close\n• Ticket: ${channel.name}, ${ownerMention}\n• Time: <t:${now}:F>\n• Ticket Creation: <t:${Math.floor(creationTime.getTime() / 1000)}:F>`)
                 .setColor(0x2b2d31);
-            await sendLog(guild, closeEmbed, config, attachment, closeContent);
+            const logMsg = await sendLog(guild, closeEmbed, config, attachment, closeContent);
+            const transcriptUrl = logMsg?.attachments?.first()?.url;
+            if (transcriptUrl) {
+                ticketDataStore.setTranscript(channelId, transcriptUrl);
+            }
             await channel.delete().catch(() => { });
         } else {
             const timeout = setTimeout(async () => {
@@ -1923,7 +1983,11 @@ module.exports.checkTimers = async function (client, config, context) {
                     .setTitle('Ticket Closed')
                     .setDescription(`• By: Bot Auto-Close\n• Ticket: ${channel.name}, ${ownerMention}\n• Time: <t:${nowLog}:F>\n• Ticket Creation: <t:${Math.floor(creationTime.getTime() / 1000)}:F>`)
                     .setColor(0x2b2d31);
-                await sendLog(guild, closeEmbed, config, attachment, closeContent);
+                const logMsg = await sendLog(guild, closeEmbed, config, attachment, closeContent);
+                const transcriptUrl = logMsg?.attachments?.first()?.url;
+                if (transcriptUrl) {
+                    ticketDataStore.setTranscript(channelId, transcriptUrl);
+                }
                 await channel.delete().catch(() => { });
             }, delayMs);
 

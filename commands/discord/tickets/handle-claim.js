@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder , MessageFlags } = require("discord.js");
 const staffTicketTracker = require("../../../utils/staffTicketTracker");
+const ticketDataStore = require("../../../utils/ticketDataStore");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -117,6 +118,29 @@ module.exports = {
         // Add claim to new user
         staffTicketTracker.recordClaim(targetUser, ticketType);
 
+        // Resolve nickname of the newly claimed user
+        let targetNickname = targetUser.displayName || targetUser.globalName || targetUser.username;
+        try {
+            const targetMember = interaction.guild ? (interaction.options.getMember('user') || await interaction.guild.members.fetch(targetUser.id).catch(() => null)) : null;
+            if (targetMember) {
+                targetNickname = targetMember.nickname || targetMember.displayName || targetNickname;
+            }
+        } catch (e) {
+            console.error("Error fetching target member for handle-claim:", e);
+        }
+
+        let ownerName = null;
+        const ownerId = interaction.channel?.topic;
+        if (ownerId && interaction.guild) {
+            const ownerMember = interaction.guild.members.cache.get(ownerId);
+            if (ownerMember) {
+                ownerName = ownerMember.nickname || ownerMember.displayName || ownerMember.user?.displayName || ownerMember.user?.username;
+            }
+        }
+
+        // Update ticket data store with the new claimed user and nickname
+        ticketDataStore.setClaimed(interaction.channel.id, targetUser.id, targetNickname, ownerName);
+
         // We no longer update the original claim message so the history remains intact
 
         // Update the button message if we found it
@@ -143,6 +167,17 @@ module.exports = {
             } catch (e) {
                 console.error("Error editing button message:", e);
             }
+        }
+
+        // Ensure green dot is present on channel name
+        try {
+            const currentName = interaction.channel.name;
+            if (!currentName.startsWith('🟢')) {
+                const cleanName = currentName.replace(/^[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '');
+                await interaction.channel.setName(`🟢-${cleanName}`);
+            }
+        } catch (e) {
+            console.error("Error updating channel name on handle-claim:", e);
         }
 
         const successEmbed = new EmbedBuilder()

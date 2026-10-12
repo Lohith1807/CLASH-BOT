@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const transcripts = require('discord-html-transcripts');
+const ticketDataStore = require('../../../utils/ticketDataStore');
 
 module.exports = {
   name: "set-timer",
@@ -118,7 +119,11 @@ module.exports = {
                 if (logChannel) {
                     const payload = { embeds: [closeEmbed] };
                     if (attachment) payload.files = [attachment];
-                    await logChannel.send(payload);
+                    const sentMsg = await logChannel.send(payload);
+                    const transcriptUrl = sentMsg?.attachments?.first()?.url;
+                    if (transcriptUrl) {
+                        ticketDataStore.setTranscript(channel.id, transcriptUrl);
+                    }
                 }
             }
         } catch (err) {

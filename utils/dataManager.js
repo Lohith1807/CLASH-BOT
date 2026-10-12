@@ -23,7 +23,8 @@ const PATHS = {
     recruitments: path.join(DATA_DIR, "recruitments.json"),
     staffmembers: path.join(DATA_DIR, "staffmembers.json"),
     stafftrainees: path.join(DATA_DIR, "stafftrainees.json"),
-    reapplyreasons: path.join(DATA_DIR, "reapplyreasons.json")
+    reapplyreasons: path.join(DATA_DIR, "reapplyreasons.json"),
+    ticketData: path.join(DATA_DIR, "ticketData.json")
 };
 
 

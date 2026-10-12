@@ -231,7 +231,7 @@ client.on("messageCreate", async (message) => {
     const args = message.content.slice(1).trim().split(/ +/);
     const commandName = args.shift().toLowerCase();
 
-    if (commandName === "check" || commandName === "cc") {
+    if (commandName === "check") {
       try {
         const context = { ...tools, commandName, prefix: "?" };
         const command = require("./commands/discord/moderation/check.js");
@@ -252,7 +252,7 @@ client.on("messageCreate", async (message) => {
   try {
     const context = { ...tools, commandName, prefix: PREFIX };
 
-    if (commandName === "help" || commandName === "h") {
+    if (commandName === "help"){
       const command = require("./commands/info/help.js");
       await command.execute(message, args, context);
 
@@ -272,9 +272,6 @@ client.on("messageCreate", async (message) => {
       const command = require("./commands/coc/profile/unlink.js");
       await command.execute(message, args, context);
 
-    } else if (commandName === "cc") {
-      const command = require("./commands/discord/moderation/check.js");
-      await command.execute(message, args, context);
     } else if (commandName === "as") {
       const command = require("./commands/discord/roles/as.js");
       await command.execute(message, args, context);
@@ -373,7 +370,7 @@ client.on("messageCreate", async (message) => {
   try {
     const context = { ...tools, commandName, prefix: prefix };
 
-    if (commandName === "help" || commandName === "h") {
+    if (commandName === "help") {
       const command = require("./commands/info/help.js");
       await command.execute(message, args, context);
     } else if (commandName === "ping") {
@@ -485,6 +482,115 @@ client.on("interactionCreate", async (interaction) => {
         .setTimestamp();
         
       return interaction.editReply({ embeds: [detailsEmbed] });
+    }
+
+    // View Info button on leave messages (with pagination)
+    if (interaction.isButton() && (interaction.customId.startsWith('view_leave_details_') || interaction.customId.startsWith('view_leave_page_'))) {
+      const isPagination = interaction.customId.startsWith('view_leave_page_');
+      let userId, page;
+
+      if (isPagination) {
+        try { await interaction.deferUpdate(); } catch (err) { if (err.code !== 10062) console.error(err); return; }
+        const parts = interaction.customId.split('_'); // ['view', 'leave', 'page', userId, page]
+        userId = parts[3];
+        page = parseInt(parts[4], 10) || 0;
+      } else {
+        try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return; }
+        userId = interaction.customId.replace('view_leave_details_', '');
+        page = 0;
+      }
+
+      const user = await client.users.fetch(userId).catch(() => null);
+
+      const emojiUtils = require("./utils/emoji.js");
+      const wrongEmoji = emojiUtils.getEmoji("wrongbox") || "❌";
+      const cocEmoji = emojiUtils.getEmoji("coc") || "🎮";
+
+      if (!user) {
+        return interaction.editReply({ content: `${wrongEmoji} Could not fetch user details.` });
+      }
+
+      // Get linked accounts
+      const dataManager = require("./utils/dataManager.js");
+      const userData = dataManager.getUserData();
+      const accounts = userData[userId] || [];
+
+      const authorName = user.globalName && user.globalName !== user.username
+        ? `${user.globalName} (@${user.username})'s Details`
+        : `${user.tag || user.username}'s Details`;
+
+      if (accounts.length === 0) {
+        const detailsEmbed = new EmbedBuilder()
+          .setColor(getRandomColor())
+          .setAuthor({ name: authorName, iconURL: user.displayAvatarURL({ dynamic: true }) })
+          .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
+          .addFields(
+            { name: `${cocEmoji} Linked Players (0)`, value: `${wrongEmoji} *No linked Clash players yet.*\n\n**User ID:** ${userId}`, inline: false }
+          )
+          .setFooter({ text: `User ID: ${userId}` })
+          .setTimestamp();
+
+        return interaction.editReply({ embeds: [detailsEmbed], components: [] });
+      }
+
+      const PAGE_SIZE = 10;
+      const totalPages = Math.ceil(accounts.length / PAGE_SIZE);
+      page = Math.max(0, Math.min(page, totalPages - 1));
+
+      const displayAccounts = accounts.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
+      const cocManager = require("./utils/cocManager.js");
+      const fetchPromises = displayAccounts.map(acc => cocManager.getPlayer(acc.tag).catch(() => null));
+      const playerDetails = await Promise.all(fetchPromises);
+
+      const lines = displayAccounts.map((acc, idx) => {
+        const sno = page * PAGE_SIZE + idx + 1;
+        const p = playerDetails[idx];
+        const thEmoji = p?.townHallLevel ? (emojiUtils.getThEmoji(p.townHallLevel) || cocEmoji) : cocEmoji;
+        const playerName = p?.name || acc.name || "Player";
+        const playerTag = (p?.tag || acc.tag || "").replace('#', '');
+        const playerUrl = `https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${playerTag}`;
+        return `${sno}. ${thEmoji} [${playerName}](${playerUrl})`;
+      });
+
+      const detailsEmbed = new EmbedBuilder()
+        .setColor(getRandomColor())
+        .setAuthor({ name: authorName, iconURL: user.displayAvatarURL({ dynamic: true }) })
+        .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
+        .addFields(
+          { name: `${cocEmoji} Linked Players (${accounts.length})`, value: `${lines.join("\n")}\n\n**User ID:** ${userId}`, inline: false }
+        )
+        .setFooter({ text: totalPages > 1 ? `Page ${page + 1} of ${totalPages} • User ID: ${userId}` : `User ID: ${userId}` })
+        .setTimestamp();
+
+      let components = [];
+      if (totalPages > 1) {
+        const prevEmoji = emojiUtils.getEmojiObject('larrow') || emojiUtils.getEmojiObject('leftarrow');
+        const nextEmoji = emojiUtils.getEmojiObject('rarrow');
+
+        const prevBtn = new ButtonBuilder()
+          .setCustomId(`view_leave_page_${userId}_${page - 1}`)
+          .setLabel("Previous")
+          .setStyle(ButtonStyle.Primary)
+          .setDisabled(page <= 0);
+        if (prevEmoji) prevBtn.setEmoji({ id: prevEmoji.id });
+
+        const pageIndicator = new ButtonBuilder()
+          .setCustomId(`view_leave_noop_${userId}`)
+          .setLabel(`${page + 1} / ${totalPages}`)
+          .setStyle(ButtonStyle.Secondary)
+          .setDisabled(true);
+
+        const nextBtn = new ButtonBuilder()
+          .setCustomId(`view_leave_page_${userId}_${page + 1}`)
+          .setLabel("Next")
+          .setStyle(ButtonStyle.Primary)
+          .setDisabled(page >= totalPages - 1);
+        if (nextEmoji) nextBtn.setEmoji({ id: nextEmoji.id });
+
+        components = [new ActionRowBuilder().addComponents(prevBtn, pageIndicator, nextBtn)];
+      }
+
+      return interaction.editReply({ embeds: [detailsEmbed], components });
     }
 
     if (interaction.isChatInputCommand()) {
@@ -652,15 +758,29 @@ client.on("guildMemberRemove", async (member) => {
   const channel = member.guild.channels.cache.get(channelId) || await member.guild.channels.fetch(channelId).catch(() => null);
   if (!channel) return;
 
+  const emojiUtils = require("./utils/emoji.js");
+  const bloodEmoji = emojiUtils.getEmoji("blood");
+  const memEmoji = emojiUtils.getEmojiObject("mem");
+
+  const userNickname = member.nickname || member.displayName || member.user?.displayName || member.user?.username || member.user?.tag;
+
   const embed = new EmbedBuilder()
     .setColor(Math.floor(Math.random() * 0xFFFFFF))
-    .setTitle("👋 Member Left")
-    .setDescription(`${member.user.tag} (${member}) has left the server.`)
-    .setThumbnail(member.user.displayAvatarURL({ dynamic: true }))
+    .setTitle(`${bloodEmoji ? bloodEmoji + " " : ""}Member Left`)
+    .setDescription(`${userNickname} (${member}) has left the server.`)
+    .setThumbnail(member.user?.displayAvatarURL ? member.user.displayAvatarURL({ dynamic: true }) : null)
     .setFooter({ text: `User ID: ${member.id}` })
     .setTimestamp();
 
-  channel.send({ embeds: [embed] }).catch(() => { });
+  const leaveRow = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`view_leave_details_${member.id}`)
+      .setLabel("View Info")
+      .setStyle(ButtonStyle.Secondary)
+      .setEmoji(memEmoji ? { id: memEmoji.id } : "👤")
+  );
+
+  channel.send({ embeds: [embed], components: [leaveRow] }).catch(() => { });
 });
 
 

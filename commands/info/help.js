@@ -108,19 +108,19 @@ function isLeaderMember(member, config) {
 const normalCommands = [
     {
         name: "link",
-        description: "Link your Clash of Clans account to your Discord profile",
-        usage: "{p}link #TAG",
+        description: "Link your Clash of Clans account (or force-link by @user or User ID)",
+        usage: "{p}link #TAG or {p}link @user/#ID #TAG",
         aliases: [],
-        example: "{p}link #YQGQQYGV",
-        details: "Link your Clash of Clans player account to your Discord user. Once linked, you can use commands without needing to provide your tag."
+        example: "{p}link 1153720899715993681 #YQGQQYGV",
+        details: "Link your Clash of Clans player account to your Discord user. Admins can force-link by mentioning a user or providing their Discord User ID."
     },
     {
         name: "unlink",
-        description: "Unlink your Clash of Clans account from Discord",
-        usage: "{p}unlink #TAG",
+        description: "Unlink your Clash of Clans account (or force-unlink by @user or User ID)",
+        usage: "{p}unlink [#TAG] or {p}unlink @user/#ID [#TAG]",
         aliases: [],
-        example: "{p}unlink #YQGQQYGV",
-        details: "Remove the link between your Clash of Clans player account and Discord profile."
+        example: "{p}unlink 1153720899715993681 #YQGQQYGV",
+        details: "Remove the link between a Clash of Clans account and Discord. Admins can force-unlink by mentioning a user or providing their Discord User ID."
     },
     {
         name: "profile",
