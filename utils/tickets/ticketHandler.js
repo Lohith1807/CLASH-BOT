@@ -111,6 +111,389 @@ async function generateCheckEmbed(tag, context, type) {
     }
 }
 
+function buildAccountSelectPayload(appType, accounts, page = 0, clanTypeLabel) {
+    const pageSize = 25;
+    const totalPages = Math.ceil(accounts.length / pageSize) || 1;
+    const currentPage = Math.max(0, Math.min(page, totalPages - 1));
+
+    const pageAccounts = accounts.slice(currentPage * pageSize, (currentPage + 1) * pageSize);
+
+    const options = pageAccounts.map(acc => {
+        const label = (acc.name && acc.name.trim()) ? acc.name.trim().slice(0, 100) : (acc.tag || 'Clash Account');
+        const desc = (acc.tag && acc.tag.trim()) ? acc.tag.trim().slice(0, 100) : undefined;
+        const opt = {
+            label,
+            value: (acc.tag && acc.tag.trim()) ? acc.tag.trim() : `acc_${label}`
+        };
+        if (desc) opt.description = desc;
+        return opt;
+    });
+
+    const selectMenu = new StringSelectMenuBuilder()
+        .setCustomId(`apply_acc_sel:${appType}`)
+        .setPlaceholder(`Choose account (${currentPage * pageSize + 1}-${Math.min((currentPage + 1) * pageSize, accounts.length)} of ${accounts.length})...`)
+        .setMinValues(1)
+        .setMaxValues(1)
+        .addOptions(options);
+
+    const components = [new ActionRowBuilder().addComponents(selectMenu)];
+
+    if (totalPages > 1) {
+        const prevBtn = new ButtonBuilder()
+            .setCustomId(`apply_acc_page:${appType}:${currentPage - 1}`)
+            .setLabel('◀ Prev')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(currentPage === 0);
+
+        const pageIndicator = new ButtonBuilder()
+            .setCustomId('apply_acc_page_ind')
+            .setLabel(`Page ${currentPage + 1} / ${totalPages}`)
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(true);
+
+        const nextBtn = new ButtonBuilder()
+            .setCustomId(`apply_acc_page:${appType}:${currentPage + 1}`)
+            .setLabel('Next ▶')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(currentPage >= totalPages - 1);
+
+        components.push(new ActionRowBuilder().addComponents(prevBtn, pageIndicator, nextBtn));
+    }
+
+    const content = `### Select Your Account\n` +
+        `You are applying for **${clanTypeLabel}**.\n` +
+        `Please select **one** Clash of Clans account to apply with:` +
+        (totalPages > 1 ? `\n*(Showing Page ${currentPage + 1} of ${totalPages} • Total ${accounts.length} accounts)*` : '');
+
+    return { content, components };
+}
+
+async function createTicketChannel(interaction, context, currentOption, recruitmentTag = null, appliedAccount = null, triggerCustomId = null) {
+    const { user, member, guild } = interaction;
+    const { client, config, coc, emoji: emojiUtils } = context;
+    const originId = triggerCustomId || interaction.customId;
+    const CATEGORY_ID = config.TICKET_CATEGORY_ID;
+
+    if (!interaction.deferred && !interaction.replied) {
+        try {
+            await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
+        } catch (err) {
+            if (err.code === 10062) return true;
+            console.error(err);
+            return true;
+        }
+    }
+
+    const openEmbed = new EmbedBuilder()
+        .setAuthor({ name: user.username, iconURL: user.displayAvatarURL() })
+        .setTitle('Button Clicked')
+        .setDescription(
+            `• **User:** ${user} (${user.username})\n` +
+            `• **Button:** ${recruitmentTag ? `Join Clan (${recruitmentTag})` : currentOption.label}\n` +
+            `• **Panel:** ticketmsg\n` +
+            `• **Time:** <t:${Math.floor(Date.now() / 1000)}:f>`
+        )
+        .setColor(0x2b2d31);
+
+    await sendLog(guild, openEmbed, config);
+
+    let appEmojis = null;
+    const getAppEmoji = async (name) => {
+        if (!appEmojis) appEmojis = await client.application.emojis.fetch().catch(() => null);
+        const appEmoji = appEmojis ? appEmojis.find(e => e.name === name) : null;
+        if (appEmoji) return appEmoji;
+
+        const localEmoji = emojiUtils ? emojiUtils.getEmojiObject(name) : null;
+        return localEmoji || { id: null, name: name };
+    };
+
+    const emojis = {};
+    for (const [key, name] of Object.entries(EMOJI_NAMES)) {
+        emojis[key] = await getAppEmoji(name);
+    }
+
+    let clanName = null;
+    let clanData = null;
+    if (recruitmentTag) {
+        const clanRoles = context.data.getClanRoles();
+        const clanInfo = clanRoles[recruitmentTag];
+        if (clanInfo && clanInfo.nickName) {
+            clanName = clanInfo.nickName;
+        }
+
+        clanData = await coc.getClan(recruitmentTag).catch(() => null);
+        if (clanData && clanData.name) {
+            clanName = clanData.name;
+        }
+    }
+
+    const { type, embed } = currentOption;
+    const ticketType = type;
+    const welcomeEmbed = embed.getEmbed(emojis, clanName);
+
+    if (recruitmentTag) {
+        welcomeEmbed.addFields({ name: 'Applying For:', value: `**${recruitmentTag}**`, inline: true });
+    }
+
+    if (appliedAccount) {
+        welcomeEmbed.addFields({
+            name: 'Applied Account:',
+            value: `**${appliedAccount.name}** (\`${appliedAccount.tag}\`)`,
+            inline: true
+        });
+    }
+
+    try {
+        const existingChannel = guild.channels.cache.find(c => c.name === `${ticketType.toLowerCase()}-${user.username.toLowerCase()}`);
+        if (existingChannel) {
+            await interaction.editReply({ content: `You already have an open ticket: ${existingChannel}` });
+            return true;
+        }
+
+        const overwrites = [
+            {
+                id: guild.id,
+                deny: [PermissionFlagsBits.ViewChannel],
+            },
+            {
+                id: user.id,
+                allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+            }
+        ];
+
+        if (config.STAFF_ROLE_IDS && Array.isArray(config.STAFF_ROLE_IDS)) {
+            config.STAFF_ROLE_IDS.forEach((roleId, index) => {
+                if (roleId && roleId.trim()) {
+                    // help_general: only server mod (0) + t-mod (1) — exec staff (2+) excluded
+                    if (originId === 'help_general' && index >= 2) return;
+                    overwrites.push({
+                        id: roleId.trim(),
+                        allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                    });
+                }
+            });
+        }
+
+        if (['help_assistance', 'help_general', 'help_clan_change'].includes(originId)) {
+            overwrites.push({
+                id: '1514535148119392377',
+                allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+            });
+        }
+
+        // CWL ticket — restrict to CWL staff role + server mod + admins only (no general staff)
+        if (originId === 'help_cwl') {
+            const CWL_STAFF_ROLE_ID = '1448265928503726161';
+            const userOverwrite = overwrites.find(o => o.id === user.id);
+            const everyoneOverwrite = overwrites.find(o => o.id === guild.id);
+            overwrites.length = 0;
+            if (everyoneOverwrite) overwrites.push(everyoneOverwrite);
+            if (userOverwrite) overwrites.push(userOverwrite);
+
+            overwrites.push({
+                id: CWL_STAFF_ROLE_ID,
+                allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+            });
+
+            if (config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] && config.STAFF_ROLE_IDS[0].trim()) {
+                overwrites.push({
+                    id: config.STAFF_ROLE_IDS[0].trim(),
+                    allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                });
+            }
+
+            if (config.ADMIN_ROLE_IDS && Array.isArray(config.ADMIN_ROLE_IDS)) {
+                config.ADMIN_ROLE_IDS.forEach(roleId => {
+                    if (roleId && roleId.trim() && !overwrites.find(o => o.id === roleId.trim())) {
+                        overwrites.push({
+                            id: roleId.trim(),
+                            allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                        });
+                    }
+                });
+            }
+        }
+
+        if (recruitmentTag) {
+            let foundSpecific = false;
+            if (clanData) {
+                const fetchedClanName = clanData.name;
+                const clanLeaderRole = guild.roles.cache.find(r =>
+                    r.name.toLowerCase().includes(fetchedClanName.toLowerCase()) &&
+                    r.name.toLowerCase().includes("leader")
+                );
+
+                if (clanLeaderRole) {
+                    overwrites.push({
+                        id: clanLeaderRole.id,
+                        allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                    });
+                    foundSpecific = true;
+                }
+            }
+
+            if (!foundSpecific) {
+                const globalLeadersRole = guild.roles.cache.find(r => r.name === "Leaders");
+                if (globalLeadersRole && !overwrites.find(o => o.id === globalLeadersRole.id)) {
+                    overwrites.push({
+                        id: globalLeadersRole.id,
+                        allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                    });
+                }
+            }
+        }
+
+        if (ticketType === 'War-Entry' || originId === 'apply_war') {
+            const mgmtRole = guild.roles.cache.find(r => r.name.toLowerCase().includes("management")) ||
+                guild.roles.cache.find(r => r.name.toLowerCase().includes("mgmt"));
+
+            if (mgmtRole && !overwrites.find(o => o.id === mgmtRole.id)) {
+                overwrites.push({
+                    id: mgmtRole.id,
+                    allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                });
+            }
+        }
+
+        let channelName;
+        if (originId === 'help_cwl') {
+            channelName = `cwl-assistance-${user.username}`;
+        } else if (originId === 'help_clan_change') {
+            channelName = `clan-assistance-${user.username}`;
+        } else {
+            channelName = `${ticketType}-${user.username}`;
+        }
+
+        const channel = await guild.channels.create({
+            name: channelName,
+            type: ChannelType.GuildText,
+            topic: user.id,
+            parent: CATEGORY_ID,
+            permissionOverwrites: overwrites,
+        });
+
+        if (originId === 'help_cwl') {
+            welcomeEmbed.setTitle('⚔️ CWL Assistance');
+        } else if (originId === 'help_clan_change') {
+            welcomeEmbed.setTitle('🏯 Clan Change Request');
+        } else if (originId === 'help_general') {
+            welcomeEmbed.setTitle('💬 General Support');
+        }
+
+        welcomeEmbed
+            .setThumbnail(user.displayAvatarURL({ dynamic: true }))
+            .setFooter({ text: 'Blood Alliance Management', iconURL: guild.iconURL() })
+            .setColor('Random')
+            .setTimestamp();
+
+        const appRow = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId(`start_app_${ticketType.toLowerCase()}`)
+                .setLabel('Start Application')
+                .setEmoji(emojis.book?.id || '📝')
+                .setStyle(ButtonStyle.Success)
+        );
+
+        const profileCustomId = appliedAccount ? `ticket_user_profile:${user.id}:${appliedAccount.tag}` : `ticket_user_profile:${user.id}`;
+        const actionRow = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+                .setCustomId(profileCustomId)
+                .setEmoji(emojis.mem?.id || '👤')
+                .setStyle(ButtonStyle.Primary),
+            new ButtonBuilder()
+                .setCustomId('claim_ticket')
+                .setLabel('Claim')
+                .setEmoji('✋')
+                .setStyle(ButtonStyle.Success)
+        );
+
+        if (originId === 'alliance_apply' || ticketType === 'Alliance-Join') {
+            actionRow.addComponents(
+                new ButtonBuilder()
+                    .setCustomId('view_alliance_rules')
+                    .setLabel('View Rules')
+                    .setEmoji(emojis.rules?.id || '📜')
+                    .setStyle(ButtonStyle.Primary)
+            );
+        }
+
+        actionRow.addComponents(
+            new ButtonBuilder()
+                .setCustomId('close_ticket')
+                .setLabel('Delete Ticket')
+                .setEmoji(emojis.delete?.id || '🔒')
+                .setStyle(ButtonStyle.Secondary)
+        );
+
+        const mentionRoles = [];
+        mentionRoles.push(user.toString());
+        const execStaffRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[2] ? config.STAFF_ROLE_IDS[2].trim() : null;
+        if (execStaffRoleId && originId !== 'help_general') {
+            mentionRoles.push(`<@&${execStaffRoleId}>`);
+        }
+
+        if (recruitmentTag) {
+            let foundSpecific = false;
+            if (clanData) {
+                const fetchedClanName = clanData.name;
+                const clanLeaderRole = guild.roles.cache.find(r =>
+                    r.name.toLowerCase().includes(fetchedClanName.toLowerCase()) &&
+                    r.name.toLowerCase().includes("leader")
+                );
+                if (clanLeaderRole) {
+                    mentionRoles.push(`<@&${clanLeaderRole.id}>`);
+                    foundSpecific = true;
+                }
+            }
+            if (!foundSpecific) {
+                const globalLeadersRole = guild.roles.cache.find(r => r.name === "Leaders");
+                if (globalLeadersRole) mentionRoles.push(`<@&${globalLeadersRole.id}>`);
+            }
+        }
+
+        if (ticketType === 'War-Entry' || originId === 'apply_war') {
+            const mgmtRole = guild.roles.cache.find(r => r.name.toLowerCase().includes("management")) ||
+                guild.roles.cache.find(r => r.name.toLowerCase().includes("mgmt"));
+            if (mgmtRole) mentionRoles.push(`<@&${mgmtRole.id}>`);
+        }
+
+        const mentionContent = Array.from(new Set(mentionRoles)).join(" | ");
+
+        const serverModRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? config.STAFF_ROLE_IDS[0].trim() : null;
+        let ghostPingRoles = [];
+        if (serverModRoleId) ghostPingRoles.push(`<@&${serverModRoleId}>`);
+        if (['help_assistance', 'help_general', 'help_clan_change'].includes(originId)) {
+            ghostPingRoles.push(`<@&1514535148119392377>`);
+        }
+        if (originId === 'help_cwl') {
+            ghostPingRoles.push(`<@&1448265928503726161>`);
+        }
+
+        const ghostPing = ghostPingRoles.length > 0 ? ` ||${ghostPingRoles.join(' ')}||` : "";
+
+        await channel.send({
+            content: mentionContent + ghostPing,
+            embeds: [welcomeEmbed],
+            components: [appRow, actionRow]
+        });
+
+        // Save ticket data for tracked categories (fwa, warEntry, allianceApply)
+        const tdCat = ticketDataStore.resolveCategory(channel.name);
+        if (tdCat) {
+            const ownerName = member?.nickname || member?.displayName || user.displayName || user.globalName || user.username;
+            ticketDataStore.createTicket(tdCat, user.id, channel.id, ownerName, appliedAccount?.tag, appliedAccount?.name);
+        }
+
+        await interaction.editReply({ content: `Successfully created your ticket: ${channel}` }).catch(() => {});
+        return true;
+
+    } catch (error) {
+        console.error('Error creating ticket channel:', error);
+        await interaction.editReply({ content: 'There was an error creating your ticket. Please check bot permissions and category ID.' }).catch(() => {});
+        return true;
+    }
+}
+
 async function handleTicketInteraction(interaction, context) {
     if (interaction.channel && interaction.channel.deleting) {
         await interaction.reply({
@@ -373,15 +756,23 @@ async function handleTicketInteraction(interaction, context) {
             return interaction.reply({ content: `❌ User <@${ownerId}> has no linked accounts. Please ask them to link their account first.`, flags: [MessageFlags.Ephemeral] });
         }
 
-        if (accounts.length === 1) {
+        let targetCheckTag = null;
+        if (interaction.channel?.id) {
+            const ticketRec = ticketDataStore.findByChannelId(interaction.channel.id);
+            if (ticketRec?.record?.appliedTag) {
+                targetCheckTag = ticketRec.record.appliedTag;
+            }
+        }
+        if (!targetCheckTag && accounts.length === 1) {
+            targetCheckTag = accounts[0].tag;
+        }
+
+        if (targetCheckTag) {
             try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
-            const checkData = await generateCheckEmbed(accounts[0].tag, context, type);
+            const checkData = await generateCheckEmbed(targetCheckTag, context, type);
             if (!checkData) {
                 return interaction.editReply({ content: '❌ Failed to fetch player data from Clash of Clans API.', flags: [MessageFlags.Ephemeral] });
             }
-            
-            // Edit original message to remove the Check button to prevent double-clicking?
-            // Actually it's fine, we can just edit the reply with the embed
             return interaction.editReply(checkData);
         } else {
             const options = accounts.map(acc => ({
@@ -870,15 +1261,34 @@ async function handleTicketInteraction(interaction, context) {
 
     if (customId && customId.startsWith('ticket_user_profile:')) {
         try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
-        const targetUserId = customId.split(':')[1];
+        const parts = customId.split(':');
+        const targetUserId = parts[1];
+        let appliedTag = parts[2] || null;
+
+        if (!appliedTag && interaction.channel?.id) {
+            const ticketRec = ticketDataStore.findByChannelId(interaction.channel.id);
+            if (ticketRec?.record?.appliedTag) {
+                appliedTag = ticketRec.record.appliedTag;
+            }
+        }
 
         try {
-            const targetUser = (await client.users.fetch(targetUserId).catch(() => null)) || { id: targetUserId, username: `User (${targetUserId})` };
-            const profileCmd = require('../../commands/coc/profile/profile.js');
             const dataManager = context.data;
             const userData = dataManager.getUserData();
+            const userAccounts = userData[targetUserId] || [];
 
-            if (!userData[targetUserId] || userData[targetUserId].length === 0) {
+            // If an applied account tag is known, or if the user has only 1 linked account, display ONLY that account using playerlookup embed
+            const tagToShow = appliedTag || (userAccounts.length === 1 ? userAccounts[0].tag : null);
+
+            if (tagToShow) {
+                const { getPlayerEmbed } = require('../../commands/coc/profile/playerlookup.js');
+                const embed = await getPlayerEmbed(tagToShow, { ...context, EmbedBuilder });
+                await interaction.editReply({ embeds: [embed], components: [] });
+                return true;
+            }
+
+            if (userAccounts.length === 0) {
+                const targetUser = (await client.users.fetch(targetUserId).catch(() => null)) || { id: targetUserId, username: `User (${targetUserId})` };
                 return interaction.editReply({
                     content: `⚠️ **${targetUser.username || targetUserId}** has not linked any Clash of Clans accounts yet.`,
                     embeds: [],
@@ -886,20 +1296,13 @@ async function handleTicketInteraction(interaction, context) {
                 });
             }
 
-            const accounts = await profileCmd.getProfileAccounts(targetUserId, userData, coc, emojiUtils);
-            const embed = profileCmd.buildProfileEmbed(targetUser, accounts, 0);
-            const components = profileCmd.buildProfileComponents(
-                targetUserId,
-                0,
-                emojiUtils.getEmojiObject("larrow"),
-                emojiUtils.getEmojiObject("rarrow"),
-                accounts.length
-            );
-
-            await interaction.editReply({ embeds: [embed], components: components });
+            // Fallback for tickets with multiple accounts and no applied tag: show first account with playerlookup embed
+            const { getPlayerEmbed } = require('../../commands/coc/profile/playerlookup.js');
+            const embed = await getPlayerEmbed(userAccounts[0].tag, { ...context, EmbedBuilder });
+            await interaction.editReply({ embeds: [embed], components: [] });
         } catch (err) {
             console.error("❌ Error showing user profile:", err);
-            const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription("❌ An error occurred while fetching user profile.");
+            const errEmbed = new EmbedBuilder().setColor(0xFF0000).setDescription(`❌ An error occurred while fetching player profile: ${err.message || 'Unknown error'}`);
             await interaction.editReply({ embeds: [errEmbed] }).catch(() => { });
         }
         return true;
@@ -1544,6 +1947,113 @@ async function handleTicketInteraction(interaction, context) {
         return true;
     }
 
+    // ── Handle Account Selection Dropdown for Clan Applications ───────────────
+    if (customId === 'apply_fwa' || customId === 'apply_war') {
+        const userData = context.data.getUserData();
+        const accounts = userData[user.id] || [];
+
+        if (accounts.length === 0) {
+            const noAccMsg = '❌ Please link your account first to join our clans!\nUse: `;link #YourPlayerTag` at <#1398351500895588352>';
+            try {
+                if (!interaction.deferred && !interaction.replied) {
+                    await interaction.update({ content: noAccMsg, components: [] });
+                } else {
+                    await interaction.editReply({ content: noAccMsg, components: [] });
+                }
+            } catch (e) {
+                await interaction.reply({ content: noAccMsg, flags: [MessageFlags.Ephemeral] }).catch(() => {});
+            }
+            return true;
+        }
+
+        const appType = customId; // 'apply_fwa' or 'apply_war'
+        const clanTypeLabel = appType === 'apply_war' ? 'WAR CLAN' : 'FWA';
+
+        // A2: Automatically select single account and create ticket immediately
+        if (accounts.length === 1) {
+            try {
+                if (!interaction.deferred && !interaction.replied) {
+                    await interaction.update({
+                        content: `⏳ Creating your **${clanTypeLabel}** application ticket for **${accounts[0].name}** (\`${accounts[0].tag}\`)...`,
+                        components: []
+                    });
+                }
+            } catch (e) {
+                if (e.code !== 10062 && e.code !== 40060) console.error(e);
+            }
+            return await createTicketChannel(interaction, context, ticketOptions[appType], null, accounts[0], appType);
+        }
+
+        // A1: More than 1 account -> paginated dropdown
+        const page = 0;
+        const { components, content } = buildAccountSelectPayload(appType, accounts, page, clanTypeLabel);
+
+        try {
+            if (!interaction.deferred && !interaction.replied) {
+                await interaction.update({ content, components });
+            } else {
+                await interaction.editReply({ content, components });
+            }
+        } catch (e) {
+            if (e.code !== 10062 && e.code !== 40060) console.error(e);
+        }
+        return true;
+    }
+
+    if (interaction.isButton() && customId.startsWith('apply_acc_page:')) {
+        const parts = customId.split(':');
+        const appType = parts[1];
+        const targetPage = parseInt(parts[2], 10) || 0;
+        const clanTypeLabel = appType === 'apply_war' ? 'WAR CLAN' : 'FWA';
+
+        const userData = context.data.getUserData();
+        const accounts = userData[user.id] || [];
+
+        const { components, content } = buildAccountSelectPayload(appType, accounts, targetPage, clanTypeLabel);
+        try {
+            if (!interaction.deferred && !interaction.replied) {
+                await interaction.update({ content, components });
+            } else {
+                await interaction.editReply({ content, components });
+            }
+        } catch (e) {
+            if (e.code !== 10062 && e.code !== 40060) console.error(e);
+        }
+        return true;
+    }
+
+    if (customId === 'apply_acc_page_ind') {
+        try {
+            if (!interaction.deferred && !interaction.replied) {
+                await interaction.deferUpdate();
+            }
+        } catch (e) {}
+        return true;
+    }
+
+    if (interaction.isStringSelectMenu() && customId.startsWith('apply_acc_sel:')) {
+        const appType = customId.split(':')[1];
+        const selectedTag = interaction.values[0];
+
+        const userData = context.data.getUserData();
+        const accounts = userData[user.id] || [];
+        const selectedAccount = accounts.find(a => a.tag.toUpperCase() === selectedTag.toUpperCase()) || { tag: selectedTag, name: 'Clash Player' };
+
+        const clanTypeLabel = appType === 'apply_war' ? 'WAR CLAN' : 'FWA';
+        try {
+            if (!interaction.deferred && !interaction.replied) {
+                await interaction.update({
+                    content: `⏳ Creating your **${clanTypeLabel}** application ticket for **${selectedAccount.name}** (\`${selectedAccount.tag}\`)...`,
+                    components: []
+                });
+            }
+        } catch (e) {
+            if (e.code !== 10062 && e.code !== 40060) console.error(e);
+        }
+
+        return await createTicketChannel(interaction, context, ticketOptions[appType], null, selectedAccount, appType);
+    }
+
     if (customId.startsWith('apply_recruit:')) {
         recruitmentTag = customId.split(':')[1];
 
@@ -1591,308 +2101,7 @@ async function handleTicketInteraction(interaction, context) {
         }
     }
 
-    try {
-        await interaction.deferReply({ flags: [MessageFlags.Ephemeral] });
-    } catch (err) {
-        if (err.code === 10062) return true;
-        console.error(err);
-        return true;
-    }
-
-    const openEmbed = new EmbedBuilder()
-        .setAuthor({ name: user.username, iconURL: user.displayAvatarURL() })
-        .setTitle('Button Clicked')
-        .setDescription(
-            `• **User:** ${user} (${user.username})\n` +
-            `• **Button:** ${recruitmentTag ? `Join Clan (${recruitmentTag})` : currentOption.label}\n` +
-            `• **Panel:** ticketmsg\n` +
-            `• **Time:** <t:${Math.floor(Date.now() / 1000)}:f>`
-        )
-        .setColor(0x2b2d31);
-
-    await sendLog(guild, openEmbed, config);
-
-    const emojis = {};
-    for (const [key, name] of Object.entries(EMOJI_NAMES)) {
-        emojis[key] = await getAppEmoji(name);
-    }
-
-    let clanName = null;
-    let clanData = null;
-    if (recruitmentTag) {
-        const clanRoles = context.data.getClanRoles();
-        const clanInfo = clanRoles[recruitmentTag];
-        if (clanInfo && clanInfo.nickName) {
-            clanName = clanInfo.nickName;
-        }
-
-        clanData = await coc.getClan(recruitmentTag).catch(() => null);
-        if (clanData && clanData.name) {
-            clanName = clanData.name;
-        }
-    }
-
-    const { type, embed } = currentOption;
-    const ticketType = type;
-    const welcomeEmbed = embed.getEmbed(emojis, clanName);
-
-    if (recruitmentTag) {
-        welcomeEmbed.addFields({ name: 'Applying For:', value: `**${recruitmentTag}**`, inline: true });
-    }
-
-    try {
-        const existingChannel = guild.channels.cache.find(c => c.name === `${ticketType.toLowerCase()}-${user.username.toLowerCase()}`);
-        if (existingChannel) {
-            await interaction.editReply({ content: `You already have an open ticket: ${existingChannel}` });
-            return true;
-        }
-
-        const overwrites = [
-            {
-                id: guild.id,
-                deny: [PermissionFlagsBits.ViewChannel],
-            },
-            {
-                id: user.id,
-                allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-            }
-        ];
-
-        if (config.STAFF_ROLE_IDS && Array.isArray(config.STAFF_ROLE_IDS)) {
-            config.STAFF_ROLE_IDS.forEach((roleId, index) => {
-                if (roleId && roleId.trim()) {
-                    // help_general: only server mod (0) + t-mod (1) — exec staff (2+) excluded
-                    if (customId === 'help_general' && index >= 2) return;
-                    overwrites.push({
-                        id: roleId.trim(),
-                        allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-                    });
-                }
-            });
-        }
-
-        if (customId === 'help_assistance' || customId === 'help_general' || customId === 'help_clan_change') {
-            overwrites.push({
-                id: '1514535148119392377',
-                allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-            });
-        }
-
-        // CWL ticket — restrict to CWL staff role + server mod + admins only (no general staff)
-        if (customId === 'help_cwl') {
-            const CWL_STAFF_ROLE_ID = '1448265928503726161';
-            // Remove all general STAFF_ROLE_IDS overwrites that were added above, keep only the user overwrite
-            const userOverwrite = overwrites.find(o => o.id === user.id);
-            const everyoneOverwrite = overwrites.find(o => o.id === guild.id);
-            overwrites.length = 0;
-            if (everyoneOverwrite) overwrites.push(everyoneOverwrite);
-            if (userOverwrite) overwrites.push(userOverwrite);
-
-            // Add CWL staff role
-            overwrites.push({
-                id: CWL_STAFF_ROLE_ID,
-                allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-            });
-
-            // Add server mod role (STAFF_ROLE_IDS[0])
-            if (config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] && config.STAFF_ROLE_IDS[0].trim()) {
-                overwrites.push({
-                    id: config.STAFF_ROLE_IDS[0].trim(),
-                    allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-                });
-            }
-
-            // Add admin roles
-            if (config.ADMIN_ROLE_IDS && Array.isArray(config.ADMIN_ROLE_IDS)) {
-                config.ADMIN_ROLE_IDS.forEach(roleId => {
-                    if (roleId && roleId.trim() && !overwrites.find(o => o.id === roleId.trim())) {
-                        overwrites.push({
-                            id: roleId.trim(),
-                            allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-                        });
-                    }
-                });
-            }
-        }
-
-        if (recruitmentTag) {
-            let foundSpecific = false;
-            if (clanData) {
-                const fetchedClanName = clanData.name;
-                const clanLeaderRole = guild.roles.cache.find(r =>
-                    r.name.toLowerCase().includes(fetchedClanName.toLowerCase()) &&
-                    r.name.toLowerCase().includes("leader")
-                );
-
-                if (clanLeaderRole) {
-                    overwrites.push({
-                        id: clanLeaderRole.id,
-                        allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-                    });
-                    foundSpecific = true;
-                }
-            }
-
-            if (!foundSpecific) {
-                const globalLeadersRole = guild.roles.cache.find(r => r.name === "Leaders");
-                if (globalLeadersRole && !overwrites.find(o => o.id === globalLeadersRole.id)) {
-                    overwrites.push({
-                        id: globalLeadersRole.id,
-                        allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-                    });
-                }
-            }
-        }
-
-        if (customId === 'apply_war') {
-            const mgmtRole = guild.roles.cache.find(r => r.name.toLowerCase().includes("management")) ||
-                guild.roles.cache.find(r => r.name.toLowerCase().includes("mgmt"));
-
-            if (mgmtRole && !overwrites.find(o => o.id === mgmtRole.id)) {
-                overwrites.push({
-                    id: mgmtRole.id,
-                    allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-                });
-            }
-        }
-
-        // Determine channel name — CWL and clan-change have custom prefixes
-        let channelName;
-        if (customId === 'help_cwl') {
-            channelName = `cwl-assistance-${user.username}`;
-        } else if (customId === 'help_clan_change') {
-            channelName = `clan-assistance-${user.username}`;
-        } else {
-            channelName = `${ticketType}-${user.username}`;
-        }
-
-        const channel = await guild.channels.create({
-            name: channelName,
-            type: ChannelType.GuildText,
-            topic: user.id,
-            parent: CATEGORY_ID,
-            permissionOverwrites: overwrites,
-        });
-
-        // Override embed title for sub-types of help assistance
-        if (customId === 'help_cwl') {
-            welcomeEmbed.setTitle('⚔️ CWL Assistance');
-        } else if (customId === 'help_clan_change') {
-            welcomeEmbed.setTitle('🏯 Clan Change Request');
-        } else if (customId === 'help_general') {
-            welcomeEmbed.setTitle('💬 General Support');
-        }
-
-        welcomeEmbed
-            .setThumbnail(user.displayAvatarURL({ dynamic: true }))
-            .setFooter({ text: 'Blood Alliance Management', iconURL: guild.iconURL() })
-            .setColor('Random')
-            .setTimestamp();
-
-        const appRow = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId(`start_app_${ticketType.toLowerCase()}`)
-                .setLabel('Start Application')
-                .setEmoji(emojis.book?.id || '📝')
-                .setStyle(ButtonStyle.Success)
-        );
-
-        const actionRow = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-                .setCustomId(`ticket_user_profile:${user.id}`)
-                .setEmoji(emojis.mem?.id || '👤')
-                .setStyle(ButtonStyle.Primary),
-            new ButtonBuilder()
-                .setCustomId('claim_ticket')
-                .setLabel('Claim')
-                .setEmoji('✋')
-                .setStyle(ButtonStyle.Success)
-        );
-
-        if (customId === 'alliance_apply') {
-            actionRow.addComponents(
-                new ButtonBuilder()
-                    .setCustomId('view_alliance_rules')
-                    .setLabel('View Rules')
-                    .setEmoji(emojis.rules?.id || '📜')
-                    .setStyle(ButtonStyle.Primary)
-            );
-        }
-
-        actionRow.addComponents(
-            new ButtonBuilder()
-                .setCustomId('close_ticket')
-                .setLabel('Delete Ticket')
-                .setEmoji(emojis.delete?.id || '🔒')
-                .setStyle(ButtonStyle.Secondary)
-        );
-
-        const mentionRoles = [];
-        mentionRoles.push(user.toString());
-        const execStaffRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[2] ? config.STAFF_ROLE_IDS[2].trim() : null;
-        // help_general: exec staff excluded — only server mod + welcomer staff handle these
-        if (execStaffRoleId && customId !== 'help_general') {
-            mentionRoles.push(`<@&${execStaffRoleId}>`);
-        }
-
-        if (recruitmentTag) {
-            let foundSpecific = false;
-            if (clanData) {
-                const fetchedClanName = clanData.name;
-                const clanLeaderRole = guild.roles.cache.find(r =>
-                    r.name.toLowerCase().includes(fetchedClanName.toLowerCase()) &&
-                    r.name.toLowerCase().includes("leader")
-                );
-                if (clanLeaderRole) {
-                    mentionRoles.push(`<@&${clanLeaderRole.id}>`);
-                    foundSpecific = true;
-                }
-            }
-            if (!foundSpecific) {
-                const globalLeadersRole = guild.roles.cache.find(r => r.name === "Leaders");
-                if (globalLeadersRole) mentionRoles.push(`<@&${globalLeadersRole.id}>`);
-            }
-        }
-
-        if (customId === 'apply_war') {
-            const mgmtRole = guild.roles.cache.find(r => r.name.toLowerCase().includes("management")) ||
-                guild.roles.cache.find(r => r.name.toLowerCase().includes("mgmt"));
-            if (mgmtRole) mentionRoles.push(`<@&${mgmtRole.id}>`);
-        }
-
-        const mentionContent = Array.from(new Set(mentionRoles)).join(" | ");
-
-        // Ghost ping Server Moderator (STAFF_ROLE_IDS[0]) for all ticket types
-        const serverModRoleId = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? config.STAFF_ROLE_IDS[0].trim() : null;
-        let ghostPingRoles = [];
-        if (serverModRoleId) ghostPingRoles.push(`<@&${serverModRoleId}>`);
-        if (customId === 'help_assistance' || customId === 'help_general' || customId === 'help_clan_change') ghostPingRoles.push(`<@&1514535148119392377>`);
-        // CWL: ghost-ping CWL staff role + server mod (server mod already added above)
-        if (customId === 'help_cwl') ghostPingRoles.push(`<@&1448265928503726161>`);
-        
-        const ghostPing = ghostPingRoles.length > 0 ? ` ||${ghostPingRoles.join(' ')}||` : "";
-
-        await channel.send({
-            content: mentionContent + ghostPing,
-            embeds: [welcomeEmbed],
-            components: [appRow, actionRow]
-        });
-
-        // Save ticket data for tracked categories (fwa, warEntry, allianceApply)
-        const tdCat = ticketDataStore.resolveCategory(channel.name);
-        if (tdCat) {
-            const ownerName = member?.nickname || member?.displayName || user.displayName || user.globalName || user.username;
-            ticketDataStore.createTicket(tdCat, user.id, channel.id, ownerName);
-        }
-
-        await interaction.editReply({ content: `Successfully created your ticket: ${channel}` });
-        return true;
-
-    } catch (error) {
-        console.error('Error:', error);
-        await interaction.editReply({ content: 'There was an error creating your ticket. Please check bot permissions and category ID.' });
-        return true;
-    }
+    return await createTicketChannel(interaction, context, currentOption, recruitmentTag, null, customId);
 };
 
 // Safe wrapper to silently handle expired/acknowledged interaction errors

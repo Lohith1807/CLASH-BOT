@@ -97,7 +97,7 @@ function resolveCategory(channelName) {
  * @param {string} [ticketOwnerName] – Discord nickname/username of the ticket opener
  * @returns {string} The generated ticketId
  */
-function createTicket(category, userId, channelId, ticketOwnerName = null) {
+function createTicket(category, userId, channelId, ticketOwnerName = null, appliedTag = null, appliedName = null, playerTh = null) {
     const store = loadStore();
 
     if (!store[category]) {
@@ -115,11 +115,48 @@ function createTicket(category, userId, channelId, ticketOwnerName = null) {
         ticketOpenedDate: new Date().toISOString(),
         claimedBy: null,
         claimedUserNickname: null,
-        transcript: null
+        transcript: null,
+        appliedTag: appliedTag || null,
+        appliedName: appliedName || null,
+        playerName: appliedName || null,
+        name: appliedName || null,
+        playerTh: playerTh || null,
+        playerth: playerTh || null,
+        assignedClan: null,
+        assignedClanTag: null,
+        assignedClanName: null,
+        assignedAt: null,
+        assignedBy: null
     };
 
     saveStore(store);
     return ticketId;
+}
+
+/**
+ * Set the applied account for a ticket identified by channel ID.
+ */
+function setAppliedAccount(channelId, appliedTag, appliedName = null, playerTh = null) {
+    const store = loadStore();
+
+    for (const category of ['fwa', 'warEntry', 'allianceApply']) {
+        for (const [ticketId, record] of Object.entries(store[category])) {
+            if (record.channelId === channelId) {
+                record.appliedTag = appliedTag;
+                if (appliedName) {
+                    record.appliedName = appliedName;
+                    record.playerName = appliedName;
+                    record.name = appliedName;
+                }
+                if (playerTh !== null && playerTh !== undefined) {
+                    record.playerTh = playerTh;
+                    record.playerth = playerTh;
+                }
+                saveStore(store);
+                return;
+            }
+        }
+    }
 }
 
 /**
@@ -208,6 +245,104 @@ function setTranscript(channelId, transcriptRef) {
     }
 }
 
+/**
+ * Update the assigned clan fields for a ticket identified by its channel ID.
+ *
+ * @param {string} channelId    – Discord channel ID
+ * @param {string|Object} clanTag – Assigned clan tag or options object
+ * @param {string} clanName     – Assigned clan name
+ * @param {string} [assignedBy] – Discord user ID of the moderator
+ * @param {string} [category]   – Optional category hint ('fwa' | 'warEntry' | 'allianceApply')
+ * @param {string} [userId]     – Optional user ID of the ticket opener
+ * @param {Object} [extra]      – Optional extra metadata: { playerTh, playerName, appliedTag }
+ * @returns {boolean} True if saved successfully, false otherwise
+ */
+function setAssignedClan(channelId, clanTag, clanName, assignedBy = null, category = null, userId = null, extra = {}) {
+    try {
+        const store = loadStore();
+
+        let playerTh = null;
+        let playerName = null;
+        let appliedTag = null;
+
+        if (typeof clanTag === 'object' && clanTag !== null) {
+            const opts = clanTag;
+            clanTag = opts.clanTag;
+            clanName = opts.clanName || opts.assignedClan;
+            assignedBy = opts.assignedBy;
+            category = opts.category;
+            userId = opts.userId;
+            playerTh = opts.playerTh !== undefined ? opts.playerTh : (opts.playerth !== undefined ? opts.playerth : (opts.townHallLevel !== undefined ? opts.townHallLevel : null));
+            playerName = opts.playerName || opts.name || opts.appliedName || null;
+            appliedTag = opts.appliedTag || opts.playerTag || null;
+        } else if (extra && typeof extra === 'object') {
+            playerTh = extra.playerTh !== undefined ? extra.playerTh : (extra.playerth !== undefined ? extra.playerth : (extra.townHallLevel !== undefined ? extra.townHallLevel : null));
+            playerName = extra.playerName || extra.name || extra.appliedName || null;
+            appliedTag = extra.appliedTag || extra.playerTag || null;
+        }
+
+        for (const cat of ['fwa', 'warEntry', 'allianceApply']) {
+            for (const [ticketId, record] of Object.entries(store[cat])) {
+                if (record.channelId === channelId) {
+                    record.assignedClan = clanName;
+                    record.assignedClanTag = clanTag;
+                    record.assignedClanName = clanName;
+                    record.assignedAt = new Date().toISOString();
+                    if (assignedBy) record.assignedBy = assignedBy;
+                    if (playerTh !== null && playerTh !== undefined) {
+                        record.playerTh = playerTh;
+                        record.playerth = playerTh;
+                    }
+                    if (playerName) {
+                        record.playerName = playerName;
+                        record.name = playerName;
+                        if (!record.appliedName) record.appliedName = playerName;
+                    }
+                    if (appliedTag && !record.appliedTag) {
+                        record.appliedTag = appliedTag;
+                    }
+                    saveStore(store);
+                    return true;
+                }
+            }
+        }
+
+        // If not found in existing records, create one to ensure persistence
+        const targetCat = category || 'fwa';
+        if (store[targetCat]) {
+            const ticketId = `TICKET-${store._nextId++}`;
+            store[targetCat][ticketId] = {
+                ticketId,
+                userId: userId || null,
+                ticketOwnerName: null,
+                channelId,
+                ticketOpenedDate: new Date().toISOString(),
+                claimedBy: null,
+                claimedUserNickname: null,
+                transcript: null,
+                appliedTag: appliedTag || null,
+                appliedName: playerName || null,
+                playerName: playerName || null,
+                name: playerName || null,
+                playerTh: playerTh || null,
+                playerth: playerTh || null,
+                assignedClan: clanName,
+                assignedClanTag: clanTag,
+                assignedClanName: clanName,
+                assignedAt: new Date().toISOString(),
+                assignedBy: assignedBy || null
+            };
+            saveStore(store);
+            return true;
+        }
+
+        return false;
+    } catch (err) {
+        console.error('[TicketDataStore] Error setting assigned clan:', err);
+        return false;
+    }
+}
+
 module.exports = {
     loadStore,
     saveStore,
@@ -216,5 +351,7 @@ module.exports = {
     findByChannelId,
     setClaimed,
     setTicketOwnerName,
-    setTranscript
+    setTranscript,
+    setAppliedAccount,
+    setAssignedClan
 };

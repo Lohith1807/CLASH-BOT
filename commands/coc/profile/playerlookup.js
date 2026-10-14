@@ -223,3 +223,5 @@ module.exports = {
         }
     }
 };
+
+module.exports.getPlayerEmbed = getPlayerEmbed;
