@@ -457,6 +457,14 @@ const staffCommands = [
         details: "Bulk check war outcomes from FWA points API and broadcast match mail to all clans."
     },
     {
+        name: "send-warmails",
+        description: "Check the latest war results and send to war clan channels",
+        usage: "/send-warmails [clan:<tag/name>]",
+        aliases: ["warmail"],
+        example: "/send-warmails clan:BWC",
+        details: "Check live war status from Clash of Clans API and broadcast war match mail to normal war clans."
+    },
+    {
         name: "checkallwarstest",
         description: "Test war mail without touching live clan channels",
         usage: "/checkallwarstest",

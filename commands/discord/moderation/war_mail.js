@@ -210,46 +210,63 @@ module.exports = {
                 if (logChannel) await logChannel.send(`\`[WAR MAIL LOG]\` ${msg}`).catch(() => null);
             };
 
-            // Attempt to fetch FWA details (points, sync, warId)
-            let fwaData = null;
-            try {
-                if (mailCommand.fetchDetailedWarData) {
-                    fwaData = await mailCommand.fetchDetailedWarData(targetClanTag, opponentTagFromApi, apiLogger);
-                    if (fwaData) {
-                        fwaData.tieBreakerNote = ""; // Decision is explicitly chosen by user
+            const isWarClan = roleData.clanType && roleData.clanType.toLowerCase() === "war";
+            let success = false;
+
+            if (isWarClan) {
+                const warmail = require("./warmail.js");
+                success = await warmail.dispatchWarEmbed(
+                    client,
+                    coc,
+                    emojiUtils,
+                    targetClanTag,
+                    roleData,
+                    clanData,
+                    currentWar,
+                    apiLogger
+                );
+            } else {
+                // Attempt to fetch FWA details (points, sync, warId)
+                let fwaData = null;
+                try {
+                    if (mailCommand.fetchDetailedWarData) {
+                        fwaData = await mailCommand.fetchDetailedWarData(targetClanTag, opponentTagFromApi, apiLogger);
+                        if (fwaData) {
+                            fwaData.tieBreakerNote = ""; // Decision is explicitly chosen by user
+                        }
                     }
+                } catch (fwaErr) {
+                    // Graceful fallback if scraping fails
                 }
-            } catch (fwaErr) {
-                // Graceful fallback if scraping fails
-            }
 
-            if (!fwaData) {
-                fwaData = {
-                    warInfo: {
-                        syncNumber: "N/A",
-                        warId: "N/A",
-                        opponentTag: opponentTagFromApi,
-                        opponentName: opponentName
-                    },
-                    pointsSummary: "N/A",
-                    tieBreakerNote: ""
-                };
-            }
+                if (!fwaData) {
+                    fwaData = {
+                        warInfo: {
+                            syncNumber: "N/A",
+                            warId: "N/A",
+                            opponentTag: opponentTagFromApi,
+                            opponentName: opponentName
+                        },
+                        pointsSummary: "N/A",
+                        tieBreakerNote: ""
+                    };
+                }
 
-            // Dispatch war mail using same embed structure as mail.js
-            const success = await mailCommand.dispatchWarEmbed(
-                client,
-                coc,
-                emojiUtils,
-                targetClanTag,
-                roleData,
-                clanData,
-                currentWar,
-                matchType,
-                isWin,
-                fwaData,
-                apiLogger
-            );
+                // Dispatch war mail using same embed structure as mail.js
+                success = await mailCommand.dispatchWarEmbed(
+                    client,
+                    coc,
+                    emojiUtils,
+                    targetClanTag,
+                    roleData,
+                    clanData,
+                    currentWar,
+                    matchType,
+                    isWin,
+                    fwaData,
+                    apiLogger
+                );
+            }
 
             const targetChannelId = roleData.mailChannelId && roleData.mailChannelId.trim() !== "" ? roleData.mailChannelId : roleData.channelId;
 
@@ -267,11 +284,10 @@ module.exports = {
 
                 const successEmbed = new EmbedBuilder()
                     .setTitle("✅ War Mail Dispatched")
-                    .setColor(decision === "win" ? 0x00FF00 : (decision === "lose" || decision === "bl" ? 0xFF0000 : 0xFFA500))
+                    .setColor(isWarClan ? 0xFFA500 : (decision === "win" ? 0x00FF00 : (decision === "lose" || decision === "bl" ? 0xFF0000 : 0xFFA500)))
                     .setDescription(
                         `War mail for **${clanData.name}** (\`${targetClanTag}\`) has been successfully sent to <#${targetChannelId}>.\n\n` +
-                        `• **Decision:** **${decisionLabel}**\n` +
-                        `• **Match Type:** ${matchType}\n` +
+                        (isWarClan ? `• **Match Type:** War\n` : `• **Decision:** **${decisionLabel}**\n• **Match Type:** ${matchType}\n`) +
                         `• **Opponent:** ${opponentName} (\`${opponentTagFromApi}\`)\n` +
                         `• **Triggered by:** ${interaction.user}`
                     )

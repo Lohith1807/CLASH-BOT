@@ -73,17 +73,22 @@ function saveStore(store) {
  */
 function resolveCategory(channelName) {
     if (!channelName) return null;
-    const lower = channelName.replace(/^[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '').toLowerCase();
+    const lower = channelName.replace(/^[-_\s]*[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '').replace(/^[-_\s]+/, '').toLowerCase();
 
     // FWA-Entry and Clan-Entry both map to 'fwa'
-    if (lower.startsWith('fwa-entry') || lower.startsWith('fwa-')) return 'fwa';
-    if (lower.startsWith('clan-entry') || lower.startsWith('clan-')) return 'fwa';
+    if (lower.startsWith('fwa-entry') || lower.startsWith('fwa-') || lower.startsWith('clan-entry') || lower.startsWith('clan-')) return 'fwa';
 
     // War-Entry maps to 'warEntry'
     if (lower.startsWith('war-entry') || lower.startsWith('war-')) return 'warEntry';
 
     // Alliance-Join maps to 'allianceApply'
     if (lower.startsWith('alliance-join') || lower.startsWith('alliance-')) return 'allianceApply';
+
+    // Fallback: check if the channel name contains the key phrase anywhere (e.g. after approval/transfer)
+    const rawLower = channelName.toLowerCase();
+    if (rawLower.includes('fwa-entry') || rawLower.includes('clan-entry')) return 'fwa';
+    if (rawLower.includes('war-entry')) return 'warEntry';
+    if (rawLower.includes('alliance-join')) return 'allianceApply';
 
     return null;
 }

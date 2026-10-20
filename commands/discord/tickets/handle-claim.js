@@ -172,8 +172,8 @@ module.exports = {
         // Ensure green dot is present on channel name
         try {
             const currentName = interaction.channel.name;
-            if (!currentName.startsWith('🟢')) {
-                const cleanName = currentName.replace(/^[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '');
+            if (!currentName.includes('🟢')) {
+                const cleanName = currentName.replace(/^[-_\s]*[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '').replace(/^[-_\s]+/, '');
                 await interaction.channel.setName(`🟢-${cleanName}`);
             }
         } catch (e) {

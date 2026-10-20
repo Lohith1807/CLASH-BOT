@@ -181,7 +181,11 @@ module.exports = {
         let filterCategory = null; // 'fwa' | 'war' | null
 
         if (interaction.channel && interaction.channel.parentId === config.TICKET_CATEGORY_ID) {
-            const resolved = ticketDataStore.resolveCategory(interaction.channel.name);
+            let resolved = ticketDataStore.resolveCategory(interaction.channel.name);
+            if (!resolved) {
+                const rec = ticketDataStore.findByChannelId(interaction.channel.id);
+                if (rec && rec.category) resolved = rec.category;
+            }
             if (resolved === 'fwa') filterCategory = 'fwa';
             else if (resolved === 'warEntry') filterCategory = 'war';
         }
@@ -189,7 +193,11 @@ module.exports = {
         if (!filterCategory && targetUserId && interaction.guild) {
             const ticketChannel = findUserTicketChannel(interaction.guild, targetUserId, config);
             if (ticketChannel) {
-                const resolved = ticketDataStore.resolveCategory(ticketChannel.name);
+                let resolved = ticketDataStore.resolveCategory(ticketChannel.name);
+                if (!resolved) {
+                    const rec = ticketDataStore.findByChannelId(ticketChannel.id);
+                    if (rec && rec.category) resolved = rec.category;
+                }
                 if (resolved === 'fwa') filterCategory = 'fwa';
                 else if (resolved === 'warEntry') filterCategory = 'war';
             }
@@ -279,7 +287,13 @@ module.exports = {
         const ticketChannel = channel;
 
         // 4. Validate Ticket Category
-        const ticketCategory = ticketDataStore.resolveCategory(ticketChannel.name);
+        let ticketCategory = ticketDataStore.resolveCategory(ticketChannel.name);
+        if (!ticketCategory) {
+            const rec = ticketDataStore.findByChannelId(ticketChannel.id);
+            if (rec && rec.category) {
+                ticketCategory = rec.category;
+            }
+        }
         if (!ticketCategory || (ticketCategory !== 'fwa' && ticketCategory !== 'warEntry')) {
             return interaction.reply({
                 content: `❌ Active ticket channel ${ticketChannel} is not an FWA Entry or War Entry ticket.`,

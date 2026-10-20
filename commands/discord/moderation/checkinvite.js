@@ -1,5 +1,46 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle , MessageFlags } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, MessageFlags } = require('discord.js');
 const emojiUtils = require('../../../utils/emoji.js');
+const config = require('../../../config/config.js');
+
+function hasStaffPermission(member, conf) {
+    if (!member) return false;
+
+    // Server administrators / moderators with native Discord perms
+    if (member.permissions && (
+        member.permissions.has(PermissionFlagsBits.Administrator) ||
+        member.permissions.has(PermissionFlagsBits.ManageGuild) ||
+        member.permissions.has(PermissionFlagsBits.ManageRoles)
+    )) {
+        return true;
+    }
+
+    const memberRoles = member.roles?.cache;
+    if (!memberRoles) return false;
+
+    const currentConfig = conf || config;
+    const allowedRoles = [
+        ...(currentConfig?.ADMIN_ROLE_IDS || []),
+        ...(currentConfig?.STAFF_ROLE_IDS || []),
+        ...(currentConfig?.ALL_STAFF_ROLE_IDS || []),
+        currentConfig?.TRAINEE_ROLE_ID,
+        currentConfig?.CWL_STAFF_ROLE_ID,
+        currentConfig?.WEL_EXE_STAFF_ID,
+        // Known fallback IDs used across the codebase
+        "1466103376642314445", // All Staff
+        "1511650426343133274", // All Staff 2
+        "1513940638909988874", // Server Moderator
+        "1513942017196167389", // T-Moderator
+        "1154276716982833154", // Staff / Exe
+        "1448265928503726161", // CWL Staff
+        "1514536928412827758", // Trainee
+        "1514535148119392377"  // Wel Exe
+    ].map(id => id ? id.toString().trim() : null).filter(Boolean);
+
+    return memberRoles.some(r => 
+        allowedRoles.includes(r.id) || 
+        r.name?.toLowerCase().includes("staff")
+    );
+}
 
 // Helper to extract invite code from a URL or raw input
 function extractInviteCode(input) {
@@ -114,6 +155,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('checkinvite')
         .setDescription('Check the details of a server invite link or code.')
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles)
         .addStringOption(option =>
             option.setName('invite')
                 .setDescription('The invite link or code (e.g. discord.gg/abc or abc)')
@@ -121,6 +163,14 @@ module.exports = {
         ),
 
     async execute(interaction, context) {
+        const conf = context?.config || config;
+        if (!hasStaffPermission(interaction.member, conf)) {
+            return interaction.reply({
+                content: "❌ You do not have permission to use this command.",
+                flags: [MessageFlags.Ephemeral]
+            });
+        }
+
         const inviteInput = interaction.options.getString('invite');
         const inviteCode = extractInviteCode(inviteInput);
 
@@ -151,6 +201,14 @@ module.exports = {
     },
 
     async handleRefreshButton(interaction, context) {
+        const conf = context?.config || config;
+        if (!hasStaffPermission(interaction.member, conf)) {
+            return interaction.reply({
+                content: "❌ You do not have permission to use this button.",
+                flags: [MessageFlags.Ephemeral]
+            });
+        }
+
         const parts = interaction.customId.split(":");
         const inviteCode = parts[1];
 

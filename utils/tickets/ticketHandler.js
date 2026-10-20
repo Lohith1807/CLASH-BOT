@@ -1563,8 +1563,8 @@ async function handleTicketInteraction(interaction, context) {
         // Add green dot at start of ticket channel name
         try {
             const currentName = interaction.channel.name;
-            if (!currentName.startsWith('🟢')) {
-                const cleanName = currentName.replace(/^[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '');
+            if (!currentName.includes('🟢')) {
+                const cleanName = currentName.replace(/^[-_\s]*[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '').replace(/^[-_\s]+/, '');
                 const newChannelName = `🟢-${cleanName}`;
                 await interaction.channel.setName(newChannelName);
             }

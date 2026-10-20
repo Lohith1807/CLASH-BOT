@@ -92,7 +92,8 @@ module.exports = {
                     "**`/set-timer`**: Set an auto-close timer for this ticket.\n" +
                     "**`/approve`**: Approve the current ticket application.\n" +
                     "**`/reject`**: Reject the current ticket application.\n" +
-                    "**`/handle-claim`**: Transfer the claim of this ticket to another user."
+                    "**`/handle-claim`**: Transfer the claim of this ticket to another user.\n" +
+                    "**`/checkinvite`**: Check the details of a server invite link or code."
                 )
                 .setTimestamp();
 
@@ -117,7 +118,8 @@ module.exports = {
                     "**`/set-timer`**: Set an auto-close timer for this ticket.\n" +
                     "**`/approve`**: Approve the current ticket application.\n" +
                     "**`/reject`**: Reject the current ticket application.\n" +
-                    "**`/handle-claim`**: Transfer the claim of this ticket to another user."
+                    "**`/handle-claim`**: Transfer the claim of this ticket to another user.\n" +
+                    "**`/checkinvite`**: Check the details of a server invite link or code."
                 )
                 .setTimestamp();
 

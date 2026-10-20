@@ -123,7 +123,7 @@ function removeClaim(userId, ticketType = 'Other') {
 
 function resolveTicketType(channelName) {
     if (!channelName) return 'Other';
-    const clean = channelName.replace(/^[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '');
+    const clean = channelName.replace(/^[-_\s]*[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '').replace(/^[-_\s]+/, '');
     const prefix = clean.split('-')[0].toLowerCase();
     if (['fwa', 'clan', 'war'].includes(prefix)) return 'Clan Apply';
     if (prefix === 'rep') return 'Rep Apply';

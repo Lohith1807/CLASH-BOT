@@ -157,8 +157,10 @@ client.once(Events.ClientReady, async (c) => {
 async function startWarMonitoring(client) {
   const emojiUtils = require("./utils/emoji.js");
   const mailCommand = require("./commands/discord/moderation/mail.js");
+  const warmailCommand = require("./commands/discord/moderation/warmail.js");
 
   mailCommand.startAutoMonitoring(client, config, emojiUtils);
+  warmailCommand.startAutoMonitoring(client, config, emojiUtils);
 }
 
 const tools = {
@@ -533,7 +535,7 @@ client.on("interactionCreate", async (interaction) => {
         return interaction.editReply({ embeds: [detailsEmbed], components: [] });
       }
 
-      const PAGE_SIZE = 10;
+      const PAGE_SIZE = 5;
       const totalPages = Math.ceil(accounts.length / PAGE_SIZE);
       page = Math.max(0, Math.min(page, totalPages - 1));
 
@@ -552,12 +554,13 @@ client.on("interactionCreate", async (interaction) => {
         return `${sno}. ${thEmoji} [${playerName}](${playerUrl})`;
       });
 
+      const fieldValue = `${lines.join("\n")}\n\n**User ID:** ${userId}`;
       const detailsEmbed = new EmbedBuilder()
         .setColor(getRandomColor())
         .setAuthor({ name: authorName, iconURL: user.displayAvatarURL({ dynamic: true }) })
         .setThumbnail(user.displayAvatarURL({ dynamic: true, size: 512 }))
         .addFields(
-          { name: `${cocEmoji} Linked Players (${accounts.length})`, value: `${lines.join("\n")}\n\n**User ID:** ${userId}`, inline: false }
+          { name: `${cocEmoji} Linked Players (${accounts.length})`, value: fieldValue.length > 1024 ? fieldValue.slice(0, 1020) + "..." : fieldValue, inline: false }
         )
         .setFooter({ text: totalPages > 1 ? `Page ${page + 1} of ${totalPages} • User ID: ${userId}` : `User ID: ${userId}` })
         .setTimestamp();
