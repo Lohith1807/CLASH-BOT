@@ -154,6 +154,15 @@ module.exports = {
                         delete clanroles[clanTag];
                         dataManager.saveClanRoles(clanroles);
 
+                        // Automatically remove from clanrules.json
+                        try {
+                            if (typeof dataManager.removeClanRuleEntry === 'function') {
+                                dataManager.removeClanRuleEntry(clanTag);
+                            }
+                        } catch (err) {
+                            console.error(`[ClanRevoke] Error removing clan rules entry for ${clanTag}:`, err.message);
+                        }
+
                         await interaction.editReply({
                             embeds: [
                                 new EmbedBuilder()

@@ -391,6 +391,19 @@ module.exports = {
 
             dataManager.saveClanRoles(clanroles);
 
+            // Automatically add or sync clan entry in clanrules.json with basic rules and official clan name
+            try {
+                if (typeof dataManager.addClanRuleEntry === 'function') {
+                    dataManager.addClanRuleEntry(clanTag, {
+                        name: officialClanName,
+                        nickName: nickName,
+                        clanType: finalType
+                    });
+                }
+            } catch (err) {
+                console.error(`[ClanEntry] Error adding clan rules entry for ${clanTag}:`, err.message);
+            }
+
             // If registered clan is an FWA clan, automatically add to ww.json for war weight reminders
             if (finalType && finalType.toLowerCase() === "fwa") {
                 try {

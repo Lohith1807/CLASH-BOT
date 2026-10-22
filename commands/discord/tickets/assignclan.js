@@ -8,10 +8,265 @@ const {
     PermissionFlagsBits,
     MessageFlags
 } = require('discord.js');
+const fs = require('fs');
+const path = require('path');
+const { getEmoji } = require('../../../utils/emoji');
 const ticketDataStore = require('../../../utils/ticketDataStore');
 
 // In-memory cache for clan names to speed up autocomplete
 const clanNameCache = new Map();
+
+const DEFAULT_CLAN_RULES = [
+    "Be active daily and participate in wars and CWL.",
+    "Always use both war attacks — missing attacks may lead to demotion.",
+    "Donate correct troops only as requested.",
+    "Respect all members — teamwork builds victory.",
+    "No rushed bases allowed in main clan — use feeder clans if needed.",
+    "Maintain a healthy competitive spirit, no toxicity."
+];
+
+/**
+ * Safely load clan rules configuration from dataManager or filesystem
+ */
+function loadClanRules(dataManager) {
+    if (dataManager && typeof dataManager.getClanRules === 'function') {
+        try {
+            const rules = dataManager.getClanRules();
+            if (rules && typeof rules === 'object') return rules;
+        } catch (err) {
+            console.error('[AssignClan] Error loading rules via dataManager:', err.message);
+        }
+    }
+
+    const possiblePaths = [
+        path.join(__dirname, '../../../data/clanrules.json'),
+        path.join(__dirname, '../../../clanrules.json'),
+        path.resolve(process.cwd(), 'data/clanrules.json'),
+        path.resolve(process.cwd(), 'clanrules.json')
+    ];
+
+    for (const filePath of possiblePaths) {
+        try {
+            if (fs.existsSync(filePath)) {
+                const raw = fs.readFileSync(filePath, 'utf8');
+                if (raw && raw.trim()) {
+                    return JSON.parse(raw);
+                }
+            }
+        } catch (err) {
+            console.error(`[AssignClan] Error loading rules from ${filePath}:`, err.message);
+        }
+    }
+
+    return {
+        default: {
+            title: '{clanName} Rules',
+            rules: DEFAULT_CLAN_RULES,
+            color: '#E74C3C'
+        },
+        clans: {}
+    };
+}
+
+/**
+ * Resolve clan rules configuration for a specific clan, falling back to default
+ */
+function resolveClanRulesConfig(allRules, clanTag, clanData, clanConfig) {
+    const defaultFallback = {
+        title: '{clanName} Rules',
+        rules: DEFAULT_CLAN_RULES,
+        image: '',
+        thumbnail: '',
+        footerText: '',
+        footerIcon: '',
+        color: '#E74C3C'
+    };
+
+    if (!allRules || typeof allRules !== 'object') {
+        return defaultFallback;
+    }
+
+    const tagWithHash = (clanTag || clanData?.tag || '').toUpperCase();
+    const cleanTag = tagWithHash.replace(/^#/, '');
+    const nick = (clanConfig?.nickName || '').toUpperCase();
+
+    const defaultConf = allRules.default || (Array.isArray(allRules.rules) ? allRules : null);
+    const clansMap = (allRules.clans && typeof allRules.clans === 'object') ? allRules.clans : allRules;
+
+    let specificConf = null;
+    if (tagWithHash && clansMap[tagWithHash]) {
+        specificConf = clansMap[tagWithHash];
+    } else if (cleanTag && clansMap[cleanTag]) {
+        specificConf = clansMap[cleanTag];
+    } else if (nick && clansMap[nick]) {
+        specificConf = clansMap[nick];
+    } else if (tagWithHash && clansMap['#' + cleanTag]) {
+        specificConf = clansMap['#' + cleanTag];
+    }
+
+    let rules = (specificConf && Array.isArray(specificConf.rules) && specificConf.rules.length > 0)
+        ? specificConf.rules
+        : (defaultConf && Array.isArray(defaultConf.rules) && defaultConf.rules.length > 0 ? defaultConf.rules : DEFAULT_CLAN_RULES);
+
+    if (!Array.isArray(rules) || rules.length === 0) {
+        rules = DEFAULT_CLAN_RULES;
+    }
+
+    const imageBanner = (specificConf && (specificConf.image || specificConf.banner || specificConf.footerImage))
+        || (defaultConf && (defaultConf.image || defaultConf.banner || defaultConf.footerImage))
+        || '';
+
+    const thumbnail = (specificConf && specificConf.thumbnail)
+        || (defaultConf && defaultConf.thumbnail)
+        || '';
+
+    const title = (specificConf && specificConf.title)
+        || (defaultConf && defaultConf.title)
+        || '{clanName} Rules';
+
+    const color = (specificConf && specificConf.color)
+        || (defaultConf && defaultConf.color)
+        || '#E74C3C';
+
+    const rawFooterText = (specificConf && ((typeof specificConf.footer === 'string' ? specificConf.footer : specificConf.footer?.text) || specificConf.footerText))
+        || (defaultConf && ((typeof defaultConf.footer === 'string' ? defaultConf.footer : defaultConf.footer?.text) || defaultConf.footerText))
+        || '';
+
+    const footerIcon = (specificConf && ((typeof specificConf.footer === 'object' ? (specificConf.footer?.iconURL || specificConf.footer?.icon_url) : null) || specificConf.footerIcon))
+        || (defaultConf && ((typeof defaultConf.footer === 'object' ? (defaultConf.footer?.iconURL || defaultConf.footer?.icon_url) : null) || defaultConf.footerIcon))
+        || '';
+
+    return {
+        title,
+        rules,
+        image: imageBanner,
+        thumbnail,
+        footerText: rawFooterText,
+        footerIcon,
+        color
+    };
+}
+
+/**
+ * Build the Clan Rules Embed using rules from clanrules.json
+ * and the blackdot emoji from emoji.js as bullet point.
+ * Accurately determines rules and image for the specific clan being assigned.
+ */
+function buildClanRulesEmbed(clanTagOrClanData, clanDataOrContext, maybeClanConfig, maybeContext) {
+    try {
+        let clanTag = null;
+        let clanData = null;
+        let clanConfig = null;
+        let context = null;
+
+        if (typeof clanTagOrClanData === 'string') {
+            clanTag = clanTagOrClanData;
+            clanData = clanDataOrContext;
+            clanConfig = maybeClanConfig;
+            context = maybeContext;
+        } else {
+            clanData = clanTagOrClanData;
+            context = clanDataOrContext;
+            clanTag = clanData?.tag;
+            clanConfig = maybeClanConfig;
+        }
+
+        const rawRulesData = loadClanRules(context?.data);
+        const rulesData = resolveClanRulesConfig(rawRulesData, clanTag, clanData, clanConfig);
+
+        // Automatically ensure official clan name is synced to clanrules.json
+        if (rawRulesData && rawRulesData.clans && clanTag && clanData?.name) {
+            const tagWithHash = (clanTag.startsWith('#') ? clanTag : '#' + clanTag).toUpperCase();
+            const targetEntry = rawRulesData.clans[tagWithHash];
+            if (targetEntry && targetEntry.name !== clanData.name) {
+                targetEntry.name = clanData.name;
+                try {
+                    if (context?.data && typeof context.data.saveClanRules === 'function') {
+                        context.data.saveClanRules(rawRulesData);
+                    }
+                } catch (_) {}
+            }
+        }
+
+        const effectiveRules = (rulesData && Array.isArray(rulesData.rules) && rulesData.rules.length > 0)
+            ? rulesData.rules
+            : DEFAULT_CLAN_RULES;
+
+        // Retrieve blackdot emoji using existing emoji utils / import
+        const emojiUtils = context?.emoji;
+        let blackdot = emojiUtils ? emojiUtils.getEmoji('blackdot') : '';
+        if (!blackdot) {
+            blackdot = getEmoji('blackdot') || '•';
+        }
+
+        // Title format: {Clanname} Rules or customized title template
+        const clanName = clanData?.name || 'Clan';
+        let rawTitle = rulesData?.title || '{clanName} Rules';
+        let title = rawTitle.replace(/\{clan(name)?\}/gi, clanName);
+        if (title.trim().toLowerCase() === 'clan rules') {
+            title = `${clanName} Rules`;
+        }
+        if (title.length > 256) {
+            title = title.slice(0, 253) + '...';
+        }
+
+        let validRules = effectiveRules
+            .filter(r => typeof r === 'string' && r.trim().length > 0)
+            .map(r => `${blackdot} ${r.trim()}`);
+
+        if (validRules.length === 0) {
+            validRules = DEFAULT_CLAN_RULES.map(r => `${blackdot} ${r}`);
+        }
+
+        let description = validRules.join('\n\n');
+        if (description.length > 4096) {
+            description = validRules.join('\n');
+            if (description.length > 4096) {
+                description = description.slice(0, 4093) + '...';
+            }
+        }
+
+        let embedColor = 0xE74C3C;
+        if (rulesData?.color) {
+            if (typeof rulesData.color === 'number') {
+                embedColor = rulesData.color;
+            } else if (typeof rulesData.color === 'string') {
+                const cleaned = rulesData.color.startsWith('#') ? rulesData.color : `#${rulesData.color}`;
+                if (/^#[0-9A-Fa-f]{6}$/.test(cleaned)) {
+                    embedColor = cleaned;
+                }
+            }
+        }
+
+        const embed = new EmbedBuilder()
+            .setTitle(title)
+            .setDescription(description)
+            .setColor(embedColor);
+
+        // Picture / bottom image: only show if a picture is added (e.g. from clanrules.json or dashboard)
+        const pictureUrl = rulesData?.image || rulesData?.banner || rulesData?.bannerUrl;
+        if (pictureUrl && typeof pictureUrl === 'string' && pictureUrl.trim().startsWith('http')) {
+            embed.setImage(pictureUrl.trim());
+        }
+
+        // Footer support: allows website dashboard to set footer text and/or icon
+        const rawFooterText = rulesData?.footerText;
+        const footerIcon = rulesData?.footerIcon;
+
+        if (rawFooterText || footerIcon) {
+            const footerText = (rawFooterText || `${clanName} Rules`).replace(/\{clan(name)?\}/gi, clanName);
+            embed.setFooter({
+                text: footerText.slice(0, 2048),
+                iconURL: (footerIcon && typeof footerIcon === 'string' && footerIcon.trim().startsWith('http')) ? footerIcon.trim() : undefined
+            });
+        }
+
+        return embed;
+    } catch (err) {
+        console.error('[AssignClan] Error building clan rules embed:', err);
+        return null;
+    }
+}
 
 /**
  * Build the public clan announcement embed matching ;clan <nickname> layout
@@ -528,10 +783,30 @@ module.exports = {
 
                 try {
                     const publicClanEmbed = buildPublicClanEmbed(clanTag, clanType, clanData, context);
-                    await ticketChannel.send({
-                        content: `<@${targetUser.id}>`,
-                        embeds: [publicClanEmbed]
-                    });
+                    const clanRulesEmbed = buildClanRulesEmbed(clanTag, clanData, clanConfig, context);
+
+                    const embedsToSend = [publicClanEmbed];
+                    if (clanRulesEmbed) {
+                        embedsToSend.push(clanRulesEmbed);
+                    }
+
+                    try {
+                        await ticketChannel.send({
+                            content: `<@${targetUser.id}>`,
+                            embeds: embedsToSend
+                        });
+                    } catch (sendErr) {
+                        // Fallback: If sending with rules embed failed, attempt sending public embed alone
+                        if (embedsToSend.length > 1) {
+                            console.warn('[AssignClan] Failed sending with rules embed, retrying with public embed only:', sendErr.message);
+                            await ticketChannel.send({
+                                content: `<@${targetUser.id}>`,
+                                embeds: [publicClanEmbed]
+                            });
+                        } else {
+                            throw sendErr;
+                        }
+                    }
                     announcementSent = true;
                 } catch (err) {
                     console.error('[AssignClan] Public announcement send failed:', err);
@@ -593,5 +868,11 @@ module.exports = {
                 }).catch(() => { });
             }
         });
-    }
+    },
+
+    buildClanRulesEmbed,
+    loadClanRules,
+    resolveClanRulesConfig,
+    DEFAULT_CLAN_RULES
 };
+

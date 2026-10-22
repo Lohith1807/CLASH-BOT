@@ -297,6 +297,10 @@ client.on("messageCreate", async (message) => {
       const command = require("./commands/coc/clan/clan.js");
       await command.execute(message, args, context);
 
+    } else if (commandName === "r" || commandName === "rules") {
+      const command = require("./commands/coc/clan/rules.js");
+      await command.execute(message, args, context);
+
     } else if (commandName === "delc") {
       const command = require("./commands/discord/channel/delc.js");
       await command.run(message, args, context);
@@ -390,6 +394,9 @@ client.on("messageCreate", async (message) => {
 
     } else if (commandName === "clan") {
       const command = require("./commands/coc/clan/clan.js");
+      await command.execute(message, args, context);
+    } else if (commandName === "r" || commandName === "rules") {
+      const command = require("./commands/coc/clan/rules.js");
       await command.execute(message, args, context);
     } else if (commandName === "war" || commandName === "warweight") {
       const command = require("./commands/coc/war/warweight.js");

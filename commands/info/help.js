@@ -147,6 +147,14 @@ const normalCommands = [
         details: "View detailed statistics for any clan, including member count, trophy requirements, war status, CWL league, and leaders."
     },
     {
+        name: "r",
+        description: "Show rules embed for a clan by nickname or tag",
+        usage: "{p}r <clannickname>",
+        aliases: ["rules"],
+        example: "{p}r bb",
+        details: "Display the official rules embed for a clan using its nickname or clan tag (e.g., ;r bb)."
+    },
+    {
         name: "compo",
         description: "Show Town Hall composition breakdown of a clan",
         usage: "{p}compo [#TAG/all]",
@@ -496,22 +504,7 @@ const staffCommands = [
         example: "/staff-pannel",
         details: "Interactive staff control panel with quick action buttons."
     },
-    {
-        name: "staff-members",
-        description: "Manage staff members for clans",
-        usage: "/staff-members",
-        aliases: [],
-        example: "/staff-members",
-        details: "Display all server staff members sorted by clan assignments and hierarchy."
-    },
-    {
-        name: "staff-trainee",
-        description: "Manage trainee staff members",
-        usage: "/staff-trainee action:<add/remove> user:@user",
-        aliases: [],
-        example: "/staff-trainee action:add user:@Member",
-        details: "Grant or revoke staff trainee status for onboarding."
-    },
+
     {
         name: "staff-summary",
         description: "Displays a weekly summary of tickets claimed by staff members",
@@ -519,6 +512,14 @@ const staffCommands = [
         aliases: [],
         example: "/staff-summary",
         details: "View resolution metrics and ticket activity numbers for staff."
+    },
+    {
+        name: "assignclan",
+        description: "Assign an applicant to a clan inside their ticket channel",
+        usage: "/assignclan user:@user clan:<tag/nickname>",
+        aliases: [],
+        example: "/assignclan user:@Member clan:BB",
+        details: "Assign an applicant to a clan inside their ticket channel, apply clan roles, update nickname, and post the public announcement and clan rules embed."
     },
     {
         name: "approve",

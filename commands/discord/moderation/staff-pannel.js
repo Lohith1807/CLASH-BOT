@@ -83,7 +83,6 @@ module.exports = {
                     "**`/unlockchannel`**: Unlock a channel to allow members to send messages again.\n" +
                     "**`/set-welcome-th`**: Manage the recruited Town Halls in the welcome message.\n" +
                     "**`/setup-clan`**: Manage per-clan settings: Auto Role, Auto Post, and Join/Leave Tracker.\n" +
-                    "**`/staff-members`**: Manage staff members (Add, Update, Remove, or List) assigned to clans.\n" +
                     "**`/clanentry`**: Add clan entry (creates roles, channels, leadership chats, and mail channels).\n" +
                     "**`/updateclanentry`**: Update leadership (Leader/Co-Leaders) for a registered clan.\n" +
                     "**`/create-ticket`**: Manually create a ticket for a user.\n" +
