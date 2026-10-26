@@ -1,6 +1,5 @@
-
-
-
+const { ChannelType } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 function getRandomColor() {
   return Math.floor(Math.random() * 0xffffff);
@@ -16,6 +15,7 @@ function buildEmbed(EmbedBuilder, title, description, color = 0x2ecc71) {
 
 async function logErrorToChannel(client, LOG_CHANNEL_ID, EmbedBuilder, title, error) {
   const { ChannelType } = require("discord.js");
+const { checkPermission } = require('../../../utils/checkPermission.js');
   const logChannel = await client.channels.fetch(LOG_CHANNEL_ID).catch(() => null);
   if (!logChannel || logChannel.type !== ChannelType.GuildText) return;
 
@@ -38,11 +38,7 @@ module.exports = {
 
     if (message.deletable) await message.delete().catch(() => { });
 
-    const hasPermission = message.member.roles.cache.some(role =>
-      ALLOWED_ROLES_DELETE.includes(role.id)
-    );
-
-    if (!hasPermission) {
+    if (!checkPermission('delc', message)) {
       const embed = buildEmbed(
         EmbedBuilder,
         "🚫 Access Denied",

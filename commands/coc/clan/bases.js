@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 const basesPath = path.join(__dirname, '../../../data/fwa_bases.json');
 
@@ -84,16 +85,7 @@ module.exports = {
         const { config, EmbedBuilder } = context;
         const member = interaction.member;
 
-        const allowedRoles = [
-            ...(config.ADMIN_ROLE_IDS || []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
-        ];
-
-        const hasAllowedRole = member.roles.cache.some(role => allowedRoles.includes(role.id));
-        const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
-
-        if (!isAdmin && !hasAllowedRole) {
+        if (!checkPermission('updatebase', interaction)) {
             return interaction.reply({ content: "❌ You do not have permission to update base links.", flags: [MessageFlags.Ephemeral] });
         }
 

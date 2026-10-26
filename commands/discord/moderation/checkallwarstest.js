@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags } = require("discord.js");
+const { checkPermission } = require("../../../utils/checkPermission.js");
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
@@ -250,6 +251,10 @@ module.exports = {
         ),
 
     async execute(interaction, context) {
+        if (!checkPermission("checkallwarstest", interaction)) {
+            return interaction.reply({ content: "❌ You don't have permission to use this command.", flags: [MessageFlags.Ephemeral] });
+        }
+
         const { coc, emoji: emojiUtils, client } = context;
         try { await interaction.deferReply({ flags: MessageFlags.Ephemeral }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 

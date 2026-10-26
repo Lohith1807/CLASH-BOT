@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 module.exports = {
     name: "playercount",
@@ -10,10 +11,7 @@ module.exports = {
     async execute(interaction, context) {
         const { data: dataManager, emoji: emojiUtils, config } = context;
         
-        const allowedRoles = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
-        const hasPermission = interaction.member.roles.cache.some(role => allowedRoles.includes(role.id));
-
-        if (!hasPermission) {
+        if (!checkPermission('playercount', interaction)) {
             return interaction.reply({ content: "❌ You do not have permission to use this command. Only Admin and Staff can use it.", flags: [MessageFlags.Ephemeral] });
         }
 
@@ -108,7 +106,7 @@ module.exports = {
         });
 
         collector.on('collect', async (i) => {
-            const canInteract = i.member.roles.cache.some(role => allowedRoles.includes(role.id));
+            const canInteract = checkPermission('playercount', i);
             if (!canInteract) {
                 return i.reply({ content: "❌ Only Admin and Staff members can interact with these buttons.", flags: [MessageFlags.Ephemeral] });
             }

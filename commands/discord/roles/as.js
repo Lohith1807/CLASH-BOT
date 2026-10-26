@@ -1,4 +1,5 @@
 const { MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 const tick = "1410137697300775026";
 const tickEmoji = `<:tick:${tick}>`;
@@ -69,8 +70,7 @@ module.exports = {
         const { EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, coc, data, config } = context;
         if (message.deletable) message.delete().catch(() => { });
 
-        const member = message.member;
-        if (!hasLeaderOrStaffPermission(member, config, data)) {
+        if (!checkPermission('as', message)) {
             return message.channel.send("❌ You do not have permission to use this command.");
         }
 

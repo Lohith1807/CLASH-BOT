@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const { getEmoji } = require('../../../utils/emoji.js');
 
 module.exports = {
@@ -29,8 +30,7 @@ module.exports = {
     async execute(interaction, context) {
         const { data: dataManager, config, coc } = context;
 
-        const ALLOWED_ROLES = [...config.ADMIN_ROLE_IDS, ...config.STAFF_ROLE_IDS].filter(id => id.trim() !== "");
-        if (!interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) {
+        if (!checkPermission('strike-remove', interaction)) {
             return interaction.reply({ content: "❌ You do not have permission to use this command.", flags: [MessageFlags.Ephemeral] });
         }
 

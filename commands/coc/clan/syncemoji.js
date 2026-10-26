@@ -1,3 +1,4 @@
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const { SlashCommandBuilder , MessageFlags } = require('discord.js');
 const fs = require('fs');
 const path = require('path');
@@ -10,6 +11,9 @@ module.exports = {
     .setDescription('Re-sync all emojis from Bot Dev Portal → auto-fix IDs, animated flags & add new ones'),
 
   async execute(interaction, context) {
+    if (!checkPermission('syncemoji', interaction)) {
+        return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
+    }
     const { emoji: emojiUtils } = context;
 
     try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }

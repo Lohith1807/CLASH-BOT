@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -19,10 +20,7 @@ module.exports = {
         const targetRole = interaction.options.getRole('role');
         const { channel, member } = interaction;
 
-        const STAFF_ROLE_IDS = config.STAFF_ROLE_IDS || [];
-        const isStaff = STAFF_ROLE_IDS.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator);
-
-        if (!isStaff) {
+        if (!checkPermission('ticketadd', interaction)) {
             return interaction.reply({
                 content: '❌ You do not have the required permissions to add members or roles to tickets.',
                 flags: [MessageFlags.Ephemeral]

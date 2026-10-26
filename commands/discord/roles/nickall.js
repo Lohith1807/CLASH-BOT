@@ -1,3 +1,4 @@
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const logChannelId = "1188515065889050746";
 
 function delay(ms) {
@@ -29,11 +30,9 @@ module.exports = {
   async execute(message, args, context) {
     try {
       const { data: dataManager, config, EmbedBuilder } = context;
-      const ALLOWED_ROLES = config.ADMIN_ROLE_IDS;
-
       if (!message.guild) return;
 
-      if (!message.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) {
+      if (!checkPermission('nickall', message)) {
         return message.channel.send({
           embeds: [
             new EmbedBuilder()

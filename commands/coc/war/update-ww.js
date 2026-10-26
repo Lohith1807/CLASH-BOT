@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, StringSelectMenuBuilder, ComponentType, ButtonBuilder, ButtonStyle, PermissionFlagsBits , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -34,6 +35,10 @@ module.exports = {
         ),
 
     async execute(interaction, context) {
+        if (!checkPermission('update-ww', interaction)) {
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
+        }
+
         if (!interaction.guildId || interaction.guildId !== context.config.GUILD_ID) {
             return interaction.reply({ content: '❌ This command can only be used in the main server.', flags: [MessageFlags.Ephemeral] });
         }

@@ -659,7 +659,7 @@ async function handleInteraction(interaction, context) {
             try { await interaction.deferUpdate(); } catch(e) { return; }
 
             try {
-                const linkedlistclanCmd = require("../commands/coc/profile/linkedlistclan.js");
+                const linkedlistclanCmd = require("../commands/coc/profile/discord-links.js");
                 await linkedlistclanCmd.run(interaction, clanTag, context, true, true);
             } catch (err) {
                 console.error(err);
@@ -675,7 +675,7 @@ async function handleInteraction(interaction, context) {
             try { await interaction.deferUpdate(); } catch(e) { return; }
             
             try {
-                const clanccCmd = require("../commands/coc/clan/clancc.js");
+                const clanccCmd = require("../commands/coc/clan/clan-cc.js");
                 const embeds = await clanccCmd.buildClanCCEmbeds(clanTag, coc, dataManager, emoji);
                 if (embeds) {
                     await interaction.editReply({ embeds });

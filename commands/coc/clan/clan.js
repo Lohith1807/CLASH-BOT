@@ -1,6 +1,7 @@
 const { AttachmentBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, ComponentType } = require("discord.js");
 const fs = require("fs");
 const path = require("path");
+const { checkPermission } = require("../../../utils/checkPermission.js");
 
 function getCwlClans() {
     try {
@@ -202,20 +203,13 @@ module.exports = {
 
     if (!message.guild || !message.member) return;
 
-    if (commandName === "clans") {
-      const { PermissionFlagsBits } = require("discord.js");
-      const ALLOWED_ROLES = config.ADMIN_ROLE_IDS || [];
-      const isAdmin = message.member.permissions.has(PermissionFlagsBits.Administrator);
-      const hasAllowedRole = message.member.roles.cache.some(role => ALLOWED_ROLES.includes(role.id));
-
-      if (!isAdmin && !hasAllowedRole) {
-        const embed = new EmbedBuilder()
-          .setTitle("🚫 Access Denied")
-          .setDescription("You do not have permission to use this command.")
-          .setColor(0xe74c3c)
-          .setTimestamp();
-        return message.channel.send({ embeds: [embed] });
-      }
+    if (!checkPermission(commandName, message)) {
+      const embed = new EmbedBuilder()
+        .setTitle("🚫 Access Denied")
+        .setDescription("You do not have permission to use this command.")
+        .setColor(0xe74c3c)
+        .setTimestamp();
+      return message.channel.send({ embeds: [embed] });
     }
 
     if (message.mentions.users.size > 0) {

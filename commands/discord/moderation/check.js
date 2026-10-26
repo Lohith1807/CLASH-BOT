@@ -12,6 +12,7 @@ const {
   FileUploadBuilder,
   MessageFlags
 } = require("discord.js");
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 // ─── Temporary state for modal → original message mapping ────────────────────
 // Key: `${interaction.user.id}:${playerTag}` → { channelId, messageId }
@@ -70,12 +71,7 @@ module.exports = {
     }, 100);
 
     // Validate Roles
-    const adminRoles = config?.ADMIN_ROLE_IDS || [];
-    const staffRoles = config?.STAFF_ROLE_IDS || [];
-    const allowedRoles = [...adminRoles, ...staffRoles].map(r => r?.toString().trim()).filter(Boolean);
-    
-    const hasRole = message.member && (message.member.roles.cache.some(r => allowedRoles.includes(r.id)) || message.member.permissions.has("Administrator"));
-    if (!hasRole && allowedRoles.length > 0) {
+    if (!checkPermission('check', message)) {
       const warnMsg = await message.channel.send(`<@${message.author.id}> ⚠️ You do not have permission to use this command.`);
       setTimeout(() => warnMsg.delete().catch(() => {}), 5000);
       return;

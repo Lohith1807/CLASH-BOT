@@ -1,7 +1,10 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, PermissionFlagsBits, MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 function canForceAction(author, member, config, guild, dataManager = null) {
     if (!author) return false;
+    const targetObj = member || author;
+    if (checkPermission('forcelink', targetObj)) return true;
     if (guild && guild.ownerId === author.id) return true;
     if (config?.VIP_USER_IDS && config.VIP_USER_IDS.includes(author.id)) return true;
 
@@ -124,6 +127,12 @@ module.exports = {
         const client = input.client || ctx.client;
         const gtick = emojiUtils.getEmoji('gtick') || '✅';
         const bwrong = emojiUtils.getEmoji('bluex') || '❌';
+
+        if (!checkPermission('link', input)) {
+            const noPermMsg = `${bwrong} You do not have permission to use this command.`;
+            if (isInteraction) return await input.reply({ content: noPermMsg, flags: [MessageFlags.Ephemeral] });
+            return input.channel.send(noPermMsg);
+        }
         if (!isInteraction && input.deletable) input.delete().catch(() => { });
 
         let targetUser = null;

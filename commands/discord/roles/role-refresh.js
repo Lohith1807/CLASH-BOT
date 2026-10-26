@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const { syncUser } = require('../../../utils/autoRoleManager.js');
 
 /**
@@ -141,13 +142,7 @@ module.exports = {
         // ── Permission Validation ───────────────────────────────────
         const needsStaffPerm = (targetUser.id !== interaction.user.id);
         if (needsStaffPerm) {
-            const STAFF_ROLE_IDS = (config.STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
-            const fallbackStaff = ["1513940638909988874", "1513942017196167389", "1154276716982833154"];
-            const staffIds = STAFF_ROLE_IDS.length > 0 ? STAFF_ROLE_IDS : fallbackStaff;
-            
-            const isStaff = member.roles.cache.some(r => staffIds.includes(r.id)) || member.permissions.has(PermissionFlagsBits.Administrator);
-
-            if (!isStaff) {
+            if (!checkPermission('role-refresh', interaction)) {
                 return interaction.editReply({
                     content: '❌ Staff permission is required to refresh others.'
                 });

@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -376,16 +377,7 @@ module.exports = {
             const { config } = context;
             const member = interaction.member;
 
-            const allowedRoles = [
-                ...(config.ADMIN_ROLE_IDS || []),
-                ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.length > 0 ? [config.STAFF_ROLE_IDS[0]] : []),
-                ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.length > 1 ? [config.STAFF_ROLE_IDS[1]] : [])
-            ].filter(Boolean);
-
-            const hasAllowedRole = member.roles.cache.some(role => allowedRoles.includes(role.id));
-            const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
-
-            if (!isAdmin && !hasAllowedRole) {
+            if (!checkPermission('cwl-clan', interaction)) {
                 return interaction.reply({ content: "❌ You do not have permission to use this command.", flags: [MessageFlags.Ephemeral] });
             }
 

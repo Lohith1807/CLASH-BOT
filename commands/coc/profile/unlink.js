@@ -1,4 +1,5 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 function getRandomColor() {
     return Math.floor(Math.random() * 16777215);
@@ -6,6 +7,8 @@ function getRandomColor() {
 
 function canForceAction(author, member, config, guild) {
     if (!author) return false;
+    const targetObj = member || author;
+    if (checkPermission('forceunlink', targetObj)) return true;
     if (guild && guild.ownerId === author.id) return true;
     if (config?.VIP_USER_IDS && config.VIP_USER_IDS.includes(author.id)) return true;
 
@@ -92,6 +95,12 @@ module.exports = {
             const client = input.client || ctx.client;
             const gtick = emojiUtils.getEmoji('gtick') || '✅';
             const bwrong = emojiUtils.getEmoji('bluex') || '❌';
+
+            if (!checkPermission('unlink', input)) {
+                const noPermMsg = `${bwrong} You do not have permission to use this command.`;
+                if (isInteraction) return await input.reply({ content: noPermMsg, flags: [MessageFlags.Ephemeral] });
+                return input.channel.send(noPermMsg);
+            }
             if (!isInteraction && input.deletable) input.delete().catch(() => { });
 
             let targetUser = null;

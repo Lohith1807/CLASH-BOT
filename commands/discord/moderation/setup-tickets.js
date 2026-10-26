@@ -10,11 +10,7 @@ module.exports = {
         const { client, config, emoji } = context;
         const { getEmoji } = emoji;
 
-        const ADMIN_ROLE_IDS = config.ADMIN_ROLE_IDS || [];
-        const isAuthorized = interaction.member.permissions.has(PermissionFlagsBits.Administrator) || 
-                           ADMIN_ROLE_IDS.some(id => interaction.member.roles.cache.has(id));
-
-        if (!isAuthorized) {
+        if (!checkPermission('setup-tickets', interaction)) {
             return interaction.reply({
                 content: '❌ You do not have the required permissions to use this command.',
                 flags: [MessageFlags.Ephemeral]

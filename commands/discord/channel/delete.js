@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, ActionRowBuilder , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 function parseDMY(dateStr) {
     const parts = dateStr.split('/');
@@ -96,13 +97,7 @@ module.exports = {
 
     async run(message, args, { config, client }) {
         try {
-            const STAFF_ROLE_IDS = config.STAFF_ROLE_IDS || [];
-            const ADMIN_ROLE_IDS = config.ADMIN_ROLE_IDS || [];
-            const ALLOWED_ROLES = [...STAFF_ROLE_IDS, ...ADMIN_ROLE_IDS];
-            
-            const isAuthorized = ALLOWED_ROLES.some(roleId => message.member.roles.cache.has(roleId)) || message.member.permissions.has(PermissionFlagsBits.Administrator);
-
-            if (!isAuthorized) {
+            if (!checkPermission('delete', message)) {
                 return message.channel.send('❌ You cannot use this command.');
             }
 
@@ -189,13 +184,7 @@ module.exports = {
         const { options, member, channel } = interaction;
         const { config } = context;
 
-        const STAFF_ROLE_IDS = config.STAFF_ROLE_IDS || [];
-        const ADMIN_ROLE_IDS = config.ADMIN_ROLE_IDS || [];
-        const ALLOWED_ROLES = [...STAFF_ROLE_IDS, ...ADMIN_ROLE_IDS];
-
-        const isAuthorized = ALLOWED_ROLES.some(id => member.roles.cache.has(id)) || member.permissions.has(PermissionFlagsBits.Administrator);
-
-        if (!isAuthorized) {
+        if (!checkPermission('delete', interaction)) {
             return interaction.reply({ content: '❌ You cannot use this command.', flags: [MessageFlags.Ephemeral] });
         }
 

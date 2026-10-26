@@ -10,11 +10,7 @@ module.exports = {
     async execute(interaction, context) {
         const { coc, data: dataManager, emoji, config } = context;
 
-        // Check if the user has the manage/admin role
-        const allowedRoles = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
-        const isAuthorized = allowedRoles.some(roleId => interaction.member.roles.cache.has(roleId)) || interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-
-        if (!isAuthorized) {
+        if (!checkPermission('link-summary', interaction)) {
             return interaction.reply({
                 content: "❌ You cannot use this command.",
                 flags: [MessageFlags.Ephemeral]

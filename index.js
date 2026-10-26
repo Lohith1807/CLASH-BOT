@@ -156,8 +156,8 @@ client.once(Events.ClientReady, async (c) => {
 
 async function startWarMonitoring(client) {
   const emojiUtils = require("./utils/emoji.js");
-  const mailCommand = require("./commands/discord/moderation/mail.js");
-  const warmailCommand = require("./commands/discord/moderation/warmail.js");
+  const mailCommand = require("./commands/discord/moderation/send-fwamails.js");
+  const warmailCommand = require("./commands/discord/moderation/send-warmails.js");
 
   mailCommand.startAutoMonitoring(client, config, emojiUtils);
   warmailCommand.startAutoMonitoring(client, config, emojiUtils);
@@ -284,7 +284,7 @@ client.on("messageCreate", async (message) => {
       const command = require("./commands/coc/war/rww.js");
       await command.execute(message, args, context);
     } else if (commandName === "crinfo") {
-      const command = require('./commands/discord/roles/clanroleinfo.js');
+      const command = require('./commands/discord/roles/crinfo.js');
       await command.execute(message, args, context);
     } else if (commandName === "reapply" || commandName === "re") {
       const command = require('./commands/discord/tickets/reapply.js');

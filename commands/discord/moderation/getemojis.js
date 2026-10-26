@@ -1,8 +1,13 @@
+const { checkPermission } = require('../../../utils/checkPermission.js');
+
 module.exports = {
     name: "getemojis",
     description: "Get all emojis from the Discord Developer Portal (Application Emojis) and add them to this server (without deleting any existing emojis).",
 
     async execute(message, args, { config }) {
+        if (!checkPermission('getemojis', message)) {
+            return message.channel.send('❌ You do not have permission to use this command.');
+        }
         try {
 
             const statusMessage = await message.channel.send('📡 Fetching application emojis from Developer Portal...');

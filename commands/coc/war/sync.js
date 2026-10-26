@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { MessageFlags } = require("discord.js");
+const { checkPermission } = require("../../../utils/checkPermission.js");
 const syncStatePath = path.join(__dirname, "../../../data/syncState.json");
 
 const VOTE_HISTORY_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
@@ -653,6 +654,9 @@ module.exports = {
     name: "sync",
     description: "Manual war sync check",
     async execute(message, args, context) {
+        if (!checkPermission("sync", message)) {
+            return message.reply("❌ You do not have permission to use this command.");
+        }
         await sendSyncMessage(context, message);
     },
     setupWarChecker(client, config, coc, emojiUtils, EmbedBuilder) {

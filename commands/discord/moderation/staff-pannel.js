@@ -7,6 +7,9 @@ module.exports = {
         .setDescription("Show the staff command dashboard panel"),
 
     async execute(interaction, context) {
+        if (!checkPermission('staff-pannel', interaction)) {
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
+        }
         const { emoji: emojiUtils } = context;
         const cocEmojiObj = emojiUtils.getEmojiObject("cocfight") || "🛡️";
         const shieldEmojiObj = emojiUtils.getEmojiObject("sheild") || "🛡️";

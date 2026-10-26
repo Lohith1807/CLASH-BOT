@@ -1,3 +1,4 @@
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const tick = "1410137697300775026";
 const tickEmoji = `<:tick:${tick}>`;
 const errorEmoji = `❌`;
@@ -95,7 +96,7 @@ module.exports = {
         if (!clanInfo) return;
 
         const member = message.member;
-        const isBypass = isAdminOrMod(member, config);
+        const isBypass = checkPermission('forceclan', message);
         const isClanLead = isLeaderOfSpecificClan(member, clanInfo);
 
         // Admins and Mods bypass clan restriction; specific clan leaders only for their clan

@@ -1,8 +1,7 @@
 const {
     SlashCommandBuilder, EmbedBuilder, ActionRowBuilder,
     ButtonBuilder, ButtonStyle, StringSelectMenuBuilder,
-    PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle
-, MessageFlags } = require("discord.js");
+    PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, MessageFlags } = require("discord.js");
 const fs   = require("fs");
 const path = require("path");
 

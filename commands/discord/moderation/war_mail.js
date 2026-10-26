@@ -1,7 +1,8 @@
 const { SlashCommandBuilder, EmbedBuilder, MessageFlags, PermissionFlagsBits } = require("discord.js");
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const fs = require("fs");
 const path = require("path");
-const mailCommand = require("./mail.js");
+const mailCommand = require("./send-fwamails.js");
 
 /**
  * Resolve clan tag from either a raw tag (#TAG or TAG) or a registered nickname (e.g. BB, BL)
@@ -129,14 +130,9 @@ module.exports = {
 
             const roleData = clanRoles[targetClanTag];
 
-            // Permissions: Manage Roles, Admin, Staff roles, or Clan Leader role
-            const allowedRoles = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
-            const isAdmin = interaction.member.permissions?.has(PermissionFlagsBits.Administrator);
-            const hasManageRoles = interaction.member.permissions?.has(PermissionFlagsBits.ManageRoles);
-            const isStaffOrAdmin = interaction.member.roles?.cache.some(r => allowedRoles.includes(r.id));
-            const isClanLeader = roleData.leaderRoleId && interaction.member.roles?.cache.has(roleData.leaderRoleId);
-
-            if (!isAdmin && !hasManageRoles && !isStaffOrAdmin && !isClanLeader) {
+            // Permission check
+            const isAuthorized = checkPermission('war_mail', interaction) || (roleData.leaderRoleId && interaction.member.roles?.cache.has(roleData.leaderRoleId));
+            if (!isAuthorized) {
                 const leaderMsg = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "Clan Leader";
                 return interaction.editReply({
                     content: `❌ You do not have permission to send war mail for this clan (Requires Manage Roles, ${leaderMsg}, Staff, or Admin).`
@@ -214,7 +210,7 @@ module.exports = {
             let success = false;
 
             if (isWarClan) {
-                const warmail = require("./warmail.js");
+                const warmail = require("./send-warmails.js");
                 success = await warmail.dispatchWarEmbed(
                     client,
                     coc,

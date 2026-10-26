@@ -9,6 +9,7 @@ const {
     MessageFlags
 } = require("discord.js");
 const { getEmojiObject } = require("../../utils/emoji.js");
+const { checkPermission } = require("../../utils/checkPermission.js");
 
 // ─────────────────────────────────────────────────────────────
 // Permission Checkers
@@ -31,6 +32,7 @@ function hasAnyRole(member, roleIds) {
 
 function isAdminMember(member, config) {
     if (!member) return false;
+    if (checkPermission('ban', member)) return true;
     if (member.permissions && typeof member.permissions.has === "function" && member.permissions.has(PermissionFlagsBits.Administrator)) {
         return true;
     }
@@ -1106,6 +1108,12 @@ module.exports = {
 
         const member = input.member;
         const author = isInteraction ? input.user : input.author;
+
+        if (!checkPermission('help', input)) {
+            const noPermMsg = "❌ You do not have permission to use this command.";
+            if (isInteraction) return await input.reply({ content: noPermMsg, flags: [MessageFlags.Ephemeral] });
+            return input.channel.send(noPermMsg);
+        }
 
         if (!isInteraction && input.deletable) {
             input.delete().catch(() => {});

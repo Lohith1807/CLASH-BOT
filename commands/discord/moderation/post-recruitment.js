@@ -5,8 +5,8 @@ const {
     TextInputBuilder,
     TextInputStyle,
     EmbedBuilder,
-    PermissionFlagsBits
-, MessageFlags } = require('discord.js');
+    PermissionFlagsBits, MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const { getEmoji } = require('../../../utils/emoji.js');
 
 module.exports = {
@@ -48,16 +48,8 @@ module.exports = {
         try {
             const { data: dataManager, config } = context;
 
-            // Permission check: Admin/Staff OR ALL LEADS Role
-            const allLeadsRoleId = config.ALL_LEADS_ID || process.env.ALL_LEADS_ID;
-            const ALLOWED_ROLES = [
-                ...(config.ADMIN_ROLE_IDS || []), 
-                ...(config.STAFF_ROLE_IDS || []),
-                ...(allLeadsRoleId ? [allLeadsRoleId] : [])
-            ];
-            const hasPermission = interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id));
-
-            if (!hasPermission) {
+            // Permission check
+            if (!checkPermission('post-recruitment', interaction)) {
                 return interaction.reply({ 
                     content: '❌ You must have the Leaders role to use this command.', 
                     flags: [MessageFlags.Ephemeral] 

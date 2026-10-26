@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, PermissionFlagsBits , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -18,15 +19,7 @@ module.exports = {
                 .setRequired(true)),
                 
     async execute(interaction) {
-        const adminRoleIds = process.env.ADMIN_ROLE_IDS ? process.env.ADMIN_ROLE_IDS.split(',') : [];
-        const staffRoleIds = process.env.STAFF_ROLE ? process.env.STAFF_ROLE.split(',') : [];
-        const allowedRoleIds = [...adminRoleIds, ...staffRoleIds];
-
-        const isStaffOrAdmin = interaction.member.roles.cache.some(role => 
-            allowedRoleIds.includes(role.id)
-        ) || interaction.member.permissions.has(PermissionFlagsBits.ManageGuild);
-
-        if (!isStaffOrAdmin) {
+        if (!checkPermission('member', interaction)) {
             const errorEmbed = new EmbedBuilder()
                 .setTitle("❌ Access Denied")
                 .setDescription("Only staff and admins can use this command.")

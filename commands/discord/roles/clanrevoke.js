@@ -13,9 +13,8 @@ module.exports = {
         ),
 
     async autocomplete(interaction, context) {
-        const { data: dataManager, config } = context;
-        const ALLOWED_ROLES = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
-        if (!interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) return interaction.respond([]);
+        if (!checkPermission('clanrevoke', interaction)) return interaction.respond([]);
+        const { data: dataManager } = context;
 
         var clanRoles = dataManager.getClanRoles();
         var focused = interaction.options.getFocused().toLowerCase();
@@ -37,10 +36,7 @@ module.exports = {
 
     async execute(interaction, context) {
         try {
-            const { data: dataManager, config } = context;
-            const ALLOWED_ROLES = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
-
-            if (!interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id))) {
+            if (!checkPermission('clanrevoke', interaction)) {
                 return interaction.reply({ content: "❌ You do not have permission (Staff/Admin) to use this command.", flags: [MessageFlags.Ephemeral] });
             }
 

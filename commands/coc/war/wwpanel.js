@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const fs = require('fs');
 const path = require('path');
 
@@ -20,6 +21,10 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction, context) {
+        if (!checkPermission('wwpanel', interaction)) {
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
+        }
+
         const { emoji: emojiUtils, coc } = context;
         const { getEmoji, getEmojiObject } = emojiUtils;
 

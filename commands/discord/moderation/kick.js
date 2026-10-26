@@ -4,8 +4,8 @@ const {
     PermissionFlagsBits,
     ActionRowBuilder,
     ButtonBuilder,
-    ButtonStyle
-, MessageFlags } = require('discord.js');
+    ButtonStyle, MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -24,17 +24,7 @@ module.exports = {
         ),
 
     async execute(interaction, context) {
-        const { config } = context;
-        const allowedRoles = [
-            ...(config.ADMIN_ROLE_IDS || []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
-        ];
-
-        const hasAllowedRole = interaction.member.roles.cache.some(r => allowedRoles.includes(r.id));
-        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-
-        if (!isAdmin && !hasAllowedRole) {
+        if (!checkPermission('kick', interaction)) {
             return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 

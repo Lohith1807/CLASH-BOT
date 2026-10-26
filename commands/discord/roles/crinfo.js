@@ -1,5 +1,4 @@
-
-
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 module.exports = {
   name: 'crinfo',
@@ -8,18 +7,9 @@ module.exports = {
   async execute(message, args, context) {
     try {
       const { EmbedBuilder, emoji: emojiUtils, coc, data: dataManager, config } = context;
-      const ALLOWED_ROLES = [
-        ...(config.ADMIN_ROLE_IDS || []),
-        ...(config.STAFF_ROLE_IDS || []),
-        ...(config.ALL_STAFF_ROLE_IDS || [])
-      ].map(r => r?.toString().trim()).filter(Boolean);
-
       if (message.deletable) message.delete().catch(() => { });
 
-      const isAuthorized = message.member.permissions.has("Administrator") ||
-        message.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id));
-
-      if (!isAuthorized) {
+      if (!checkPermission('crinfo', message)) {
         return message.channel.send({
           embeds: [
             new EmbedBuilder()

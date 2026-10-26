@@ -11,16 +11,7 @@ module.exports = {
         const { config } = context;
         const member = interaction.member;
 
-        const allowedRoles = [
-            ...(config.ADMIN_ROLE_IDS || []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
-        ];
-
-        const hasAllowedRole = member.roles.cache.some(role => allowedRoles.includes(role.id));
-        const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator);
-
-        if (!isAdmin && !hasAllowedRole) {
+        if (!checkPermission('lsweb', interaction)) {
             return interaction.reply({ content: "❌ You do not have permission to use this command.", flags: [MessageFlags.Ephemeral] });
         }
 

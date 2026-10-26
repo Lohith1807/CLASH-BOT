@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle , MessageFlags } = require("discord.js");
+const { checkPermission } = require("../../../utils/checkPermission.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -25,19 +26,6 @@ module.exports = {
         const loadingEmbed = (desc) => new EmbedBuilder().setColor("Blue").setDescription(`**${desc}**\n\`\`\`ansi\n\u001b[30m[▱▱▱▱▱]\u001b[0m\n\`\`\``);
         const successEmbed = (desc) => new EmbedBuilder().setColor("Green").setDescription(`${getEmoji("gtick")} ${desc}`);
 
-        // Permission check
-        const allowedRoleNames = ['all leaders', 'executive staff', 'server mod', 't-mod', 'admin', 'moderator'];
-        const memberRoles = source.member?.roles?.cache || new Map();
-        
-        const hasConfigRole = 
-            memberRoles.has(config.ALL_LEAD_ROLE_ID) || 
-            (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => memberRoles.has(id))) ||
-            (config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => memberRoles.has(id)));
-
-        const hasNameRole = typeof memberRoles.some === 'function' ? memberRoles.some(r => allowedRoleNames.some(allowed => r.name.toLowerCase().includes(allowed))) : false;
-        const hasPerms = source.member?.permissions?.has(PermissionFlagsBits.ManageRoles);
-        const executorUser = isInteraction ? source.user : source.author;
-
         let loadingMsg = null;
         const safeReply = async (opts) => {
             if (isInteraction) return source.reply(opts);
@@ -57,7 +45,7 @@ module.exports = {
             return loadingMsg;
         };
 
-        if (!hasConfigRole && !hasNameRole && !hasPerms && executorUser.id !== source.guild.ownerId) {
+        if (!checkPermission('reapply', source)) {
             return safeReply({ embeds: [errorEmbed("You do not have the required roles to use this command.")], flags: [MessageFlags.Ephemeral] });
         }
 

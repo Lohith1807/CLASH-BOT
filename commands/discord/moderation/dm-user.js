@@ -1,8 +1,8 @@
 const {
     SlashCommandBuilder,
     EmbedBuilder,
-    PermissionFlagsBits
-, MessageFlags } = require('discord.js');
+    PermissionFlagsBits, MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -27,18 +27,7 @@ module.exports = {
             return interaction.reply({ content: '❌ This command can only be used in a server.', flags: [MessageFlags.Ephemeral] });
         }
 
-        const allLeadsRoleId = config.ALL_LEADS_ID || process.env.ALL_LEADS_ID;
-        const allowedRoles = [
-            ...(config.ADMIN_ROLE_IDS || []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : []),
-            ...(allLeadsRoleId ? [allLeadsRoleId] : [])
-        ];
-
-        const hasAllowedRole = interaction.member.roles.cache.some(r => allowedRoles.includes(r.id));
-        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-
-        if (!isAdmin && !hasAllowedRole) {
+        if (!checkPermission('dm-user', interaction)) {
             return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }
 

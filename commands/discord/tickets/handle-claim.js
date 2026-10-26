@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder , MessageFlags } = require("discord.js");
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const staffTicketTracker = require("../../../utils/staffTicketTracker");
 const ticketDataStore = require("../../../utils/ticketDataStore");
 
@@ -16,28 +17,10 @@ module.exports = {
         const { config, emoji } = context;
         const { getEmoji } = emoji;
         const targetUser = interaction.options.getUser('user');
+        const isAdmin = interaction.member?.permissions?.has(PermissionFlagsBits.Administrator) || (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => interaction.member?.roles?.cache?.has(id)));
         
         // Permission check
-        const allowedRoleNames = ['executive staff', 'server mod', 't-mod', 'admin'];
-        const memberRoles = interaction.member.roles.cache;
-        
-        const hasConfigRole = 
-            (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => memberRoles.has(id))) ||
-            (config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => memberRoles.has(id)));
-
-        const hasNameRole = memberRoles.some(r => allowedRoleNames.some(allowed => r.name.toLowerCase().includes(allowed)));
-        const hasPerms = interaction.memberPermissions && interaction.memberPermissions.has(PermissionFlagsBits.ManageRoles);
-        const isAdmin = (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => memberRoles.has(id))) || hasPerms || interaction.user.id === interaction.guild.ownerId;
-        const hasWelExeRole = config.WEL_EXE_STAFF_ID && memberRoles.has(config.WEL_EXE_STAFF_ID)
-            || memberRoles.has('1514535148119392377');
-        const hasCwlStaffRole = memberRoles.has('1448265928503726161');
-
-        let canUseCommand = false;
-        if (hasConfigRole || hasNameRole || hasPerms || hasWelExeRole || hasCwlStaffRole || interaction.user.id === interaction.guild.ownerId) {
-            canUseCommand = true;
-        }
-
-        if (!canUseCommand) {
+        if (!checkPermission('handle-claim', interaction)) {
             return interaction.reply({ 
                 embeds: [
                     new EmbedBuilder()

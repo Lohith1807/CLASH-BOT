@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const { syncUser } = require('../../../utils/autoRoleManager.js');
 
 /**
@@ -159,6 +160,10 @@ module.exports = {
         const targetUser = interaction.options.getUser('user');
         const targetRole = interaction.options.getRole('role');
         const member = interaction.member;
+
+        if (!checkPermission('autorolerefresh', interaction)) {
+            return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
+        }
 
         // Defer interaction to allow processing time
         try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }).catch(() => {}); } catch (err) { if (err.code !== 10062) console.error(err); return true; }

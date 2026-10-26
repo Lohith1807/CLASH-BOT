@@ -4,8 +4,8 @@ const {
     ModalBuilder,
     TextInputBuilder,
     TextInputStyle,
-    EmbedBuilder
-, MessageFlags } = require('discord.js');
+    EmbedBuilder, MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const { getEmoji } = require('../../../utils/emoji.js');
 
 module.exports = {
@@ -54,19 +54,10 @@ module.exports = {
                 return interaction.reply({ content: '❌ Invalid clan selected.', flags: [MessageFlags.Ephemeral] });
             }
 
-            // Permission check: Admin/Staff/ALL_LEADS OR specific clan leader role
-            const allLeadsRoleId = config.ALL_LEADS_ID || process.env.ALL_LEADS_ID;
-            const ALLOWED_ROLES = [
-                ...(config.ADMIN_ROLE_IDS || []), 
-                ...(config.STAFF_ROLE_IDS || []),
-                ...(allLeadsRoleId ? [allLeadsRoleId] : [])
-            ];
-            let hasPermission = interaction.member.roles.cache.some(r => ALLOWED_ROLES.includes(r.id));
-            
-            if (!hasPermission && clanInfo.leaderRoleId) {
-                if (interaction.member.roles.cache.has(clanInfo.leaderRoleId)) {
-                    hasPermission = true;
-                }
+            // Permission check
+            let hasPermission = checkPermission('edit-recruitment', interaction);
+            if (!hasPermission && clanInfo.leaderRoleId && interaction.member.roles.cache.has(clanInfo.leaderRoleId)) {
+                hasPermission = true;
             }
 
             if (!hasPermission) {

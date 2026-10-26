@@ -1,6 +1,4 @@
-
-
-
+const { PermissionFlagsBits } = require('discord.js');
 
 function buildEmbed(EmbedBuilder, title, description, color = 0x2ecc71) {
     return new EmbedBuilder()
@@ -20,11 +18,7 @@ module.exports = {
         const ALLOWED_CATEGORIES = config.ADMIN_CATEGORY_ID ? [config.ADMIN_CATEGORY_ID] : [];
         if (message.deletable) message.delete().catch(() => { });
 
-        const { PermissionFlagsBits } = require('discord.js');
-        const isAdmin = message.member.permissions.has(PermissionFlagsBits.Administrator);
-
-        const hasAllowedRole = message.member.roles.cache.some(role => ALLOWED_ROLES.includes(role.id));
-        if (!isAdmin && !hasAllowedRole) {
+        if (!checkPermission('linkcheck', message)) {
             const embed = buildEmbed(
                 EmbedBuilder,
                 "🚫 Access Denied",
@@ -34,6 +28,7 @@ module.exports = {
             return message.channel.send({ embeds: [embed] });
         }
 
+        const isAdmin = message.member?.permissions?.has(PermissionFlagsBits.Administrator) || (ALLOWED_ROLES && ALLOWED_ROLES.some(id => message.member?.roles?.cache?.has(id)));
         const inAllowedCategory = message.channel.parentId && ALLOWED_CATEGORIES.includes(message.channel.parentId);
         if (!isAdmin && !inAllowedCategory) {
             const embed = buildEmbed(
@@ -66,6 +61,7 @@ module.exports = {
 
         try {
             const { Collection } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
             const allMembers = new Collection();
             let lastId = '0';
             while (true) {

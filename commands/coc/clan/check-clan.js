@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 // In-memory cache for clan names to speed up autocomplete responses
 const clanNameCache = new Map();
@@ -103,10 +104,7 @@ module.exports = {
   async execute(interaction, context) {
     const { coc, data: dataManager, emoji, config } = context;
 
-    const allowedRoles = [...(config.ADMIN_ROLE_IDS || []), ...(config.STAFF_ROLE_IDS || [])];
-    const isAuthorized = allowedRoles.some(roleId => interaction.member.roles.cache.has(roleId)) || interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-
-    if (!isAuthorized) {
+    if (!checkPermission('check-clan', interaction)) {
       return interaction.reply({
         content: "❌ You cannot use this command.",
         flags: [MessageFlags.Ephemeral]

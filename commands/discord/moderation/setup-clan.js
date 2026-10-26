@@ -7,6 +7,7 @@ const {
     ComponentType,
     PermissionFlagsBits,
     MessageFlags } = require("discord.js");
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const { getEmoji } = require("../../../utils/emoji.js");
 
 // ─────────────────────────────────────────────
@@ -192,16 +193,7 @@ module.exports = {
         const { data: dataManager, config, coc } = context;
 
         // Permission check
-        const allowedRoles = [
-            ...(config.ADMIN_ROLE_IDS || []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[0] ? [config.STAFF_ROLE_IDS[0]] : []),
-            ...(config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS[1] ? [config.STAFF_ROLE_IDS[1]] : [])
-        ];
-
-        const hasAllowedRole = interaction.member.roles.cache.some(r => allowedRoles.includes(r.id));
-        const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
-
-        if (!isAdmin && !hasAllowedRole) {
+        if (!checkPermission('setup-clan', interaction)) {
             return interaction.reply({
                 content: "❌ You do not have permission to use this command.",
                 flags: [MessageFlags.Ephemeral],

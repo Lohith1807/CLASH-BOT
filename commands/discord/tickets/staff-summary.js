@@ -11,17 +11,7 @@ module.exports = {
         const { getEmoji } = emoji;
         
         // Permission check
-        const allowedRoleNames = ['executive staff', 'server mod', 't-mod', 'admin'];
-        const memberRoles = interaction.member.roles.cache;
-        
-        const hasConfigRole = 
-            (config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => memberRoles.has(id))) ||
-            (config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => memberRoles.has(id)));
-
-        const hasNameRole = memberRoles.some(r => allowedRoleNames.some(allowed => r.name.toLowerCase().includes(allowed)));
-        const hasPerms = interaction.memberPermissions && interaction.memberPermissions.has(PermissionFlagsBits.ManageRoles);
-
-        if (!hasConfigRole && !hasNameRole && !hasPerms && interaction.user.id !== interaction.guild.ownerId) {
+        if (!checkPermission('staff-summary', interaction)) {
             return interaction.reply({ 
                 embeds: [
                     new EmbedBuilder()

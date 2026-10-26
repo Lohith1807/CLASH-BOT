@@ -8,6 +8,7 @@ const {
     PermissionFlagsBits,
     MessageFlags
 } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 const clanEntry      = require('../../../utils/tickets/embeds/clanEntry');
 const repApply       = require('../../../utils/tickets/embeds/repApply');
@@ -68,38 +69,7 @@ module.exports = {
         const { config, emoji: emojiUtils } = context;
         const { guild, member } = interaction;
 
-        // Permission check - Allow All Staff roles, Staff roles, Admins, etc.
-        const ALL_STAFF_ROLE_IDS = (config.ALL_STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
-        const STAFF_ROLE_IDS = (config.STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
-        const ADMIN_ROLE_IDS = (config.ADMIN_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
-        const fallbackAllStaff = ["1466103376642314445", "1511650426343133274"];
-        const fallbackStaff = ["1513940638909988874", "1513942017196167389", "1154276716982833154"];
-
-        const allStaffRoles = [
-            ...(ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff),
-            ...(STAFF_ROLE_IDS.length > 0 ? STAFF_ROLE_IDS : fallbackStaff),
-            ...ADMIN_ROLE_IDS,
-            config.TRAINEE_ROLE_ID,
-            config.WEL_EXE_STAFF_ID,
-            config.CWL_STAFF_ROLE_ID,
-            config.ALL_LEAD_ROLE_ID,
-            config.ALL_LEADS_ID,
-            '1514535148119392377', // Welcomer/Executive Staff fallback
-            '1514536928412827758', // Trainee Staff fallback
-            '1448265928503726161'  // CWL Staff fallback
-        ].filter(Boolean);
-
-        const hasStaffId = allStaffRoles.some(id => member.roles.cache.has(id));
-        const hasStaffName = member.roles.cache?.values
-            ? Array.from(member.roles.cache.values()).some(r => r.name && r.name.toLowerCase().includes("staff"))
-            : false;
-        const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator) ||
-                        member.permissions.has(PermissionFlagsBits.ManageGuild) ||
-                        member.permissions.has(PermissionFlagsBits.ManageRoles);
-        const isVip = (config.VIP_USER_IDS || []).includes(interaction.user.id);
-        const isStaff = hasStaffId || hasStaffName || isVip;
-
-        if (!isStaff && !isAdmin) {
+        if (!checkPermission('create-ticket', interaction)) {
             return interaction.reply({
                 content: '❌ Only Admins or Staff can use this command.',
                 flags: [MessageFlags.Ephemeral]

@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const transcripts = require('discord-html-transcripts');
 const ticketDataStore = require('../../../utils/ticketDataStore');
 
@@ -24,12 +25,7 @@ module.exports = {
         return interaction.reply({ content: '❌ This command can only be used inside a ticket channel.', flags: [MessageFlags.Ephemeral] });
     }
 
-    const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
-    const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
-    const WEL_EXE_STAFF_ID = config.WEL_EXE_STAFF_ID || process.env.WEL_EXE_STAFF_ID;
-    const isWelExe = WEL_EXE_STAFF_ID && member.roles.cache.has(WEL_EXE_STAFF_ID);
-
-    if (!isStaff && !isAdmin && !isWelExe) {
+    if (!checkPermission('set-timer', interaction)) {
         return interaction.reply({ content: '❌ Only Staff or Admins can set timers.', flags: [MessageFlags.Ephemeral] });
     }
 

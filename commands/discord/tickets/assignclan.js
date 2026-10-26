@@ -8,6 +8,7 @@ const {
     PermissionFlagsBits,
     MessageFlags
 } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const fs = require('fs');
 const path = require('path');
 const { getEmoji } = require('../../../utils/emoji');
@@ -591,31 +592,8 @@ module.exports = {
             });
         }
 
-        // 2. Permission Validation - Only all staff roles can use
-        const ALL_STAFF_ROLE_IDS = (config.ALL_STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
-        const STAFF_ROLE_IDS = (config.STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
-        const fallbackAllStaff = ["1466103376642314445", "1511650426343133274"];
-        const fallbackStaff = ["1513940638909988874", "1513942017196167389", "1154276716982833154"];
-
-        const allStaffRoles = [
-            ...(ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff),
-            ...(STAFF_ROLE_IDS.length > 0 ? STAFF_ROLE_IDS : fallbackStaff),
-            ...(config.ADMIN_ROLE_IDS || []).map(id => id.trim()).filter(Boolean),
-            config.TRAINEE_ROLE_ID,
-            config.WEL_EXE_STAFF_ID,
-            config.CWL_STAFF_ROLE_ID,
-            '1514535148119392377',
-            '1514536928412827758'
-        ].filter(Boolean);
-
-        const hasStaffId = allStaffRoles.some(id => member.roles.cache.has(id));
-        const hasStaffName = member.roles.cache.values
-            ? Array.from(member.roles.cache.values()).some(r => r.name && r.name.toLowerCase().includes("staff"))
-            : false;
-        const isStaff = hasStaffId || hasStaffName;
-        const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator) || member.permissions.has(PermissionFlagsBits.ManageGuild);
-
-        if (!isAdmin && !isStaff) {
+        // 2. Permission Validation
+        if (!checkPermission('assignclan', interaction)) {
             return interaction.reply({
                 content: "❌ Only Staff can use this command.",
                 flags: [MessageFlags.Ephemeral]

@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, MessageFlags } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 const emojiUtils = require('../../../utils/emoji.js');
 const config = require('../../../config/config.js');
 
@@ -163,8 +164,7 @@ module.exports = {
         ),
 
     async execute(interaction, context) {
-        const conf = context?.config || config;
-        if (!hasStaffPermission(interaction.member, conf)) {
+        if (!checkPermission('checkinvite', interaction)) {
             return interaction.reply({
                 content: "❌ You do not have permission to use this command.",
                 flags: [MessageFlags.Ephemeral]

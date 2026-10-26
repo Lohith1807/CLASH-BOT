@@ -11,15 +11,7 @@ module.exports = {
   name: "wel",
   description: "Send welcome messages",
   async execute(message, args, context) {
-    const config = require("../../../config/config.js");
-    const allowedRoles = [
-      ...(config.ADMIN_ROLE_IDS || []),
-      ...(config.ALL_STAFF_ROLE_IDS || []),
-      ...(config.STAFF_ROLE_IDS || [])
-    ].filter(Boolean);
-
-    const hasPermission = message.member.roles.cache.some(role => allowedRoles.includes(role.id));
-    if (!hasPermission) {
+    if (!checkPermission('wel', message)) {
       return message.channel.send("🚫 **Access Denied:** You do not have permission to use this command.");
     }
     let count = 1;
