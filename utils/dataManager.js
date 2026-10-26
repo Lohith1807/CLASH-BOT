@@ -457,24 +457,15 @@ const DEFAULT_RULES_CONFIG = {
 };
 
 function getClanRules() {
-    const pathsToCheck = [
-        PATHS.clanrules,
-        path.join(__dirname, "../clanrules.json"),
-        path.resolve(process.cwd(), "data/clanrules.json"),
-        path.resolve(process.cwd(), "clanrules.json")
-    ];
-
-    for (const filePath of pathsToCheck) {
-        try {
-            if (fs.existsSync(filePath)) {
-                const raw = fs.readFileSync(filePath, "utf8");
-                if (raw && raw.trim()) {
-                    return JSON.parse(raw);
-                }
+    try {
+        if (fs.existsSync(PATHS.clanrules)) {
+            const raw = fs.readFileSync(PATHS.clanrules, "utf8");
+            if (raw && raw.trim()) {
+                return JSON.parse(raw);
             }
-        } catch (err) {
-            console.error(`Error reading ${filePath}:`, err.message);
         }
+    } catch (err) {
+        console.error(`Error reading ${PATHS.clanrules}:`, err.message);
     }
 
     try {
@@ -485,19 +476,15 @@ function getClanRules() {
 }
 
 /**
- * Save clan rules configuration to both data and root locations
+ * Save clan rules configuration to data/clanrules.json
  * @param {Object} data - Clan rules object to save
  */
 function saveClanRules(data) {
     try {
         const content = JSON.stringify(data, null, 2);
         fs.writeFileSync(PATHS.clanrules, content);
-        const rootPath = path.join(__dirname, "../clanrules.json");
-        try {
-            fs.writeFileSync(rootPath, content);
-        } catch (_) {}
     } catch (err) {
-        console.error("Error writing clanrules.json:", err.message);
+        console.error("Error writing data/clanrules.json:", err.message);
         throw err;
     }
 }

@@ -31,10 +31,12 @@ function fallbackBuildClanRulesEmbed(clanTag, clanData, clanConfig, context) {
             } catch (_) {}
         }
         if (!allRules) {
-            const rulesPath = path.join(__dirname, "../../../data/clanrules.json");
-            if (fs.existsSync(rulesPath)) {
-                allRules = JSON.parse(fs.readFileSync(rulesPath, "utf8"));
-            }
+            const dataPath = path.join(__dirname, "../../../data/clanrules.json");
+            try {
+                if (fs.existsSync(dataPath)) {
+                    allRules = JSON.parse(fs.readFileSync(dataPath, "utf8"));
+                }
+            } catch (_) {}
         }
 
         const tagWithHash = (clanTag || clanData?.tag || "").toUpperCase();
@@ -48,7 +50,37 @@ function fallbackBuildClanRulesEmbed(clanTag, clanData, clanConfig, context) {
         };
         const clansMap = allRules?.clans || allRules || {};
 
-        let specificConf = clansMap[tagWithHash] || clansMap[cleanTag] || (nick && clansMap[nick]) || (tagWithHash && clansMap["#" + cleanTag]);
+        let specificConf = null;
+        if (tagWithHash && clansMap[tagWithHash]) {
+            specificConf = clansMap[tagWithHash];
+        } else if (cleanTag && clansMap[cleanTag]) {
+            specificConf = clansMap[cleanTag];
+        } else if (nick && clansMap[nick]) {
+            specificConf = clansMap[nick];
+        } else if (tagWithHash && clansMap["#" + cleanTag]) {
+            specificConf = clansMap["#" + cleanTag];
+        }
+
+        if (!specificConf && clansMap && typeof clansMap === "object") {
+            const targetCleanTag = cleanTag.toUpperCase();
+            const targetNick = nick.toUpperCase();
+            const targetName = (clanData?.name || clanConfig?.name || "").toUpperCase();
+            for (const [key, val] of Object.entries(clansMap)) {
+                if (key === "default" || !val || typeof val !== "object") continue;
+                const keyClean = key.toUpperCase().replace(/^#/, "");
+                const valNick = (val.nickName || "").toUpperCase();
+                const valName = (val.name || "").toUpperCase();
+                if (
+                    (targetCleanTag && keyClean === targetCleanTag) ||
+                    (targetNick && valNick === targetNick) ||
+                    (targetName && (valName === targetName || valNick === targetName)) ||
+                    (targetNick && valName === targetNick)
+                ) {
+                    specificConf = val;
+                    break;
+                }
+            }
+        }
 
         let rules = (specificConf && Array.isArray(specificConf.rules) && specificConf.rules.length > 0)
             ? specificConf.rules
@@ -58,7 +90,7 @@ function fallbackBuildClanRulesEmbed(clanTag, clanData, clanConfig, context) {
         let blackdot = (emojiUtils && typeof emojiUtils.getEmoji === "function") ? emojiUtils.getEmoji("blackdot") : "";
         if (!blackdot) blackdot = "•";
 
-        const clanName = clanData?.name || clanConfig?.name || clanConfig?.nickName || "Clan";
+        const clanName = clanData?.name || clanConfig?.name || clanConfig?.nickName || (clanTag ? "Clan" : "Blood Alliance");
         let rawTitle = specificConf?.title || defaultConf?.title || "{clanName} Rules";
         let title = rawTitle.replace(/\{clan(name)?\}/gi, clanName);
         if (title.trim().toLowerCase() === "clan rules") {
@@ -97,19 +129,90 @@ function fallbackBuildClanRulesEmbed(clanTag, clanData, clanConfig, context) {
             .setDescription(description)
             .setColor(embedColor);
 
-        const pictureUrl = specificConf?.image || specificConf?.banner || defaultConf?.image || defaultConf?.banner;
-        if (pictureUrl && typeof pictureUrl === "string" && pictureUrl.trim().startsWith("http")) {
-            embed.setImage(pictureUrl.trim());
+        const extractImage = (conf) => {
+            if (!conf || typeof conf !== "object") return "";
+            const possible = [
+                conf.image,
+                conf.imageUrl,
+                conf.image_url,
+                conf.banner,
+                conf.bannerUrl,
+                conf.banner_url,
+                conf.footerImage,
+                conf.footer_image,
+                conf.pic
+            ];
+            for (const img of possible) {
+                if (typeof img === "string" && img.trim().startsWith("http")) return img.trim();
+            }
+            return "";
+        };
+
+        const extractThumbnail = (conf) => {
+            if (!conf || typeof conf !== "object") return "";
+            const possible = [
+                conf.thumbnail,
+                conf.thumbnailUrl,
+                conf.thumbnail_url,
+                conf.thumb,
+                conf.logo,
+                conf.icon,
+                conf.iconURL,
+                conf.icon_url
+            ];
+            for (const thumb of possible) {
+                if (typeof thumb === "string" && thumb.trim().startsWith("http")) return thumb.trim();
+            }
+            return "";
+        };
+
+        const extractFooterText = (conf) => {
+            if (!conf || typeof conf !== "object") return "";
+            const possible = [
+                typeof conf.footer === "string" ? conf.footer : (conf.footer?.text || null),
+                conf.footerText,
+                conf.footer_text
+            ];
+            for (const txt of possible) {
+                if (typeof txt === "string" && txt.trim().length > 0) return txt.trim();
+            }
+            return "";
+        };
+
+        const extractFooterIcon = (conf) => {
+            if (!conf || typeof conf !== "object") return "";
+            const possible = [
+                typeof conf.footer === "object" ? (conf.footer?.iconURL || conf.footer?.icon_url) : null,
+                conf.footerIcon,
+                conf.footer_icon
+            ];
+            for (const icon of possible) {
+                if (typeof icon === "string" && icon.trim().startsWith("http")) return icon.trim();
+            }
+            return "";
+        };
+
+        const pictureUrl = extractImage(specificConf) || extractImage(defaultConf);
+        if (pictureUrl) {
+            embed.setImage(pictureUrl);
         }
 
-        const rawFooterText = (typeof specificConf?.footer === "string" ? specificConf.footer : specificConf?.footer?.text) || specificConf?.footerText || (typeof defaultConf?.footer === "string" ? defaultConf.footer : defaultConf?.footer?.text) || defaultConf?.footerText;
-        const footerIcon = (typeof specificConf?.footer === "object" ? (specificConf.footer?.iconURL || specificConf.footer?.icon_url) : null) || specificConf?.footerIcon || (typeof defaultConf?.footer === "object" ? (defaultConf.footer?.iconURL || defaultConf.footer?.icon_url) : null) || defaultConf?.footerIcon;
+        let thumbnailUrl = extractThumbnail(specificConf) || extractThumbnail(defaultConf);
+        if (!thumbnailUrl && clanData?.badgeUrls) {
+            thumbnailUrl = clanData.badgeUrls.large || clanData.badgeUrls.medium || clanData.badgeUrls.small || "";
+        }
+        if (thumbnailUrl && typeof thumbnailUrl === "string" && thumbnailUrl.trim().startsWith("http")) {
+            embed.setThumbnail(thumbnailUrl.trim());
+        }
+
+        const rawFooterText = extractFooterText(specificConf) || extractFooterText(defaultConf);
+        const footerIcon = extractFooterIcon(specificConf) || extractFooterIcon(defaultConf);
 
         if (rawFooterText || footerIcon) {
             const footerText = (rawFooterText || `${clanName} Rules`).replace(/\{clan(name)?\}/gi, clanName);
             embed.setFooter({
                 text: footerText.slice(0, 2048),
-                iconURL: (footerIcon && typeof footerIcon === "string" && footerIcon.trim().startsWith("http")) ? footerIcon.trim() : undefined
+                iconURL: footerIcon || undefined
             });
         }
 
@@ -123,7 +226,7 @@ function fallbackBuildClanRulesEmbed(clanTag, clanData, clanConfig, context) {
 function getRulesEmbed(clanTag, clanData, clanConfig, context) {
     if (assignClanModule && typeof assignClanModule.buildClanRulesEmbed === "function") {
         try {
-            const embed = assignClanModule.buildClanRulesEmbed(clanTag, clanData, clanConfig, context);
+            const embed = assignClanModule.buildClanRulesEmbed(clanTag, clanData, clanConfig, context, { includeThumbnail: true });
             if (embed) return embed;
         } catch (err) {
             console.error("[Rules Command] Error calling assignclan.buildClanRulesEmbed:", err.message);
@@ -144,14 +247,24 @@ module.exports = {
         const clanInput = Array.isArray(args) && args.length > 0 ? args.join(" ").trim() : null;
         const clanRoles = (dataManager && typeof dataManager.getClanRoles === "function") ? dataManager.getClanRoles() : {};
 
-        // If no clan nickname/tag provided, send a friendly prompt with available clan nicknames
-        if (!clanInput) {
-            const availableNicks = Object.values(clanRoles)
-                .map(c => c.nickName)
-                .filter(Boolean)
-                .sort();
-            const nicksList = availableNicks.length > 0 ? `\n\n**Available clans:** \`${availableNicks.join("`, `")}\`` : "";
-            return message.channel.send(`⚠️ Please provide a clan nickname or tag. Example: \`${prefix}r bb\`${nicksList}`);
+        // If no clan nickname/tag provided or requested alliance/default rules, display general alliance rules
+        if (!clanInput || ["alliance", "default", "all"].includes(clanInput.toLowerCase())) {
+            const rulesEmbed = getRulesEmbed(null, null, null, context);
+            if (rulesEmbed) {
+                const availableNicks = Object.values(clanRoles)
+                    .map(c => c.nickName)
+                    .filter(Boolean)
+                    .sort();
+                if (availableNicks.length > 0 && !clanInput) {
+                    const currentFooter = rulesEmbed.data.footer?.text || "";
+                    const footerSuffix = `Tip: Use ${prefix}r <clan> (e.g. ${prefix}r ${availableNicks[0].toLowerCase()})`;
+                    rulesEmbed.setFooter({
+                        text: currentFooter ? `${currentFooter} • ${footerSuffix}`.slice(0, 2048) : footerSuffix,
+                        iconURL: rulesEmbed.data.footer?.icon_url
+                    });
+                }
+                return message.channel.send({ embeds: [rulesEmbed] });
+            }
         }
 
         const cleanInput = clanInput.toUpperCase();
@@ -200,7 +313,12 @@ module.exports = {
         }
 
         if (!clanTag) {
-            return message.channel.send(`❌ Clan "${clanInput}" was not found in registered clans.`);
+            const availableNicks = Object.values(clanRoles)
+                .map(c => c.nickName)
+                .filter(Boolean)
+                .sort();
+            const nicksList = availableNicks.length > 0 ? `\n\n**Available clans:** \`${availableNicks.join("`, `")}\`` : "";
+            return message.channel.send(`❌ Clan "${clanInput}" was not found in registered clans.${nicksList}`);
         }
 
         // Fetch live clan data from CoC API if available to populate official clan name

@@ -1,42 +1,12 @@
 {
   "1393061101838532630": [
     {
-      "tag": "#PJVL0JRR9",
-      "name": "Z E R O !!",
-      "totalStrikes": 1,
-      "strikeHistory": [
-        {
-          "id": "Q2SUU",
-          "reason": "test",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "1393061101838532630",
-          "clan": "Blood Zero",
-          "date": "24-06-2026"
-        }
-      ],
-      "strikes": 1
+      "tag": "#LG9YCQG0U",
+      "name": "! L O K I !"
     },
     {
-      "tag": "#P2VLY0Y80",
-      "name": "ɪ͜͡٭KinG"
-    },
-    {
-      "tag": "#Y0URPVQ9V",
-      "name": "*Ghõst Rid€r* 4"
-    },
-    {
-      "tag": "#PR9GRL8RY",
-      "name": "..M.O.O.N.."
-    },
-    {
-      "tag": "#QVGQGUUPL",
-      "name": "Hex"
-    },
-    {
-      "tag": "#PRQYR9V00",
-      "name": "山卄丨ㄒ乇"
+      "tag": "#LU0YGGUYV",
+      "name": "! K I N G !"
     }
   ],
   "562951110562938880": [
@@ -249,12 +219,16 @@
       "name": "Game+Changer"
     },
     {
-      "tag": "#QLGVPULLJ",
-      "name": "ＴＨＥ ＴＲＡＵＭＡＴＩＺＥＲ"
-    },
-    {
       "tag": "#YGV9RYCU2",
       "name": "bx"
+    },
+    {
+      "tag": "#QPGQ8R0G8",
+      "name": "NILESH"
+    },
+    {
+      "tag": "#9QQJ9LUYV",
+      "name": "Mr. INDIA"
     }
   ],
   "895919742563545118": [
@@ -281,11 +255,6 @@
     {
       "tag": "#PVV9UR9LV",
       "name": "Lv.0 lashon™",
-      "strikes": 0
-    },
-    {
-      "tag": "#LYPQ80ULG",
-      "name": "Lv.7 lashon™",
       "strikes": 0
     },
     {
@@ -355,7 +324,31 @@
     },
     {
       "tag": "#9R0L2LUVJ",
-      "name": "JÄ§MÄÑ F'ĐËZ"
+      "name": "JÄ§MÄÑ F'ĐËZ",
+      "totalStrikes": 2,
+      "strikeHistory": [
+        {
+          "id": "CC006",
+          "reason": "For missing attacks against BL war firey",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC036",
+          "reason": "For missing war attack against BL war with hindustani lion",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "strikes": 2
     },
     {
       "tag": "#GQVQCVJGU",
@@ -372,6 +365,14 @@
     {
       "tag": "#L9UVVUJ0C",
       "name": "ALBION 16"
+    },
+    {
+      "tag": "#G9YLVCQ29",
+      "name": "ALBION 5"
+    },
+    {
+      "tag": "#PPG8CYVPC",
+      "name": "ALBION 9"
     }
   ],
   "1315947502226247692": [
@@ -379,6 +380,10 @@
       "tag": "#P0C2QRUGP",
       "name": "alien93",
       "strikes": 0
+    },
+    {
+      "tag": "#YG9PUC2RC",
+      "name": "CLASH WITH SMIT"
     }
   ],
   "705962594573353051": [
@@ -791,20 +796,97 @@
     {
       "tag": "#LVQY88Y8L",
       "name": "Nasty",
-      "strikes": 0
+      "strikes": 1,
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "CC012",
+          "reason": "For 3 staring in 2nd before the 8hr mark in war against PHOENIX",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#YR2YYU2LY",
       "name": "NoISY々2 0 0 2",
-      "strikes": 0
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#LYR8CPRY9",
-      "name": "ÃNgLE_283"
+      "name": "ÃNgLE_283",
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "CC011",
+          "reason": "For missing war attacks on FWA war vs NubScouts",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "strikes": 1,
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#YV8UGPCV9",
-      "name": "Sapphire"
+      "name": "Sapphire",
+      "totalStrikes": 4,
+      "strikeHistory": [
+        {
+          "id": "CC007",
+          "reason": "For 3 starring others base before last 8hrs mark on FWA war against REQ N REQ N GO",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC008",
+          "reason": "For missing both war attacks on FWA war vs NubScouts",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC013",
+          "reason": "For not attacking in war against Centum Aquila",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 3,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC026",
+          "reason": "For missing war attack against Phoenix",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 4,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "strikes": 4,
+      "sixStrikeAlertSent": false
     }
   ],
   "810858581548990484": [
@@ -998,6 +1080,10 @@
       "tag": "#GPCQ8VVV2",
       "name": "Atomic",
       "strikes": 0
+    },
+    {
+      "tag": "#LLJYRURP9",
+      "name": "Nightmare"
     }
   ],
   "1178622708796379136": [
@@ -1051,13 +1137,13 @@
   ],
   "1416324653432967230": [
     {
+      "tag": "#8GURLQQLV",
+      "name": "#amc HenczUp"
+    },
+    {
       "tag": "#8Y8JPQR9J",
       "name": "⚔️☆☞*κɪɴɢ*☜☆⚔️",
       "strikes": 0
-    },
-    {
-      "tag": "#8GURLQQLV",
-      "name": "#amc HenczUp"
     },
     {
       "tag": "#YLYCRQUR0",
@@ -1102,6 +1188,126 @@
     {
       "tag": "#QGLUY28VL",
       "name": "legend"
+    },
+    {
+      "tag": "#Q9RGU0GLV",
+      "name": "Sizzling_ice_12"
+    },
+    {
+      "tag": "#QPCLUR8J0",
+      "name": "✨Billie_Eilish✨"
+    },
+    {
+      "tag": "#QQJ9PJRY8",
+      "name": "SIZZLING ɪᴄᴇ 2❣"
+    },
+    {
+      "tag": "#QQLYYGC9L",
+      "name": "Sizzling ɪᴄᴇ03❣"
+    },
+    {
+      "tag": "#QC2PCPJV9",
+      "name": "Sizzling_ice_3"
+    },
+    {
+      "tag": "#QJCUVUUYQ",
+      "name": "Sizzling_ice_6"
+    },
+    {
+      "tag": "#QY0LJPJ80",
+      "name": "Sizzling_ice_7"
+    },
+    {
+      "tag": "#Q0GQRU9VL",
+      "name": "Sizzling_ice_8"
+    },
+    {
+      "tag": "#QJJLCL900",
+      "name": ".sjks"
+    },
+    {
+      "tag": "#QR0QPGL0U",
+      "name": "Sizzlingice❣️11"
+    },
+    {
+      "tag": "#QQ8RCJRRU",
+      "name": "Sizzlingice12❣️"
+    },
+    {
+      "tag": "#QQYGLYPGP",
+      "name": "Sizzlingice13❣️"
+    },
+    {
+      "tag": "#QPCUQ9UPV",
+      "name": "Sizzlingice14❣️"
+    },
+    {
+      "tag": "#QQ9PYQ0PG",
+      "name": "Sizzling_ice_11"
+    },
+    {
+      "tag": "#QRPQVRYJR",
+      "name": "Sizzling_ice_16"
+    },
+    {
+      "tag": "#QRUU2UU9V",
+      "name": "Sizzling_ice_18"
+    },
+    {
+      "tag": "#QUJ09G8YY",
+      "name": "Sizzling_ice_19"
+    },
+    {
+      "tag": "#QULV9298P",
+      "name": "Sizzling_ice_20"
+    },
+    {
+      "tag": "#QVYQP08JR",
+      "name": "Sizzling_ice_21"
+    },
+    {
+      "tag": "#QVYG8CUPJ",
+      "name": "Sizzling_ice_22"
+    },
+    {
+      "tag": "#QRPPQGG0Y",
+      "name": "Sizzling_ice_23"
+    },
+    {
+      "tag": "#QV0UCCCPP",
+      "name": "Sizzling_ice_24"
+    },
+    {
+      "tag": "#QC88LL89V",
+      "name": "Sizzling_ice_25"
+    },
+    {
+      "tag": "#QJJPGCJ0R",
+      "name": "Sizzling_ice_26"
+    },
+    {
+      "tag": "#QRV9R8GJJ",
+      "name": "Sizzling_ice_27"
+    },
+    {
+      "tag": "#QQ9QJUL88",
+      "name": "Sizzling_ice_28"
+    },
+    {
+      "tag": "#QJ8RP8V20",
+      "name": "Sizzling_ice_29"
+    },
+    {
+      "tag": "#QRVYLQYV9",
+      "name": "Sizzling_ice_30"
+    },
+    {
+      "tag": "#QCY8YJ9VR",
+      "name": "rulex yasir_1"
+    },
+    {
+      "tag": "#YLPYJC92J",
+      "name": "MD Afzal Raza"
     }
   ],
   "442313735789608960": [
@@ -1783,12 +1989,27 @@
           "clan": "CLASHING COBRAS",
           "date": "11-05-2026"
         }
-      ]
+      ],
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#P9CULJJP9",
       "name": "RK",
-      "strikes": 0
+      "strikes": 1,
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "CC023",
+          "reason": "For missing war attack against Phoenix",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#Y0200CV8R",
@@ -1797,6 +2018,10 @@
     {
       "tag": "#PL82J8PU8",
       "name": "W I Z A R D !!"
+    },
+    {
+      "tag": "#GQCVUQY8Y",
+      "name": "The Viper"
     }
   ],
   "694870014972526672": [
@@ -1871,12 +2096,89 @@
     {
       "tag": "#G0Q9VV0CY",
       "name": "Aditya",
-      "strikes": 0
+      "strikes": 2,
+      "totalStrikes": 2,
+      "strikeHistory": [
+        {
+          "id": "CC029",
+          "reason": "For missing war attack against war snipes 2.1",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC038",
+          "reason": "For missing war attack against BL war with war snipers 2.0",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#G9RVJPVJG",
       "name": "Deadshot ☠️",
-      "strikes": 0
+      "strikes": 5,
+      "totalStrikes": 5,
+      "strikeHistory": [
+        {
+          "id": "CC027",
+          "reason": "For missing war attack against Phoenix",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC031",
+          "reason": "For missing war attack against war snipes 2.1",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC040",
+          "reason": "For missing war attack against BL war with war snipers 2.0",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 3,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC041",
+          "reason": "For missing war attack against BL war with 俠盜聯盟國際⚔️一統天下",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 4,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC058",
+          "reason": "For missing war attacks against 100 proof",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 5,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "02-10-2026"
+        }
+      ]
     }
   ],
   "848019756535644160": [
@@ -2230,7 +2532,21 @@
     {
       "tag": "#YLR0C2VV0",
       "name": "m m the great",
-      "strikes": 0
+      "strikes": 1,
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "CC016",
+          "reason": "For missing war attack against BL war with hindustani lion",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "sixStrikeAlertSent": false
     }
   ],
   "345844012353191943": [
@@ -2251,7 +2567,72 @@
     {
       "tag": "#PV98VP2U9",
       "name": "KaiDranzer15",
-      "strikes": 0
+      "strikes": 6,
+      "totalStrikes": 6,
+      "strikeHistory": [
+        {
+          "id": "CC015",
+          "reason": "For missing war attack against BL war with hindustani lion",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC039",
+          "reason": "For missing war attack against BL war with war snipers 2.0",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC044",
+          "reason": "For missing war attack against سيف الحق",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 3,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC046",
+          "reason": "For missing war attack against war snipers 2.8",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 4,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC049",
+          "reason": "For missing war attack against 50 Ronnin",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 5,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC062",
+          "reason": "For missing war attacks against REQ N REQ N GO",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 6,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "clanTag": "#2L80LY0CP",
+          "date": "02-10-2026"
+        }
+      ],
+      "sixStrikeAlertSent": true
     }
   ],
   "773207145801056297": [
@@ -2301,21 +2682,10 @@
       "tag": "#GJUP8RYQ9",
       "name": "Ash",
       "strikes": 0
-    }
-  ],
-  "1429323256216813660": [
-    {
-      "tag": "#L0YRLR08R",
-      "name": "DILWALE❤",
-      "strikes": 0,
-      "totalStrikes": 0,
-      "strikeHistory": [],
-      "sixStrikeAlertSent": false
     },
     {
-      "tag": "#LYPPQYR2C",
-      "name": "Ｄｉｌｗａｌｅ♡",
-      "strikes": 0
+      "tag": "#R2JRUR8U2",
+      "name": "AshJr"
     }
   ],
   "937772091875426304": [
@@ -2374,17 +2744,37 @@
   ],
   "1466635626400190668": [
     {
-      "tag": "#R00G2VPUQ",
-      "name": "Megatron‿",
-      "strikes": 0
+      "tag": "#QJC9CQ9VY",
+      "name": "Ice Fury"
     },
     {
-      "tag": "#R02PQQLLG",
-      "name": "RK",
-      "strikes": 0
+      "tag": "#GC898YUU8",
+      "name": "꧁༒☬Gaming☬༒꧂, ꧁"
+    },
+    {
+      "tag": "#9Q8V8Q89U",
+      "name": "(AFN)YHUKERO#21"
     }
   ],
   "976081743859822612": [
+    {
+      "tag": "#Q2RLV29LV",
+      "name": "ɴᴀʜɪʏᴀɴ✔︎",
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "CC033",
+          "reason": "For missing war attack against phenomenal",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "strikes": 1
+    },
     {
       "tag": "#QU9RLP0QC",
       "name": "MR~SAKIB:)"
@@ -2398,8 +2788,8 @@
       "name": "nahiyan"
     },
     {
-      "tag": "#Q2RLV29LV",
-      "name": "ɴᴀʜɪʏᴀɴ✔︎"
+      "tag": "#R0PYVV9P8",
+      "name": "Dushtu Shawarma"
     }
   ],
   "984193780913676410": [
@@ -2413,20 +2803,10 @@
     {
       "tag": "#98JR0R0Q",
       "name": "NERRY..Max™",
-      "strikes": 2,
-      "totalStrikes": 2,
-      "strikeHistory": [
-        {
-          "id": "9NHUY",
-          "reason": "For 3-starring the base (2nd attack) within the first 16 hours of the FWA win against War Snipers ⒉３.",
-          "weight": 2,
-          "strikeCountAdded": 2,
-          "totalAtTime": 2,
-          "addedBy": "1393061101838532630",
-          "clan": "CLASHING COBRAS",
-          "date": "11-05-2026"
-        }
-      ]
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#LY0Y88JPP",
@@ -2456,6 +2836,10 @@
     {
       "tag": "#8UQPG0VQC",
       "name": "NERRY™"
+    },
+    {
+      "tag": "#L22C22CR2",
+      "name": "Mr. Fernandes"
     }
   ],
   "737333471642648698": [
@@ -2531,7 +2915,50 @@
     {
       "tag": "#G2R08LR8Q",
       "name": "fatterport",
-      "strikes": 0
+      "strikes": 4,
+      "totalStrikes": 4,
+      "strikeHistory": [
+        {
+          "id": "CC017",
+          "reason": "For missing war attack against Kerala Dragons",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC032",
+          "reason": "For missing war attack against 长相思兮长相忆",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC035",
+          "reason": "For missing war attack against BL war with hindustani lion",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 3,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC042",
+          "reason": "For missing war attack against War snipes 2.3",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 4,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ]
     }
   ],
   "754706624727220313": [
@@ -2744,6 +3171,30 @@
     {
       "tag": "#QJPPP98VP",
       "name": "Mini Clarity"
+    },
+    {
+      "tag": "#R29Y0R2LY",
+      "name": "Clarity’s Void"
+    },
+    {
+      "tag": "#G2LR222UU",
+      "name": "Clarity’s Den"
+    },
+    {
+      "tag": "#QJYRUR0U9",
+      "name": "Hercules"
+    },
+    {
+      "tag": "#G0R8GJUGY",
+      "name": "Apollo"
+    },
+    {
+      "tag": "#QRYPL00GL",
+      "name": "Clarity’s Lab"
+    },
+    {
+      "tag": "#GGRYVVPPY",
+      "name": "ClarityYT"
     }
   ],
   "957657576869330954": [
@@ -2804,6 +3255,10 @@
       "tag": "#QYRVJ8CRY",
       "name": "Mathias",
       "strikes": 0
+    },
+    {
+      "tag": "#GR2V2CQUV",
+      "name": "mathias"
     }
   ],
   "823984927686262825": [
@@ -3312,6 +3767,10 @@
     {
       "tag": "#Y9L99009R",
       "name": "sk kapil"
+    },
+    {
+      "tag": "#LJ0PGV892",
+      "name": "PANKAJ"
     }
   ],
   "710471948181962833": [
@@ -3369,8 +3828,16 @@
       "strikes": 0
     },
     {
+      "tag": "#L2YYRL09P",
+      "name": "SON GOKU"
+    },
+    {
       "tag": "#Q9L0YU0YJ",
       "name": "Milan Patidar"
+    },
+    {
+      "tag": "#LGY222CV0",
+      "name": "EREN YEAGER"
     }
   ],
   "1406695913329528894": [
@@ -3404,7 +3871,32 @@
   "753106507842846762": [
     {
       "tag": "#2LVUC9L2J",
-      "name": "Officially_Veer"
+      "name": "Officially_Veer",
+      "totalStrikes": 2,
+      "strikeHistory": [
+        {
+          "id": "CC014",
+          "reason": "For missing war attacks against Centum Aquila",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC019",
+          "reason": "for missing one of the war attacks against Zen nation",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "strikes": 2,
+      "sixStrikeAlertSent": false
     }
   ],
   "875923239375872022": [
@@ -3487,6 +3979,10 @@
     {
       "tag": "#R89V0Q022",
       "name": "AquaHoshino"
+    },
+    {
+      "tag": "#GLCYRR8YC",
+      "name": "AiHoshino"
     }
   ],
   "603321529148768257": [
@@ -3538,7 +4034,62 @@
   "931550669935112192": [
     {
       "tag": "#GJRR9J890",
-      "name": "fenix"
+      "name": "fenix",
+      "totalStrikes": 5,
+      "strikeHistory": [
+        {
+          "id": "CC018",
+          "reason": "For missing war attack against Kerala Dragons",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC037",
+          "reason": "For missing war attack against BL war with NubScouts",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC054",
+          "reason": "For missing war attack against Rocky Road",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 3,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "25-09-2026"
+        },
+        {
+          "id": "CC055",
+          "reason": "For missing war attacks against Centum Aquila",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 4,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "02-10-2026"
+        },
+        {
+          "id": "CC060",
+          "reason": "Missing raids",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 5,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "clanTag": "#2L80LY0CP",
+          "date": "02-10-2026"
+        }
+      ],
+      "strikes": 5
     }
   ],
   "452861157686902784": [
@@ -3657,10 +4208,6 @@
   ],
   "670124728874434590": [
     {
-      "tag": "#LR8GPLCLR",
-      "name": "PlAtInAx 3.0"
-    },
-    {
       "tag": "#YV2L922R2",
       "name": "PlAtInAx K!NG"
     }
@@ -3709,10 +4256,6 @@
     {
       "tag": "#L0R9PQ29J",
       "name": "GANGSTARS"
-    },
-    {
-      "tag": "#LJ0PGV892",
-      "name": "PANKAJ"
     },
     {
       "tag": "#R29888QY9",
@@ -3782,7 +4325,11 @@
   "274818442249502720": [
     {
       "tag": "#L0QV92YG9",
-      "name": "Rusher ✅"
+      "name": "Rusher ✅",
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "strikes": 0,
+      "sixStrikeAlertSent": false
     }
   ],
   "726732048194338858": [
@@ -3949,13 +4496,45 @@
     {
       "tag": "#QL8LQQ8YG",
       "name": "Erwin"
+    },
+    {
+      "tag": "#L9YCRJJLP",
+      "name": "gorkha"
+    },
+    {
+      "tag": "#9RCQUC9UR",
+      "name": "akaza"
+    },
+    {
+      "tag": "#80LPYUJCJ",
+      "name": "RENGOKU"
+    },
+    {
+      "tag": "#YJJ0QJLYY",
+      "name": "rengoku"
+    },
+    {
+      "tag": "#8CV9YRCGP",
+      "name": "shinosuke"
+    },
+    {
+      "tag": "#2U0VY0YC9",
+      "name": "Dronacharya"
+    },
+    {
+      "tag": "#LVCVP829G",
+      "name": "Yogesh chhetri"
+    },
+    {
+      "tag": "#8P908J9UV",
+      "name": "亗『YOGESH』亗"
+    },
+    {
+      "tag": "#Q99Y2JP8U",
+      "name": "亗『CHHETRI』亗"
     }
   ],
   "452396366635859968": [
-    {
-      "tag": "#8QLRQ8PJ0",
-      "name": "HemRockSocity2"
-    },
     {
       "tag": "#9Y9L2V0Q9",
       "name": "KARIZMA"
@@ -4281,7 +4860,31 @@
     },
     {
       "tag": "#PGC0VP28C",
-      "name": "SOUVIKING"
+      "name": "SOUVIKING",
+      "totalStrikes": 2,
+      "strikeHistory": [
+        {
+          "id": "CC010",
+          "reason": "For 3 others bases before the last 8hrs mark on war against     NubScouts",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC028",
+          "reason": "For missing war attack against 50 Ronnin",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        }
+      ],
+      "strikes": 2
     }
   ],
   "681258519621664811": [
@@ -4384,7 +4987,16 @@
       "name": "bombking69"
     }
   ],
-  "884790045146501171": [],
+  "884790045146501171": [
+    {
+      "tag": "#2J2Q0RQ0R",
+      "name": "LEO1987"
+    },
+    {
+      "tag": "#YL92V0QGC",
+      "name": "markjayson25"
+    }
+  ],
   "398174875598192651": [
     {
       "tag": "#VYYGYV2J",
@@ -4405,9 +5017,17 @@
     {
       "tag": "#Y2G0R99RP",
       "name": "Domínguez [⚜️]"
+    },
+    {
+      "tag": "#8RJJJJ9PR",
+      "name": "Domínguez [♦️]"
     }
   ],
   "1496768315727806535": [
+    {
+      "tag": "#QVR902R80",
+      "name": "NIR MAX"
+    },
     {
       "tag": "#QCJLJPU9P",
       "name": "SHIHAB MAHMUD"
@@ -4415,10 +5035,6 @@
     {
       "tag": "#GR99VUUUL",
       "name": "ˢʰⁱʰᵃᵇ亗ᴹᵃʰᵐᵘᵈ"
-    },
-    {
-      "tag": "#QJV29YCVG",
-      "name": "seiam"
     },
     {
       "tag": "#GJRQL00RR",
@@ -4429,16 +5045,20 @@
       "name": "ᴺɪʀVØID"
     },
     {
-      "tag": "#QVR902R80",
-      "name": "NIR MAX"
-    },
-    {
       "tag": "#QYVR8LP9C",
       "name": "Master nir"
     },
     {
-      "tag": "#GGR8JQ0QP",
-      "name": "Rifat 2"
+      "tag": "#R0UGGUR2U",
+      "name": "NIR MAX 2"
+    },
+    {
+      "tag": "#GVPCJUPCP",
+      "name": "★ NIR'S TH9 ★"
+    },
+    {
+      "tag": "#GLQLYJVJ0",
+      "name": "SHIHAB"
     }
   ],
   "1165194582561148940": [
@@ -4529,6 +5149,18 @@
     {
       "tag": "#P0LYUQPLC",
       "name": "ROMAN REGINS"
+    },
+    {
+      "tag": "#9PPVU820G",
+      "name": "VICIOUS"
+    },
+    {
+      "tag": "#QCJR9V9Q2",
+      "name": "LEHITH_KV"
+    },
+    {
+      "tag": "#Y900JYPPC",
+      "name": "INSANE FIGHTER"
     }
   ],
   "906563287980851291": [
@@ -4659,8 +5291,24 @@
   ],
   "777032533568127018": [
     {
-      "tag": "#80QQJQ0CV",
-      "name": "CULDESACK23"
+      "tag": "#90P2QU8CJ",
+      "name": "✨Kreed☄️"
+    },
+    {
+      "tag": "#PRVV9CJ8J",
+      "name": "messæah Kreed☄"
+    },
+    {
+      "tag": "#9PCYCQ99R",
+      "name": "☆♡Maria Cindy♡☆"
+    },
+    {
+      "tag": "#8CRVJ0U9U",
+      "name": "HeavenlyHost⭐☄"
+    },
+    {
+      "tag": "#8YRCP8Y82",
+      "name": "Smokin' Chongke"
     }
   ],
   "766803884559433739": [
@@ -4704,6 +5352,10 @@
     }
   ],
   "790472986494631976": [
+    {
+      "tag": "#LVLPLPC99",
+      "name": "Drew.2"
+    },
     {
       "tag": "#LYQGJ08J",
       "name": "Pandesal"
@@ -4753,6 +5405,14 @@
     {
       "tag": "#G8LUVJPPL",
       "name": "ARISE_SHUBHAM2"
+    },
+    {
+      "tag": "#G0RCP028P",
+      "name": "SHUBHX™✦"
+    },
+    {
+      "tag": "#GLGUYJYGJ",
+      "name": "ARISESHUBHAM3"
     }
   ],
   "416243887359918080": [
@@ -4811,12 +5471,12 @@
   ],
   "900071151043227689": [
     {
-      "tag": "#ULJUQJCQ",
-      "name": "RaFaY"
-    },
-    {
       "tag": "#2U2PCL2V9",
       "name": "RaY"
+    },
+    {
+      "tag": "#ULJUQJCQ",
+      "name": "RaFaY"
     },
     {
       "tag": "#YJ88QGPU",
@@ -5088,7 +5748,22 @@
   "910063105403400243": [
     {
       "tag": "#QRCGJVQVC",
-      "name": "Sub - zero"
+      "name": "Sub - zero",
+      "totalStrikes": 3,
+      "strikeHistory": [
+        {
+          "id": "BZ006",
+          "reason": "coz im pro",
+          "weight": 3,
+          "strikeCountAdded": 3,
+          "totalAtTime": 3,
+          "addedBy": "1256130360329371664",
+          "clan": "Blood Zero",
+          "date": "08-08-2026"
+        }
+      ],
+      "strikes": 3,
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#GJG2RLPPG",
@@ -5097,10 +5772,6 @@
     {
       "tag": "#QQ8PYQ0GG",
       "name": "shubh17"
-    },
-    {
-      "tag": "#QJRY2CCL9",
-      "name": "Shubh17"
     }
   ],
   "1447630873846481007": [
@@ -5328,6 +5999,10 @@
     {
       "tag": "#8Q080GP8V",
       "name": "ＣＨＵＮ ＨＵＡ"
+    },
+    {
+      "tag": "#8LCV2RGQV",
+      "name": "ＣＨＵＮ ＨＵＡ"
     }
   ],
   "1523335409579593762": [
@@ -5394,16 +6069,20 @@
       "name": "Edison"
     },
     {
-      "tag": "#R0CQLJQQ2",
-      "name": "th 4 kalp"
-    },
-    {
       "tag": "#GCULQV20G",
       "name": "Gen-Z"
     },
     {
       "tag": "#GCYYPP02U",
       "name": "AARAV-F2P"
+    },
+    {
+      "tag": "#R0CQLJQQ2",
+      "name": "Kalp-th15"
+    },
+    {
+      "tag": "#R2L0CCYVU",
+      "name": "3rd ID"
     }
   ],
   "212567573294743553": [
@@ -5538,12 +6217,28 @@
     {
       "tag": "#QQYYRU22R",
       "name": "Ｄｕｎｅ Ｖａｌｏｒ"
+    },
+    {
+      "tag": "#QRRY2LCYL",
+      "name": "+5"
+    },
+    {
+      "tag": "#Y92CL00L8",
+      "name": "Kurumi Tokisaki"
     }
   ],
   "1520775633385558166": [
     {
       "tag": "#P0CJUGR8R",
       "name": "乃เՇς๏เภ"
+    },
+    {
+      "tag": "#YRVJU2RL0",
+      "name": "〽️乃เƬc๏เή"
+    },
+    {
+      "tag": "#Q0QV0LVU9",
+      "name": "ÀKSHÂY✓"
     }
   ],
   "279304534793125888": [
@@ -5556,6 +6251,10 @@
     {
       "tag": "#P2UQUQ0CR",
       "name": "MangoNut"
+    },
+    {
+      "tag": "#PLU0VPGGP",
+      "name": "MangoNut2"
     }
   ],
   "736960222748344372": [
@@ -5596,16 +6295,16 @@
     {
       "tag": "#GUVC8P2GV",
       "name": "Dragon Purist"
+    },
+    {
+      "tag": "#R298P0GVR",
+      "name": "I Hit Up"
     }
   ],
   "506354776586452992": [
     {
       "tag": "#2UURU829Q",
       "name": "$w£@sh™"
-    },
-    {
-      "tag": "#2LPVQL8GL",
-      "name": "Soren_X"
     }
   ],
   "459424917654339585": [
@@ -5872,12 +6571,7 @@
       "name": "⭐️HARSH⭐️"
     }
   ],
-  "1530086128181313627": [
-    {
-      "tag": "#CGY28QRY",
-      "name": "ULTRA字ˡᵉᵍᵉᶰᵈ"
-    }
-  ],
+  "1530086128181313627": [],
   "760035269901811712": [
     {
       "tag": "#9G00UR2V",
@@ -5980,6 +6674,18 @@
     {
       "tag": "#PP889RRGL",
       "name": "Dragon"
+    },
+    {
+      "tag": "#P8PQJ8UVP",
+      "name": "WE ARE AWSOME"
+    },
+    {
+      "tag": "#Y2LJGJ8PP",
+      "name": "Dragon"
+    },
+    {
+      "tag": "#9RRGRR800",
+      "name": "WE ARE BEST"
     }
   ],
   "368641821175185409": [
@@ -5989,6 +6695,10 @@
     }
   ],
   "1021474206036283473": [
+    {
+      "tag": "#LPVYLRCQC",
+      "name": "☆SIWAR☆"
+    },
     {
       "tag": "#PVGQL2C2Q",
       "name": "sans"
@@ -6000,10 +6710,6 @@
     {
       "tag": "#YGV8U0YJJ",
       "name": "Defne"
-    },
-    {
-      "tag": "#LPVYLRCQC",
-      "name": "☆SIWAR☆"
     }
   ],
   "901601494095241227": [
@@ -6028,6 +6734,2749 @@
     {
       "tag": "#Y9LVQULPJ",
       "name": "SparklingGator"
+    },
+    {
+      "tag": "#LP2JU2L8L",
+      "name": "UnicornFox"
+    }
+  ],
+  "1318088887352168478": [
+    {
+      "tag": "#GRPC0L200",
+      "name": "LionelElpepsi"
+    }
+  ],
+  "214918623565709312": [
+    {
+      "tag": "#GQCCVPURV",
+      "name": "EmInShadow"
+    }
+  ],
+  "422720739263905802": [
+    {
+      "tag": "#2U9Y0PRYR",
+      "name": "Raktapyas"
+    }
+  ],
+  "414357285293260802": [
+    {
+      "tag": "#CLVQYQPY",
+      "name": "wardenclock"
+    }
+  ],
+  "468585275258437677": [
+    {
+      "tag": "#QQY9PYCJ",
+      "name": "EmperorPenguin"
+    }
+  ],
+  "779024011073945611": [
+    {
+      "tag": "#PC2LCJUP8",
+      "name": "zaldrok"
+    }
+  ],
+  "283960804703862784": [
+    {
+      "tag": "#QUJQC2V9J",
+      "name": "ZAI❤️KAY"
+    },
+    {
+      "tag": "#89UQGCL0",
+      "name": "Minkhant32"
+    },
+    {
+      "tag": "#Q8QQJPYV",
+      "name": "32"
+    },
+    {
+      "tag": "#8VPGRYUPJ",
+      "name": "MYANMAR BLOOD 2"
+    },
+    {
+      "tag": "#YR98LQ22",
+      "name": "@joy lay@"
+    }
+  ],
+  "383723466974691334": [
+    {
+      "tag": "#GRP08GCLV",
+      "name": "kyo12"
+    }
+  ],
+  "423278871102619658": [
+    {
+      "tag": "#R2JYG282L",
+      "name": "Joyboy"
+    }
+  ],
+  "598768125823156225": [
+    {
+      "tag": "#99Q29C0V",
+      "name": "Vidar2"
+    }
+  ],
+  "694393199321677865": [
+    {
+      "tag": "#QQLYLQVC2",
+      "name": "Houdini"
+    },
+    {
+      "tag": "#QJ8CQQQR",
+      "name": "MEGGl"
+    },
+    {
+      "tag": "#YLY9VP2VP",
+      "name": "Thorfinn"
+    },
+    {
+      "tag": "#R2GVG0PCY",
+      "name": "Houdini I"
+    },
+    {
+      "tag": "#R9298V2UP",
+      "name": "Houdini II"
+    }
+  ],
+  "330502031192358924": [
+    {
+      "tag": "#8RGPUY89",
+      "name": "Supernova"
+    }
+  ],
+  "1494071904204755228": [
+    {
+      "tag": "#8R8PQ00QJ",
+      "name": "Åürå -9999"
+    }
+  ],
+  "1059554665194344460": [
+    {
+      "tag": "#YRGQQ9LL0",
+      "name": "⚡KOKūJEN❗Lᵒᵖ™️⚡"
+    },
+    {
+      "tag": "#U88CC2QG",
+      "name": "Mikey"
+    }
+  ],
+  "1347447822743638099": [
+    {
+      "tag": "#LUP88JP8Y",
+      "name": "catharsis"
+    }
+  ],
+  "1226008569636323379": [
+    {
+      "tag": "#2YQ0P2JG0",
+      "name": "TITAN"
+    }
+  ],
+  "583214820921442306": [
+    {
+      "tag": "#PYQR8PLG8",
+      "name": "dragonmaster yt"
+    }
+  ],
+  "1536595790724599878": [
+    {
+      "tag": "#90RLRCJGC",
+      "name": "Ｏｂｉｔｏ Ｋｕｎ"
+    },
+    {
+      "tag": "#G0J9Y08Y9",
+      "name": "O b i t o K u n"
+    },
+    {
+      "tag": "#Q2VV2R2VG",
+      "name": "O b i t o k u n"
+    }
+  ],
+  "1106066750774190091": [
+    {
+      "tag": "#LQUV92LVR",
+      "name": "Shimbundu"
+    }
+  ],
+  "1313028061377200128": [
+    {
+      "tag": "#QC9L0J99G",
+      "name": "UV"
+    }
+  ],
+  "424423078542704640": [
+    {
+      "tag": "#GQUP9VRJ",
+      "name": "JONG ❤❤"
+    }
+  ],
+  "1202042559216484417": [
+    {
+      "tag": "#GLRUCYJRY",
+      "name": "MoSTFET"
+    },
+    {
+      "tag": "#G920L8PV2",
+      "name": "Punkrock"
+    }
+  ],
+  "1282715117238354075": [
+    {
+      "tag": "#YVL20PPG9",
+      "name": "꧁ᴳᵒᵈ•ҟìӀӀҽɾ꧂"
+    }
+  ],
+  "1456363315700961387": [
+    {
+      "tag": "#LG9QC0PCG",
+      "name": "Zhalek"
+    },
+    {
+      "tag": "#G8PRLPP0U",
+      "name": "Néstorx"
+    },
+    {
+      "tag": "#8GL0GG822",
+      "name": "Alexvard"
+    },
+    {
+      "tag": "#QGVQCJPVC",
+      "name": "Rocafort"
+    },
+    {
+      "tag": "#GL8V2JLGC",
+      "name": "Ferro"
+    }
+  ],
+  "807865727385600010": [
+    {
+      "tag": "#8JJ9GV0PU",
+      "name": "VALA"
+    }
+  ],
+  "541251911299497984": [
+    {
+      "tag": "#QRCV99V8G",
+      "name": "Thành Mimi"
+    }
+  ],
+  "1404782506712109170": [
+    {
+      "tag": "#LYY8RGLVQ",
+      "name": "Mikel_Calbo"
+    }
+  ],
+  "753325099226235000": [
+    {
+      "tag": "#Q809PCVRL",
+      "name": "crispy york"
+    }
+  ],
+  "529604464613654539": [
+    {
+      "tag": "#LG8G8GGR",
+      "name": "あＲｏｎｎ"
+    }
+  ],
+  "1336201443639689276": [],
+  "624205753019924491": [
+    {
+      "tag": "#YQ9L0020J",
+      "name": "Mr. Unknown"
+    },
+    {
+      "tag": "#2QVL9PR2R",
+      "name": "K_FresH"
+    },
+    {
+      "tag": "#LLVQLC9YG",
+      "name": "Mr.UnknowN"
+    }
+  ],
+  "785467641841451058": [
+    {
+      "tag": "#GPQ9P9YUU",
+      "name": "Mariothons"
+    }
+  ],
+  "683714390952116232": [
+    {
+      "tag": "#PQ8JCQGCJ",
+      "name": "PRIYANSHU"
+    },
+    {
+      "tag": "#9CLLPJ0C2",
+      "name": "Priyanshu"
+    }
+  ],
+  "459387285822242816": [
+    {
+      "tag": "#LPJLPUYVL",
+      "name": "Nawwaf"
+    }
+  ],
+  "748494181839667251": [
+    {
+      "tag": "#LQC9J8QVP",
+      "name": "ADI 07"
+    }
+  ],
+  "479016945715380225": [
+    {
+      "tag": "#2JPPLUURJ",
+      "name": "medlemin"
+    },
+    {
+      "tag": "#QVLQ899JU",
+      "name": "ZackThe2nd"
+    }
+  ],
+  "1385514820861694074": [
+    {
+      "tag": "#GQY8UL888",
+      "name": "Amon"
+    },
+    {
+      "tag": "#GUG80JJCJ",
+      "name": "Death"
+    }
+  ],
+  "1537705764829929554": [
+    {
+      "tag": "#9JJ0GYJ0G",
+      "name": "Lvl-7 Shinchan"
+    },
+    {
+      "tag": "#9CY9LCJ0Y",
+      "name": "NC™ UJJWAL®"
+    },
+    {
+      "tag": "#PYL0QLPY0",
+      "name": "Black Panther#4"
+    },
+    {
+      "tag": "#Q02JCYUCC",
+      "name": "Lvl-8 Shinchan"
+    },
+    {
+      "tag": "#P0YLC2R9V",
+      "name": "✨Red eagle✨"
+    },
+    {
+      "tag": "#L2RQQCR2P",
+      "name": "Lvl-6 Shinchan"
+    },
+    {
+      "tag": "#QL208LGRG",
+      "name": "COSMOS"
+    },
+    {
+      "tag": "#YVPYJ8U98",
+      "name": "Lvl-3 Shinchan"
+    },
+    {
+      "tag": "#Y2UGYRQJG",
+      "name": "⚡⚡Veeru⚡⚡"
+    },
+    {
+      "tag": "#9UJYG2P99",
+      "name": "DeStRoYeR NoOb"
+    },
+    {
+      "tag": "#PLCCJ8J28",
+      "name": "NoOb4LiFe"
+    },
+    {
+      "tag": "#G9YUJYQPL",
+      "name": "Chief_loveurmom"
+    },
+    {
+      "tag": "#GL9RG80UR",
+      "name": "Chief_Queenluci"
+    },
+    {
+      "tag": "#P0GJP02YG",
+      "name": "Dragon king"
+    }
+  ],
+  "1493492487199658087": [
+    {
+      "tag": "#Q0YU988GY",
+      "name": "S.S.GAMER"
+    }
+  ],
+  "783464825954631690": [
+    {
+      "tag": "#JQRGCR88",
+      "name": "Lynx"
+    }
+  ],
+  "1538549151237808309": [
+    {
+      "tag": "#80UJ0UQQ0",
+      "name": "Fendi"
+    }
+  ],
+  "836832773439225886": [
+    {
+      "tag": "#299RC89J9",
+      "name": "GanesH"
+    }
+  ],
+  "792055484411674625": [
+    {
+      "tag": "#9CVV0QLC8",
+      "name": "SLAYER"
+    }
+  ],
+  "297633666371158016": [
+    {
+      "tag": "#R9ULP9VQ",
+      "name": "⚡️FlasH⚡️"
+    }
+  ],
+  "1051521810560192613": [
+    {
+      "tag": "#GLQJJUGLQ",
+      "name": "isenis"
+    }
+  ],
+  "992857603896000642": [
+    {
+      "tag": "#9VUCQGUVR",
+      "name": "Sahil Negi"
+    }
+  ],
+  "851751546948812800": [
+    {
+      "tag": "#GRJ92LYY8",
+      "name": "CertainlySome1"
+    }
+  ],
+  "393444997539561472": [
+    {
+      "tag": "#R28U9JPYQ",
+      "name": "឵឵឵឵឵឵"
+    }
+  ],
+  "478070202983251968": [
+    {
+      "tag": "#202GLJU2G",
+      "name": "YenniferLee"
+    }
+  ],
+  "465440370742788097": [
+    {
+      "tag": "#2PLQYVGY",
+      "name": "Lv.99 Taizen"
+    }
+  ],
+  "576893367267360844": [
+    {
+      "tag": "#YJQQ889QY",
+      "name": "FerginTN"
+    }
+  ],
+  "651452273146462238": [
+    {
+      "tag": "#R899U0LGU",
+      "name": "Dante"
+    }
+  ],
+  "935329282618720306": [
+    {
+      "tag": "#9QG0PVJG8",
+      "name": "MaHaDeV ❤️"
+    }
+  ],
+  "185669155020603392": [
+    {
+      "tag": "#2V2QJ9GQG",
+      "name": "Storm Spirit"
+    }
+  ],
+  "1496931400190787667": [
+    {
+      "tag": "#8L88Q0PL0",
+      "name": "SaUraV"
+    },
+    {
+      "tag": "#G2VVY8JUU",
+      "name": "Ex1stence™"
+    }
+  ],
+  "1198233516584996965": [
+    {
+      "tag": "#GQ2QUCJ8G",
+      "name": "░P░A░R░A░D░O░X░"
+    }
+  ],
+  "185742341817106432": [
+    {
+      "tag": "#Q8JRU2PLR",
+      "name": "FiR3TOM"
+    }
+  ],
+  "1472100960464539897": [
+    {
+      "tag": "#LVLYVLJ8C",
+      "name": "⚡IRONCLAD⚡"
+    },
+    {
+      "tag": "#GGVQVU2CR",
+      "name": "⚡RAPTOR⚡"
+    },
+    {
+      "tag": "#9L0UVPLJG",
+      "name": "◆◆D|¢T∆T0®◆◆™"
+    }
+  ],
+  "1399495085816676546": [
+    {
+      "tag": "#LYG22G8L8",
+      "name": "Mo"
+    }
+  ],
+  "1365531267239510129": [
+    {
+      "tag": "#9J2Q20QGY",
+      "name": "PH CHAD"
+    }
+  ],
+  "1449342781540667482": [
+    {
+      "tag": "#YLCJLPU99",
+      "name": "___Big_Papa___"
+    },
+    {
+      "tag": "#GPPJ82VCU",
+      "name": "Monkey D. Luffy"
+    }
+  ],
+  "1446445563674492948": [
+    {
+      "tag": "#YV90G88R8",
+      "name": "poojan"
+    }
+  ],
+  "535395538535972864": [
+    {
+      "tag": "#98099QJJU",
+      "name": "elite warrior"
+    },
+    {
+      "tag": "#LCCQ92R88",
+      "name": "notYash_"
+    }
+  ],
+  "655839292844671046": [
+    {
+      "tag": "#LLR9YV229",
+      "name": "EzioAuditore"
+    }
+  ],
+  "1161960030950670356": [
+    {
+      "tag": "#Y980UPGJU",
+      "name": "BATMAN"
+    }
+  ],
+  "1446554124165582863": [
+    {
+      "tag": "#QV8CV8U20",
+      "name": "Shaki2.0"
+    }
+  ],
+  "1142372564832899122": [
+    {
+      "tag": "#829VQ2GPL",
+      "name": "009"
+    },
+    {
+      "tag": "#82G9GV2GG",
+      "name": "PJAY #2"
+    },
+    {
+      "tag": "#PV9V8L8U2",
+      "name": "PJAY #8"
+    },
+    {
+      "tag": "#P9L80GUUY",
+      "name": "PJAY #9"
+    },
+    {
+      "tag": "#Q0C29VJQL",
+      "name": "PJAY #10"
+    },
+    {
+      "tag": "#PJC2GPP0G",
+      "name": "PJAY #7"
+    },
+    {
+      "tag": "#PU8PYYRGJ",
+      "name": "PJAY #6"
+    },
+    {
+      "tag": "#PY2QPUVJC",
+      "name": "PJAY #5"
+    },
+    {
+      "tag": "#P9GLRGR2G",
+      "name": "PJAY #4"
+    },
+    {
+      "tag": "#VVUQPJ29",
+      "name": "PJ"
+    },
+    {
+      "tag": "#G8RC9YPLY",
+      "name": "Don Ater"
+    },
+    {
+      "tag": "#G8JLJUYYR",
+      "name": "009 Jr"
+    }
+  ],
+  "1540665323160862781": [
+    {
+      "tag": "#8CQ80URU2",
+      "name": "LeLouch_ZERO"
+    },
+    {
+      "tag": "#L8V8YJ2U",
+      "name": "Prince27"
+    }
+  ],
+  "1109040729587716138": [
+    {
+      "tag": "#Y82VCQGJL",
+      "name": "Krish-Da-Mighty"
+    }
+  ],
+  "489108641727905802": [
+    {
+      "tag": "#Y8JQQ08",
+      "name": "King Franks"
+    }
+  ],
+  "542194261970518051": [
+    {
+      "tag": "#GQCQGU0JR",
+      "name": "Saul Goodman"
+    }
+  ],
+  "1271775469255266407": [
+    {
+      "tag": "#9VUL2RR0U",
+      "name": "Lîon Heärted™"
+    },
+    {
+      "tag": "#9JYR899QR",
+      "name": "{#}The One{#}"
+    }
+  ],
+  "769722506135207966": [
+    {
+      "tag": "#GCVLUCPRQ",
+      "name": "mason"
+    }
+  ],
+  "867455613633036320": [
+    {
+      "tag": "#9RLU2R8VQ",
+      "name": "Buzzlightyear"
+    }
+  ],
+  "827270004533100586": [
+    {
+      "tag": "#9LUQU0G9G",
+      "name": "Dur e Najaf"
+    },
+    {
+      "tag": "#QJY9V2UUY",
+      "name": "Wolf"
+    }
+  ],
+  "602498856424439821": [
+    {
+      "tag": "#8J89R9RY0",
+      "name": "W∆®LO¢ M€T∆L"
+    }
+  ],
+  "1500558906349457538": [
+    {
+      "tag": "#Y2YJ80RCP",
+      "name": "$$AVIRAL ROCK$$"
+    }
+  ],
+  "1187356523677110397": [
+    {
+      "tag": "#GRP2QPVLG",
+      "name": "s4m"
+    }
+  ],
+  "1237776618337075233": [
+    {
+      "tag": "#GCCVRQJYR",
+      "name": "Rush Hour"
+    }
+  ],
+  "1441901956569239655": [
+    {
+      "tag": "#Q2V0P2PL8",
+      "name": "axolotl"
+    }
+  ],
+  "1535450285026312343": [
+    {
+      "tag": "#2C0Q0VQC",
+      "name": "Doyle"
+    }
+  ],
+  "1424263742933307453": [
+    {
+      "tag": "#9PCQCV2UY",
+      "name": "Kevin"
+    }
+  ],
+  "634780550355484702": [
+    {
+      "tag": "#9CYP0G8JY",
+      "name": "bless"
+    },
+    {
+      "tag": "#P28PJPP0Q",
+      "name": "JoLL ur fav Boy"
+    },
+    {
+      "tag": "#2L9V2G92Q",
+      "name": "Sumit GrG"
+    },
+    {
+      "tag": "#82CGYPRVU",
+      "name": "Zeus ⛩️"
+    }
+  ],
+  "1522492104335429692": [
+    {
+      "tag": "#9JP0P9L92",
+      "name": "rohan"
+    },
+    {
+      "tag": "#P82Y9YLY2",
+      "name": "ROHAN 2"
+    }
+  ],
+  "1498480489638527080": [
+    {
+      "tag": "#Y2UUJL2JL",
+      "name": "chrisUZUMAKI"
+    }
+  ],
+  "254099021814169609": [
+    {
+      "tag": "#LVCRPCLQ",
+      "name": "JBurd"
+    }
+  ],
+  "558328597086208020": [
+    {
+      "tag": "#8VQJ88Q9Y",
+      "name": "drax"
+    }
+  ],
+  "1240681865627701294": [
+    {
+      "tag": "#9J2JP9CY0",
+      "name": "RORONOA ZORO❤"
+    }
+  ],
+  "836116394155311154": [
+    {
+      "tag": "#LLYLVQ8GU",
+      "name": "VIRAJ3.0"
+    },
+    {
+      "tag": "#LV8UVYQ22",
+      "name": "VIRAJ4.0"
+    }
+  ],
+  "1185910877384351824": [
+    {
+      "tag": "#80QQJQ0CV",
+      "name": "CULDESACK23"
+    },
+    {
+      "tag": "#8P2YVJRRV",
+      "name": "DARKSHADOW23"
+    },
+    {
+      "tag": "#QCUPYJGJ8",
+      "name": "THE GUEST 10"
+    },
+    {
+      "tag": "#G098U0R2Y",
+      "name": "KNIG BOB"
+    },
+    {
+      "tag": "#GLPYYPGQ8",
+      "name": "TORNADO"
+    },
+    {
+      "tag": "#9J02R8VLV",
+      "name": "Ben Hur"
+    }
+  ],
+  "1210538885776674847": [
+    {
+      "tag": "#9Q9YUC009",
+      "name": "R1zzler"
+    }
+  ],
+  "614377770511761418": [
+    {
+      "tag": "#LL8CJPYC9",
+      "name": "K A O R I <3"
+    },
+    {
+      "tag": "#80RUCV0QY",
+      "name": "ANOTHER ONE"
+    }
+  ],
+  "589469853346168834": [
+    {
+      "tag": "#9UL90VL99",
+      "name": "Kaustubh"
+    },
+    {
+      "tag": "#9VPRUVVC9",
+      "name": "dax patel"
+    },
+    {
+      "tag": "#QPLJGLCQ",
+      "name": "Kaustubh"
+    },
+    {
+      "tag": "#9JJGQGGP8",
+      "name": "Kaustubh"
+    }
+  ],
+  "287429799935344640": [
+    {
+      "tag": "#JCLJVP89",
+      "name": "EPIIC"
+    }
+  ],
+  "1478228968401408142": [
+    {
+      "tag": "#QG9GYYQ2Y",
+      "name": "Jagdodes"
+    }
+  ],
+  "1469910223115255910": [
+    {
+      "tag": "#809L2LCYY",
+      "name": "Citrus"
+    }
+  ],
+  "1131489201888694342": [
+    {
+      "tag": "#Y2ULLVJ9Y",
+      "name": "Uvan Sankar"
+    }
+  ],
+  "1540616442683199498": [
+    {
+      "tag": "#LP8200UCP",
+      "name": "pradeep2"
+    }
+  ],
+  "734708610898067557": [
+    {
+      "tag": "#L8YGYYQVQ",
+      "name": "Rohan king"
+    }
+  ],
+  "1540625712363348020": [
+    {
+      "tag": "#GQYUJLUVU",
+      "name": "LORD JARIF⚡️"
+    },
+    {
+      "tag": "#QJJQYRUQL",
+      "name": "⚡ JARIF ⚡"
+    },
+    {
+      "tag": "#QLVY89PPU",
+      "name": "VENOM 2"
+    },
+    {
+      "tag": "#QLP22GUQP",
+      "name": "DARK HORSE"
+    },
+    {
+      "tag": "#GR209YYUV",
+      "name": "~AYAHU ☁️"
+    },
+    {
+      "tag": "#R8VYJPLR8",
+      "name": "JARIF AHASAN »"
+    },
+    {
+      "tag": "#G02CU2J2R",
+      "name": "MUZAN⚡️"
+    },
+    {
+      "tag": "#R8GG9PYYQ",
+      "name": "J4RIF"
+    },
+    {
+      "tag": "#R8R82U0QG",
+      "name": "KNULL 2"
+    },
+    {
+      "tag": "#R89VL09LL",
+      "name": "⚡️JARIF⚡️LV 1"
+    },
+    {
+      "tag": "#R8RL8P9Q2",
+      "name": "KNULL 1"
+    },
+    {
+      "tag": "#R0LG9QGLJ",
+      "name": "XIAO YAN"
+    },
+    {
+      "tag": "#RP8CQ2V0Q",
+      "name": "J4RIF 2"
+    },
+    {
+      "tag": "#GJLJLGR0J",
+      "name": "XIAO YAN 1"
+    },
+    {
+      "tag": "#GC9CQQ2P2",
+      "name": "XIAO YAN 3"
+    },
+    {
+      "tag": "#YV8PQV8GL",
+      "name": "(ali)alizade..."
+    }
+  ],
+  "1475069064505458729": [
+    {
+      "tag": "#9LLRPGJ2L",
+      "name": "Ken"
+    }
+  ],
+  "1315582234790461461": [
+    {
+      "tag": "#PU00Y80PR",
+      "name": "kalyan2"
+    },
+    {
+      "tag": "#9V2L8G8V0",
+      "name": "kalyan"
+    }
+  ],
+  "1210258682173198347": [
+    {
+      "tag": "#9PV220CCJ",
+      "name": "CAS de badeend"
+    }
+  ],
+  "760836485787287654": [
+    {
+      "tag": "#PQ0VUQVVJ",
+      "name": "NICO ROBIN"
+    }
+  ],
+  "1527250706891935917": [
+    {
+      "tag": "#R82QCPCUQ",
+      "name": "HARSH TH18 MAX"
+    },
+    {
+      "tag": "#Y0QRU8JJ9",
+      "name": "Shashank"
+    },
+    {
+      "tag": "#2LQ2UVQPV",
+      "name": "Blue Panda"
+    },
+    {
+      "tag": "#LULJUJCVY",
+      "name": "Ashutosh"
+    },
+    {
+      "tag": "#GCJY9P9YQ",
+      "name": "♥️RAHUL ♥️"
+    },
+    {
+      "tag": "#9988Q002P",
+      "name": "NJR_10_SANKY ⚽"
+    },
+    {
+      "tag": "#LRRJ8VRR0",
+      "name": "Aayush Th12"
+    },
+    {
+      "tag": "#Q022L0QGP",
+      "name": "LUCKY BHAI"
+    },
+    {
+      "tag": "#PQJ2CJYR9",
+      "name": "Hindu⚡Adarsh"
+    },
+    {
+      "tag": "#QRPRQLJJ8",
+      "name": "Hindu⚡️King"
+    },
+    {
+      "tag": "#Y8GYYGJ0C",
+      "name": "HP ★ PRINCE"
+    },
+    {
+      "tag": "#8U8QJLVRQ",
+      "name": "KING GAGAN"
+    },
+    {
+      "tag": "#8G0U2JVQ2",
+      "name": "KING GAGAN"
+    },
+    {
+      "tag": "#88Y9JLRR2",
+      "name": "KING GAGAN"
+    },
+    {
+      "tag": "#99GUQQQQL",
+      "name": "KING GAGAN"
+    },
+    {
+      "tag": "#LL020VLP8",
+      "name": "Hindu⚡Sumit"
+    },
+    {
+      "tag": "#YJ08VUV09",
+      "name": "KING GAGAN"
+    },
+    {
+      "tag": "#PRQY082R2",
+      "name": "KING GAGAN"
+    },
+    {
+      "tag": "#9R0LYVVCJ",
+      "name": "ＣｏｚｙＭａｘｘｅｒ"
+    }
+  ],
+  "648921568143212556": [
+    {
+      "tag": "#L2QVL9YYL",
+      "name": "Unspeakable"
+    }
+  ],
+  "1320671809451982891": [
+    {
+      "tag": "#LRYUCCYGG",
+      "name": "TJM"
+    }
+  ],
+  "561568664973869077": [
+    {
+      "tag": "#G028J88JC",
+      "name": "MARC0"
+    }
+  ],
+  "484266633469231114": [
+    {
+      "tag": "#UY8CYLP9",
+      "name": "mike y0"
+    },
+    {
+      "tag": "#QG88PU8JC",
+      "name": "Mike Mini"
+    }
+  ],
+  "936113750455517245": [
+    {
+      "tag": "#QV8JG92Y",
+      "name": "jm"
+    }
+  ],
+  "1264616531396919347": [
+    {
+      "tag": "#YQ0C8GYGP",
+      "name": "Cookie"
+    },
+    {
+      "tag": "#QVVQ8RPCV",
+      "name": "Cookie alt"
+    }
+  ],
+  "1257792266458759189": [
+    {
+      "tag": "#9UV0YRVQ",
+      "name": "Kora"
+    }
+  ],
+  "610542025422536883": [
+    {
+      "tag": "#2LQL29R2V",
+      "name": "Vincent"
+    }
+  ],
+  "871265573726724136": [
+    {
+      "tag": "#2JGJYQV8R",
+      "name": "Robert0_0"
+    },
+    {
+      "tag": "#2CR8YUJ0Y",
+      "name": "Robert 2.0"
+    }
+  ],
+  "1421390063723352094": [
+    {
+      "tag": "#Y2GLLPR9Y",
+      "name": "jatt"
+    }
+  ],
+  "626895629225951262": [
+    {
+      "tag": "#2LRLLGLY",
+      "name": "rblundie"
+    }
+  ],
+  "200531733513240577": [
+    {
+      "tag": "#GQJRLJL8V",
+      "name": "stock"
+    },
+    {
+      "tag": "#G9C8CUUUV",
+      "name": "Suvile"
+    }
+  ],
+  "1438158182718504971": [
+    {
+      "tag": "#Q88U0UURP",
+      "name": "Exprt~yxsh"
+    },
+    {
+      "tag": "#9GG9QRPJ8",
+      "name": "ExPrt~Y@$H"
+    },
+    {
+      "tag": "#Y998920YP",
+      "name": "ExPrt~Y@$H"
+    },
+    {
+      "tag": "#QLUPLVQUY",
+      "name": "ExPrt~Y@$H"
+    }
+  ],
+  "521980351879315456": [
+    {
+      "tag": "#Y2LRULRRQ",
+      "name": "Bigu"
+    }
+  ],
+  "399056472048140288": [
+    {
+      "tag": "#P2GJ0V9P2",
+      "name": "Rezu"
+    }
+  ],
+  "930052747749912576": [
+    {
+      "tag": "#QPY2PJ80Y",
+      "name": "☠Ṩ℘ideℝ☠︎"
+    },
+    {
+      "tag": "#PUJC8CLYP",
+      "name": "KING KHAN"
+    },
+    {
+      "tag": "#Y2LQYV80C",
+      "name": "KING KHAN"
+    },
+    {
+      "tag": "#J2GYUQJU",
+      "name": "Syed Shehroz"
+    },
+    {
+      "tag": "#Q220G80JL",
+      "name": "Areeb CH"
+    },
+    {
+      "tag": "#L2L928JY8",
+      "name": "waqas khan"
+    },
+    {
+      "tag": "#LULUR9U88",
+      "name": "Ayyan ch"
+    },
+    {
+      "tag": "#UQ9VGYPQ",
+      "name": "SweetSlayer"
+    },
+    {
+      "tag": "#9UUPCP8CU",
+      "name": "SULTAN"
+    },
+    {
+      "tag": "#8Y802YRVQ",
+      "name": "Shehroz 2"
+    },
+    {
+      "tag": "#LQPRP02CG",
+      "name": "PrimeX"
+    },
+    {
+      "tag": "#GRGQ8PRJR",
+      "name": "(YAHYA)"
+    },
+    {
+      "tag": "#GUR08JVV0",
+      "name": "ITACHYY"
+    },
+    {
+      "tag": "#YY0L0LP8R",
+      "name": "ابراھیم خان"
+    },
+    {
+      "tag": "#UYUC2R0V",
+      "name": "AKMAL KHAN"
+    },
+    {
+      "tag": "#QC0PRLP88",
+      "name": "P R I N C E"
+    },
+    {
+      "tag": "#G08RQPQ0Y",
+      "name": "Rubi"
+    },
+    {
+      "tag": "#2VQ0RL289",
+      "name": "scammer"
+    },
+    {
+      "tag": "#QLLCGQC9L",
+      "name": "SUFI"
+    }
+  ],
+  "430012231703330816": [
+    {
+      "tag": "#L0PCRR0GP",
+      "name": "Tzktik"
+    }
+  ],
+  "1440005161207730257": [
+    {
+      "tag": "#YJULCPJUQ",
+      "name": "ToskiNashe"
+    }
+  ],
+  "1136545056384356433": [
+    {
+      "tag": "#G8828U8J8",
+      "name": "Yin"
+    }
+  ],
+  "779373909450686475": [
+    {
+      "tag": "#CGY28QRY",
+      "name": "ULTRA字ˡᵉᵍᵉᶰᵈ"
+    },
+    {
+      "tag": "#PG02U82GR",
+      "name": "Yuvan"
+    }
+  ],
+  "896729150059077663": [
+    {
+      "tag": "#QRYG2Q0RP",
+      "name": "Roby"
+    }
+  ],
+  "415647565732642816": [
+    {
+      "tag": "#9LJ9VLL9",
+      "name": "dap 2002"
+    }
+  ],
+  "664464038977077278": [
+    {
+      "tag": "#2UL89V8V9",
+      "name": "AnuPam"
+    }
+  ],
+  "574238503861354536": [
+    {
+      "tag": "#9JQQLV0GC",
+      "name": "lol"
+    }
+  ],
+  "1539265926967459874": [
+    {
+      "tag": "#R8VR899J9",
+      "name": "Mld"
+    }
+  ],
+  "594455919040135180": [
+    {
+      "tag": "#QC8GQYU0",
+      "name": "Ruthle55"
+    }
+  ],
+  "447025562146308098": [
+    {
+      "tag": "#PPQQCP9JL",
+      "name": "Krishna"
+    }
+  ],
+  "1527711139977236592": [
+    {
+      "tag": "#Y022CGJR",
+      "name": "sandeep"
+    }
+  ],
+  "1114010244754985042": [
+    {
+      "tag": "#2V928UYCL",
+      "name": "Cola"
+    }
+  ],
+  "618832824904056853": [
+    {
+      "tag": "#PCCLRRRVG",
+      "name": "Raftaar2✌️✌️"
+    },
+    {
+      "tag": "#G2RJ0CQJL",
+      "name": "raftaar..✌️✌️"
+    }
+  ],
+  "1514959852462669967": [
+    {
+      "tag": "#PQRGL02GY",
+      "name": "GURU YADAV"
+    }
+  ],
+  "935491923731427359": [
+    {
+      "tag": "#YP09C00VP",
+      "name": "sanj"
+    }
+  ],
+  "578651270185746462": [
+    {
+      "tag": "#G2JYG2Q9U",
+      "name": "orid"
+    }
+  ],
+  "1494344116673445932": [
+    {
+      "tag": "#LCLYRJ8UR",
+      "name": "N〆E๛GIANLUKA"
+    }
+  ],
+  "1372698243351183400": [
+    {
+      "tag": "#R0QP8YVL2",
+      "name": "D R A V O K"
+    }
+  ],
+  "735045212656893952": [
+    {
+      "tag": "#9YY0QJPCQ",
+      "name": "MFN"
+    },
+    {
+      "tag": "#QPLRJC0QV",
+      "name": "MFN V2"
+    }
+  ],
+  "773070833496227850": [
+    {
+      "tag": "#Q2002L0G2",
+      "name": "proaso"
+    }
+  ],
+  "844640260193124403": [
+    {
+      "tag": "#L9L0P8QP9",
+      "name": "drupito"
+    },
+    {
+      "tag": "#YP9UJRCL2",
+      "name": "knjb"
+    },
+    {
+      "tag": "#L8LYG82RV",
+      "name": "Pando"
+    },
+    {
+      "tag": "#9RQRVQLUV",
+      "name": "bup"
+    }
+  ],
+  "426600720221863968": [
+    {
+      "tag": "#999YLYL02",
+      "name": "Lord of Wars"
+    }
+  ],
+  "1318646330821705733": [
+    {
+      "tag": "#9VJU92QLP",
+      "name": "$ SHUVO $"
+    }
+  ],
+  "1108063865616486480": [
+    {
+      "tag": "#GJRJC0GRL",
+      "name": "RIO"
+    }
+  ],
+  "626325981908434985": [
+    {
+      "tag": "#2QRGGP8LQ",
+      "name": "Dragon $layer"
+    }
+  ],
+  "1060914605712486501": [
+    {
+      "tag": "#2RUJ9J2UP",
+      "name": "HEADCUTTER ™"
+    }
+  ],
+  "908182964242894859": [
+    {
+      "tag": "#QLC2LPU9C",
+      "name": "rinu"
+    }
+  ],
+  "1545585003163947151": [
+    {
+      "tag": "#PQJUQP99R",
+      "name": "AF Sean"
+    }
+  ],
+  "931478143791951903": [
+    {
+      "tag": "#929JC0YVU",
+      "name": "◆THE MASTER◆"
+    },
+    {
+      "tag": "#G8RGJUQYP",
+      "name": "◆THE DISCIPLE◆"
+    }
+  ],
+  "849375497023651880": [
+    {
+      "tag": "#LQPQYJY8J",
+      "name": "Clasher"
+    }
+  ],
+  "758919371443142706": [
+    {
+      "tag": "#9GLY0QG9R",
+      "name": "Silent Killer"
+    },
+    {
+      "tag": "#L8CQUVR8C",
+      "name": "StaN"
+    }
+  ],
+  "690548596621312090": [
+    {
+      "tag": "#GJL0G00PG",
+      "name": "Zianam"
+    }
+  ],
+  "671636000342147072": [
+    {
+      "tag": "#GLCQ2Y899",
+      "name": "DungKatori"
+    },
+    {
+      "tag": "#G92GJUVLR",
+      "name": "Clan Capital"
+    }
+  ],
+  "1009536997381128202": [
+    {
+      "tag": "#YP9YVYRVC",
+      "name": "×͜× ᴀɴᴏɴʏᴍᴏᴜꜱ"
+    },
+    {
+      "tag": "#LL2UVQGL9",
+      "name": "Jeet Sidhpura"
+    },
+    {
+      "tag": "#GQPRY28PL",
+      "name": "ITS ME RIYA❤️"
+    }
+  ],
+  "869965822553100308": [
+    {
+      "tag": "#GJURCLYRY",
+      "name": "C02"
+    },
+    {
+      "tag": "#JVRQJC2V",
+      "name": "val"
+    },
+    {
+      "tag": "#8PJGQV8PG",
+      "name": "ÏmMørtâl"
+    },
+    {
+      "tag": "#QY00UV9PC",
+      "name": "GOD OF NORD"
+    },
+    {
+      "tag": "#9VG02Q882",
+      "name": "HACKER"
+    },
+    {
+      "tag": "#LLC8GJQJG",
+      "name": "KIRITO"
+    },
+    {
+      "tag": "#QPG2LYPYC",
+      "name": "notkirito"
+    }
+  ],
+  "547117646055735298": [
+    {
+      "tag": "#LJ8PU2QRQ",
+      "name": "lisan al gaib"
+    }
+  ],
+  "873617239289499678": [
+    {
+      "tag": "#LY2U92YL8",
+      "name": "chotu"
+    }
+  ],
+  "1240375431333543936": [
+    {
+      "tag": "#L998JC0CV",
+      "name": "FLAMING SLAYER"
+    },
+    {
+      "tag": "#LPQ9JG0RV",
+      "name": "Harry Potter"
+    },
+    {
+      "tag": "#LG9UR89R9",
+      "name": "Optimus prime"
+    },
+    {
+      "tag": "#QRJVGR9JR",
+      "name": "ネʙʀᴜᴄᴇ ᴡᴀʏɴᴇネ"
+    },
+    {
+      "tag": "#LCCYV00U9",
+      "name": "ƦƖツÐƐMonらŁΛƳƐ尺"
+    }
+  ],
+  "1134058203999637556": [
+    {
+      "tag": "#29CRPLYCU",
+      "name": "$Mighty2$"
+    }
+  ],
+  "714331695683207179": [
+    {
+      "tag": "#GUR9JQGG0",
+      "name": "nova"
+    }
+  ],
+  "1075455825205801101": [
+    {
+      "tag": "#QRJQYJGQR",
+      "name": "Alpha"
+    }
+  ],
+  "926557655252729886": [
+    {
+      "tag": "#8QJUYQYGG",
+      "name": "Jay Chourasia 1"
+    }
+  ],
+  "1391566978455568426": [
+    {
+      "tag": "#QGRRLLRRC",
+      "name": "GoblinGluber"
+    }
+  ],
+  "1125374651061768295": [
+    {
+      "tag": "#QUUG2YRRG",
+      "name": "IT'S -HARRY ™2"
+    }
+  ],
+  "1320260889613434960": [
+    {
+      "tag": "#82J2U0UGY",
+      "name": "~ Killer ~"
+    },
+    {
+      "tag": "#89Y0892QV",
+      "name": "~ RedGame ~"
+    }
+  ],
+  "970144860722036816": [
+    {
+      "tag": "#YG22YYVYC",
+      "name": "PRANAV14124"
+    }
+  ],
+  "763733115339800597": [
+    {
+      "tag": "#8VULVR2LV",
+      "name": "AK - 47"
+    }
+  ],
+  "464089004401360908": [
+    {
+      "tag": "#9QC9UULPP",
+      "name": "Techbro"
+    }
+  ],
+  "1295040838245548044": [
+    {
+      "tag": "#R82L0JYJ2",
+      "name": "BrokeKas"
+    }
+  ],
+  "826100515158884393": [
+    {
+      "tag": "#YJYGL09Y9",
+      "name": "anahita"
+    }
+  ],
+  "1283244513778733111": [
+    {
+      "tag": "#P82V8YCYY",
+      "name": "muhammad ali"
+    }
+  ],
+  "717984193014923285": [
+    {
+      "tag": "#Q90UUU29P",
+      "name": "G O D S U Y A"
+    }
+  ],
+  "637949272876253205": [
+    {
+      "tag": "#Y2LCRLL9G",
+      "name": "HellWarriorD"
+    },
+    {
+      "tag": "#G0JLGQJL2",
+      "name": "【ド】【ラ】【ゴ】【ン】"
+    }
+  ],
+  "1549706826998616125": [
+    {
+      "tag": "#GUU22YPVR",
+      "name": "Ruan"
+    }
+  ],
+  "1534887728611721283": [
+    {
+      "tag": "#PV8GJUQCP",
+      "name": "Back with Milk"
+    }
+  ],
+  "1521408517297279067": [
+    {
+      "tag": "#GR9C0U88C",
+      "name": "TRONET"
+    }
+  ],
+  "424578019072671745": [
+    {
+      "tag": "#GQ9VY8PV2",
+      "name": "qhun 1"
+    }
+  ],
+  "1538917335270821930": [
+    {
+      "tag": "#QQU8RLLL0",
+      "name": "GooD SoN"
+    },
+    {
+      "tag": "#PURYVPLG8",
+      "name": "BaD SoN"
+    },
+    {
+      "tag": "#GGU898URG",
+      "name": "NaUgHtY SoN"
+    },
+    {
+      "tag": "#GYRGUPL2Q",
+      "name": "InnOcEnT SoN"
+    }
+  ],
+  "159569230168064001": [
+    {
+      "tag": "#99G09RVG",
+      "name": "xShrekonDVD-_-"
+    }
+  ],
+  "1119463533525090306": [
+    {
+      "tag": "#PP9CU09VR",
+      "name": "C.W.༺LeͥgeͣnͫD"
+    }
+  ],
+  "1544923839866339340": [
+    {
+      "tag": "#L9JR9CLRP",
+      "name": "⚡sandy_ffx_⚡"
+    }
+  ],
+  "1044201298926506065": [
+    {
+      "tag": "#GRYJV0CR",
+      "name": "Aman"
+    }
+  ],
+  "998256517134438462": [
+    {
+      "tag": "#QUP0Y8YCP",
+      "name": "Dark Light"
+    }
+  ],
+  "1544780106294108231": [
+    {
+      "tag": "#R88CLRYG0",
+      "name": "shetty"
+    }
+  ],
+  "1521146223023620197": [
+    {
+      "tag": "#GP89YJPRG",
+      "name": "krish"
+    }
+  ],
+  "1321852526831734814": [
+    {
+      "tag": "#G8GVJRGRP",
+      "name": "YTB_Desciplez"
+    }
+  ],
+  "1326219149273206815": [
+    {
+      "tag": "#LRCRLU0P2",
+      "name": "AshX"
+    }
+  ],
+  "1546495252771246183": [
+    {
+      "tag": "#LQPQLL0VC",
+      "name": "Wizard"
+    }
+  ],
+  "1250374399723573360": [
+    {
+      "tag": "#GLUQ9YJRL",
+      "name": "rishiet316"
+    },
+    {
+      "tag": "#GRY9LVV29",
+      "name": "rishiet mini"
+    }
+  ],
+  "1544636503483883552": [
+    {
+      "tag": "#Q2RU9UR8P",
+      "name": "Reviver"
+    }
+  ],
+  "1422272948684718210": [
+    {
+      "tag": "#PCR8QYC90",
+      "name": "KRATOS"
+    }
+  ],
+  "456522121062121483": [
+    {
+      "tag": "#PG2JU9LUC",
+      "name": "baddu"
+    }
+  ],
+  "1396387577350717564": [
+    {
+      "tag": "#2CLY29YVG",
+      "name": "destiny"
+    }
+  ],
+  "1217010643711037543": [
+    {
+      "tag": "#RPUGJC9L",
+      "name": "Love"
+    },
+    {
+      "tag": "#LYG2LL9UV",
+      "name": "⚜️HUNTER⚜️"
+    }
+  ],
+  "786833702726533170": [
+    {
+      "tag": "#YRUY8R8YV",
+      "name": "FUTURE FIGHT 2"
+    }
+  ],
+  "1427972613350625340": [
+    {
+      "tag": "#LQQQ89J0Y",
+      "name": "ɭ๏รՇ๓ץคภﻮєɭ"
+    }
+  ],
+  "659207348551942145": [
+    {
+      "tag": "#P0QGURV8C",
+      "name": "Phosphophyllite"
+    }
+  ],
+  "1381273576715325583": [
+    {
+      "tag": "#GLG8CCGCG",
+      "name": "Amîshä"
+    }
+  ],
+  "385525454901215253": [
+    {
+      "tag": "#GJ8UGJC9",
+      "name": "hades"
+    }
+  ],
+  "106026916405878784": [
+    {
+      "tag": "#2PCYPRG8L",
+      "name": "j alt"
+    }
+  ],
+  "1235663202369667082": [
+    {
+      "tag": "#GYC82JUVL",
+      "name": "medabdrrahmane"
+    }
+  ],
+  "765098423934124042": [
+    {
+      "tag": "#YJJ2RJ0PY",
+      "name": "Harucha"
+    }
+  ],
+  "1500575875324842085": [
+    {
+      "tag": "#208PLQQPQ",
+      "name": "pls dont touch"
+    }
+  ],
+  "530010233540706304": [
+    {
+      "tag": "#R2RUPGGV0",
+      "name": "Mr. Lolimancer"
+    }
+  ],
+  "1517169139234508851": [
+    {
+      "tag": "#LQUL99QCJ",
+      "name": "HESAM"
+    }
+  ],
+  "1242234191475904653": [
+    {
+      "tag": "#QLQ2LR20V",
+      "name": "JustAmo"
+    }
+  ],
+  "886104530712948763": [
+    {
+      "tag": "#P88GPPGL8",
+      "name": "M.VAMSHI KRISH"
+    },
+    {
+      "tag": "#P2UQP0VGR",
+      "name": "NITHIN"
+    }
+  ],
+  "361135068036595740": [
+    {
+      "tag": "#G08G8LVR",
+      "name": "TheJolyPoly"
+    }
+  ],
+  "916938099022516305": [
+    {
+      "tag": "#C0CPQQQ9",
+      "name": "Lucas"
+    }
+  ],
+  "378991410239635477": [
+    {
+      "tag": "#8UJPPPJYP",
+      "name": "Squid"
+    }
+  ],
+  "703149003877122128": [
+    {
+      "tag": "#GCGRJVJ9J",
+      "name": "ggkar_rash"
+    }
+  ],
+  "715042034548736093": [
+    {
+      "tag": "#Q8VYCR988",
+      "name": "Noko-tan 鹿"
+    },
+    {
+      "tag": "#G8QC0QUGY",
+      "name": "中の にの [Mini 三]"
+    }
+  ],
+  "731083955960414224": [
+    {
+      "tag": "#QRYCYQQ9",
+      "name": "AliEvilNinja"
+    }
+  ],
+  "1543502379125706786": [
+    {
+      "tag": "#R0C9Q00LQ",
+      "name": "Jzee"
+    }
+  ],
+  "226837533802102784": [
+    {
+      "tag": "#GR2YVV9JY",
+      "name": "Sapphire"
+    },
+    {
+      "tag": "#GRJURYRJP",
+      "name": "Tony"
+    }
+  ],
+  "1553133554555293699": [
+    {
+      "tag": "#QVRU2LU9V",
+      "name": "Sajid 001"
+    },
+    {
+      "tag": "#LRJGGR09G",
+      "name": "I.H CLASHER"
+    }
+  ],
+  "1553315341202100266": [
+    {
+      "tag": "#LYPCPG8Q0",
+      "name": "SUPER CLASHER"
+    },
+    {
+      "tag": "#LUJ9QGL8Q",
+      "name": "Vampiric"
+    }
+  ],
+  "564859247523921920": [
+    {
+      "tag": "#9RPJGJJJL",
+      "name": "Stephen_X"
+    }
+  ],
+  "780062937611763743": [
+    {
+      "tag": "#8L2LQC92P",
+      "name": "ASHISH"
+    },
+    {
+      "tag": "#8CUVUY9UC",
+      "name": "MAJESTY"
+    }
+  ],
+  "1445096112838148269": [
+    {
+      "tag": "#QL2YY0RLR",
+      "name": "MegumiFushiguro"
+    }
+  ],
+  "311551031396007937": [
+    {
+      "tag": "#CU2LLLC0",
+      "name": "•Crystal Ice1•"
+    }
+  ],
+  "570532893437460491": [
+    {
+      "tag": "#LP9UPRYPV",
+      "name": "pro_copycat"
+    }
+  ],
+  "604946702922678282": [
+    {
+      "tag": "#9CL2LG20",
+      "name": "clancrusher"
+    }
+  ],
+  "1384937224570929324": [
+    {
+      "tag": "#9QJ98CVUC",
+      "name": "CoolDaddy07"
+    }
+  ],
+  "882352201203335178": [
+    {
+      "tag": "#G2J2G99R",
+      "name": "neeranjan.14"
+    }
+  ],
+  "253818586013892608": [
+    {
+      "tag": "#QG288QVQ",
+      "name": "Jesu"
+    },
+    {
+      "tag": "#LV9V0J2RL",
+      "name": "Jesuran"
+    }
+  ],
+  "795758624756465744": [
+    {
+      "tag": "#LLGLRV8QY",
+      "name": "vhvkei"
+    }
+  ],
+  "1277982239593857047": [
+    {
+      "tag": "#98Q9GUGUV",
+      "name": "PRAKHAR SINGH"
+    }
+  ],
+  "395631855363424257": [
+    {
+      "tag": "#G2YR0GVR",
+      "name": "King Simeon"
+    }
+  ],
+  "1252740715016884235": [
+    {
+      "tag": "#YULVU8VL0",
+      "name": "Escanor☀️"
+    }
+  ],
+  "801745408312344597": [
+    {
+      "tag": "#YC9UR8CL",
+      "name": "PSALM"
+    }
+  ],
+  "395171938122858497": [
+    {
+      "tag": "#LJYJGRYJ9",
+      "name": "zsoltcozy"
+    }
+  ],
+  "1550903519790235738": [
+    {
+      "tag": "#GC0YPLUJU",
+      "name": "Jenaissante"
+    }
+  ],
+  "997955996645330986": [
+    {
+      "tag": "#Q9YRRV0J2",
+      "name": "Shum97"
+    }
+  ],
+  "423047199253856256": [
+    {
+      "tag": "#9PLP98PC8",
+      "name": "Rudra Pratap"
+    }
+  ],
+  "929871661208051752": [
+    {
+      "tag": "#QU99V2JUU",
+      "name": "voidganga53"
+    }
+  ],
+  "644005027052126208": [
+    {
+      "tag": "#Q2QQU8C98",
+      "name": "DragonSlayer[3]"
+    }
+  ],
+  "1194962889900036126": [
+    {
+      "tag": "#G92VP8PQV",
+      "name": "Aken"
+    }
+  ],
+  "875363807457845319": [
+    {
+      "tag": "#G9GGLUQU",
+      "name": "PP3-StevenRiley"
+    },
+    {
+      "tag": "#R8PCC2CCV",
+      "name": "Brotenyahu"
+    }
+  ],
+  "772424416645873704": [
+    {
+      "tag": "#P80G8QLR",
+      "name": "Thought Robot"
+    }
+  ],
+  "1311744011224088629": [
+    {
+      "tag": "#QGCC9YV28",
+      "name": "rohit"
+    }
+  ],
+  "1247947331312156676": [
+    {
+      "tag": "#QLQJCLGRR",
+      "name": "S-_-ARKIYO"
+    }
+  ],
+  "1096518114499371020": [
+    {
+      "tag": "#VRCUUJVQ",
+      "name": "Stefke"
+    }
+  ],
+  "874881852316483615": [
+    {
+      "tag": "#9C9YJ0J92",
+      "name": "stany"
+    }
+  ],
+  "992530665780281354": [
+    {
+      "tag": "#Q9VVURVVP",
+      "name": "☄️KOTIX 17☄️"
+    },
+    {
+      "tag": "#YJJRL802R",
+      "name": "☄️☄️KOTIX 12☄️☄"
+    }
+  ],
+  "490290728942043136": [
+    {
+      "tag": "#Y2YUPQ88P",
+      "name": "the master567"
+    }
+  ],
+  "1268485272039981067": [
+    {
+      "tag": "#8QVV9LLL",
+      "name": "Santiago"
+    }
+  ],
+  "675966681788579851": [
+    {
+      "tag": "#88UV2RYLU",
+      "name": "Yudha Chaniago™"
+    }
+  ],
+  "1128636662172356689": [
+    {
+      "tag": "#QJJJVLQGP",
+      "name": "HYDROBLAZE999"
+    }
+  ],
+  "1326857709265621103": [
+    {
+      "tag": "#9UJPQ2CRL",
+      "name": "Elton❤️FEJM ╰☆╮"
+    }
+  ],
+  "1529765280136298536": [
+    {
+      "tag": "#8C98PPLJP",
+      "name": "varun"
+    }
+  ],
+  "995414541544468480": [
+    {
+      "tag": "#8Y88VCY0L",
+      "name": "⚡️krattypatty⚡️"
+    }
+  ],
+  "1439329058839072860": [
+    {
+      "tag": "#P8QL2J02U",
+      "name": "ROHAN THE GREAT"
+    }
+  ],
+  "769071219077021706": [
+    {
+      "tag": "#YV0RVG2LQ",
+      "name": "P E N Z #87"
+    }
+  ],
+  "1521027765715861545": [
+    {
+      "tag": "#QP0CU9VUL",
+      "name": "A R P I T"
+    }
+  ],
+  "974287515928391720": [
+    {
+      "tag": "#LCCCJYR88",
+      "name": "ITSMEE"
+    }
+  ],
+  "303379535163031554": [
+    {
+      "tag": "#QVQGQRLC9",
+      "name": "lego799"
+    }
+  ],
+  "675958452266467328": [
+    {
+      "tag": "#2Q0Y9J22J",
+      "name": "xPYROx"
+    }
+  ],
+  "513994698394828803": [
+    {
+      "tag": "#280LG00Y0",
+      "name": "harsh"
+    }
+  ],
+  "427858998411264010": [
+    {
+      "tag": "#R9P0GYCPJ",
+      "name": "Scooby"
+    }
+  ],
+  "718413009353048164": [
+    {
+      "tag": "#9LVLGYRCL",
+      "name": "MUKUT999+"
+    }
+  ],
+  "1049402299409235991": [
+    {
+      "tag": "#YP2RV8Y0J",
+      "name": "Zamo"
+    }
+  ],
+  "1503053046895083651": [
+    {
+      "tag": "#9P0JGCYY9",
+      "name": "The Red Slayer"
+    },
+    {
+      "tag": "#Y88RRL8YR",
+      "name": "ROMAN"
+    }
+  ],
+  "166789766447104001": [
+    {
+      "tag": "#UJV2J9Q",
+      "name": "arceuz"
+    },
+    {
+      "tag": "#GYPYQURGG",
+      "name": "Green Star"
+    },
+    {
+      "tag": "#229Y0L2G9",
+      "name": "yuiraks"
+    }
+  ],
+  "752855638043787366": [
+    {
+      "tag": "#9U90PCUG",
+      "name": "❤️~VeRoNiCa~❤️"
+    },
+    {
+      "tag": "#G9CLJCVL",
+      "name": "dukie69"
+    },
+    {
+      "tag": "#L2CYVLC22",
+      "name": "ONION"
+    }
+  ],
+  "945708707696758785": [
+    {
+      "tag": "#9J0U9JQ88",
+      "name": "Shreyas K.S."
+    },
+    {
+      "tag": "#QQRQ08LL8",
+      "name": "Shreyas K S"
+    }
+  ],
+  "836467804500000808": [
+    {
+      "tag": "#YGCQ220GY",
+      "name": "sarthak-1"
+    }
+  ],
+  "1265014069333725326": [
+    {
+      "tag": "#PL882GYYJ",
+      "name": "M.A.A. AHAMED"
+    },
+    {
+      "tag": "#LYJ00VJ2J",
+      "name": "dark avenger"
+    },
+    {
+      "tag": "#R098PVCUG",
+      "name": "DarkStar"
+    }
+  ],
+  "767418151498940417": [
+    {
+      "tag": "#LU0RYCYP0",
+      "name": "ASAD KHAN"
+    }
+  ],
+  "907257033689034763": [
+    {
+      "tag": "#9GC8RYPR0",
+      "name": "Haider"
+    }
+  ],
+  "1267075238932512798": [
+    {
+      "tag": "#QCRP0QCLJ",
+      "name": "ALPESH003"
+    },
+    {
+      "tag": "#PYQQQUJPL",
+      "name": "king"
+    },
+    {
+      "tag": "#Y9GRLGQ99",
+      "name": "AKSHAY002"
+    },
+    {
+      "tag": "#QUG2PC2QY",
+      "name": "ALPESH005"
+    },
+    {
+      "tag": "#G0CUGGQQJ",
+      "name": "AKSHAY004"
+    },
+    {
+      "tag": "#GQQQ8Y9UJ",
+      "name": "ALPESH006"
+    },
+    {
+      "tag": "#GQ09LJGQR",
+      "name": "ALPESH007"
+    }
+  ],
+  "1267735491818553376": [
+    {
+      "tag": "#9UV0V88PG",
+      "name": "Ronaldo7"
+    }
+  ],
+  "1557663007620993059": [
+    {
+      "tag": "#R8JL0UGJV",
+      "name": "rusher maniac"
+    }
+  ],
+  "324225763920576512": [
+    {
+      "tag": "#P00R28R2R",
+      "name": "Luffy"
+    }
+  ],
+  "1101459381712846898": [
+    {
+      "tag": "#9LGQL8Q0Y",
+      "name": "densetsu"
+    }
+  ],
+  "1544656666769756332": [
+    {
+      "tag": "#L0YRLR08R",
+      "name": "DILWALE❤"
+    },
+    {
+      "tag": "#LYPPQYR2C",
+      "name": "Ｄｉｌｗａｌｅ♡",
+      "totalStrikes": 6,
+      "strikes": 6,
+      "strikeHistory": [
+        {
+          "id": "CC022",
+          "reason": "For missing war attack against Phoenix",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC030",
+          "reason": "For missing war attack against war snipes 2.1",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC034",
+          "reason": "For missing war attack against phenomenal",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 3,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC047",
+          "reason": "For missing war attack against war snipers 2.8",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 4,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC050",
+          "reason": "For missing war attack against 50 Ronnin",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 5,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "date": "21-09-2026"
+        },
+        {
+          "id": "CC061",
+          "reason": "Missing raids",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 6,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "clanTag": "#2L80LY0CP",
+          "date": "02-10-2026"
+        }
+      ],
+      "sixStrikeAlertSent": true
+    }
+  ],
+  "1555252992863764672": [
+    {
+      "tag": "#R8JQPYJ0R",
+      "name": "LightOp"
+    }
+  ],
+  "710861741705134081": [
+    {
+      "tag": "#99VYCJ2GG",
+      "name": "amony"
+    }
+  ],
+  "691182330672578622": [
+    {
+      "tag": "#YC8YG298Y",
+      "name": "Dody"
+    }
+  ],
+  "1510164878969671785": [
+    {
+      "tag": "#U9Y922J0",
+      "name": "BrotherShisir"
+    }
+  ],
+  "1477745362583162960": [
+    {
+      "tag": "#8JJRGJJLL",
+      "name": "I'M HRX"
+    },
+    {
+      "tag": "#QCVYU9CUL",
+      "name": "KH ❤️ Kamrul"
+    },
+    {
+      "tag": "#QPJ0YVR0J",
+      "name": "jerry"
+    },
+    {
+      "tag": "#GCR20GJ9U",
+      "name": "TTRajon"
+    }
+  ],
+  "1330064052378013778": [
+    {
+      "tag": "#LLPLC0JUQ",
+      "name": "RAHULPARMAR7206"
+    }
+  ],
+  "748647178775429161": [
+    {
+      "tag": "#8R8UUGQCJ",
+      "name": "Joey"
+    }
+  ],
+  "817001758495866961": [
+    {
+      "tag": "#GGYRQUUCR",
+      "name": "Free Troops"
+    }
+  ],
+  "447549467239907328": [
+    {
+      "tag": "#Q89P08828",
+      "name": "Emo_Eostmuh"
+    }
+  ],
+  "1043504596347269170": [
+    {
+      "tag": "#GYCYVP20Y",
+      "name": "Chief Mero"
+    }
+  ],
+  "459926384203137034": [
+    {
+      "tag": "#228YUP029",
+      "name": "Jefe"
+    }
+  ],
+  "1526347865667145840": [
+    {
+      "tag": "#80QQYYG8U",
+      "name": "k o k o"
+    }
+  ],
+  "717729598447550524": [
+    {
+      "tag": "#2JULY228C",
+      "name": "IDEAL LIGHTING"
+    },
+    {
+      "tag": "#2YQGPQCLY",
+      "name": "LOVE"
+    }
+  ],
+  "1558485274474844261": [
+    {
+      "tag": "#9VP0UP9CL",
+      "name": "ZAIN kettavan"
+    }
+  ],
+  "697751085024280626": [
+    {
+      "tag": "#QUJUL8RQ9",
+      "name": "storm breaker"
+    }
+  ],
+  "239866758729564162": [
+    {
+      "tag": "#8882RG90Y",
+      "name": "PhoenixFlame32"
+    }
+  ],
+  "1558154118814638233": [
+    {
+      "tag": "#YCV0CPJ9Q",
+      "name": "ireland beer"
+    }
+  ],
+  "923352157296689152": [
+    {
+      "tag": "#QVVJQ8LY9",
+      "name": "satinee juga"
+    }
+  ],
+  "1348778486252310701": [
+    {
+      "tag": "#GPRR9JQLR",
+      "name": "thanks 2"
+    }
+  ],
+  "391275971379986443": [
+    {
+      "tag": "#9LJ82P2PP",
+      "name": "Path™"
+    }
+  ],
+  "445197931461738498": [
+    {
+      "tag": "#9PVVC0Y2U",
+      "name": "KHÖNSHÚ"
+    }
+  ],
+  "723669649543266356": [
+    {
+      "tag": "#29098PLQY",
+      "name": "AWLAQI101"
+    }
+  ],
+  "1561008839980228764": [
+    {
+      "tag": "#LQ9JR82QG",
+      "name": "⚡PANDA KING⚡"
+    }
+  ],
+  "1551093106957484165": [
+    {
+      "tag": "#R88CQ9RCG",
+      "name": "Akira"
+    }
+  ],
+  "369166092264013844": [
+    {
+      "tag": "#2UP9PLR99",
+      "name": "Assass1n"
+    }
+  ],
+  "427850263424925707": [
+    {
+      "tag": "#2GRPYQ8GJ",
+      "name": "ImBumi"
+    },
+    {
+      "tag": "#GCYVGQQP0",
+      "name": "JustBumi"
+    }
+  ],
+  "350646820373790720": [
+    {
+      "tag": "#RLYGJJC8",
+      "name": "BejaYT"
+    }
+  ],
+  "644402281206251553": [
+    {
+      "tag": "#2QY2P9V29",
+      "name": "D∆®th ≈ Stömp"
+    }
+  ],
+  "874501983539691540": [
+    {
+      "tag": "#GJLJQLRLC",
+      "name": "DEATH"
+    }
+  ],
+  "1013402809749741579": [
+    {
+      "tag": "#GPPJUPGVJ",
+      "name": "Rush2Max"
+    }
+  ],
+  "1546166438149099560": [
+    {
+      "tag": "#8QG8CJG2C",
+      "name": "~Ñøßöd¥~"
+    }
+  ],
+  "1271132205300580365": [
+    {
+      "tag": "#QV0RPUY8G",
+      "name": "spring glee"
+    }
+  ],
+  "694483186834604032": [
+    {
+      "tag": "#PVLYYUPUQ",
+      "name": "jayden"
+    }
+  ],
+  "1563129337413246981": [
+    {
+      "tag": "#88URYQ8JG",
+      "name": "Ｐｙｄｒｏｘ"
+    }
+  ],
+  "1085233731515723947": [
+    {
+      "tag": "#CPC02U2",
+      "name": "$bndz ȥιɠɠყԋαȥҽ"
+    },
+    {
+      "tag": "#2GP9YQ2RQ",
+      "name": "$bndz ȥιɠɠყ"
+    }
+  ],
+  "459337947892809729": [
+    {
+      "tag": "#GGCJL0R0",
+      "name": "Toad"
+    }
+  ],
+  "611948491924832266": [
+    {
+      "tag": "#Q0Y2VQ02V",
+      "name": "SMOKE"
+    }
+  ],
+  "1331665599881023552": [
+    {
+      "tag": "#G2RYV2GQQ",
+      "name": "kingb"
+    }
+  ],
+  "756403225845825568": [
+    {
+      "tag": "#8R80JCUU",
+      "name": "яєу"
+    }
+  ],
+  "719522756575756360": [
+    {
+      "tag": "#PUCJGLV2",
+      "name": "Allen Kurian"
+    }
+  ],
+  "1551086370410201180": [
+    {
+      "tag": "#Y0JYP8GQG",
+      "name": "⚡️GODx⚡️NAMISH⚡"
+    }
+  ],
+  "412584873702719498": [
+    {
+      "tag": "#GV28U0Y2P",
+      "name": "HealthMinistry"
+    }
+  ],
+  "1563762575223558210": [
+    {
+      "tag": "#VRVGPQ9P",
+      "name": "nik"
+    },
+    {
+      "tag": "#R20YVCCP2",
+      "name": "N.I.K.Z."
+    }
+  ],
+  "1231703496017973375": [
+    {
+      "tag": "#QCPGQP0P9",
+      "name": "TO Phqs"
+    }
+  ],
+  "822485631737135104": [
+    {
+      "tag": "#QPRVYJ2QV",
+      "name": "gpgiorgi"
     }
   ]
 }

@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, PermissionFlagsBits } = require('discord.js');
 
-function canForceAction(author, member, config, guild) {
+function canForceAction(author, member, config, guild, dataManager = null) {
     if (!author) return false;
     if (guild && guild.ownerId === author.id) return true;
     if (config?.VIP_USER_IDS && config.VIP_USER_IDS.includes(author.id)) return true;
@@ -15,7 +15,8 @@ function canForceAction(author, member, config, guild) {
                     member.permissions.has("ManageRoles") ||
                     member.permissions.has("BanMembers") ||
                     member.permissions.has("KickMembers") ||
-                    member.permissions.has("ModerateMembers")
+                    member.permissions.has("ModerateMembers") ||
+                    member.permissions.has("ManageMessages")
                 ) {
                     return true;
                 }
@@ -27,11 +28,47 @@ function canForceAction(author, member, config, guild) {
             const allowedRoleIds = [
                 ...(config?.ADMIN_ROLE_IDS || []),
                 ...(config?.STAFF_ROLE_IDS || []),
-                ...(config?.ALL_STAFF_ROLE_IDS || [])
-            ].filter(Boolean);
+                ...(config?.ALL_STAFF_ROLE_IDS || []),
+                config?.ALL_LEAD_ROLE_ID,
+                config?.ALL_LEADS_ID,
+                process.env.ALL_LEAD_ROLE_ID,
+                process.env.ALL_LEADS_ID,
+                "1394230094675050616", // All Leads (FWA)
+                "1510301412280635585", // All Leads (Crimson)
+                config?.TRAINEE_ROLE_ID,
+                config?.CWL_STAFF_ROLE_ID,
+                "1513940638909988874", // Server Moderator
+                "1513942017196167389", // T-Moderator
+                "1154276716982833154", // Staff
+                "1466103376642314445", // All Staff
+                "1511650426343133274"  // All Staff 2
+            ].map(id => id ? id.toString().trim() : null).filter(Boolean);
 
-            if (allowedRoleIds.some(id => memberRoles.has(id))) {
-                return true;
+            if (dataManager && typeof dataManager.getClanRoles === "function") {
+                try {
+                    const clanRoles = dataManager.getClanRoles();
+                    for (const tag in clanRoles) {
+                        if (clanRoles[tag]?.leaderRoleId) {
+                            allowedRoleIds.push(clanRoles[tag].leaderRoleId.toString().trim());
+                        }
+                    }
+                } catch (e) { }
+            }
+
+            if (typeof memberRoles.some === "function") {
+                return memberRoles.some(r => {
+                    if (allowedRoleIds.includes(r.id)) return true;
+                    const name = (r.name || "").toLowerCase();
+                    return name.includes("all lead") || name.includes("all leader") || name.includes("leader") || name.includes("co-lead");
+                });
+            }
+
+            for (const [id, r] of memberRoles) {
+                if (allowedRoleIds.includes(id)) return true;
+                const name = (r?.name || "").toLowerCase();
+                if (name.includes("all lead") || name.includes("all leader") || name.includes("leader") || name.includes("co-lead")) {
+                    return true;
+                }
             }
         }
     }
@@ -71,11 +108,11 @@ module.exports = {
                 .setRequired(true))
         .addUserOption(option =>
             option.setName('user')
-                .setDescription('The user to force-link this tag to (Admin only)')
+                .setDescription('The user to force-link this tag to (Admin/Lead only)')
                 .setRequired(false))
         .addStringOption(option =>
             option.setName('user_id')
-                .setDescription('The Discord User ID to force-link this tag to (Admin only)')
+                .setDescription('The Discord User ID to force-link this tag to (Admin/Lead only)')
                 .setRequired(false)),
 
     async execute(input, args, context) {
@@ -169,7 +206,7 @@ module.exports = {
         // Permission check for force-link
         if (targetUser.id !== author.id) {
             const memberObj = member || (guild ? await guild.members.fetch(author.id).catch(() => null) : null);
-            const hasPerm = canForceAction(author, memberObj, config, guild);
+            const hasPerm = canForceAction(author, memberObj, config, guild, dataManager);
             if (!hasPerm) {
                 const noPermMsg = `${bwrong} You do not have permission to force-link accounts for other users.`;
                 if (isInteraction) return await input.editReply({ content: noPermMsg });

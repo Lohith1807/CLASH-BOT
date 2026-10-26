@@ -19,7 +19,7 @@
   },
   "clans": {
     "#CYQVL002": {
-      "name": "BB",
+      "name": "Blood Brothers",
       "nickName": "BB",
       "clanType": "fwa",
       "title": "{clanName} Rules",
@@ -61,17 +61,17 @@
       ]
     },
     "#2L90V8PYY": {
-      "name": "BZ Clan",
+      "name": "Blood Zero",
       "nickName": "BZ",
       "clanType": "fwa",
       "title": "{clanName} Rules",
-      "image": "",
-      "thumbnail": "",
+      "image": "https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/ebyimhltavssger4qepu",
+      "thumbnail": "https://api-assets.clashofclans.com/badges/512/EGs925iIFQd7CaZZevyV6DpVNuSbUp1KssH0txD8F_I.png",
       "footer": {
         "text": "",
         "iconURL": ""
       },
-      "color": "#E74C3C",
+      "color": "#9000ff",
       "rules": [
         "Be active daily and participate in wars and CWL.",
         "Always use both war attacks — missing attacks may lead to demotion.",

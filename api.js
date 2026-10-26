@@ -110,28 +110,24 @@ function initApi(client) {
         }
     });
 
-    // Helper to read clan rules safely
+    // Helper to read clan rules safely from data/clanrules.json
     const getClanRulesData = () => {
         const dataPath = path.join(__dirname, "data/clanrules.json");
-        const rootPath = path.join(__dirname, "clanrules.json");
-        const targetPath = fs.existsSync(dataPath) ? dataPath : (fs.existsSync(rootPath) ? rootPath : null);
-        if (!targetPath) return null;
         try {
-            return JSON.parse(fs.readFileSync(targetPath, "utf8"));
+            if (!fs.existsSync(dataPath)) return null;
+            const raw = fs.readFileSync(dataPath, "utf8");
+            if (!raw || !raw.trim()) return null;
+            return JSON.parse(raw);
         } catch (_) {
             return null;
         }
     };
 
-    // Helper to save clan rules safely
+    // Helper to save clan rules safely to data/clanrules.json
     const saveClanRulesData = (data) => {
         const dataPath = path.join(__dirname, "data/clanrules.json");
-        const rootPath = path.join(__dirname, "clanrules.json");
         const content = JSON.stringify(data, null, 2);
-        fs.writeFileSync(dataPath, content);
-        try {
-            fs.writeFileSync(rootPath, content);
-        } catch (_) {}
+        try { fs.writeFileSync(dataPath, content); } catch (_) {}
     };
 
     apiApp.get("/clanrules", (req, res) => {

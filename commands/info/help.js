@@ -112,7 +112,7 @@ const normalCommands = [
         usage: "{p}link #TAG or {p}link @user/#ID #TAG",
         aliases: [],
         example: "{p}link 1153720899715993681 #YQGQQYGV",
-        details: "Link your Clash of Clans player account to your Discord user. Admins can force-link by mentioning a user or providing their Discord User ID."
+        details: "Link your Clash of Clans player account to your Discord user. Admins and Leads can force-link by mentioning a user or providing their Discord User ID."
     },
     {
         name: "unlink",

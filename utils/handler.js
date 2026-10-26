@@ -872,9 +872,16 @@ async function handleInteraction(interaction, context) {
         }
 
         if (id.startsWith("ww_submit_update_")) {
+            if (interaction.replied || interaction.deferred) return;
             const cleanTag = id.replace("ww_submit_update_", "").toUpperCase();
             const clanTag = "#" + cleanTag;
-            
+
+            try {
+                await interaction.deferUpdate();
+            } catch (e) {
+                return;
+            }
+
             try {
                 const wwPath = path.join(__dirname, "../data/ww.json");
                 let wwData = {};
@@ -883,14 +890,21 @@ async function handleInteraction(interaction, context) {
                         wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
                     } catch (e) {}
                 }
-                
-                let clanName = clanTag;
-                try {
-                    const clan = await coc.getClan(clanTag);
-                    if (clan && clan.name) {
-                        clanName = clan.name;
-                    }
-                } catch (e) {}
+
+                const clanRoles = dataManager?.getClanRoles ? dataManager.getClanRoles() : {};
+                let clanName = clanRoles[clanTag]?.name || clanRoles[clanTag]?.nickName || wwData[clanTag]?.clanName || clanTag;
+
+                if (clanName === clanTag && coc?.getClan) {
+                    try {
+                        const clan = await Promise.race([
+                            coc.getClan(clanTag),
+                            new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 3000))
+                        ]).catch(() => null);
+                        if (clan && clan.name) {
+                            clanName = clan.name;
+                        }
+                    } catch (e) {}
+                }
 
                 // Clean up case-mismatched duplicates
                 const lowerTag = clanTag.toLowerCase();
@@ -913,11 +927,11 @@ async function handleInteraction(interaction, context) {
                 const month = String(now.getMonth() + 1).padStart(2, '0');
                 const year = now.getFullYear();
                 const todayStr = `${day}/${month}/${year}`;
-                
+
                 wwData[clanTag].lastUpdated = todayStr;
-                
+
                 fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
-                
+
                 const disabledBtn = new ButtonBuilder()
                     .setCustomId(`ww_submit_update_${cleanTag}`)
                     .setLabel("Submitted")
@@ -926,8 +940,8 @@ async function handleInteraction(interaction, context) {
                     .setDisabled(true);
                 const actionRow = new ActionRowBuilder().addComponents(disabledBtn);
 
-                await interaction.update({ components: [actionRow] });
-                await interaction.followUp({ content: `${getEmoji("gtick")} Successfully updated war weight submission time for ${clanTag} to ${todayStr}!`, flags: [MessageFlags.Ephemeral] });
+                await interaction.editReply({ components: [actionRow] }).catch(() => {});
+                await interaction.followUp({ content: `${getEmoji("gtick")} Successfully updated war weight submission time for ${clanTag} to ${todayStr}!`, flags: [MessageFlags.Ephemeral] }).catch(() => {});
 
                 try {
                     const fwaLogId = process.env.FWA_LOG_CHANNEL_ID || "1516719047348326493";
@@ -939,10 +953,12 @@ async function handleInteraction(interaction, context) {
                     console.error("Failed to send log message:", err);
                 }
             } catch (err) {
-                console.error(err);
-                if (!interaction.replied && !interaction.deferred) {
-                    await interaction.reply({ content: "❌ Error updating war weight submission time.", flags: [MessageFlags.Ephemeral] }).catch(()=>{});
+                if (err.code !== 10062 && err.code !== 40060) {
+                    console.error("Error updating war weight submission time:", err);
                 }
+                try {
+                    await interaction.followUp({ content: "❌ Error updating war weight submission time.", flags: [MessageFlags.Ephemeral] });
+                } catch (e) {}
             }
             return;
         }

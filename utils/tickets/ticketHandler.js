@@ -1504,6 +1504,10 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (customId === 'claim_ticket') {
+        const ALL_STAFF_ROLE_IDS = (config.ALL_STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+        const fallbackAllStaff = ["1466103376642314445", "1511650426343133274"];
+        const hasAllStaffRole = (ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff).some(id => member.roles.cache.has(id));
+        const hasTraineeRole = member.roles.cache.has(config.TRAINEE_ROLE_ID || '1514536928412827758');
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
         // Welcomer staff can claim any ticket type
@@ -1511,7 +1515,7 @@ async function handleTicketInteraction(interaction, context) {
         // CWL staff can also claim any ticket
         const hasCwlStaffRole = member.roles.cache.has('1448265928503726161');
 
-        const canClaim = isStaff || isAdmin || hasWelExeRole || hasCwlStaffRole;
+        const canClaim = isStaff || isAdmin || hasWelExeRole || hasCwlStaffRole || hasAllStaffRole || hasTraineeRole;
 
         if (!canClaim) {
             await interaction.reply({ content: '❌ Only Staff or Admins can claim this ticket.', flags: [MessageFlags.Ephemeral] });
@@ -1582,13 +1586,17 @@ async function handleTicketInteraction(interaction, context) {
     }
 
     if (customId === 'close_ticket') {
+        const ALL_STAFF_ROLE_IDS = (config.ALL_STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+        const fallbackAllStaff = ["1466103376642314445", "1511650426343133274"];
+        const hasAllStaffRole = (ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff).some(id => member.roles.cache.has(id));
+        const hasTraineeRole = member.roles.cache.has(config.TRAINEE_ROLE_ID || '1514536928412827758');
         const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
         const isAdmin = config.ADMIN_ROLE_IDS && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
         const hasWelExeRole = (config.WEL_EXE_STAFF_ID && member.roles.cache.has(config.WEL_EXE_STAFF_ID)) || member.roles.cache.has('1514535148119392377');
         const CWL_STAFF_ROLE_ID = config.CWL_STAFF_ROLE_ID || process.env.CWL_STAFF_ROLE_ID || '1448265928503726161';
         const hasCwlStaffRole = member.roles.cache.has(CWL_STAFF_ROLE_ID) || member.roles.cache.has('1448265928503726161');
 
-        if (!isStaff && !isAdmin && !hasWelExeRole && !hasCwlStaffRole) {
+        if (!isStaff && !isAdmin && !hasWelExeRole && !hasCwlStaffRole && !hasAllStaffRole && !hasTraineeRole) {
             await interaction.reply({ content: '❌ Only Staff or Admins can delete this ticket.', flags: [MessageFlags.Ephemeral] });
             return true;
         }

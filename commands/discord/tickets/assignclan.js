@@ -38,24 +38,14 @@ function loadClanRules(dataManager) {
         }
     }
 
-    const possiblePaths = [
-        path.join(__dirname, '../../../data/clanrules.json'),
-        path.join(__dirname, '../../../clanrules.json'),
-        path.resolve(process.cwd(), 'data/clanrules.json'),
-        path.resolve(process.cwd(), 'clanrules.json')
-    ];
-
-    for (const filePath of possiblePaths) {
-        try {
-            if (fs.existsSync(filePath)) {
-                const raw = fs.readFileSync(filePath, 'utf8');
-                if (raw && raw.trim()) {
-                    return JSON.parse(raw);
-                }
-            }
-        } catch (err) {
-            console.error(`[AssignClan] Error loading rules from ${filePath}:`, err.message);
+    const dataPath = path.join(__dirname, '../../../data/clanrules.json');
+    try {
+        if (fs.existsSync(dataPath)) {
+            const raw = fs.readFileSync(dataPath, 'utf8');
+            if (raw && raw.trim()) return JSON.parse(raw);
         }
+    } catch (err) {
+        console.error('[AssignClan] Error loading rules:', err.message);
     }
 
     return {
@@ -104,6 +94,28 @@ function resolveClanRulesConfig(allRules, clanTag, clanData, clanConfig) {
         specificConf = clansMap['#' + cleanTag];
     }
 
+    // Fallback: search through clansMap entries case-insensitively
+    if (!specificConf && clansMap && typeof clansMap === 'object') {
+        const targetCleanTag = cleanTag.toUpperCase();
+        const targetNick = nick.toUpperCase();
+        const targetName = (clanData?.name || clanConfig?.name || '').toUpperCase();
+        for (const [key, val] of Object.entries(clansMap)) {
+            if (key === 'default' || !val || typeof val !== 'object') continue;
+            const keyClean = key.toUpperCase().replace(/^#/, '');
+            const valNick = (val.nickName || '').toUpperCase();
+            const valName = (val.name || '').toUpperCase();
+            if (
+                (targetCleanTag && keyClean === targetCleanTag) ||
+                (targetNick && valNick === targetNick) ||
+                (targetName && (valName === targetName || valNick === targetName)) ||
+                (targetNick && valName === targetNick)
+            ) {
+                specificConf = val;
+                break;
+            }
+        }
+    }
+
     let rules = (specificConf && Array.isArray(specificConf.rules) && specificConf.rules.length > 0)
         ? specificConf.rules
         : (defaultConf && Array.isArray(defaultConf.rules) && defaultConf.rules.length > 0 ? defaultConf.rules : DEFAULT_CLAN_RULES);
@@ -112,13 +124,78 @@ function resolveClanRulesConfig(allRules, clanTag, clanData, clanConfig) {
         rules = DEFAULT_CLAN_RULES;
     }
 
-    const imageBanner = (specificConf && (specificConf.image || specificConf.banner || specificConf.footerImage))
-        || (defaultConf && (defaultConf.image || defaultConf.banner || defaultConf.footerImage))
-        || '';
+    const extractImage = (conf) => {
+        if (!conf || typeof conf !== 'object') return '';
+        const possible = [
+            conf.image,
+            conf.imageUrl,
+            conf.image_url,
+            conf.banner,
+            conf.bannerUrl,
+            conf.banner_url,
+            conf.footerImage,
+            conf.footer_image,
+            conf.pic
+        ];
+        for (const img of possible) {
+            if (typeof img === 'string' && img.trim().startsWith('http')) {
+                return img.trim();
+            }
+        }
+        return '';
+    };
 
-    const thumbnail = (specificConf && specificConf.thumbnail)
-        || (defaultConf && defaultConf.thumbnail)
-        || '';
+    const extractThumbnail = (conf) => {
+        if (!conf || typeof conf !== 'object') return '';
+        const possible = [
+            conf.thumbnail,
+            conf.thumbnailUrl,
+            conf.thumbnail_url,
+            conf.thumb,
+            conf.logo,
+            conf.icon,
+            conf.iconURL,
+            conf.icon_url
+        ];
+        for (const thumb of possible) {
+            if (typeof thumb === 'string' && thumb.trim().startsWith('http')) {
+                return thumb.trim();
+            }
+        }
+        return '';
+    };
+
+    const extractFooterText = (conf) => {
+        if (!conf || typeof conf !== 'object') return '';
+        const possible = [
+            typeof conf.footer === 'string' ? conf.footer : (conf.footer?.text || null),
+            conf.footerText,
+            conf.footer_text
+        ];
+        for (const txt of possible) {
+            if (typeof txt === 'string' && txt.trim().length > 0) return txt.trim();
+        }
+        return '';
+    };
+
+    const extractFooterIcon = (conf) => {
+        if (!conf || typeof conf !== 'object') return '';
+        const possible = [
+            typeof conf.footer === 'object' ? (conf.footer?.iconURL || conf.footer?.icon_url) : null,
+            conf.footerIcon,
+            conf.footer_icon
+        ];
+        for (const icon of possible) {
+            if (typeof icon === 'string' && icon.trim().startsWith('http')) return icon.trim();
+        }
+        return '';
+    };
+
+    const imageBanner = extractImage(specificConf) || extractImage(defaultConf);
+    let thumbnail = extractThumbnail(specificConf) || extractThumbnail(defaultConf);
+    if (!thumbnail && clanData?.badgeUrls) {
+        thumbnail = clanData.badgeUrls.large || clanData.badgeUrls.medium || clanData.badgeUrls.small || '';
+    }
 
     const title = (specificConf && specificConf.title)
         || (defaultConf && defaultConf.title)
@@ -128,13 +205,8 @@ function resolveClanRulesConfig(allRules, clanTag, clanData, clanConfig) {
         || (defaultConf && defaultConf.color)
         || '#E74C3C';
 
-    const rawFooterText = (specificConf && ((typeof specificConf.footer === 'string' ? specificConf.footer : specificConf.footer?.text) || specificConf.footerText))
-        || (defaultConf && ((typeof defaultConf.footer === 'string' ? defaultConf.footer : defaultConf.footer?.text) || defaultConf.footerText))
-        || '';
-
-    const footerIcon = (specificConf && ((typeof specificConf.footer === 'object' ? (specificConf.footer?.iconURL || specificConf.footer?.icon_url) : null) || specificConf.footerIcon))
-        || (defaultConf && ((typeof defaultConf.footer === 'object' ? (defaultConf.footer?.iconURL || defaultConf.footer?.icon_url) : null) || defaultConf.footerIcon))
-        || '';
+    const rawFooterText = extractFooterText(specificConf) || extractFooterText(defaultConf);
+    const footerIcon = extractFooterIcon(specificConf) || extractFooterIcon(defaultConf);
 
     return {
         title,
@@ -152,29 +224,44 @@ function resolveClanRulesConfig(allRules, clanTag, clanData, clanConfig) {
  * and the blackdot emoji from emoji.js as bullet point.
  * Accurately determines rules and image for the specific clan being assigned.
  */
-function buildClanRulesEmbed(clanTagOrClanData, clanDataOrContext, maybeClanConfig, maybeContext) {
+function buildClanRulesEmbed(clanTagOrClanData, clanDataOrContext, maybeClanConfig, maybeContext, maybeOptions) {
     try {
         let clanTag = null;
         let clanData = null;
         let clanConfig = null;
         let context = null;
+        let options = {};
 
         if (typeof clanTagOrClanData === 'string') {
             clanTag = clanTagOrClanData;
             clanData = clanDataOrContext;
             clanConfig = maybeClanConfig;
             context = maybeContext;
-        } else {
+            if (maybeOptions && typeof maybeOptions === 'object') {
+                options = maybeOptions;
+            }
+        } else if (clanTagOrClanData && typeof clanTagOrClanData === 'object' && clanTagOrClanData.tag) {
             clanData = clanTagOrClanData;
             context = clanDataOrContext;
-            clanTag = clanData?.tag;
+            clanTag = clanData.tag;
             clanConfig = maybeClanConfig;
+            if (maybeOptions && typeof maybeOptions === 'object') {
+                options = maybeOptions;
+            } else if (maybeContext && typeof maybeContext === 'object' && !maybeContext.client && !maybeContext.data) {
+                options = maybeContext;
+            }
+        } else {
+            // Null or context passed directly (for alliance/default rules)
+            context = maybeContext || clanDataOrContext || clanTagOrClanData;
+            if (maybeOptions && typeof maybeOptions === 'object') {
+                options = maybeOptions;
+            }
         }
 
         const rawRulesData = loadClanRules(context?.data);
         const rulesData = resolveClanRulesConfig(rawRulesData, clanTag, clanData, clanConfig);
 
-        // Automatically ensure official clan name is synced to clanrules.json
+        // Automatically ensure official clan name is synced to clanrules.json if present
         if (rawRulesData && rawRulesData.clans && clanTag && clanData?.name) {
             const tagWithHash = (clanTag.startsWith('#') ? clanTag : '#' + clanTag).toUpperCase();
             const targetEntry = rawRulesData.clans[tagWithHash];
@@ -200,7 +287,7 @@ function buildClanRulesEmbed(clanTagOrClanData, clanDataOrContext, maybeClanConf
         }
 
         // Title format: {Clanname} Rules or customized title template
-        const clanName = clanData?.name || 'Clan';
+        const clanName = clanData?.name || clanConfig?.name || clanConfig?.nickName || (clanTag ? 'Clan' : 'Blood Alliance');
         let rawTitle = rulesData?.title || '{clanName} Rules';
         let title = rawTitle.replace(/\{clan(name)?\}/gi, clanName);
         if (title.trim().toLowerCase() === 'clan rules') {
@@ -243,13 +330,20 @@ function buildClanRulesEmbed(clanTagOrClanData, clanDataOrContext, maybeClanConf
             .setDescription(description)
             .setColor(embedColor);
 
-        // Picture / bottom image: only show if a picture is added (e.g. from clanrules.json or dashboard)
-        const pictureUrl = rulesData?.image || rulesData?.banner || rulesData?.bannerUrl;
+        // Picture / bottom banner image: only show if a valid image URL is present
+        const pictureUrl = rulesData?.image;
         if (pictureUrl && typeof pictureUrl === 'string' && pictureUrl.trim().startsWith('http')) {
             embed.setImage(pictureUrl.trim());
         }
 
-        // Footer support: allows website dashboard to set footer text and/or icon
+        // Thumbnail / top-right image: show custom thumbnail from json only if options.includeThumbnail is not false
+        const shouldIncludeThumbnail = options.includeThumbnail !== false;
+        const thumbnailUrl = rulesData?.thumbnail;
+        if (shouldIncludeThumbnail && thumbnailUrl && typeof thumbnailUrl === 'string' && thumbnailUrl.trim().startsWith('http')) {
+            embed.setThumbnail(thumbnailUrl.trim());
+        }
+
+        // Footer support: allows website dashboard or json to set footer text and/or icon
         const rawFooterText = rulesData?.footerText;
         const footerIcon = rulesData?.footerIcon;
 
@@ -783,7 +877,10 @@ module.exports = {
 
                 try {
                     const publicClanEmbed = buildPublicClanEmbed(clanTag, clanType, clanData, context);
-                    const clanRulesEmbed = buildClanRulesEmbed(clanTag, clanData, clanConfig, context);
+                    const clanRulesEmbed = buildClanRulesEmbed(clanTag, clanData, clanConfig, context, { includeThumbnail: false });
+                    if (clanRulesEmbed) {
+                        clanRulesEmbed.setThumbnail(null);
+                    }
 
                     const embedsToSend = [publicClanEmbed];
                     if (clanRulesEmbed) {

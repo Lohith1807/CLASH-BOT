@@ -15,6 +15,7 @@ const staffApply     = require('../../../utils/tickets/embeds/staffApply');
 const allianceJoin   = require('../../../utils/tickets/embeds/allianceJoin');
 const helpAssistance = require('../../../utils/tickets/embeds/helpAssistance');
 const warClanEntry   = require('../../../utils/tickets/embeds/warClanEntry');
+const ticketDataStore = require('../../../utils/ticketDataStore');
 
 const CWL_STAFF_ROLE_ID = '1448265928503726161';
 
@@ -39,7 +40,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName('create-ticket')
         .setDescription('Manually create a ticket for a user (Admin/Staff only)')
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+        .setDefaultMemberPermissions(null)
         .addUserOption(option =>
             option
                 .setName('user')
@@ -67,13 +68,40 @@ module.exports = {
         const { config, emoji: emojiUtils } = context;
         const { guild, member } = interaction;
 
-        // Permission check
-        const isStaff = config.STAFF_ROLE_IDS && config.STAFF_ROLE_IDS.some(id => member.roles.cache.has(id));
-        const isAdmin = config.ADMIN_ROLE_IDS  && config.ADMIN_ROLE_IDS.some(id => member.roles.cache.has(id));
+        // Permission check - Allow All Staff roles, Staff roles, Admins, etc.
+        const ALL_STAFF_ROLE_IDS = (config.ALL_STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+        const STAFF_ROLE_IDS = (config.STAFF_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+        const ADMIN_ROLE_IDS = (config.ADMIN_ROLE_IDS || []).map(id => id.trim()).filter(Boolean);
+        const fallbackAllStaff = ["1466103376642314445", "1511650426343133274"];
+        const fallbackStaff = ["1513940638909988874", "1513942017196167389", "1154276716982833154"];
+
+        const allStaffRoles = [
+            ...(ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff),
+            ...(STAFF_ROLE_IDS.length > 0 ? STAFF_ROLE_IDS : fallbackStaff),
+            ...ADMIN_ROLE_IDS,
+            config.TRAINEE_ROLE_ID,
+            config.WEL_EXE_STAFF_ID,
+            config.CWL_STAFF_ROLE_ID,
+            config.ALL_LEAD_ROLE_ID,
+            config.ALL_LEADS_ID,
+            '1514535148119392377', // Welcomer/Executive Staff fallback
+            '1514536928412827758', // Trainee Staff fallback
+            '1448265928503726161'  // CWL Staff fallback
+        ].filter(Boolean);
+
+        const hasStaffId = allStaffRoles.some(id => member.roles.cache.has(id));
+        const hasStaffName = member.roles.cache?.values
+            ? Array.from(member.roles.cache.values()).some(r => r.name && r.name.toLowerCase().includes("staff"))
+            : false;
+        const isAdmin = member.permissions.has(PermissionFlagsBits.Administrator) ||
+                        member.permissions.has(PermissionFlagsBits.ManageGuild) ||
+                        member.permissions.has(PermissionFlagsBits.ManageRoles);
+        const isVip = (config.VIP_USER_IDS || []).includes(interaction.user.id);
+        const isStaff = hasStaffId || hasStaffName || isVip;
 
         if (!isStaff && !isAdmin) {
             return interaction.reply({
-                content: 'Only Admins or Staff can use this command.',
+                content: '❌ Only Admins or Staff can use this command.',
                 flags: [MessageFlags.Ephemeral]
             });
         }
@@ -154,14 +182,40 @@ module.exports = {
                     }
                 });
             }
+
+            // Add all staff roles (ALL_STAFF_ROLE_IDS) so All Staff can view the ticket
+            const allStaffList = (ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff);
+            allStaffList.forEach(roleId => {
+                if (roleId && !overwrites.find(o => o.id === roleId)) {
+                    overwrites.push({ id: roleId, type: 0, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles] });
+                }
+            });
+
             // Extra exe-staff overwrite for general help and clan change
             if (ticketTypeKey === 'help_general' || ticketTypeKey === 'help_clan_change') {
-                overwrites.push({
-                    id: '1514535148119392377',
-                    type: 0,
-                    allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
-                });
+                const welRoleId = config.WEL_EXE_STAFF_ID || '1514535148119392377';
+                if (!overwrites.find(o => o.id === welRoleId)) {
+                    overwrites.push({
+                        id: welRoleId,
+                        type: 0,
+                        allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles],
+                    });
+                }
             }
+        }
+
+        // Ensure the staff member who created the ticket can view and access the channel
+        if (!overwrites.find(o => o.id === member.id)) {
+            overwrites.push({
+                id: member.id,
+                type: 1,
+                allow: [
+                    PermissionFlagsBits.ViewChannel,
+                    PermissionFlagsBits.SendMessages,
+                    PermissionFlagsBits.ReadMessageHistory,
+                    PermissionFlagsBits.AttachFiles
+                ],
+            });
         }
 
         try {
@@ -172,6 +226,8 @@ module.exports = {
                 parent: CATEGORY_ID,
                 permissionOverwrites: overwrites,
             });
+
+            ticketDataStore.createTicket(ticketType, targetUser.id, channel.id, targetUser.username);
 
             const welcomeEmbed = embedModule.getEmbed(emojis);
 

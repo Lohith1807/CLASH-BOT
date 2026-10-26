@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
+const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 
 // Wraps a promise so it can never hang forever — rejects with a clear
 // timeout error if the underlying call never resolves/rejects on its own.
@@ -27,14 +27,14 @@ module.exports = {
         const { data: dataManager } = context;
         const clanRoles = dataManager.getClanRoles();
         const focusedValue = interaction.options.getFocused().toLowerCase();
-        
+
         const choices = Object.entries(clanRoles).map(([tag, data]) => ({
             name: `${data.nickName || "Unknown"} (${tag})`,
             value: tag
         }));
 
-        const filtered = choices.filter(choice => 
-            choice.name.toLowerCase().includes(focusedValue) || 
+        const filtered = choices.filter(choice =>
+            choice.name.toLowerCase().includes(focusedValue) ||
             choice.value.toLowerCase().includes(focusedValue)
         ).slice(0, 25);
 
@@ -56,7 +56,7 @@ module.exports = {
                 const clanList = Object.entries(clanRoles)
                     .map(([tag, data]) => `• **${data.nickName || "Unknown"}**: \`${tag}\``)
                     .join("\n");
-                return message.channel.send(`❌ Provide a clan tag. Example: \`;discord-links #CYQVL002\`\n\n**Available clans from registry:**\n${clanList || "None registered"}`).catch(() => {});
+                return message.channel.send(`❌ Provide a clan tag. Example: \`;discord-links #CYQVL002\`\n\n**Available clans from registry:**\n${clanList || "None registered"}`).catch(() => { });
             }
             await this.run(message, clanTag, context, false);
         }
@@ -83,7 +83,7 @@ module.exports = {
         try {
             if (isInteraction && !isRefresh) await source.deferReply();
 
-            const clanData = await withTimeout(coc.getClan(clanTag), 15000, "coc.getClan(clanTag)").catch(e => {
+            const clanData = await withTimeout(coc.getClan(clanTag), 20000, "coc.getClan(clanTag)").catch(e => {
                 if (e?.response?.status === 404 || e?.status === 404) {
                     return null; // clan not found
                 }
@@ -181,11 +181,11 @@ module.exports = {
                     }
                     // Truncate long usernames to prevent embed overflow
                     if (username.length > 20) username = username.substring(0, 19) + '…';
-                    
+
                     // Escape markdown to prevent Discord's regex parser from hitting complexity limits
                     // (which is what caused the emojis to stop rendering halfway through)
                     const safeUsername = username.replace(/([_*~`|])/g, '\\$1');
-                    
+
                     linkedLines.push(`${tickbox} \`${paddedName}\` ${safeUsername}`);
 
                     // Tally accounts per Discord user
@@ -307,29 +307,29 @@ module.exports = {
                     .setCustomId("discordlinks_refresh_" + clanTag.replace("#", ""))
                     .setLabel("Refresh Data")
                     .setStyle(ButtonStyle.Secondary);
-                
+
                 if (refreshEmoji) {
                     refreshBtn.setEmoji(refreshEmoji);
                 } else {
                     refreshBtn.setEmoji("🔄");
                 }
-                
+
                 const row = new ActionRowBuilder().addComponents(refreshBtn);
 
                 // Discord limits to 10 embeds per message — send in batches
                 const EMBED_LIMIT = 10;
                 const channel = isInteraction ? null : source.channel;
-                
+
                 for (let i = 0; i < allEmbeds.length; i += EMBED_LIMIT) {
                     const batch = allEmbeds.slice(i, i + EMBED_LIMIT);
                     const isLastBatch = (i + EMBED_LIMIT) >= allEmbeds.length;
                     const msgPayload = { embeds: batch };
-                    
+
                     // Only attach the refresh button to the last batch
                     if (isLastBatch) {
                         msgPayload.components = [row];
                     }
-                    
+
                     if (i === 0) {
                         // First batch: use editReply for interactions, send for messages
                         if (isInteraction) {
@@ -348,8 +348,7 @@ module.exports = {
                 }
             }
         } catch (err) {
-            console.error(err);
-            const status = err?.response?.status || err?.status;
+            const status = err?.response?.status || err?.status || err?.statusCode;
             let errMs = "❌ Error fetching clan data.";
             if (status === 404) {
                 errMs = `❌ Clan \`${clanTag}\` not found. Make sure the tag is correct.`;
@@ -357,8 +356,27 @@ module.exports = {
                 errMs = "❌ Access denied. API key may be invalid or IP not whitelisted.";
             } else if (status === 429) {
                 errMs = "❌ Rate limited. Please try again in a moment.";
+            } else if (err?.message?.includes("Timed out") || err?.code === "ECONNABORTED" || err?.message?.includes("timeout")) {
+                errMs = `❌ Clash of Clans API timed out while fetching clan \`${clanTag}\`. Supercell servers may be slow or unresponsive. Please try again in a moment.`;
+            } else if (err?.friendlyMessage) {
+                errMs = err.friendlyMessage;
             }
-            if (isInteraction) source.editReply(errMs).catch(() => {}); else source.channel.send(errMs).catch(() => {});
+
+            if (err?.message?.includes("Timed out") || err?.code === "ECONNABORTED" || err?.name === "CocApiError" || status === 404 || status === 429) {
+                console.warn(`[discord-links] Warning fetching ${clanTag}: ${err.message || errMs}`);
+            } else {
+                console.error(`[discord-links] Error fetching ${clanTag}:`, err);
+            }
+
+            if (isRefresh) {
+                try {
+                    await source.followUp({ content: errMs, flags: [MessageFlags.Ephemeral] });
+                } catch (e) { }
+            } else if (isInteraction) {
+                source.editReply(errMs).catch(() => { });
+            } else {
+                source.channel.send(errMs).catch(() => { });
+            }
         }
     }
 };
