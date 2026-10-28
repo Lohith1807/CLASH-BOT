@@ -657,38 +657,41 @@ client.on(Events.GuildMemberAdd, async (member) => {
   let welcomeImage;
   try {
     if (!cachedWelcomeBackground) {
-      cachedWelcomeBackground = await loadImage('./assets/images/welcome image.png');
+      const bgPath = fs.existsSync('./assets/new welcome image.png')
+        ? './assets/new welcome image.png'
+        : fs.existsSync('./assets/images/new welcome image.png')
+          ? './assets/images/new welcome image.png'
+          : './assets/images/welcome image.png';
+      cachedWelcomeBackground = await loadImage(bgPath);
     }
 
-    const width = 1500;
-    const height = 500;
+    const width = cachedWelcomeBackground.width;
+    const height = cachedWelcomeBackground.height;
     const canvas = createCanvas(width, height);
     const ctx = canvas.getContext('2d');
 
-    ctx.drawImage(cachedWelcomeBackground, 0, cachedWelcomeBackground.height / 2 - height / 2, cachedWelcomeBackground.width, height, 0, 0, width, height);
-
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
-    ctx.fillRect(0, 0, width, height);
+    ctx.drawImage(cachedWelcomeBackground, 0, 0, width, height);
 
     const avatarUrl = member.user.displayAvatarURL({ extension: 'png', size: 1024 });
     const avatar = await loadImage(avatarUrl);
 
-    const avatarSize = 300;
-    const centerX = width / 2;
-    const centerY = height / 2;
-    
-    const avatarX = centerX - avatarSize / 2;
-    const avatarY = centerY - avatarSize / 2;
+    // Circle slot coordinates for new welcome banner: cx: 1232, cy: 390, radius: 151
+    const centerX = 1232;
+    const centerY = 390;
+    const radius = 151;
+    const avatarSize = radius * 2;
+    const avatarX = centerX - radius;
+    const avatarY = centerY - radius;
 
     ctx.save();
     ctx.beginPath();
-    ctx.arc(centerX, centerY, avatarSize / 2, 0, Math.PI * 2, true);
+    ctx.arc(centerX, centerY, radius, 0, Math.PI * 2, true);
     ctx.closePath();
     ctx.clip();
     
     ctx.drawImage(avatar, avatarX, avatarY, avatarSize, avatarSize);
     
-    ctx.lineWidth = 10;
+    ctx.lineWidth = 8;
     ctx.strokeStyle = '#ffffff';
     ctx.stroke();
     ctx.restore();
@@ -697,7 +700,8 @@ client.on(Events.GuildMemberAdd, async (member) => {
     welcomeImage = new AttachmentBuilder(buffer, { name: 'welcome_image.jpg' });
   } catch (e) {
     console.error('Error generating canvas welcome image:', e);
-    welcomeImage = new AttachmentBuilder('./assets/images/welcome image.png', { name: 'welcome_image.jpg' });
+    const fallbackPath = fs.existsSync('./assets/new welcome image.png') ? './assets/new welcome image.png' : './assets/images/welcome image.png';
+    welcomeImage = new AttachmentBuilder(fallbackPath, { name: 'welcome_image.jpg' });
   }
 
   const embed = new EmbedBuilder()
