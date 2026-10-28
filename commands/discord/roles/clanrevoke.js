@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits , MessageFlags } = require("discord.js");
+const { checkPermission } = require("../../../utils/checkPermission.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -36,6 +37,7 @@ module.exports = {
 
     async execute(interaction, context) {
         try {
+            const { data: dataManager } = context;
             if (!checkPermission('clanrevoke', interaction)) {
                 return interaction.reply({ content: "❌ You do not have permission (Staff/Admin) to use this command.", flags: [MessageFlags.Ephemeral] });
             }

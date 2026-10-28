@@ -168,7 +168,7 @@ module.exports = {
             });
 
             dataManager.saveStrikePlayers(strikePlayers);
-            await this.sendUnlinkedAlert(interaction, clanTag, playerName, tag, reason, weight, totalStrikes, dataManager);
+            await this.sendUnlinkedAlert(interaction, clanTag, playerName, tag, reason, weight, totalStrikes, dataManager, clanName);
 
             if (totalStrikes >= 6 && !account.sixStrikeAlertSent) {
                 account.sixStrikeAlertSent = true;
@@ -274,7 +274,7 @@ module.exports = {
         }
     },
 
-    async sendUnlinkedAlert(interaction, clanTag, playerName, tag, reason, weight, totalStrikes, dataManager) {
+    async sendUnlinkedAlert(interaction, clanTag, playerName, tag, reason, weight, totalStrikes, dataManager, clanName) {
         if (!clanTag && !playerName) return;
         const { EmbedBuilder } = require('discord.js');
         const clanRoles = dataManager.getClanRoles();

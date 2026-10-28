@@ -1,4 +1,5 @@
 const { PermissionFlagsBits } = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
 
 function buildEmbed(EmbedBuilder, title, description, color = 0x2ecc71) {
     return new EmbedBuilder()
@@ -61,7 +62,6 @@ module.exports = {
 
         try {
             const { Collection } = require('discord.js');
-const { checkPermission } = require('../../../utils/checkPermission.js');
             const allMembers = new Collection();
             let lastId = '0';
             while (true) {

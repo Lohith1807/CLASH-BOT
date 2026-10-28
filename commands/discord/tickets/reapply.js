@@ -15,6 +15,7 @@ module.exports = {
             const isInteraction = arg3 === undefined;
         const context = isInteraction ? arg2 : arg3;
         const args = isInteraction ? [] : arg2;
+        const executorUser = isInteraction ? source.user : (source.author || source.user);
         
         const { config, data, coc, emoji } = context;
         const { getEmoji } = emoji;

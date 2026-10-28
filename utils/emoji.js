@@ -120,7 +120,10 @@ const emojis = {
   dh: "1561226727131316397",
   au: "1561226735415201794",
   kk: "1561226741370986530",
-  blackdot: "1561985458173378591"
+  blackdot: "1561985458173378591",
+  speaker: "1565049153183285249",
+  rules: "1504385352528297985",
+  announcement: "1565049153183285249"
 };
 // Function to get animated emoji (with <a:>), else static emoji (<:>)
 const animatedEmojis = new Set([
@@ -167,7 +170,10 @@ const animatedEmojis = new Set([
   "lightbluedot",
   "sleep_coc",
   "leftarrow",
-  "blackdot"
+  "blackdot",
+  "speaker",
+  "rules",
+  "announcement"
 ]);
 
 const getEmoji = (name) => {

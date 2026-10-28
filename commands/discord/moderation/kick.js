@@ -24,6 +24,7 @@ module.exports = {
         ),
 
     async execute(interaction, context) {
+        const { config } = context;
         if (!checkPermission('kick', interaction)) {
             return interaction.reply({ content: '❌ You do not have permission to use this command.', flags: [MessageFlags.Ephemeral] });
         }

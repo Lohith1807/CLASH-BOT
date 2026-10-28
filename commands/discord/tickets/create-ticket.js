@@ -153,13 +153,6 @@ module.exports = {
                 });
             }
 
-            // Add all staff roles (ALL_STAFF_ROLE_IDS) so All Staff can view the ticket
-            const allStaffList = (ALL_STAFF_ROLE_IDS.length > 0 ? ALL_STAFF_ROLE_IDS : fallbackAllStaff);
-            allStaffList.forEach(roleId => {
-                if (roleId && !overwrites.find(o => o.id === roleId)) {
-                    overwrites.push({ id: roleId, type: 0, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ReadMessageHistory, PermissionFlagsBits.AttachFiles] });
-                }
-            });
 
             // Extra exe-staff overwrite for general help and clan change
             if (ticketTypeKey === 'help_general' || ticketTypeKey === 'help_clan_change') {

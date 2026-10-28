@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const PERMISSIONS_FILE = path.join(__dirname, '../config/permissions.json');
+let permissionsData = {};
 let lastMtimeMs = 0;
 
 function loadPermissions() {

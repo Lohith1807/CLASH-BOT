@@ -277,6 +277,12 @@ client.on("messageCreate", async (message) => {
     } else if (commandName === "as") {
       const command = require("./commands/discord/roles/as.js");
       await command.execute(message, args, context);
+    } else if (commandName === "wel") {
+      const command = require("./commands/discord/moderation/wel.js");
+      await command.execute(message, args, context);
+    } else if (commandName === "joinus" || commandName === "howtojoin") {
+      const command = require("./commands/discord/moderation/joinus.js");
+      await command.execute(message, args, context);
     } else if (commandName === "ww") {
       const command = require("./commands/coc/war/ww.js");
       await command.execute(message, args, context);
@@ -311,6 +317,10 @@ client.on("messageCreate", async (message) => {
 
     } else if (commandName === "wel") {
       const command = require("./commands/discord/moderation/wel.js");
+      await command.execute(message, args, context);
+
+    } else if (commandName === "joinus" || commandName === "howtojoin") {
+      const command = require("./commands/discord/moderation/joinus.js");
       await command.execute(message, args, context);
 
     } else if (commandName === "cwl") {
@@ -695,13 +705,13 @@ client.on(Events.GuildMemberAdd, async (member) => {
     .setAuthor({ name: `✨ Welcome to 『✧ ${member.guild.name} ✧』`, iconURL: member.guild.iconURL({ dynamic: true, size: 1024 }) })
     .setDescription(
       `Welcome **${member.user.username}** to **『✧ Blood Alliance ✧』** ${getEmoji("heart")}\n\n` +
-      `We Are A family of FWA & WAR clans focused on Farm Wars, Serious Wars, CWL, growth, and organized gameplay.\n\n` +
       `**═══ ${getEmoji("alaram")} Getting Started ═══**\n\n` +
-      `${getEmoji("bluedot")} **Link Your Account** in <#1398351500895588352>\n` +
-      `Use \`;link #PlayerTag\`\n` +
-      `Example: \`;link #ABC123XYZ\`\n\n` +
-      `${getEmoji("orangedot")} **Clan Verification**\n` +
-      `Joining or already in a clan? Verify your ID in <#1154111265258614795>.\n\n` +
+      `${getEmoji("bluefwa")} **How to Join Us**\n` +
+      `${getEmoji("parrow")} Head over to <#1565044921805705356> to learn how to join our alliance.\n\n` +
+      `${getEmoji("book")} **Rules of Blood Alliance**\n` +
+      `${getEmoji("parrow")} Please read and follow <#1154110353299492966> to keep our community organized.\n\n` +
+      `${getEmoji("speaker")} **Event Updates**\n` +
+      `${getEmoji("parrow")} Stay tuned to <#1154374955010633848> for upcoming events, important announcements, and clan updates.\n\n` +
       `**═══ ${getEmoji("chain")} Official Website ═══**\n\n` +
       `${getEmoji("bluedot")} **Blood Alliance Website**\n` +
       `${getEmoji("arrow")} [Click Here To redirect to webpage](https://blood-alliance.vercel.app)\n\n` +
@@ -709,7 +719,7 @@ client.on(Events.GuildMemberAdd, async (member) => {
       `${require("./utils/dataManager.js").getRecruitingTHs().map(th => getEmoji(th.toLowerCase())).join(" ")}`
     )
     .setImage('attachment://welcome_image.jpg')
-    .setFooter({ text: "❤️ Enjoy your stay and welcome to the family!", iconURL: member.user.displayAvatarURL({ dynamic: true, size: 1024 }) })
+    .setFooter({ text: "⚔️ Blood Alliance | Stronger Together!", iconURL: member.user.displayAvatarURL({ dynamic: true, size: 1024 }) })
     .setTimestamp();
 
   const row = new ActionRowBuilder().addComponents(

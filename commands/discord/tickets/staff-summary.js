@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require("discord.js");
+const { checkPermission } = require("../../../utils/checkPermission.js");
 const staffTicketTracker = require("../../../utils/staffTicketTracker");
 
 module.exports = {

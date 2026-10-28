@@ -1,4 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } = require("discord.js");
+const { checkPermission } = require("../../../utils/checkPermission.js");
 const { getEmoji } = require("../../../utils/emoji.js");
 const { createCanvas, loadImage } = require('@napi-rs/canvas');
 
@@ -94,13 +95,13 @@ module.exports = {
       .setAuthor({ name: `✨ Welcome to 『✧ ${message.guild.name} ✧』`, iconURL: message.guild.iconURL({ dynamic: true, size: 1024 }) })
       .setDescription(
         `Welcome ${displayNameText}to **『✧ Blood Alliance ✧』** ${getEmoji("heart")}\n\n` +
-        `We Are A family of FWA & WAR clans focused on Farm Wars, Serious Wars, CWL, growth, and organized gameplay.\n\n` +
         `**═══ ${getEmoji("alaram")} Getting Started ═══**\n\n` +
-        `${getEmoji("bluedot")} **Link Your Account** in <#1398351500895588352>\n` +
-        `Use \`;link #PlayerTag\`\n` +
-        `Example: \`;link #ABC123XYZ\`\n\n` +
-        `${getEmoji("orangedot")} **Clan Verification**\n` +
-        `Joining or already in a clan? Verify your ID in <#1154111265258614795>.\n\n` +
+        `${getEmoji("bluefwa")} **How to Join Us**\n` +
+        `${getEmoji("parrow")} Head over to <#1565044921805705356> to learn how to join our alliance.\n\n` +
+        `${getEmoji("book")} **Rules of Blood Alliance**\n` +
+        `${getEmoji("parrow")} Please read and follow <#1154110353299492966> to keep our community organized.\n\n` +
+        `${getEmoji("speaker")} **Event Updates**\n` +
+        `${getEmoji("parrow")} Stay tuned to <#1154374955010633848> for upcoming events, important announcements, and clan updates.\n\n` +
         `**═══ ${getEmoji("chain")} Official Website ═══**\n\n` +
         `${getEmoji("bluedot")} **Blood Alliance Website**\n` +
         `${getEmoji("arrow")} [Click Here To redirect to webpage](https://blood-alliance.vercel.app)\n\n` +
@@ -108,7 +109,7 @@ module.exports = {
         `${require("../../../utils/dataManager.js").getRecruitingTHs().map(th => getEmoji(th.toLowerCase())).join(" ")}`
       )
       .setImage('attachment://welcome_image.jpg')
-      .setFooter({ text: "❤️ Enjoy your stay and welcome to the family!", iconURL: displayUser.displayAvatarURL({ dynamic: true, size: 1024 }) })
+      .setFooter({ text: "⚔️ Blood Alliance | Stronger Together!", iconURL: displayUser.displayAvatarURL({ dynamic: true, size: 1024 }) })
       .setTimestamp();
 
     for (let i = 0; i < count; i++) {

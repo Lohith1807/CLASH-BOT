@@ -451,6 +451,14 @@ const staffCommands = [
         details: "Test or verify welcome banner generator and member join card processes."
     },
     {
+        name: "joinus",
+        description: "Send the official How to Join Us guide message and banner",
+        usage: "{p}joinus",
+        aliases: ["howtojoin"],
+        example: "{p}joinus",
+        details: "Posts the guide for new applicants to link and apply, and existing members to get roles."
+    },
+    {
         name: "war_mail",
         description: "Send war mail with a specified decision to a clan's mail channel",
         usage: "/war_mail clan:<tag/name> decision:<win/lose/mis/bl>",

@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits , MessageFlags } = require("discord.js");
+const { checkPermission } = require("../../../utils/checkPermission.js");
 const { getEmoji, getEmojiObject } = require("../../../utils/emoji.js");
 
 module.exports = {
