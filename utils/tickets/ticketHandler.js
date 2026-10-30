@@ -23,6 +23,7 @@ const helpAssistance = require('./embeds/helpAssistance');
 const warClanEntry = require('./embeds/warClanEntry');
 const staffTicketTracker = require('../staffTicketTracker');
 const ticketDataStore = require('../ticketDataStore');
+const { formatTicketName, getTicketType } = require('./ticketNameUtils');
 
 const EMOJI_NAMES = {
     check: 'coc',
@@ -1564,12 +1565,11 @@ async function handleTicketInteraction(interaction, context) {
             }
         } catch (e) {}
 
-        // Add green dot at start of ticket channel name
+        // Add yellow dot at start of ticket channel name on claim
         try {
             const currentName = interaction.channel.name;
-            if (!currentName.includes('🟢')) {
-                const cleanName = currentName.replace(/^[-_\s]*[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '').replace(/^[-_\s]+/, '');
-                const newChannelName = `🟢-${cleanName}`;
+            const newChannelName = formatTicketName(currentName, 'claimed');
+            if (currentName !== newChannelName) {
                 await interaction.channel.setName(newChannelName);
             }
         } catch (e) {
@@ -1736,7 +1736,7 @@ async function handleTicketInteraction(interaction, context) {
         try { await interaction.deferReply(); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         const isApprove = customId === 'approve_ticket';
-        const type = interaction.channel.name.split('-')[0].toLowerCase();
+        const type = getTicketType(interaction.channel.name);
 
         let ticketOwnerId = interaction.channel.topic;
         let ticketOwner = null;
@@ -1775,7 +1775,7 @@ async function handleTicketInteraction(interaction, context) {
         let message = '';
         const moderator = interaction.user;
 
-        if (type === 'clan') {
+        if (type === 'clan' || type === 'fwa' || type === 'war') {
             if (isApprove) {
                 message = `Hey ${userMention}! 🌟\n\n` +
                     `We are delighted to inform you that you have been **selected** for our clans by ${moderator}! ${await getAppEmoji('coc')}\n\n` +
@@ -1834,6 +1834,17 @@ async function handleTicketInteraction(interaction, context) {
         }
 
         statusEmbed.setDescription(message);
+
+        // Update channel name with green/red dot
+        try {
+            const currentName = interaction.channel.name;
+            const newChannelName = formatTicketName(currentName, isApprove ? 'approved' : 'rejected');
+            if (currentName !== newChannelName) {
+                await interaction.channel.setName(newChannelName);
+            }
+        } catch (err) {
+            console.error('Failed to change channel name on button action:', err);
+        }
 
         await interaction.editReply({ content: ticketOwner ? `${ticketOwner}` : null, embeds: [statusEmbed] });
         return true;

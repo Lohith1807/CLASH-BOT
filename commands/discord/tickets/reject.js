@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const { checkPermission } = require('../../../utils/checkPermission.js');
 const ticketConfigs = require('../../../utils/tickets/ticketConfigs.js');
+const { formatTicketName, getTicketType } = require('../../../utils/tickets/ticketNameUtils.js');
 
 module.exports = {
   name: "reject",
@@ -69,9 +70,9 @@ module.exports = {
 
     const userMention = ticketOwner ? `<@${ticketOwner.id}>` : 'there';
     
-    // 2. Detect the ticket type automatically (ignoring approved/rejected prefixes)
-    const baseChannelName = channel.name.replace(/^(approved|rejected)-/, '');
-    const type = baseChannelName.split('-')[0].toLowerCase();
+    // 2. Detect the ticket type automatically (ignoring status dots and prefixes)
+
+    const type = getTicketType(channel.name);
     
     // 6. Get optional reason argument
     const reason = interaction.customReason || (interaction.options ? interaction.options.getString('reason') : null);
@@ -110,11 +111,13 @@ module.exports = {
     );
 
     const currentName = channel.name;
-    const baseName = currentName.replace(/^(approved|rejected)-/, '');
-    const newChannelName = `rejected-${baseName}`;
+
+    const newChannelName = formatTicketName(currentName, 'rejected');
 
     try {
-        await channel.setName(newChannelName);
+        if (currentName !== newChannelName) {
+            await channel.setName(newChannelName);
+        }
         embed.addFields({ name: 'Ticket Name', value: `Changed to \`${newChannelName}\``, inline: false });
     } catch (err) {
         console.error('Failed to change channel name:', err);

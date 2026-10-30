@@ -2,6 +2,7 @@ const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits, ActionRowBuilder
 const { checkPermission } = require('../../../utils/checkPermission.js');
 const staffTicketTracker = require("../../../utils/staffTicketTracker");
 const ticketDataStore = require("../../../utils/ticketDataStore");
+const { formatTicketName } = require('../../../utils/tickets/ticketNameUtils.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -152,12 +153,12 @@ module.exports = {
             }
         }
 
-        // Ensure green dot is present on channel name
+        // Ensure yellow dot is present on channel name when claimed
         try {
             const currentName = interaction.channel.name;
-            if (!currentName.includes('🟢')) {
-                const cleanName = currentName.replace(/^[-_\s]*[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '').replace(/^[-_\s]+/, '');
-                await interaction.channel.setName(`🟢-${cleanName}`);
+            const newChannelName = formatTicketName(currentName, 'claimed');
+            if (currentName !== newChannelName) {
+                await interaction.channel.setName(newChannelName);
             }
         } catch (e) {
             console.error("Error updating channel name on handle-claim:", e);

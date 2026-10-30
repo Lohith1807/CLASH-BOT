@@ -14,6 +14,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const { cleanTicketName } = require('./tickets/ticketNameUtils');
 
 const DATA_PATH = path.join(__dirname, '..', 'data', 'ticketData.json');
 
@@ -73,7 +74,7 @@ function saveStore(store) {
  */
 function resolveCategory(channelName) {
     if (!channelName) return null;
-    const lower = channelName.replace(/^[-_\s]*[🟢🔴🟡⚪🔵]\s*[-_]?\s*/, '').replace(/^[-_\s]+/, '').toLowerCase();
+    const lower = cleanTicketName(channelName).toLowerCase();
 
     // FWA-Entry and Clan-Entry both map to 'fwa'
     if (lower.startsWith('fwa-entry') || lower.startsWith('fwa-') || lower.startsWith('clan-entry') || lower.startsWith('clan-')) return 'fwa';
