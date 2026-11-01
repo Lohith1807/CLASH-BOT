@@ -131,16 +131,8 @@ async function dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clan
         return `<t:${unixTime}:R>`;
     };
 
-    let warRules = "";
-    if (matchType === "Blacklisted Match") {
-        warRules = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n${emojiUtils.getEmoji('cocfight')} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!`;
-    } else if (matchType === "FWA Match") {
-        if (isWin) {
-            warRules = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n${emojiUtils.getEmoji('rarrow')} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n${emojiUtils.getEmoji('rarrow')} 2nd attack - ⭐(1 Star) on any base.\n${emojiUtils.getEmoji('rarrow')} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n${emojiUtils.getEmoji('rarrow')} Use both attacks\n${emojiUtils.getEmoji('rarrow')} Don’t rush attacks\n${emojiUtils.getEmoji('rarrow')} Ask if you need help`;
-        } else {
-            warRules = `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n${emojiUtils.getEmoji('rarrow')} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n${emojiUtils.getEmoji('rarrow')} 2nd attack - ⭐(1 Star) on any base.\n${emojiUtils.getEmoji('rarrow')} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n${emojiUtils.getEmoji('rarrow')} Use both attacks\n${emojiUtils.getEmoji('rarrow')} No extra attacks without permission\n${emojiUtils.getEmoji('rarrow')} Don’t rush attacks\n${emojiUtils.getEmoji('rarrow')} Ask if you need help`;
-        }
-    }
+    const dataManager = require("../../../utils/dataManager.js");
+    const warRules = dataManager.formatMailRules(matchType, isWin, emojiUtils, clanTag);
 
     const embed = new EmbedBuilder()
         .setTitle(`${clanData.name} vs ${opponentName}`)
@@ -163,7 +155,6 @@ async function dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clan
         .setFooter({ text: `✧ ${clanData.name} ✧`, iconURL: clanData.badgeUrls.small })
         .setTimestamp();
 
-    const dataManager = require("../../../utils/dataManager.js");
     const warTypeData = dataManager.getWarType();
     warTypeData[clanTag] = {
         wartype: matchType,

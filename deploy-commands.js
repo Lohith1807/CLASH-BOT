@@ -4,7 +4,15 @@ const fs = require('fs');
 const path = require('path');
 
 const TOKEN = config.DISCORD_TOKEN;
-const CLIENT_ID = config.CLIENT_ID;
+let CLIENT_ID = config.CLIENT_ID;
+if (TOKEN) {
+    try {
+        const tokenAppId = Buffer.from(TOKEN.split('.')[0], 'base64').toString('ascii');
+        if (/^\d+$/.test(tokenAppId) && tokenAppId !== CLIENT_ID) {
+            CLIENT_ID = tokenAppId;
+        }
+    } catch {}
+}
 const GUILD_ID = config.GUILD_ID || '1153720899715993681';
 const TEST_SERVER_ID = config.EMOJI_SERVER_ID || process.env.EMOJI_SERVER_ID;
 
@@ -65,11 +73,15 @@ const rest = new REST({ version: '10' }).setToken(TOKEN);
 
         if (TEST_SERVER_ID) {
             console.log(`📡 Registering ${testCommands.length} slash commands to TEST server (${TEST_SERVER_ID})...`);
-            await rest.put(
-                Routes.applicationGuildCommands(CLIENT_ID, TEST_SERVER_ID),
-                { body: testCommands }
-            );
-            console.log('✅ Test server slash commands registered successfully.');
+            try {
+                await rest.put(
+                    Routes.applicationGuildCommands(CLIENT_ID, TEST_SERVER_ID),
+                    { body: testCommands }
+                );
+                console.log('✅ Test server slash commands registered successfully.');
+            } catch (testErr) {
+                console.warn(`⚠️ Note: Could not register test server commands (${testErr.message}). Main server commands are already active!`);
+            }
         } else {
             console.log('⚠️ No EMOJI_SERVER_ID defined in environment. Skipping test server command registration.');
         }

@@ -430,6 +430,82 @@ function saveReapplyReasons(data) {
     }
 }
 
+let emojiFallback = null;
+try {
+    emojiFallback = require("./emoji.js");
+} catch (_) {}
+
+/**
+ * Default War Mail Rules for FWA / Blacklist / Mismatch
+ */
+const DEFAULT_MAIL_RULES = {
+    win: {
+        header: "🟩 **This war has been declared a win as per FWA rules.**",
+        title: "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+        instructions: [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+        ],
+        important: [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+        ],
+        text: "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+    },
+    lose: {
+        header: "🟥 **This war has been declared a loss as per FWA rules.**",
+        title: "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+        instructions: [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+        ],
+        important: [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+        ],
+        text: "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+    },
+    bl: {
+        header: "🛡️ This is a blacklisted war — we're not backing down!",
+        title: "{cocfight} **Instructions:**",
+        instructions: [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+        ],
+        goals: [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+        ],
+        notes: [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+        ],
+        text: "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+    },
+    mis: {
+        header: "⚠️ **This is a mismatch war against a non-FWA clan!**",
+        title: "{cocfight} **Instructions:**",
+        instructions: [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+        ],
+        important: [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+        ],
+        text: "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+    }
+};
+
 /**
  * Get clan rules configuration
  * @returns {Object|null} Clan rules object or null
@@ -451,28 +527,42 @@ const DEFAULT_RULES_CONFIG = {
             "Respect all members — teamwork builds victory.",
             "No rushed bases allowed in main clan — use feeder clans if needed.",
             "Maintain a healthy competitive spirit, no toxicity."
-        ]
+        ],
+        warrules: DEFAULT_MAIL_RULES
     },
     clans: {}
 };
 
 function getClanRules() {
+    let config = null;
     try {
         if (fs.existsSync(PATHS.clanrules)) {
             const raw = fs.readFileSync(PATHS.clanrules, "utf8");
             if (raw && raw.trim()) {
-                return JSON.parse(raw);
+                config = JSON.parse(raw);
             }
         }
     } catch (err) {
         console.error(`Error reading ${PATHS.clanrules}:`, err.message);
     }
 
-    try {
-        saveClanRules(DEFAULT_RULES_CONFIG);
-    } catch (_) {}
+    if (!config) {
+        config = { ...DEFAULT_RULES_CONFIG };
+        try {
+            saveClanRules(config);
+        } catch (_) {}
+        return config;
+    }
 
-    return DEFAULT_RULES_CONFIG;
+    if (!config.default) {
+        config.default = { ...DEFAULT_RULES_CONFIG.default };
+    }
+
+    if (!config.default.warrules && !config.default.mailrules) {
+        config.default.warrules = { ...DEFAULT_MAIL_RULES };
+    }
+
+    return config;
 }
 
 /**
@@ -524,7 +614,8 @@ function addClanRuleEntry(clanTag, data = {}) {
             color: existing.color || "#E74C3C",
             rules: (Array.isArray(existing.rules) && existing.rules.length > 0)
                 ? existing.rules
-                : (Array.isArray(data.rules) && data.rules.length > 0 ? data.rules : [...defaultRules])
+                : (Array.isArray(data.rules) && data.rules.length > 0 ? data.rules : [...defaultRules]),
+            warrules: existing.warrules || data.warrules || rulesConfig.default?.warrules || DEFAULT_MAIL_RULES
         };
 
         saveClanRules(rulesConfig);
@@ -567,6 +658,230 @@ function removeClanRuleEntry(clanTag) {
     }
 }
 
+/**
+ * Build formatted mail rule text from structured rule object
+ * @param {Object} ruleObj - Rule object with header, title, instructions, etc.
+ * @returns {string} Formatted text with placeholders {rarrow}, {cocfight}
+ */
+function buildMailRuleText(ruleObj) {
+    if (!ruleObj) return "";
+    let parts = [];
+    if (ruleObj.header) {
+        parts.push(`\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n${ruleObj.header}\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+    }
+    if (ruleObj.title) {
+        parts.push(ruleObj.title);
+    }
+    const isWinOrLose = (ruleObj.title && (ruleObj.title.includes("WIN") || ruleObj.title.includes("LOSE"))) || (ruleObj.header && (ruleObj.header.toLowerCase().includes("win") || ruleObj.header.toLowerCase().includes("loss")));
+    const defaultBullet = isWinOrLose ? "{rarrow}" : "🔸";
+    const bullet = ruleObj.bullet || defaultBullet;
+
+    if (Array.isArray(ruleObj.instructions) && ruleObj.instructions.length > 0) {
+        parts.push(ruleObj.instructions.map(item => `${bullet} ${item}`).join("\n"));
+    }
+    if (Array.isArray(ruleObj.goals) && ruleObj.goals.length > 0) {
+        parts.push(`📌 **War Goals:**\n` + ruleObj.goals.join("\n"));
+    }
+    if (Array.isArray(ruleObj.important) && ruleObj.important.length > 0) {
+        const impBullet = isWinOrLose ? "{rarrow}" : "🔸";
+        parts.push(`📌 **Important**\n\n` + ruleObj.important.map(item => `${impBullet} ${item}`).join("\n"));
+    }
+    if (Array.isArray(ruleObj.notes) && ruleObj.notes.length > 0) {
+        parts.push(ruleObj.notes.join("\n\n"));
+    }
+    return parts.join("\n\n");
+}
+
+/**
+ * Replace emoji placeholders ({rarrow}, {cocfight}) with actual Discord emoji strings
+ * @param {string} text - Raw template text
+ * @param {Object} emojiUtils - Discord client emoji utility
+ * @returns {string} Text with emojis resolved
+ */
+function replaceEmojiPlaceholders(text, emojiUtils) {
+    if (!text || typeof text !== "string") return "";
+    const getE = (name) => {
+        if (emojiUtils && typeof emojiUtils.getEmoji === "function") {
+            const e = emojiUtils.getEmoji(name);
+            if (e) return e;
+        }
+        if (emojiFallback && typeof emojiFallback.getEmoji === "function") {
+            const e = emojiFallback.getEmoji(name);
+            if (e) return e;
+        }
+        return null;
+    };
+
+    const rarrow = getE("rarrow") || "▶";
+    const cocfight = getE("cocfight") || "⚔️";
+
+    return text
+        .replace(/\{rarrow\}/g, rarrow)
+        .replace(/\{cocfight\}/g, cocfight);
+}
+
+/**
+ * Get all mail/war rules merged with defaults
+ * Checks default.warrules, default.mailrules, or root mailrules
+ * @returns {Object} { win, lose, bl, mis }
+ */
+function getMailRules() {
+    const config = getClanRules();
+    const source = config?.default?.warrules 
+        || config?.default?.mailrules 
+        || config?.warrules 
+        || config?.mailrules 
+        || {};
+    return {
+        win: (source.win && Object.keys(source.win).length > 0) ? source.win : DEFAULT_MAIL_RULES.win,
+        lose: (source.lose && Object.keys(source.lose).length > 0) ? source.lose : DEFAULT_MAIL_RULES.lose,
+        bl: (source.bl && Object.keys(source.bl).length > 0) ? source.bl : DEFAULT_MAIL_RULES.bl,
+        mis: (source.mis && Object.keys(source.mis).length > 0) ? source.mis : DEFAULT_MAIL_RULES.mis
+    };
+}
+
+/**
+ * Get mail/war rule for a specific type (win, lose, bl, mis), optionally checking clan overrides
+ * @param {string} type - "win" | "lose" | "bl" | "mis"
+ * @param {string|null} clanTag - Optional clan tag for clan-level override
+ * @returns {Object} Rule object
+ */
+function getMailRule(type, clanTag = null) {
+    const t = (type || "").toLowerCase().trim();
+    let key = "win";
+    if (t === "win" || t === "w") key = "win";
+    else if (t === "lose" || t === "loss" || t === "l") key = "lose";
+    else if (t === "bl" || t.includes("black")) key = "bl";
+    else if (t === "mis" || t.includes("mis")) key = "mis";
+    else if (DEFAULT_MAIL_RULES[t]) key = t;
+
+    const defaultRule = DEFAULT_MAIL_RULES[key] || DEFAULT_MAIL_RULES.win;
+    const rulesConfig = getClanRules();
+
+    if (clanTag) {
+        const tag = (clanTag.startsWith('#') ? clanTag : '#' + clanTag).toUpperCase();
+        const tagNoHash = tag.replace('#', '');
+        const clanEntry = rulesConfig?.clans?.[tag] || rulesConfig?.clans?.[tagNoHash];
+        const clanRules = clanEntry?.warrules || clanEntry?.mailrules;
+        if (clanRules?.[key] && Object.keys(clanRules[key]).length > 0) {
+            return { ...defaultRule, ...clanRules[key] };
+        }
+    }
+
+    const defaultRules = rulesConfig?.default?.warrules 
+        || rulesConfig?.default?.mailrules 
+        || rulesConfig?.warrules 
+        || rulesConfig?.mailrules;
+    const savedRule = defaultRules?.[key];
+    if (savedRule && Object.keys(savedRule).length > 0) {
+        return { ...defaultRule, ...savedRule };
+    }
+
+    return { ...defaultRule };
+}
+
+/**
+ * Format mail rule text into Discord-ready string
+ * @param {Object|string} rule - Rule object or raw text string
+ * @param {Object} emojiUtils - Emoji utility
+ * @returns {string} Formatted war rule string
+ */
+function formatMailRuleText(rule, emojiUtils) {
+    if (!rule) return "";
+    let rawText = "";
+    if (typeof rule === "string") {
+        rawText = rule;
+    } else if (typeof rule === "object") {
+        rawText = (rule.text && typeof rule.text === "string" && rule.text.trim()) 
+            ? rule.text 
+            : buildMailRuleText(rule);
+    }
+    return replaceEmojiPlaceholders(rawText, emojiUtils);
+}
+
+/**
+ * Main helper to format war mail rules for send-fwamails.js and test scripts
+ * @param {string} matchType - e.g. "FWA Match", "Blacklisted Match", "Mismatch"
+ * @param {boolean} isWin - true if win, false if loss
+ * @param {Object} emojiUtils - emoji utility
+ * @param {string|null} clanTag - optional clan tag
+ * @returns {string} Formatted rules text for Discord embed
+ */
+function formatMailRules(matchType, isWin, emojiUtils, clanTag = null) {
+    let ruleType = "win";
+    const m = (matchType || "").toLowerCase();
+    if (m.includes("black") || m === "bl") {
+        ruleType = "bl";
+    } else if (m.includes("mis")) {
+        ruleType = "mis";
+    } else if (m.includes("fwa") || m.includes("match")) {
+        ruleType = isWin ? "win" : "lose";
+    } else {
+        ruleType = isWin ? "win" : "lose";
+    }
+
+    const rule = getMailRule(ruleType, clanTag);
+    return formatMailRuleText(rule, emojiUtils);
+}
+
+/**
+ * Save updated war rules in clanrules.json under default.warrules
+ * @param {Object} mailRules - { win?, lose?, bl?, mis? }
+ * @returns {Object} Updated war rules
+ */
+function saveMailRules(mailRules) {
+    const rulesConfig = getClanRules();
+    if (!rulesConfig.default) rulesConfig.default = {};
+    if (!rulesConfig.default.warrules) {
+        rulesConfig.default.warrules = rulesConfig.default.mailrules || {};
+    }
+    rulesConfig.default.warrules = {
+        ...rulesConfig.default.warrules,
+        ...mailRules
+    };
+    saveClanRules(rulesConfig);
+    return rulesConfig.default.warrules;
+}
+
+/**
+ * Update a single war rule (win, lose, bl, mis) in clanrules.json under default.warrules
+ * @param {string} type - "win" | "lose" | "bl" | "mis"
+ * @param {Object|string} ruleData - Updated rule data
+ * @returns {Object} Updated rule
+ */
+function updateMailRule(type, ruleData) {
+    const t = (type || "").toLowerCase().trim();
+    let key = "win";
+    if (t === "win" || t === "w") key = "win";
+    else if (t === "lose" || t === "loss" || t === "l") key = "lose";
+    else if (t === "bl" || t.includes("black")) key = "bl";
+    else if (t === "mis" || t.includes("mis")) key = "mis";
+    else key = t;
+
+    const rulesConfig = getClanRules();
+    if (!rulesConfig.default) rulesConfig.default = {};
+    if (!rulesConfig.default.warrules) {
+        rulesConfig.default.warrules = rulesConfig.default.mailrules || {};
+    }
+
+    const current = rulesConfig.default.warrules[key] || DEFAULT_MAIL_RULES[key] || {};
+    let updated;
+    if (typeof ruleData === "string") {
+        updated = { ...current, text: ruleData };
+    } else if (typeof ruleData === "object" && ruleData !== null) {
+        updated = { ...current, ...ruleData };
+        if (ruleData.text === undefined && (ruleData.instructions || ruleData.header || ruleData.title || ruleData.important || ruleData.goals || ruleData.notes)) {
+            updated.text = buildMailRuleText(updated);
+        }
+    } else {
+        updated = { ...current };
+    }
+
+    rulesConfig.default.warrules[key] = updated;
+    saveClanRules(rulesConfig);
+    return updated;
+}
+
 module.exports = {
     getUserData,
     getClanRoles,
@@ -581,6 +896,18 @@ module.exports = {
     getRecruitments,
     getReapplyReasons,
     getClanRules,
+    getMailRules,
+    getMailRule,
+    formatMailRuleText,
+    formatMailRules,
+    DEFAULT_MAIL_RULES,
+
+    getWarRules: getMailRules,
+    getWarRule: getMailRule,
+    saveWarRules: saveMailRules,
+    updateWarRule: updateMailRule,
+    formatWarRules: formatMailRules,
+    DEFAULT_WAR_RULES: DEFAULT_MAIL_RULES,
 
     saveUserData,
     saveClanRoles,
@@ -595,6 +922,8 @@ module.exports = {
     saveRecruitments,
     saveReapplyReasons,
     saveClanRules,
+    saveMailRules,
+    updateMailRule,
     addClanRuleEntry,
     removeClanRuleEntry,
 

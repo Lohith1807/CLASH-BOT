@@ -2,6 +2,7 @@ const express = require("express");
 const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
+const dataManager = require("./utils/dataManager.js");
 require('dotenv').config();
 
 /**
@@ -142,6 +143,82 @@ function initApi(client) {
         }
     });
 
+    // --- Mail Rules Endpoints ---
+    apiApp.get("/clanrules/mailrules", (req, res) => {
+        try {
+            const rules = dataManager.getMailRules();
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    apiApp.get("/clanrules/mailrules/:type", (req, res) => {
+        try {
+            const type = req.params.type;
+            const rule = dataManager.getMailRule(type);
+            res.json({ type, rule });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    const handleSaveMailRules = (req, res) => {
+        try {
+            const body = req.body;
+            if (!body || typeof body !== "object") {
+                return res.status(400).json({ error: "Invalid data format" });
+            }
+            const updated = dataManager.saveMailRules(body);
+            res.json({ status: "success", message: "Mail rules updated", data: updated });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    };
+
+    const handleSaveSingleMailRule = (req, res) => {
+        try {
+            const type = req.params.type;
+            const body = req.body;
+            if (!body) {
+                return res.status(400).json({ error: "Invalid data format" });
+            }
+            const updated = dataManager.updateMailRule(type, body);
+            res.json({ status: "success", message: `Mail rule for ${type} updated`, data: updated });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    };
+
+    apiApp.post("/clanrules/mailrules", handleSaveMailRules);
+    apiApp.put("/clanrules/mailrules", handleSaveMailRules);
+    apiApp.post("/clanrules/mailrules/:type", handleSaveSingleMailRule);
+    apiApp.put("/clanrules/mailrules/:type", handleSaveSingleMailRule);
+
+    apiApp.get("/clanrules/warrules", (req, res) => {
+        try {
+            const rules = dataManager.getMailRules();
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    apiApp.get("/clanrules/warrules/:type", (req, res) => {
+        try {
+            const type = req.params.type;
+            const rule = dataManager.getMailRule(type);
+            res.json({ type, rule });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    apiApp.post("/clanrules/warrules", handleSaveMailRules);
+    apiApp.put("/clanrules/warrules", handleSaveMailRules);
+    apiApp.post("/clanrules/warrules/:type", handleSaveSingleMailRule);
+    apiApp.put("/clanrules/warrules/:type", handleSaveSingleMailRule);
+
     apiApp.get("/clanrules/:tag", (req, res) => {
         try {
             const data = getClanRulesData();
@@ -178,7 +255,10 @@ function initApi(client) {
                 ...clanConfig,
                 rules: (Array.isArray(clanConfig.rules) && clanConfig.rules.length > 0)
                     ? clanConfig.rules
-                    : (data.default ? data.default.rules : [])
+                    : (data.default ? data.default.rules : []),
+                warrules: (clanConfig.warrules && Object.keys(clanConfig.warrules).length > 0)
+                    ? clanConfig.warrules
+                    : (data.default ? data.default.warrules : {})
             };
 
             res.json(merged);
@@ -250,6 +330,7 @@ function initApi(client) {
                 thumbnail: "",
                 footer: { text: "", iconURL: "" },
                 color: "#E74C3C",
+                warrules: (existingClan.warrules || currentData.default?.warrules || {}),
                 ...existingClan,
                 ...newData,
                 rules: clanRules
