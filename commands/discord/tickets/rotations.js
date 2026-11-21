@@ -37,35 +37,9 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
         .addStringOption(option =>
             option.setName("action")
-                .setDescription("Action to perform: add, remove, or list")
-                .setRequired(false)
-                .addChoices(
-                    { name: "📋 List Active Rotation THs", value: "list" },
-                    { name: "➕ Add TH to Rotation", value: "add" },
-                    { name: "➖ Remove TH from Rotation", value: "remove" }
-                )
-        )
-        .addStringOption(option =>
-            option.setName("th")
-                .setDescription("Town Hall level for add/remove (e.g. 19, TH19, 18, TH18)")
+                .setDescription("Action to perform: list, add <TH>, or remove <TH>")
                 .setRequired(false)
                 .setAutocomplete(true)
-        )
-        .addStringOption(option =>
-            option.setName("add")
-                .setDescription("Directly add a Town Hall level to rotation (e.g. 19, TH19)")
-                .setRequired(false)
-        )
-        .addStringOption(option =>
-            option.setName("remove")
-                .setDescription("Directly remove a Town Hall level from rotation (e.g. 18, TH18)")
-                .setRequired(false)
-                .setAutocomplete(true)
-        )
-        .addBooleanOption(option =>
-            option.setName("list")
-                .setDescription("View the current rotation Town Halls list")
-                .setRequired(false)
         ),
 
     async autocomplete(interaction) {
@@ -73,19 +47,41 @@ module.exports = {
         const currentList = clanRecruitments.getTrackedRotationTHs();
         const input = (focused.value || "").toLowerCase().trim();
 
-        // If removing or action is remove, suggest currently tracked THs
-        if (focused.name === "remove" || interaction.options.getString("action") === "remove") {
-            const choices = currentList
-                .filter(th => th.toLowerCase().includes(input))
-                .map(th => ({ name: th, value: th }));
-            return interaction.respond(choices.slice(0, 25)).catch(() => {});
+        const allPossible = ["TH19", "TH18", "TH17", "TH16", "TH15", "TH14", "TH13", "TH12", "TH11", "TH10"];
+        const notTracked = allPossible.filter(th => !currentList.includes(th));
+        const choices = [];
+
+        // 1. Suggest 'list'
+        if (!input || "list".startsWith(input)) {
+            choices.push({ name: `📋 list — View active Town Hall rotations (${currentList.join(', ')})`, value: "list" });
         }
 
-        // If adding, suggest common TH levels
-        const allPossible = ["TH19", "TH18", "TH17", "TH16", "TH15", "TH14", "TH13", "TH12", "TH11"];
-        const choices = allPossible
-            .filter(th => th.toLowerCase().includes(input))
-            .map(th => ({ name: th, value: th }));
+        // 2. Suggest 'add' actions
+        if (!input || input.startsWith("add") || input.startsWith("+") || /^(th)?[0-9]+/i.test(input)) {
+            const cleanSearch = input.replace(/^(add|\+)\s*/i, '').trim();
+            for (const th of notTracked) {
+                if (!cleanSearch || th.toLowerCase().includes(cleanSearch) || th.replace('TH', '').includes(cleanSearch)) {
+                    choices.push({ name: `➕ add ${th} — Add ${th} to rotations`, value: `add ${th}` });
+                }
+            }
+            if (cleanSearch && /^[0-9]+$/.test(cleanSearch)) {
+                const customTh = `TH${cleanSearch}`;
+                if (!choices.some(c => c.value === `add ${customTh}`)) {
+                    choices.push({ name: `➕ add ${customTh} — Add ${customTh} to rotations`, value: `add ${customTh}` });
+                }
+            }
+        }
+
+        // 3. Suggest 'remove' actions
+        if (!input || input.startsWith("rem") || input.startsWith("del") || input.startsWith("-") || /^(th)?[0-9]+/i.test(input)) {
+            const cleanSearch = input.replace(/^(remove|delete|del|rem|\-)\s*/i, '').trim();
+            for (const th of currentList) {
+                if (!cleanSearch || th.toLowerCase().includes(cleanSearch) || th.replace('TH', '').includes(cleanSearch)) {
+                    choices.push({ name: `➖ remove ${th} — Remove ${th} from rotations`, value: `remove ${th}` });
+                }
+            }
+        }
+
         return interaction.respond(choices.slice(0, 25)).catch(() => {});
     },
 
@@ -100,20 +96,36 @@ module.exports = {
             });
         }
 
-        let action = interaction.options.getString('action');
-        let thInput = interaction.options.getString('th');
-        const addInput = interaction.options.getString('add');
-        const removeInput = interaction.options.getString('remove');
-        const listInput = interaction.options.getBoolean('list');
+        const actionInput = interaction.options.getString('action');
+        let action = 'list';
+        let thInput = null;
 
-        if (addInput) {
-            action = 'add';
-            thInput = addInput;
-        } else if (removeInput) {
-            action = 'remove';
-            thInput = removeInput;
-        } else if (listInput || (!action && !thInput)) {
-            action = 'list';
+        if (actionInput) {
+            const trimmed = actionInput.trim();
+            if (/^(add|\+)/i.test(trimmed)) {
+                action = 'add';
+                thInput = trimmed.replace(/^(add|\+)\s*/i, '').trim();
+            } else if (/^(remove|delete|del|rem|\-)/i.test(trimmed)) {
+                action = 'remove';
+                thInput = trimmed.replace(/^(remove|delete|del|rem|\-)\s*/i, '').trim();
+            } else if (/^list/i.test(trimmed)) {
+                action = 'list';
+            } else {
+                // If the user typed a TH directly like '17' or 'TH17'
+                const normalized = clanRecruitments.normalizeTh(trimmed);
+                if (normalized) {
+                    const currentList = clanRecruitments.getTrackedRotationTHs();
+                    if (currentList.includes(normalized)) {
+                        action = 'remove';
+                        thInput = normalized;
+                    } else {
+                        action = 'add';
+                        thInput = normalized;
+                    }
+                } else {
+                    action = 'list';
+                }
+            }
         }
 
         // 1. LIST
@@ -141,7 +153,7 @@ module.exports = {
         if (action === 'add') {
             if (!thInput) {
                 return interaction.reply({
-                    content: "❌ Please provide a Town Hall level to add (e.g. `/rotations action:add th:19` or `/rotations add:19`).",
+                    content: "❌ Please provide a Town Hall level to add (e.g. `/rotations action:add TH17`).",
                     flags: [MessageFlags.Ephemeral]
                 });
             }
@@ -195,7 +207,7 @@ module.exports = {
         if (action === 'remove') {
             if (!thInput) {
                 return interaction.reply({
-                    content: "❌ Please provide a Town Hall level to remove (e.g. `/rotations action:remove th:18` or `/rotations remove:18`).",
+                    content: "❌ Please provide a Town Hall level to remove (e.g. `/rotations action:remove TH18`).",
                     flags: [MessageFlags.Ephemeral]
                 });
             }

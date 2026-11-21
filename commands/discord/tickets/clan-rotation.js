@@ -349,24 +349,7 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("clan-rotation")
         .setDescription("Display current recruitment rotation status for all FWA clans")
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
-        .addStringOption(option =>
-            option.setName("th")
-                .setDescription("Select Town Hall level rotation to view (e.g. TH19, TH18)")
-                .setRequired(false)
-                .setAutocomplete(true)
-        ),
-
-    async autocomplete(interaction) {
-        const focused = interaction.options.getFocused(true);
-        const currentList = clanRecruitments.getTrackedRotationTHs();
-        const input = (focused.value || "").toLowerCase().trim();
-
-        const choices = currentList
-            .filter(th => th.toLowerCase().includes(input))
-            .map(th => ({ name: th, value: th }));
-        return interaction.respond(choices.slice(0, 25)).catch(() => {});
-    },
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 
     async execute(interaction, context) {
         const { emoji: emojiUtils, coc, data: dataMgr } = context;
