@@ -11,7 +11,12 @@ const {
 const { checkPermission } = require('../../../utils/checkPermission.js');
 const clanRecruitments = require('../../../utils/clanRecruitments');
 const dataManager = require('../../../utils/dataManager');
-const { getThEmoji, getThEmojiObject, getEmojiObject } = require('../../../utils/emoji');
+const emojiModule = require('../../../utils/emoji');
+const getThEmoji = emojiModule?.getThEmoji;
+const getThEmojiObject = emojiModule?.getThEmojiObject;
+const getEmojiObject = emojiModule?.getEmojiObject;
+const getEmoji = emojiModule?.getEmoji;
+const rawEmojis = emojiModule?.emojis || {};
 
 // In-memory cache for clan names to reduce CoC API lookups
 const clanNameCache = new Map();
@@ -23,16 +28,22 @@ const MAX_PAGE_CHARS = 2800;
  * Get clan badge emoji (matching clan nickname or whitefwa fallback)
  */
 function getClanBadge(nickName, emojiUtils) {
-    if (!nickName) return emojiUtils?.getEmoji("whitefwa") || "🛡️";
+    const fallbackEmoji = (emojiUtils && typeof emojiUtils.getEmoji === 'function' ? emojiUtils.getEmoji("whitefwa") : null)
+        || (typeof getEmoji === 'function' ? getEmoji("whitefwa") : null)
+        || (rawEmojis.whitefwa ? `<:whitefwa:${rawEmojis.whitefwa}>` : "🛡️");
+    if (!nickName) return fallbackEmoji;
     const clean = nickName.trim().toLowerCase();
     let e = null;
     if (emojiUtils && typeof emojiUtils.getEmoji === 'function') {
         e = emojiUtils.getEmoji(clean);
     }
-    if (!e) {
-        e = emojiUtils?.getEmoji("whitefwa") || "🛡️";
+    if (!e && typeof getEmoji === 'function') {
+        e = getEmoji(clean);
     }
-    return e;
+    if (!e && rawEmojis[clean]) {
+        e = `<:${clean}:${rawEmojis[clean]}>`;
+    }
+    return e || fallbackEmoji;
 }
 
 /**
@@ -93,8 +104,17 @@ function buildPages(clanRoles, recruitmentsData, activeTh, emojiUtils = null, ru
     if (emojiUtils && typeof emojiUtils.getEmoji === 'function') {
         thEmoji = emojiUtils.getEmoji("th" + cleanNum);
     }
+    if (!thEmoji && typeof getEmoji === 'function') {
+        thEmoji = getEmoji("th" + cleanNum);
+    }
+    if (!thEmoji && typeof getThEmoji === 'function') {
+        thEmoji = getThEmoji(cleanNum);
+    }
+    if (!thEmoji && rawEmojis["th" + cleanNum]) {
+        thEmoji = `<:th${cleanNum}:${rawEmojis["th" + cleanNum]}>`;
+    }
     if (!thEmoji) {
-        thEmoji = getThEmoji(cleanNum) || "🏰";
+        thEmoji = "🏰";
     }
 
     const clanBlocks = [];
@@ -205,19 +225,40 @@ function buildComponents(trackedTHs, activeTh, interactionId, currentPage = 0, t
     const thAndRefreshButtons = [];
 
     const resolveEmojiObj = (name) => {
+        if (!name) return null;
+        const key = String(name).trim();
         if (emojiUtils && typeof emojiUtils.getEmojiObject === 'function') {
-            const obj = emojiUtils.getEmojiObject(name);
+            const obj = emojiUtils.getEmojiObject(key);
             if (obj) return obj;
         }
-        return getEmojiObject(name);
+        if (typeof getEmojiObject === 'function') {
+            const obj = getEmojiObject(key);
+            if (obj) return obj;
+        }
+        // Direct dictionary lookup from rawEmojis
+        if (rawEmojis[key]) {
+            return {
+                id: rawEmojis[key],
+                name: key,
+                animated: false
+            };
+        }
+        return null;
     };
 
     const resolveThEmojiObj = (cleanNum) => {
+        if (!cleanNum) return null;
+        const clean = String(cleanNum).toLowerCase().replace(/^th/, '').trim();
         if (emojiUtils && typeof emojiUtils.getThEmojiObject === 'function') {
-            const obj = emojiUtils.getThEmojiObject(cleanNum);
+            const obj = emojiUtils.getThEmojiObject(clean);
             if (obj) return obj;
         }
-        return getThEmojiObject(cleanNum);
+        if (typeof getThEmojiObject === 'function') {
+            const obj = getThEmojiObject(clean);
+            if (obj) return obj;
+        }
+        // Fall back directly to getEmojiObject / rawEmojis with "th" + clean
+        return resolveEmojiObj("th" + clean) || resolveEmojiObj(clean);
     };
 
     // TH buttons (strictly emojis from emoji.js, NO text names!)
