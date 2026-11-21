@@ -122,17 +122,6 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
         });
     }
 
-    const thEmojiMap = {
-        18: emojiUtils.getEmoji("th18"),
-        17: emojiUtils.getEmoji("th17"),
-        16: emojiUtils.getEmoji("th16"),
-        15: emojiUtils.getEmoji("th15"),
-        14: emojiUtils.getEmoji("th14"),
-        13: emojiUtils.getEmoji("th13"),
-        12: emojiUtils.getEmoji("th12"),
-        11: emojiUtils.getEmoji("th11"),
-    };
-
     const thresholdsPath = path.join(__dirname, "../data/ww_thresholds.json");
     let thresholds = null;
     if (fs.existsSync(thresholdsPath)) {
@@ -219,11 +208,15 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
     const totalPages = Math.ceil(sortedClanWeight.length / perPage);
 
     for (let page = 0; page < totalPages; page++) {
-        const fields = sortedClanWeight.slice(page * perPage, (page + 1) * perPage).map(([player, data], index) => ({
-            name: `${page * perPage + index + 1}. ${player}`,
-            value: `${thEmojiMap[data.townHall] || `TH${data.townHall}`} | ⚖ ${data.weight.toLocaleString()} | Real Weight: ${thEmojiMap[data.eqvweight] || `TH${data.eqvweight}`}`,
-            inline: false
-        }));
+        const fields = sortedClanWeight.slice(page * perPage, (page + 1) * perPage).map(([player, data], index) => {
+            const thEmoji = emojiUtils.getThEmoji ? emojiUtils.getThEmoji(data.townHall, `TH${data.townHall}`) : (emojiUtils.getEmoji("th" + data.townHall) || `TH${data.townHall}`);
+            const eqvEmoji = emojiUtils.getThEmoji ? emojiUtils.getThEmoji(data.eqvweight, `TH${data.eqvweight}`) : (emojiUtils.getEmoji("th" + data.eqvweight) || `TH${data.eqvweight}`);
+            return {
+                name: `${page * perPage + index + 1}. ${player}`,
+                value: `${thEmoji} | ⚖ ${data.weight.toLocaleString()} | Real Weight: ${eqvEmoji}`,
+                inline: false
+            };
+        });
 
         const embed = new EmbedBuilder()
             .setTitle(`${emojiUtils.getEmoji("clancastle")} ${clanName} — FWA Weight Report`)

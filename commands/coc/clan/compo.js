@@ -2,16 +2,6 @@ const { SlashCommandBuilder , MessageFlags } = require('discord.js');
 
 
 async function buildClanEmbed(clan, { EmbedBuilder, emoji }) {
-  const thEmojis = {
-    18: emoji.getEmoji("th18"),
-    17: emoji.getEmoji("th17"),
-    16: emoji.getEmoji("th16"),
-    15: emoji.getEmoji("th15"),
-    14: emoji.getEmoji("th14"),
-    13: emoji.getEmoji("th13"),
-    12: emoji.getEmoji("th12"),
-    11: emoji.getEmoji("th11"),
-  };
   const thCounts = {};
   let totalTH = 0;
   let totalMembers = 0;
@@ -27,8 +17,8 @@ async function buildClanEmbed(clan, { EmbedBuilder, emoji }) {
 
   let desc = "";
   for (const [th, count] of sortedTH) {
-    const emoji = thEmojis[th] || "🏰";
-    desc += `**TH${th}** ${emoji} **${count}**\n`;
+    const thEmoji = (emoji.getThEmoji ? emoji.getThEmoji(th, "🏰") : (emoji.getEmoji("th" + th) || "🏰"));
+    desc += `**TH${th}** ${thEmoji} **${count}**\n`;
   }
 
   const avgTH = totalMembers > 0 ? (totalTH / totalMembers).toFixed(2) : "N/A";

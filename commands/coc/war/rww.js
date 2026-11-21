@@ -80,12 +80,6 @@ module.exports = {
         .setColor("Random");
       await loadingMsg.edit({ embeds: [fullEmbed] }).catch(() => {});
 
-      const thEmojis = {
-        18: emojiUtils.getEmoji("th18"), 17: emojiUtils.getEmoji("th17"), 16: emojiUtils.getEmoji("th16"),
-        15: emojiUtils.getEmoji("th15"), 14: emojiUtils.getEmoji("th14"), 13: emojiUtils.getEmoji("th13"),
-        12: emojiUtils.getEmoji("th12"), 11: emojiUtils.getEmoji("th11")
-      };
-
       const thCounts = {};
       let totalTH = 0;
       let totalMembers = 0;
@@ -101,7 +95,7 @@ module.exports = {
       const sortedTH = Object.entries(thCounts).sort((a, b) => b[0] - a[0]);
       let desc = "";
       sortedTH.forEach(entry => {
-        const emojiStr = thEmojis[entry[0]] || "🏰";
+        const emojiStr = (emojiUtils.getThEmoji ? emojiUtils.getThEmoji(entry[0], "🏰") : (emojiUtils.getEmoji("th" + entry[0]) || "🏰"));
         desc += `**TH${entry[0]}** ${emojiStr} **${entry[1]}**\n`;
       });
 
@@ -109,7 +103,7 @@ module.exports = {
       const eqvCounts = (pages && pages.eqvCounts) ? pages.eqvCounts : {};
       const sortedEqvTH = Object.entries(eqvCounts).sort((a, b) => b[0] - a[0]);
       sortedEqvTH.forEach(entry => {
-        const emojiStr = thEmojis[entry[0]] || "🏰";
+        const emojiStr = (emojiUtils.getThEmoji ? emojiUtils.getThEmoji(entry[0], "🏰") : (emojiUtils.getEmoji("th" + entry[0]) || "🏰"));
         eqvDesc += `**TH${entry[0]}** ${emojiStr} **${entry[1]}**\n`;
       });
 

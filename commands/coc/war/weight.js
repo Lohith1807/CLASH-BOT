@@ -163,19 +163,8 @@ module.exports = {
                 messageText = `⚠️ This comes under **TH${equivalent}** account.`;
             }
 
-            const thEmojiMap = {
-                18: context.emoji.getEmoji("th18") || "🏰",
-                17: context.emoji.getEmoji("th17") || "🏰",
-                16: context.emoji.getEmoji("th16") || "🏰",
-                15: context.emoji.getEmoji("th15") || "🏰",
-                14: context.emoji.getEmoji("th14") || "🏰",
-                13: context.emoji.getEmoji("th13") || "🏰",
-                12: context.emoji.getEmoji("th12") || "🏰",
-                11: context.emoji.getEmoji("th11") || "🏰",
-            };
-
-            const thStr = thEmojiMap[townHallLevel] || `TH${townHallLevel}`;
-            const eqvStr = thEmojiMap[equivalent] || `TH${equivalent}`;
+            const thStr = context.emoji.getThEmoji ? context.emoji.getThEmoji(townHallLevel, `TH${townHallLevel}`) : (context.emoji.getEmoji("th" + townHallLevel) || `TH${townHallLevel}`);
+            const eqvStr = context.emoji.getThEmoji ? context.emoji.getThEmoji(equivalent, `TH${equivalent}`) : (context.emoji.getEmoji("th" + equivalent) || `TH${equivalent}`);
 
             const embed = new EmbedBuilder()
                 .setTitle(`War Weight Report for ${player.name}`)

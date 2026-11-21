@@ -219,6 +219,77 @@ function initApi(client) {
     apiApp.post("/clanrules/warrules/:type", handleSaveSingleMailRule);
     apiApp.put("/clanrules/warrules/:type", handleSaveSingleMailRule);
 
+    // --- Per-Clan War Rules Endpoints (/clanrules/:tag/warrules and /clanrules/:tag/warules) ---
+    const clanWarRulesPaths = [
+        "/clanrules/:tag/warrules",
+        "/clanrules/:tag/warules",
+        "/clanrules/:tag/mailrules"
+    ];
+
+    const clanSingleWarRulePaths = [
+        "/clanrules/:tag/warrules/:type",
+        "/clanrules/:tag/warules/:type",
+        "/clanrules/:tag/mailrules/:type"
+    ];
+
+    apiApp.get(clanWarRulesPaths, (req, res) => {
+        try {
+            const rules = dataManager.getClanWarRules(req.params.tag);
+            if (!rules) {
+                return res.status(404).json({ error: `Clan "${req.params.tag}" not found in clanrules.json` });
+            }
+            res.json(rules);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    apiApp.get(clanSingleWarRulePaths, (req, res) => {
+        try {
+            const rule = dataManager.getClanWarRule(req.params.tag, req.params.type);
+            res.json({ clanTag: req.params.tag, type: req.params.type, rule });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    });
+
+    const handleSaveClanWarRules = (req, res) => {
+        try {
+            const body = req.body;
+            if (!body || typeof body !== "object") {
+                return res.status(400).json({ error: "Invalid data format" });
+            }
+            const updated = dataManager.saveClanWarRules(req.params.tag, body);
+            if (!updated) {
+                return res.status(404).json({ error: `Clan "${req.params.tag}" not found in clanrules.json` });
+            }
+            res.json({ status: "success", message: `War rules updated for ${req.params.tag}`, data: updated });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    };
+
+    const handleSaveSingleClanWarRule = (req, res) => {
+        try {
+            const body = req.body;
+            if (!body) {
+                return res.status(400).json({ error: "Invalid data format" });
+            }
+            const updated = dataManager.updateClanWarRule(req.params.tag, req.params.type, body);
+            if (!updated) {
+                return res.status(404).json({ error: `Clan "${req.params.tag}" not found in clanrules.json` });
+            }
+            res.json({ status: "success", message: `War rule for ${req.params.type} updated for ${req.params.tag}`, data: updated });
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    };
+
+    apiApp.post(clanWarRulesPaths, handleSaveClanWarRules);
+    apiApp.put(clanWarRulesPaths, handleSaveClanWarRules);
+    apiApp.post(clanSingleWarRulePaths, handleSaveSingleClanWarRule);
+    apiApp.put(clanSingleWarRulePaths, handleSaveSingleClanWarRule);
+
     apiApp.get("/clanrules/:tag", (req, res) => {
         try {
             const data = getClanRulesData();

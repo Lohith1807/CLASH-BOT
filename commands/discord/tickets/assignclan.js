@@ -12,6 +12,7 @@ const { checkPermission } = require('../../../utils/checkPermission.js');
 const fs = require('fs');
 const path = require('path');
 const { getEmoji } = require('../../../utils/emoji');
+const dataManager = require('../../../utils/dataManager');
 const ticketDataStore = require('../../../utils/ticketDataStore');
 
 // In-memory cache for clan names to speed up autocomplete
@@ -416,11 +417,7 @@ function buildPublicClanEmbed(clanTag, clanType, clanData, context) {
 
         const diamondEmoji = getEmoji("whitefwa");
         const leaderEmoji = getEmoji("fwalead");
-        const th18Emoji = getEmoji("th18");
-        const th17Emoji = getEmoji("th17");
-        const th16Emoji = getEmoji("th16");
-        const th15Emoji = getEmoji("th15");
-        const th14Emoji = getEmoji("th14");
+        const acceptingThs = (dataManager.getRecruitingTHs ? dataManager.getRecruitingTHs() : ["th18", "th17", "th16", "th15", "th14"]).map(th => getEmoji(th)).filter(Boolean).join(" ");
         const capitalEmoji = getEmoji("ccw");
         const castleEmoji = getEmoji("clancastle");
         const leagueEmoji = getEmoji("cwl");
@@ -441,7 +438,7 @@ function buildPublicClanEmbed(clanTag, clanType, clanData, context) {
 
         let description =
             diamondEmoji + " **FWA** " + diamondEmoji + "\n" +
-            leaderEmoji + " **Accepting:** " + th18Emoji + " " + th17Emoji + " " + th16Emoji + " " + th15Emoji + " " + th14Emoji + "\n" +
+            leaderEmoji + " **Accepting:** " + acceptingThs + "\n" +
             capitalEmoji + " **Clan Capital:** " + (clanData.clanCapital ? clanData.clanCapital.capitalHallLevel : "?") + "\n" +
             castleEmoji + " **Clan Level:** " + clanData.clanLevel + "\n" +
             leagueEmoji + " **CWL:** Lazy Cwl\n" +

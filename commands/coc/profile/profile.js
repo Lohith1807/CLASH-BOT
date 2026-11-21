@@ -73,7 +73,7 @@ module.exports = {
 
       try {
         const data = await coc.getPlayer(tagArg);
-        const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || emojiUtils.getEmoji('th8') || "";
+        const thEmoji = emojiUtils.getThEmoji ? emojiUtils.getThEmoji(data.townHallLevel, "") : (emojiUtils.getEmoji(`th${data.townHallLevel}`) || "");
         
         const leagueName = data.leagueTier?.name || data.league?.name || "Unranked";
         const leagueEmoji = emojiUtils.getLeagueEmoji(leagueName, "throphy");
@@ -194,7 +194,7 @@ module.exports = {
       try {
         const data = await coc.getPlayer(account.tag);
         const openInGame = `[Open in Game](https://link.clashofclans.com/en/?action=OpenPlayerProfile&tag=${encodeURIComponent(data.tag)})`;
-        const thEmoji = emojiUtils.getEmoji(`th${data.townHallLevel}`) || emojiUtils.getEmoji('th8') || "👑";
+        const thEmoji = emojiUtils.getThEmoji ? emojiUtils.getThEmoji(data.townHallLevel, "👑") : (emojiUtils.getEmoji(`th${data.townHallLevel}`) || "👑");
 
         const leagueName = data.leagueTier?.name || data.league?.name || "Unranked";
         const leagueEmoji = emojiUtils.getLeagueEmoji(leagueName, "throphy");

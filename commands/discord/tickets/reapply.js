@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, ButtonBuilder, ButtonStyle, PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle , MessageFlags } = require("discord.js");
 const { checkPermission } = require("../../../utils/checkPermission.js");
+const { isStaffMember, extractCleanPlayerName } = require("../../../utils/reapplyHelper.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -85,18 +86,23 @@ module.exports = {
             return safeEditReply({ embeds: [errorEmbed("This user has no linked Clash accounts.")] });
         }
 
+        const cleanTag = t => (t || "").replace(/^#/, "").toUpperCase();
+
         const clanRoles = data.getClanRoles();
         const monitoredClans = {};
         for (const [tag, info] of Object.entries(clanRoles)) {
             if (info.roleId) {
-                monitoredClans[tag.toUpperCase()] = { ...info, tag: tag.toUpperCase() };
+                monitoredClans[cleanTag(tag)] = { ...info, tag: tag.toUpperCase(), rawTag: tag };
+                monitoredClans[tag.toUpperCase()] = { ...info, tag: tag.toUpperCase(), rawTag: tag };
             }
         }
         
         const userClanRolesHeld = [];
-        for (const [tag, info] of Object.entries(monitoredClans)) {
-            if (member.roles.cache.has(info.roleId)) {
-                userClanRolesHeld.push(info);
+        for (const [tag, info] of Object.entries(clanRoles)) {
+            if (info.roleId && member.roles.cache.has(info.roleId)) {
+                if (!userClanRolesHeld.some(r => r.roleId === info.roleId)) {
+                    userClanRolesHeld.push({ ...info, tag: tag.toUpperCase() });
+                }
             }
         }
 
@@ -122,16 +128,22 @@ module.exports = {
         const clansLeft = [];
         
         for (const p of validPlayers) {
-            if (p.clan) {
-                const cTag = p.clan.tag.toUpperCase();
+            if (p.clan && p.clan.tag) {
+                const cTag = cleanTag(p.clan.tag);
                 if (monitoredClans[cTag]) {
-                    clansStillIn.push(monitoredClans[cTag]);
+                    const clanObj = monitoredClans[cTag];
+                    if (!clansStillIn.some(c => cleanTag(c.tag) === cleanTag(clanObj.tag) || (c.roleId && clanObj.roleId && c.roleId === clanObj.roleId))) {
+                        clansStillIn.push(clanObj);
+                    }
                 }
             }
         }
 
         for (const roleInfo of userClanRolesHeld) {
-            const isStillInClan = clansStillIn.some(c => c.tag === roleInfo.tag);
+            const isStillInClan = clansStillIn.some(c => 
+                (c.roleId && c.roleId === roleInfo.roleId) || 
+                cleanTag(c.tag) === cleanTag(roleInfo.tag)
+            );
             if (!isStillInClan) {
                 clansLeft.push(roleInfo);
             }
@@ -192,7 +204,7 @@ module.exports = {
 
         async function promptConfirmation(player) {
             const clanName = player.clan ? player.clan.name : "None";
-            const thEmoji = emoji.getEmoji(`th${player.townHallLevel}`) || emoji.getEmoji('th8') || "👑";
+            const thEmoji = emoji.getThEmoji ? emoji.getThEmoji(player.townHallLevel, "👑") : (emoji.getEmoji(`th${player.townHallLevel}`) || "👑");
             const leagueName = player.leagueTier?.name || player.league?.name || "Unranked";
             const leagueEmoji = emoji.getLeagueEmoji(leagueName, "throphy");
             const bluedot = emoji.getEmoji("bluedot") || "🔹";
@@ -295,8 +307,8 @@ module.exports = {
             
             // If the user explicitly selected a player and the API shows them still in a clan, 
             // they are forcefully removing the role for THAT specific clan (API cache fallback).
-            if (selectedPlayer && selectedPlayer.clan) {
-                const cTag = selectedPlayer.clan.tag.toUpperCase();
+            if (selectedPlayer && selectedPlayer.clan && selectedPlayer.clan.tag) {
+                const cTag = cleanTag(selectedPlayer.clan.tag);
                 if (monitoredClans[cTag]) {
                     rolesToRemove.push(monitoredClans[cTag]);
                 }
@@ -315,62 +327,87 @@ module.exports = {
             // Determine if they still have OTHER accounts in family clans
             // We consider them "still in" if clansStillIn has elements, 
             // EXCEPT we must exclude the clan they are forcefully leaving from this count.
-            const otherClansStillIn = clansStillIn.filter(c => !rolesToRemove.some(r => r.tag === c.tag));
+            const otherClansStillIn = clansStillIn.filter(c => 
+                !rolesToRemove.some(r => 
+                    (r.roleId && c.roleId && r.roleId === c.roleId) || 
+                    cleanTag(r.tag) === cleanTag(c.tag)
+                )
+            );
 
             // Save the reason first
-            const clanNamesStr = rolesToRemove.map(c => c.nickName || c.tag).join(", ");
+            const clanNamesStr = rolesToRemove.map(c => c.nickName || cleanTag(c.tag)).join(", ");
             const reasonsData = data.getReapplyReasons();
             if (!reasonsData[member.id]) reasonsData[member.id] = [];
             
+            const accName = selectedPlayer?.name || selectedPlayer?.linkedName || (validPlayers[0] && (validPlayers[0].name || validPlayers[0].linkedName)) || (userAccounts[0] && userAccounts[0].name) || "Unknown";
+            const accTag = selectedPlayer?.tag || (validPlayers[0] && validPlayers[0].tag) || (userAccounts[0] && userAccounts[0].tag) || "";
+
             reasonsData[member.id].push({
                 reason: reason,
                 timestamp: Math.floor(Date.now() / 1000),
                 addedBy: executorUser.id,
                 clanName: clanNamesStr,
-                status: "ADDED"
+                status: "ADDED",
+                accountName: accName,
+                accountTag: accTag
             });
             data.saveReapplyReasons(reasonsData);
+
+            const isStaff = isStaffMember(member, config);
 
             // Action time
             if (otherClansStillIn.length > 0) {
                 // Rule 2: User has another ID still inside any clan
                 for (const leftClan of rolesToRemove) {
-                    await member.roles.remove(leftClan.roleId).catch(() => null);
-                    if (leftClan.leaderRoleId) {
+                    if (leftClan.roleId && member.roles.cache.has(leftClan.roleId)) {
+                        await member.roles.remove(leftClan.roleId).catch(() => null);
+                    }
+                    if (leftClan.leaderRoleId && member.roles.cache.has(leftClan.leaderRoleId)) {
                         await member.roles.remove(leftClan.leaderRoleId).catch(() => null);
                     }
                 }
                 
                 // Update nickname for remaining clans
                 const clanRolesList = data.getClanRoles();
-                const clanNicks = [];
+                const remainingClanNicks = [];
+                for (const c of otherClansStillIn) {
+                    if (c.nickName && !remainingClanNicks.includes(c.nickName)) {
+                        remainingClanNicks.push(c.nickName);
+                    }
+                }
                 for (const [tag, info] of Object.entries(clanRolesList)) {
-                    if (info.roleId && member.roles.cache.has(info.roleId) && !rolesToRemove.some(r => r.roleId === info.roleId)) {
-                        if (info.nickName && !clanNicks.includes(info.nickName)) {
-                            clanNicks.push(info.nickName);
+                    const isRemoved = rolesToRemove.some(r => 
+                        (r.roleId && info.roleId && r.roleId === info.roleId) || 
+                        cleanTag(r.tag) === cleanTag(tag)
+                    );
+                    if (info.roleId && member.roles.cache.has(info.roleId) && !isRemoved) {
+                        if (info.nickName && !remainingClanNicks.includes(info.nickName)) {
+                            remainingClanNicks.push(info.nickName);
                         }
                     }
                 }
+                const leavingNicknames = rolesToRemove.map(r => (r.nickName || "").toUpperCase()).filter(Boolean);
+                const finalClanNicks = remainingClanNicks.filter(n => !leavingNicknames.includes(n.toUpperCase()));
                 
-                const clanNickStr = clanNicks.join(' • ');
-                let currentNick = member.nickname || member.user.username;
-                let playerName = currentNick;
-                if (currentNick.includes("|")) {
-                    const parts = currentNick.split("|");
-                    playerName = parts[1].split('•')[0].trim();
-                } else if (validPlayers.length > 0) {
-                    playerName = validPlayers[0].name;
+                let nickNote = "*(Skipped: Staff member)*";
+                if (!isStaff) {
+                    const cleanPlayerName = extractCleanPlayerName(member, validPlayers, userAccounts, clanRolesList);
+                    const clanNickStr = finalClanNicks.join(' • ');
+                    let newNickname = clanNickStr 
+                        ? `BLOOD | ${cleanPlayerName} • ${clanNickStr}` 
+                        : `BLOOD | ${cleanPlayerName}`;
+
+                    if (newNickname.length > 32) {
+                        newNickname = newNickname.substring(0, 32);
+                    }
+
+                    let nickSuccess = true;
+                    await member.setNickname(newNickname).catch(err => {
+                        console.error("Failed to set nickname:", err);
+                        nickSuccess = false;
+                    });
+                    nickNote = nickSuccess ? `\`${newNickname}\`` : "*(Failed to change, missing permissions)*";
                 }
-
-                let newNickname = clanNickStr 
-                    ? `BLOOD | ${playerName} • ${clanNickStr}` 
-                    : `BLOOD | ${playerName}`;
-
-                if (newNickname.length > 32) {
-                    newNickname = newNickname.substring(0, 32);
-                }
-
-                await member.setNickname(newNickname).catch(() => null);
                 
                 const currentEmbed = (await safeFetchReply()).embeds[0];
                 const updatedEmbed = EmbedBuilder.from(currentEmbed)
@@ -379,7 +416,8 @@ module.exports = {
                         currentEmbed.description +
                         `\n\n**${getEmoji("alaram")} Action Completed:**\n` +
                         `Removed role(s) for **${clanNamesStr}** because an account left.\n` +
-                        `*They still have accounts in other clans, so Re-Apply role was NOT given.*`
+                        `*They still have accounts in other clans, so Re-Apply role was NOT given.*\n` +
+                        `${getEmoji("parrow")} **Nickname:** ${nickNote}`
                     );
 
                 return safeEditReply({ 
@@ -389,12 +427,24 @@ module.exports = {
             } else {
                 // Rule 3/4: All IDs have left all clans
                 for (const leftClan of rolesToRemove) {
-                    await member.roles.remove(leftClan.roleId).catch(() => null);
-                    if (leftClan.leaderRoleId) {
+                    if (leftClan.roleId && member.roles.cache.has(leftClan.roleId)) {
+                        await member.roles.remove(leftClan.roleId).catch(() => null);
+                    }
+                    if (leftClan.leaderRoleId && member.roles.cache.has(leftClan.leaderRoleId)) {
                         await member.roles.remove(leftClan.leaderRoleId).catch(() => null);
                     }
                 }
                 
+                // Also remove any remaining clan roles held by this member
+                for (const [tag, info] of Object.entries(monitoredClans)) {
+                    if (info.roleId && member.roles.cache.has(info.roleId)) {
+                        await member.roles.remove(info.roleId).catch(() => null);
+                    }
+                    if (info.leaderRoleId && member.roles.cache.has(info.leaderRoleId)) {
+                        await member.roles.remove(info.leaderRoleId).catch(() => null);
+                    }
+                }
+
                 const FAMILY_ROLE_ID = config.FAMILY_ROLE_ID || "1528073821343584387";
                 let familyRoleRemoved = false;
                 if (member.roles.cache.has(FAMILY_ROLE_ID)) {
@@ -410,40 +460,39 @@ module.exports = {
                     await member.roles.add(REAPPLY_ROLE_ID).catch(() => null);
                 }
                 
-                // Change nickname format
-                let mainIdName = "Unknown";
-                const currentNick = member.nickname || member.user.username;
-                if (currentNick.includes("|")) {
-                    const parts = currentNick.split("|");
-                    mainIdName = parts[1].split("•")[0].trim();
-                } else if (validPlayers.length > 0) {
-                    mainIdName = validPlayers[0].name;
-                } else if (userAccounts.length > 0) {
-                    mainIdName = userAccounts[0].name;
-                } else {
-                    mainIdName = currentNick;
+                let nickNote = "*(Skipped: Staff member)*";
+                if (!isStaff) {
+                    const clanRolesList = data.getClanRoles();
+                    const cleanPlayerName = extractCleanPlayerName(member, validPlayers, userAccounts, clanRolesList);
+
+                    let clanPrefix = clansLeft.map(c => (c.nickName || cleanTag(c.tag))).filter(Boolean).join(" • ");
+                    if (!clanPrefix) {
+                        clanPrefix = rolesToRemove.map(c => (c.nickName || cleanTag(c.tag))).filter(Boolean).join(" • ") || "BLOOD";
+                    }
+
+                    const separator = " • BLOOD | ";
+                    let maxNameLen = 32 - clanPrefix.length - separator.length;
+                    
+                    if (maxNameLen <= 0) {
+                        clanPrefix = clanPrefix.substring(0, 32 - separator.length - 1).trim();
+                        maxNameLen = 1;
+                    }
+                    
+                    let finalPlayerName = cleanPlayerName;
+                    if (finalPlayerName.length > maxNameLen) {
+                        finalPlayerName = finalPlayerName.substring(0, maxNameLen).trim();
+                    }
+                    
+                    const newNick = `${clanPrefix}${separator}${finalPlayerName}`;
+                    
+                    let nickSuccess = true;
+                    await member.setNickname(newNick).catch(err => {
+                        console.error("Failed to change nickname:", err);
+                        nickSuccess = false;
+                    });
+
+                    nickNote = nickSuccess ? `\`${newNick}\`` : "*(Failed to change, missing permissions)*";
                 }
-                
-                let clanPrefix = clansLeft.map(c => (c.nickName || c.tag)).join(" • ");
-                const separator = " • BLOOD | ";
-                let maxNameLen = 32 - clanPrefix.length - separator.length;
-                
-                if (maxNameLen <= 0) {
-                    clanPrefix = clanPrefix.substring(0, 32 - separator.length - 1).trim();
-                    maxNameLen = 1;
-                }
-                
-                if (mainIdName.length > maxNameLen) {
-                    mainIdName = mainIdName.substring(0, maxNameLen).trim();
-                }
-                
-                const newNick = `${clanPrefix}${separator}${mainIdName}`;
-                
-                let nickSuccess = true;
-                await member.setNickname(newNick).catch(err => {
-                    console.error("Failed to change nickname:", err);
-                    nickSuccess = false;
-                });
 
                 const bluedot = emoji.getEmoji("bluedot") || "🔹";
                 const embed = new EmbedBuilder()
@@ -460,12 +509,10 @@ module.exports = {
                     embeds: [embed]
                 }).catch(() => null);
                 
-                const nickNote = nickSuccess ? `\`${newNick}\`` : "*(Failed to change, missing permissions)*";
-                
                 const currentEmbed = (await safeFetchReply()).embeds[0];
                 let descText = currentEmbed.description +
                     `\n\n**${getEmoji("gtick")} Completed Re-Apply for ${member.user.tag}**\n` +
-                    `${getEmoji("rarroww")} **Removed clan roles:** ${clanPrefix}\n`;
+                    `${getEmoji("rarroww")} **Removed clan roles:** ${clanNamesStr}\n`;
                 
                 if (familyRoleRemoved) {
                     descText += `${getEmoji("rarroww")} **Removed Family role**\n`;

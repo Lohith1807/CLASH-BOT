@@ -238,6 +238,7 @@ module.exports = {
                         id: member.id,
                         member,
                         username: member.user.username,
+                        accounts: userAccounts,
                         detail: userAccounts.map(a => a.name || a.tag).join(", ")
                     });
                 }
@@ -448,11 +449,17 @@ module.exports = {
                         }
 
                         try {
+                            const fData = fakeMembersData.find(f => f.id === id);
+                            const targetAcc = fData?.accounts?.length === 1 
+                                ? fData.accounts[0] 
+                                : (fData?.accounts?.find(a => !inGameClanMembers.has((a.tag || "").replace("#", "").toUpperCase())) || fData?.accounts?.[0] || null);
+
                             const res = await processMemberReapply({
                                 member: targetMember,
                                 clanInfo: { ...clanInfo, tag: clanTag },
                                 reason,
                                 executorUser: i.user,
+                                account: targetAcc,
                                 context
                             });
                             if (res.success) {

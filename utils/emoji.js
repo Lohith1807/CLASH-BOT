@@ -39,16 +39,16 @@ const emojis = {
   sheild: "1427653084380794940",
   refresh: "1506184937458630696",
   blood: "1504385401295474758",
-  bb: "1561226608147169363",
-  tl: "1561226625247354974",
+  bb: "1567848647624761404",
+  tl: "1567848692432773183",
   su: "1543882448201449492",
-  ik: "1561226631874613351",
-  dw: "1561226638920781935",
-  cc: "1561226645170421862",
-  bl: "1561226613822193717",
-  asr: "1561226720000876544",
+  ik: "1567848705955201104",
+  dw: "1567848719343419553",
+  cc: "1567848733712973974",
+  bl: "1567848659721388135",
+  asr: "1567848854966247505",
   bbs: "1506991458106736741",
-  kc: "1561226654200889344",
+  kc: "1567848746941681715",
   parrow: "1410131664629272626",
   loading: "1503023363172335826",
   book: "1504385352528297985",
@@ -61,7 +61,7 @@ const emojis = {
   chain: "1504386899723161710",
   tickbox: "1508465148434579517",
   wrongbox: "1508465151182110841",
-  bwc: "1561226660424978506",
+  bwc: "1567848760594137098",
   qg: "1529493113754882108",
   delete: "1516659340898078751",
   letterd: "1516818700295077968",
@@ -79,8 +79,8 @@ const emojis = {
   darrow: "1516837157120118925",
   reddot: "1518164961270960249",
   greendot: "1518164965884825771",
-  cfw: "1561226667194585130",
-  bz: "1561226619580850257",
+  cfw: "1567848776175976448",
+  bz: "1567848673121931275",
   bkl: "1526240521457238148",
   WitchLeague: "1523005474251997394",
   WizardLeague: "1523005477414506627",
@@ -104,26 +104,27 @@ const emojis = {
   titan: "1524360252324188230",
   unranked: "1524360254702223472",
   lightbluedot: "1526220742826393741",
-  hd: "1561226692951932938",
-  eon: "1561226699255976108",
+  hd: "1567848786158686229",
+  eon: "1567848801119510639",
   sleep_coc: "1526556305727160460",
   gwrong: "1532793683559186613",
   leftarrow: "1533848234878046342",
   replace: "1535290749355167774",
-  cv: "1561226707854295050",
-  c2w: "1561226713453830208",
+  cv: "1567848813778047048",
+  c2w: "1567848826809745489",
   th10: "1542203306242478211",
   white_right: "1543655440733184102",
   blue_right: "1543655458181611560",
   yellow_right: "1543655487290081380",
   aow: "1552609662866825286",
-  dh: "1561226727131316397",
-  au: "1561226735415201794",
-  kk: "1561226741370986530",
+  dh: "1567848869033812048",
+  au: "1567848882334081136",
+  kk: "1567848895545876585",
   blackdot: "1561985458173378591",
   speaker: "1565049153183285249",
   rules: "1504385352528297985",
-  announcement: "1565049153183285249"
+  announcement: "1565049153183285249",
+  th19: "1571865094365642752"
 };
 // Function to get animated emoji (with <a:>), else static emoji (<:>)
 const animatedEmojis = new Set([
@@ -177,20 +178,44 @@ const animatedEmojis = new Set([
 ]);
 
 const getEmoji = (name) => {
-  if (!emojis[name]) return ""; // Return empty string if emoji not found
-  const id = emojis[name];
-  if (animatedEmojis.has(name)) {
-    return `<a:${name}:${id}>`;
+  if (name === undefined || name === null || name === "") return "";
+  const key = String(name).trim();
+  if (emojis[key]) {
+    const id = emojis[key];
+    if (animatedEmojis.has(key)) {
+      return `<a:${key}:${id}>`;
+    }
+    return `<:${key}:${id}>`;
   }
-  return `<:${name}:${id}>`;
+  const thKey = "th" + key.toLowerCase().replace(/^th/, "");
+  if (emojis[thKey]) {
+    const id = emojis[thKey];
+    if (animatedEmojis.has(thKey)) {
+      return `<a:${thKey}:${id}>`;
+    }
+    return `<:${thKey}:${id}>`;
+  }
+  return "";
 };
 const getEmojiObject = (name) => {
-  if (!emojis[name]) return null;
-  return {
-    id: emojis[name],
-    name: name,
-    animated: animatedEmojis.has(name)
-  };
+  if (name === undefined || name === null || name === "") return null;
+  const key = String(name).trim();
+  if (emojis[key]) {
+    return {
+      id: emojis[key],
+      name: key,
+      animated: animatedEmojis.has(key)
+    };
+  }
+  const thKey = "th" + key.toLowerCase().replace(/^th/, "");
+  if (emojis[thKey]) {
+    return {
+      id: emojis[thKey],
+      name: thKey,
+      animated: animatedEmojis.has(thKey)
+    };
+  }
+  return null;
 };
 
 const getLeagueEmoji = (leagueName, fallback = "throphy") => {
@@ -226,7 +251,15 @@ const getCwlLeagueEmoji = (leagueName, fallback = "cwl") => {
 };
 
 const getThEmoji = (thLevel, fallback = "🏠") => {
-    return getEmoji("th" + thLevel) || fallback;
+    if (thLevel === undefined || thLevel === null || thLevel === "") return fallback;
+    const clean = String(thLevel).toLowerCase().replace(/^th/, '').trim();
+    return getEmoji("th" + clean) || fallback;
+};
+
+const getThEmojiObject = (thLevel) => {
+    if (thLevel === undefined || thLevel === null || thLevel === "") return null;
+    const clean = String(thLevel).toLowerCase().replace(/^th/, '').trim();
+    return getEmojiObject("th" + clean);
 };
 
 module.exports = {
@@ -235,5 +268,6 @@ module.exports = {
   getEmojiObject,
   getLeagueEmoji,
   getCwlLeagueEmoji,
-  getThEmoji
+  getThEmoji,
+  getThEmojiObject
 };

@@ -58,7 +58,7 @@ module.exports = {
 
     async execute(interaction, context) {
         const { coc, EmbedBuilder, emoji, ActionRowBuilder, ButtonBuilder, ButtonStyle } = context;
-        const { getEmoji, getEmojiObject } = emoji;
+        const { getEmoji, getEmojiObject, getThEmoji } = emoji;
         const selectedClan = interaction.options.getString('clan');
         const loadingEmoji = getEmoji("alaram") || "⏳";
 
@@ -74,12 +74,6 @@ module.exports = {
         if (Object.keys(allClans).length === 0) {
             return interaction.editReply({ embeds: [], content: "⚠️ No CWL clans found. Use `/cwl-clan` to add clans." });
         }
-
-        const thEmojis = {
-            18: getEmoji("th18"), 17: getEmoji("th17"), 16: getEmoji("th16"),
-            15: getEmoji("th15"), 14: getEmoji("th14"), 13: getEmoji("th13"),
-            12: getEmoji("th12"), 11: getEmoji("th11"), 10: getEmoji("th10"),
-        };
 
         try {
             if (selectedClan.toLowerCase() === "all") {
@@ -126,7 +120,7 @@ module.exports = {
                     const sortedTH = Object.entries(thCounts).sort((a, b) => b[0] - a[0]);
                     let desc = "";
                     for (const [th, count] of sortedTH) {
-                        const emojiStr = thEmojis[th] || "🏰";
+                        const emojiStr = (getThEmoji ? getThEmoji(th, "🏰") : (getEmoji("th" + th) || "🏰"));
                         desc += `**TH${th}** ${emojiStr} **${count}**\n`;
                     }
 
@@ -207,7 +201,7 @@ module.exports = {
 
                 let desc = "";
                 for (const [th, count] of sortedTH) {
-                    const emojiStr = thEmojis[th] || "🏰";
+                    const emojiStr = (getThEmoji ? getThEmoji(th, "🏰") : (getEmoji("th" + th) || "🏰"));
                     desc += `**TH${th}** ${emojiStr} **${count}**\n`;
                 }
 

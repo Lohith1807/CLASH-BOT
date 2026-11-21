@@ -59,7 +59,7 @@ async function handleInteraction(interaction, context) {
     // ── end /cwl-clan panel handler ─────────────────────────────────────────
 
     const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, StringSelectMenuBuilder, ModalBuilder, TextInputBuilder, TextInputStyle, data: dataManager, coc, config, emoji } = context;
-    const { getEmoji, getEmojiObject } = emoji;
+    const { getEmoji, getEmojiObject, getThEmoji } = emoji;
 
     if (interaction.isButton()) {
         const id = interaction.customId;
@@ -719,11 +719,6 @@ async function handleInteraction(interaction, context) {
             try {
                 var clan = await coc.getClan(compoTag);
 
-                var thEmojis = {
-                    18: getEmoji("th18"), 17: getEmoji("th17"), 16: getEmoji("th16"),
-                    15: getEmoji("th15"), 14: getEmoji("th14"), 13: getEmoji("th13"),
-                    12: getEmoji("th12"), 11: getEmoji("th11")
-                };
                 var thCounts = {};
                 var totalTH = 0;
                 var totalMembers = 0;
@@ -737,7 +732,7 @@ async function handleInteraction(interaction, context) {
                 var sortedTH = Object.entries(thCounts).sort(function(a, b) { return b[0] - a[0]; });
                 var desc = "";
                 sortedTH.forEach(function(entry) {
-                    var emojiStr = thEmojis[entry[0]] || "🏰";
+                    var emojiStr = (getThEmoji ? getThEmoji(entry[0], "🏰") : (getEmoji("th" + entry[0]) || "🏰"));
                     desc += "**TH" + entry[0] + "** " + emojiStr + " **" + entry[1] + "**\n";
                 });
 
@@ -804,11 +799,6 @@ async function handleInteraction(interaction, context) {
             try {
                 var clan = await coc.getClan(compoTag);
 
-                var thEmojis = {
-                    18: getEmoji("th18"), 17: getEmoji("th17"), 16: getEmoji("th16"),
-                    15: getEmoji("th15"), 14: getEmoji("th14"), 13: getEmoji("th13"),
-                    12: getEmoji("th12"), 11: getEmoji("th11")
-                };
                 var thCounts = {};
                 var totalTH = 0;
                 var totalMembers = 0;
@@ -822,7 +812,7 @@ async function handleInteraction(interaction, context) {
                 var sortedTH = Object.entries(thCounts).sort(function(a, b) { return b[0] - a[0]; });
                 var desc = "";
                 sortedTH.forEach(function(entry) {
-                    var emojiStr = thEmojis[entry[0]] || "🏰";
+                    var emojiStr = (getThEmoji ? getThEmoji(entry[0], "🏰") : (getEmoji("th" + entry[0]) || "🏰"));
                     desc += "**TH" + entry[0] + "** " + emojiStr + " **" + entry[1] + "**\n";
                 });
                 
@@ -833,7 +823,7 @@ async function handleInteraction(interaction, context) {
                 var eqvCounts = (pages && pages.eqvCounts) ? pages.eqvCounts : {};
                 var sortedEqvTH = Object.entries(eqvCounts).sort(function(a, b) { return b[0] - a[0]; });
                 sortedEqvTH.forEach(function(entry) {
-                    var emojiStr = thEmojis[entry[0]] || "🏰";
+                    var emojiStr = (getThEmoji ? getThEmoji(entry[0], "🏰") : (getEmoji("th" + entry[0]) || "🏰"));
                     eqvDesc += "**TH" + entry[0] + "** " + emojiStr + " **" + entry[1] + "**\n";
                 });
 
@@ -1385,9 +1375,13 @@ async function handleInteraction(interaction, context) {
                     var tagNoHash = clanTag.replace("#", "");
                     var tagWithHash = encodeURIComponent("#" + tagNoHash);
 
+                    var acceptingList = (dataManager.getRecruitingTHs ? dataManager.getRecruitingTHs() : ["th18", "th17", "th16", "th15", "th14"]).map(function(t) {
+                        return getEmoji(t);
+                    }).filter(Boolean).join(" ");
+
                     var fwaDesc =
                         getEmoji("whitefwa") + " **FWA** " + getEmoji("whitefwa") + "\n" +
-                        getEmoji("fwalead") + " **Accepting:** " + getEmoji("th18") + " " + getEmoji("th17") + " " + getEmoji("th16") + " " + getEmoji("th15") + " " + getEmoji("th14") + "\n" +
+                        getEmoji("fwalead") + " **Accepting:** " + acceptingList + "\n" +
                         getEmoji("ccw") + " **Clan Capital:** " + (clan.clanCapital ? clan.clanCapital.capitalHallLevel : "?") + "\n" +
                         getEmoji("clancastle") + " **Clan Level:** " + clan.clanLevel + "\n" +
                         getEmoji("cwl") + " **CWL:** Lazy Cwl\n\n" +

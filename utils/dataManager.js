@@ -882,6 +882,116 @@ function updateMailRule(type, ruleData) {
     return updated;
 }
 
+/**
+ * Helper to find clan entry by tag or nickname
+ * @param {Object} config - Clan rules config
+ * @param {string} clanTag - Clan tag or nickname
+ * @returns {{ clan: Object, tag: string }|null}
+ */
+function findClanEntry(config, clanTag) {
+    if (!config || !config.clans || !clanTag) return null;
+    const rawTag = clanTag.trim().toUpperCase();
+    const tagWithHash = rawTag.startsWith('#') ? rawTag : '#' + rawTag;
+    const tagNoHash = tagWithHash.replace('#', '');
+
+    if (config.clans[tagWithHash]) return { clan: config.clans[tagWithHash], tag: tagWithHash };
+    if (config.clans[tagNoHash]) return { clan: config.clans[tagNoHash], tag: tagNoHash };
+
+    for (const [t, info] of Object.entries(config.clans)) {
+        if (info.nickName && info.nickName.toUpperCase() === rawTag) {
+            return { clan: info, tag: t };
+        }
+    }
+    return null;
+}
+
+/**
+ * Get war rules for a specific clan
+ * @param {string} clanTag - Clan tag or nickname
+ * @returns {Object|null} { win, lose, bl, mis }
+ */
+function getClanWarRules(clanTag) {
+    const config = getClanRules();
+    const found = findClanEntry(config, clanTag);
+    if (!found) return null;
+
+    const defaultWarRules = config.default?.warrules || DEFAULT_MAIL_RULES;
+    const clanWarRules = found.clan.warrules || found.clan.mailrules || {};
+
+    return {
+        win: (clanWarRules.win && Object.keys(clanWarRules.win).length > 0) ? clanWarRules.win : defaultWarRules.win,
+        lose: (clanWarRules.lose && Object.keys(clanWarRules.lose).length > 0) ? clanWarRules.lose : defaultWarRules.lose,
+        bl: (clanWarRules.bl && Object.keys(clanWarRules.bl).length > 0) ? clanWarRules.bl : defaultWarRules.bl,
+        mis: (clanWarRules.mis && Object.keys(clanWarRules.mis).length > 0) ? clanWarRules.mis : defaultWarRules.mis
+    };
+}
+
+/**
+ * Save war rules for a specific clan
+ * @param {string} clanTag - Clan tag or nickname
+ * @param {Object} warRules - { win?, lose?, bl?, mis? }
+ * @returns {Object|null} Updated clan war rules
+ */
+function saveClanWarRules(clanTag, warRules) {
+    const config = getClanRules();
+    const found = findClanEntry(config, clanTag);
+    if (!found) return null;
+
+    if (!found.clan.warrules) {
+        found.clan.warrules = JSON.parse(JSON.stringify(config.default?.warrules || DEFAULT_MAIL_RULES));
+    }
+
+    found.clan.warrules = {
+        ...found.clan.warrules,
+        ...warRules
+    };
+
+    saveClanRules(config);
+    return found.clan.warrules;
+}
+
+/**
+ * Update a single war rule for a specific clan
+ * @param {string} clanTag - Clan tag or nickname
+ * @param {string} type - "win" | "lose" | "bl" | "mis"
+ * @param {Object|string} ruleData - Updated rule
+ * @returns {Object|null} Updated rule
+ */
+function updateClanWarRule(clanTag, type, ruleData) {
+    const config = getClanRules();
+    const found = findClanEntry(config, clanTag);
+    if (!found) return null;
+
+    const t = (type || "").toLowerCase().trim();
+    let key = "win";
+    if (t === "win" || t === "w") key = "win";
+    else if (t === "lose" || t === "loss" || t === "l") key = "lose";
+    else if (t === "bl" || t.includes("black")) key = "bl";
+    else if (t === "mis" || t.includes("mis")) key = "mis";
+    else key = t;
+
+    if (!found.clan.warrules) {
+        found.clan.warrules = JSON.parse(JSON.stringify(config.default?.warrules || DEFAULT_MAIL_RULES));
+    }
+
+    const current = found.clan.warrules[key] || DEFAULT_MAIL_RULES[key] || {};
+    let updated;
+    if (typeof ruleData === "string") {
+        updated = { ...current, text: ruleData };
+    } else if (typeof ruleData === "object" && ruleData !== null) {
+        updated = { ...current, ...ruleData };
+        if (ruleData.text === undefined && (ruleData.instructions || ruleData.header || ruleData.title || ruleData.important || ruleData.goals || ruleData.notes)) {
+            updated.text = buildMailRuleText(updated);
+        }
+    } else {
+        updated = { ...current };
+    }
+
+    found.clan.warrules[key] = updated;
+    saveClanRules(config);
+    return updated;
+}
+
 module.exports = {
     getUserData,
     getClanRoles,
@@ -908,6 +1018,14 @@ module.exports = {
     updateWarRule: updateMailRule,
     formatWarRules: formatMailRules,
     DEFAULT_WAR_RULES: DEFAULT_MAIL_RULES,
+
+    getClanWarRules,
+    getClanWarRule: (clanTag, type) => getMailRule(type, clanTag),
+    saveClanWarRules,
+    updateClanWarRule,
+    getClanMailRules: getClanWarRules,
+    saveClanMailRules: saveClanWarRules,
+    updateClanMailRule: updateClanWarRule,
 
     saveUserData,
     saveClanRoles,

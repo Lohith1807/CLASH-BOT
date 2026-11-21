@@ -115,14 +115,29 @@ const client = new Client({
     GatewayIntentBits.GuildMessageReactions,
     GatewayIntentBits.GuildMembers,
     GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildPresences
+    GatewayIntentBits.GuildPresences,
+    GatewayIntentBits.DirectMessages
   ],
   partials: [Partials.Message, Partials.Channel, Partials.Reaction, Partials.User, Partials.GuildMember]
 });
 client.activeTicketTimers = new Map();
 
+function isBotOwner(user) {
+  if (!user) return false;
+  const userId = user.id || user;
+  if (config.VIP_USER_IDS && config.VIP_USER_IDS.includes(userId)) return true;
+  if (process.env.OWNER_ID && process.env.OWNER_ID === userId) return true;
+  if (client.application?.owner) {
+    if (client.application.owner.id === userId) return true;
+    if (client.application.owner.members?.has(userId)) return true;
+  }
+  return false;
+}
+
+
 client.once(Events.ClientReady, async (c) => {
   console.log(`✅ Logged in as ${c.user.tag}`);
+  await client.application?.fetch().catch(() => null);
 
   tools.coc.init(c); // Initialize cocManager with client for maintenance logs
 
@@ -210,6 +225,23 @@ const syncCommand = require("./commands/coc/war/sync.js");
 
 client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
+
+  const isDM = !message.guild;
+  if (isDM) {
+    if (!isBotOwner(message.author)) return;
+
+    const mainGuild = client.guilds.cache.get(config.GUILD_ID);
+    if (mainGuild) {
+      Object.defineProperty(message, 'guild', {
+        value: mainGuild,
+        writable: true,
+        configurable: true
+      });
+      if (!message.member) {
+        message.member = mainGuild.members.cache.get(message.author.id) || null;
+      }
+    }
+  }
 
   if (client.activeTicketTimers && client.activeTicketTimers.has(message.channel.id)) {
     const ticketOwnerId = message.channel.topic;
@@ -381,6 +413,23 @@ client.on("messageCreate", async (message) => {
   const prefix = "!";
   if (message.author.bot || !message.content.startsWith(prefix)) return;
 
+  const isDM = !message.guild;
+  if (isDM) {
+    if (!isBotOwner(message.author)) return;
+
+    const mainGuild = client.guilds.cache.get(config.GUILD_ID);
+    if (mainGuild) {
+      Object.defineProperty(message, 'guild', {
+        value: mainGuild,
+        writable: true,
+        configurable: true
+      });
+      if (!message.member) {
+        message.member = mainGuild.members.cache.get(message.author.id) || null;
+      }
+    }
+  }
+
   const args = message.content.slice(prefix.length).trim().split(/ +/);
   const commandName = args.shift().toLowerCase();
   try {
@@ -480,6 +529,22 @@ for (const file of commandFiles) {
 
 client.on("interactionCreate", async (interaction) => {
   try {
+    const isDM = !interaction.guild;
+    if (isDM) {
+      if (!isBotOwner(interaction.user)) return;
+
+      const mainGuild = client.guilds.cache.get(config.GUILD_ID);
+      if (mainGuild) {
+        Object.defineProperty(interaction, 'guild', {
+          value: mainGuild,
+          writable: true,
+          configurable: true
+        });
+        if (!interaction.member) {
+          interaction.member = mainGuild.members.cache.get(interaction.user.id) || null;
+        }
+      }
+    }
     if (interaction.isButton() && interaction.customId.startsWith('view_welcome_details_')) {
       try { await interaction.deferReply({ flags: [MessageFlags.Ephemeral] }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
       const userId = interaction.customId.split('_')[3];
