@@ -277,7 +277,10 @@ function initClanEntry(data, clanTag) {
                 TH19: 0,
                 TH18: 0,
                 TH17: 0,
-                TH16: 0
+                TH16: 0,
+                TH15: 0,
+                TH14: 0,
+                total: 0
             }
         };
         for (const th of tracked) {
@@ -317,13 +320,21 @@ function initClanEntry(data, clanTag) {
                 TH19: 0,
                 TH18: 0,
                 TH17: 0,
-                TH16: 0
+                TH16: 0,
+                TH15: 0,
+                TH14: 0,
+                total: 0
             };
         } else {
-            for (const th of ['TH19', 'TH18', 'TH17', 'TH16']) {
+            for (const th of ['TH19', 'TH18', 'TH17', 'TH16', 'TH15', 'TH14']) {
                 if (data[formattedTag].recruitments[th] === undefined) {
                     data[formattedTag].recruitments[th] = 0;
                 }
+            }
+            if (data[formattedTag].recruitments.total === undefined) {
+                data[formattedTag].recruitments.total = Object.entries(data[formattedTag].recruitments)
+                    .filter(([k]) => k.startsWith('TH'))
+                    .reduce((sum, [, v]) => sum + (typeof v === 'number' ? v : 0), 0);
             }
         }
     }
@@ -499,6 +510,9 @@ function recordAssignment({ clanTag, player, ticketId, channelId = null, fwaClan
         if (!clanEntry.recruitments) clanEntry.recruitments = {};
         if (thKey) {
             clanEntry.recruitments[thKey] = (clanEntry.recruitments[thKey] || 0) + 1;
+            clanEntry.recruitments.total = Object.entries(clanEntry.recruitments)
+                .filter(([k]) => k.startsWith('TH'))
+                .reduce((sum, [, v]) => sum + (typeof v === 'number' ? v : 0), 0);
         }
     }
 

@@ -568,17 +568,19 @@ module.exports = {
             // Recruited from Blood Alliance lifetime counts
             const recruitmentLines = [];
             const lifetimeMap = clanRec?.recruitments || {};
-            const thKeys = Array.from(new Set([...trackedTHs, 'TH19', 'TH18', 'TH17', 'TH16', ...Object.keys(lifetimeMap)]));
+            const thKeys = Array.from(new Set([...trackedTHs, 'TH19', 'TH18', 'TH17', 'TH16', 'TH15', 'TH14', ...Object.keys(lifetimeMap).filter(k => k.startsWith('TH'))]));
             thKeys.sort((a, b) => {
                 const numA = parseInt(a.replace(/[^0-9]/g, ''), 10) || 0;
                 const numB = parseInt(b.replace(/[^0-9]/g, ''), 10) || 0;
                 return numB - numA;
             });
 
+            let totalPlayersSent = 0;
             for (const th of thKeys) {
                 const cleanNum = th.toLowerCase().replace(/^th/, '');
                 const thEmoji = resolveThEmojiString(cleanNum, emojiUtils);
-                const count = lifetimeMap[th] || 0;
+                const count = typeof lifetimeMap[th] === 'number' ? lifetimeMap[th] : 0;
+                totalPlayersSent += count;
                 recruitmentLines.push(`${thEmoji} ${th} : ${count}`);
             }
 
@@ -591,7 +593,9 @@ module.exports = {
                     currentRotLines.join('\n') +
                     `\n\n` +
                     `**Recruited From Blood Alliance :**\n` +
-                    recruitmentLines.join('\n')
+                    recruitmentLines.join('\n') +
+                    `\n\n` +
+                    `**Total Players Sent :** **${totalPlayersSent}**`
                 )
                 .setFooter({ text: "FWA Clan Recruitment Tracking" })
                 .setTimestamp();
