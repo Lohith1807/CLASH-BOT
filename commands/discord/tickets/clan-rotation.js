@@ -462,7 +462,37 @@ module.exports = {
     data: new SlashCommandBuilder()
         .setName("clan-rotation")
         .setDescription("Display current recruitment rotation status for all FWA clans")
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+        .addStringOption(option =>
+            option.setName("clan")
+                .setDescription("Optional: Select an FWA clan to view its rotation and recruitments")
+                .setRequired(false)
+                .setAutocomplete(true)
+        ),
+
+    async autocomplete(interaction) {
+        const focusedValue = (interaction.options.getFocused() || "").toLowerCase().trim();
+        const clanRoles = dataManager.getClanRoles();
+        const fwaTags = Object.keys(clanRoles).filter(tag => (clanRoles[tag].clanType || 'fwa').toLowerCase() === 'fwa');
+
+        const choices = [];
+        for (const tag of fwaTags) {
+            const nickname = clanRoles[tag].nickName || "";
+            const realName = clanNameCache.get(tag) || clanRoles[tag].name || nickname || tag;
+            const displayName = nickname ? `${realName} (${nickname}) [${tag}]` : `${realName} [${tag}]`;
+            choices.push({
+                name: displayName.substring(0, 100),
+                value: tag
+            });
+        }
+
+        const filtered = choices.filter(choice =>
+            choice.name.toLowerCase().includes(focusedValue) ||
+            choice.value.toLowerCase().includes(focusedValue)
+        ).slice(0, 25);
+
+        await interaction.respond(filtered).catch(() => {});
+    },
 
     async execute(interaction, context) {
         const { emoji: emojiUtils, coc, data: dataMgr } = context;
@@ -494,6 +524,82 @@ module.exports = {
         const rulesData = dataMgr && typeof dataMgr.getClanRules === 'function' ? dataMgr.getClanRules() : dataManager.getClanRules();
         let recruitmentsData = clanRecruitments.getRecruitmentData();
         let trackedTHs = clanRecruitments.getTrackedRotationTHs(recruitmentsData);
+
+        // Check if user selected a specific clan
+        const selectedClanRaw = interaction.options.getString("clan");
+        if (selectedClanRaw) {
+            let selectedTag = selectedClanRaw.trim().toUpperCase();
+            if (!selectedTag.startsWith("#")) {
+                const matchTag = fwaTags.find(t =>
+                    t.toUpperCase() === selectedTag ||
+                    t.toUpperCase() === "#" + selectedTag ||
+                    (clanRoles[t].nickName && clanRoles[t].nickName.toUpperCase() === selectedTag)
+                );
+                if (matchTag) {
+                    selectedTag = matchTag;
+                } else {
+                    selectedTag = "#" + selectedTag;
+                }
+            }
+
+            if (!clanRoles[selectedTag]) {
+                return interaction.reply({
+                    content: `❌ Could not find an active FWA clan with tag or nickname "${selectedClanRaw}".`,
+                    flags: [MessageFlags.Ephemeral]
+                });
+            }
+
+            const config = clanRoles[selectedTag] || {};
+            const nick = config.nickName || "";
+            const badgeEmoji = getClanBadge(nick, emojiUtils);
+            const clanName = clanNameCache.get(selectedTag) || rulesData?.clans?.[selectedTag]?.name || config.name || nick || selectedTag;
+            const clanRec = recruitmentsData[selectedTag] || {};
+
+            // Current rotation counts
+            const currentRotLines = [];
+            for (const th of trackedTHs) {
+                const cleanNum = th.toLowerCase().replace(/^th/, '');
+                const thEmoji = resolveThEmojiString(cleanNum, emojiUtils);
+                const rotObj = clanRec?.presentRotation?.[th];
+                const count = rotObj?.count ?? (rotObj?.players?.length || 0);
+                currentRotLines.push(`${thEmoji} ${th} - ${count}`);
+            }
+
+            // Recruited from Blood Alliance lifetime counts
+            const recruitmentLines = [];
+            const lifetimeMap = clanRec?.recruitments || {};
+            const thKeys = Array.from(new Set([...trackedTHs, 'TH19', 'TH18', 'TH17', 'TH16', ...Object.keys(lifetimeMap)]));
+            thKeys.sort((a, b) => {
+                const numA = parseInt(a.replace(/[^0-9]/g, ''), 10) || 0;
+                const numB = parseInt(b.replace(/[^0-9]/g, ''), 10) || 0;
+                return numB - numA;
+            });
+
+            for (const th of thKeys) {
+                const cleanNum = th.toLowerCase().replace(/^th/, '');
+                const thEmoji = resolveThEmojiString(cleanNum, emojiUtils);
+                const count = lifetimeMap[th] || 0;
+                recruitmentLines.push(`${thEmoji} ${th} : ${count}`);
+            }
+
+            const singleClanEmbed = new EmbedBuilder()
+                .setTitle("FWA CLAN ROTATIONS")
+                .setColor(0x3498DB)
+                .setDescription(
+                    `${badgeEmoji} **${clanName}** - \`${selectedTag}\`\n\n` +
+                    `**Current Rotation :**\n` +
+                    currentRotLines.join('\n') +
+                    `\n\n` +
+                    `**Recruited From Blood Alliance :**\n` +
+                    recruitmentLines.join('\n')
+                )
+                .setFooter({ text: "FWA Clan Recruitment Tracking" })
+                .setTimestamp();
+
+            return interaction.reply({
+                embeds: [singleClanEmbed]
+            });
+        }
 
         let currentPage = 0;
         let publicPages = buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils, rulesData);
