@@ -156,7 +156,7 @@ function buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils = 
  */
 function buildPublicRotationEmbed(pageContent, currentPage = 0, totalPages = 1) {
     const embed = new EmbedBuilder()
-        .setTitle("🔄 FWA Clan Recruitment Rotations")
+        .setTitle("FWA CLAN ROTATIONS")
         .setColor(0x3498DB)
         .setDescription(pageContent)
         .setTimestamp();
