@@ -152,6 +152,15 @@ module.exports = {
                         delete clanroles[clanTag];
                         dataManager.saveClanRoles(clanroles);
 
+                        // Automatically remove from clan-recruitments.json
+                        try {
+                            if (typeof dataManager.removeClanRecruitmentEntry === 'function') {
+                                dataManager.removeClanRecruitmentEntry(clanTag);
+                            }
+                        } catch (err) {
+                            console.error(`[ClanRevoke] Error removing clan recruitment entry for ${clanTag}:`, err.message);
+                        }
+
                         // Automatically remove from clanrules.json
                         try {
                             if (typeof dataManager.removeClanRuleEntry === 'function') {

@@ -1,0 +1,624 @@
+/**
+ * Clan Recruitment Tracking & Independent Rotation System
+ * Manages clan-recruitments.json for tracking TH rotations
+ * and lifetime recruitment counts for all Town Halls.
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const RECRUITMENTS_PATH = path.join(__dirname, '../data/clan-recruitments.json');
+const DEFAULT_TRACKED_THS = ['TH19', 'TH18'];
+const ROTATION_LIMIT = 1;
+
+/**
+ * Format string tag to #TAG uppercase
+ */
+function formatClanTag(tag) {
+    if (!tag || typeof tag !== 'string') return '';
+    const clean = tag.trim().toUpperCase();
+    return clean.startsWith('#') ? clean : '#' + clean;
+}
+
+/**
+ * Clean tag (no #, uppercase)
+ */
+function cleanTag(tag) {
+    if (!tag || typeof tag !== 'string') return '';
+    return tag.replace(/^#/, '').trim().toUpperCase();
+}
+
+/**
+ * Normalize Town Hall level to uppercase "TH19", "TH18", etc.
+ * Converts lowercase (th17, 17) to uppercase (TH17).
+ */
+function normalizeTh(th) {
+    if (!th) return null;
+    const str = String(th).trim().toUpperCase();
+    const cleanNum = str.replace(/[^0-9]/g, '');
+    const num = parseInt(cleanNum, 10);
+    if (isNaN(num) || num <= 0 || num > 35) return null;
+    return `TH${num}`;
+}
+
+/**
+ * Format ISO date string to human-readable format: "21 November 2026, 9:00 PM"
+ */
+function formatAssignmentDate(isoString) {
+    if (!isoString) return "Unknown";
+    try {
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return isoString;
+        const day = d.getDate();
+        const months = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        let hours = d.getHours();
+        const minutes = d.getMinutes().toString().padStart(2, '0');
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12;
+        return `${day} ${month} ${year}, ${hours}:${minutes} ${ampm}`;
+    } catch (_) {
+        return isoString;
+    }
+}
+
+/**
+ * Safely read recruitment data from disk
+ */
+function getRecruitmentData() {
+    try {
+        if (!fs.existsSync(RECRUITMENTS_PATH)) {
+            const initial = {
+                _metadata: {
+                    rotations: {
+                        TH19: 1,
+                        TH18: 1
+                    },
+                    trackedTHs: [...DEFAULT_TRACKED_THS]
+                }
+            };
+            fs.writeFileSync(RECRUITMENTS_PATH, JSON.stringify(initial, null, 2), 'utf8');
+            return initial;
+        }
+
+        const raw = fs.readFileSync(RECRUITMENTS_PATH, 'utf8');
+        if (!raw || !raw.trim()) {
+            const initial = {
+                _metadata: {
+                    rotations: {
+                        TH19: 1,
+                        TH18: 1
+                    },
+                    trackedTHs: [...DEFAULT_TRACKED_THS]
+                }
+            };
+            fs.writeFileSync(RECRUITMENTS_PATH, JSON.stringify(initial, null, 2), 'utf8');
+            return initial;
+        }
+
+        const data = JSON.parse(raw);
+        if (!data._metadata) {
+            data._metadata = {};
+        }
+        if (!data._metadata.rotations) {
+            data._metadata.rotations = { TH19: 1, TH18: 1 };
+        }
+        if (!Array.isArray(data._metadata.trackedTHs) || data._metadata.trackedTHs.length === 0) {
+            data._metadata.trackedTHs = [...DEFAULT_TRACKED_THS];
+        }
+        return data;
+    } catch (err) {
+        console.error('[ClanRecruitments] Error reading clan-recruitments.json:', err.message);
+        return {
+            _metadata: {
+                rotations: {
+                    TH19: 1,
+                    TH18: 1
+                },
+                trackedTHs: [...DEFAULT_TRACKED_THS]
+            }
+        };
+    }
+}
+
+/**
+ * Safely save recruitment data to disk
+ */
+function saveRecruitmentData(data) {
+    try {
+        fs.writeFileSync(RECRUITMENTS_PATH, JSON.stringify(data, null, 2), 'utf8');
+        return true;
+    } catch (err) {
+        console.error('[ClanRecruitments] Error writing clan-recruitments.json:', err.message);
+        return false;
+    }
+}
+
+/**
+ * Get currently tracked Town Hall levels for rotations
+ * @param {Object} [data] - Optional recruitment data
+ * @returns {string[]} Array of uppercase THs, e.g. ["TH19", "TH18"]
+ */
+function getTrackedRotationTHs(data = null) {
+    const store = data || getRecruitmentData();
+    if (!store._metadata) store._metadata = {};
+    if (!Array.isArray(store._metadata.trackedTHs) || store._metadata.trackedTHs.length === 0) {
+        store._metadata.trackedTHs = [...DEFAULT_TRACKED_THS];
+    }
+    return store._metadata.trackedTHs.slice().sort((a, b) => {
+        const numA = parseInt(a.replace(/[^0-9]/g, ''), 10) || 0;
+        const numB = parseInt(b.replace(/[^0-9]/g, ''), 10) || 0;
+        return numB - numA;
+    });
+}
+
+/**
+ * Add a Town Hall level to the tracked rotation list
+ * Converts input to uppercase (e.g. th17 -> TH17)
+ * @param {string|number} thInput - e.g. "th17", 17, "17", "TH17"
+ * @returns {{ success: boolean, th: string, alreadyExists?: boolean, invalid?: boolean, trackedTHs: string[] }}
+ */
+function addTrackedRotationTH(thInput) {
+    const thKey = normalizeTh(thInput);
+    if (!thKey) {
+        return { success: false, invalid: true, trackedTHs: getTrackedRotationTHs() };
+    }
+
+    const data = getRecruitmentData();
+    if (!data._metadata) data._metadata = {};
+    if (!Array.isArray(data._metadata.trackedTHs)) {
+        data._metadata.trackedTHs = [...DEFAULT_TRACKED_THS];
+    }
+
+    if (data._metadata.trackedTHs.includes(thKey)) {
+        return {
+            success: false,
+            alreadyExists: true,
+            th: thKey,
+            trackedTHs: getTrackedRotationTHs(data)
+        };
+    }
+
+    data._metadata.trackedTHs.push(thKey);
+    data._metadata.trackedTHs.sort((a, b) => {
+        const numA = parseInt(a.replace(/[^0-9]/g, ''), 10) || 0;
+        const numB = parseInt(b.replace(/[^0-9]/g, ''), 10) || 0;
+        return numB - numA;
+    });
+
+    if (!data._metadata.rotations) data._metadata.rotations = {};
+    if (!data._metadata.rotations[thKey]) {
+        data._metadata.rotations[thKey] = 1;
+    }
+
+    // Ensure all registered clans have the new TH in presentRotation
+    for (const [tag, clan] of Object.entries(data)) {
+        if (tag.startsWith('_')) continue;
+        if (!clan.presentRotation) clan.presentRotation = {};
+        if (!clan.presentRotation[thKey]) {
+            clan.presentRotation[thKey] = {
+                count: 0,
+                rotationId: data._metadata.rotations[thKey] || 1,
+                players: []
+            };
+        }
+    }
+
+    saveRecruitmentData(data);
+    return {
+        success: true,
+        th: thKey,
+        trackedTHs: getTrackedRotationTHs(data)
+    };
+}
+
+/**
+ * Remove a Town Hall level from the tracked rotation list
+ * @param {string|number} thInput - e.g. "th18", 18, "18", "TH18"
+ * @returns {{ success: boolean, th: string, notFound?: boolean, invalid?: boolean, trackedTHs: string[] }}
+ */
+function removeTrackedRotationTH(thInput) {
+    const thKey = normalizeTh(thInput);
+    if (!thKey) {
+        return { success: false, invalid: true, trackedTHs: getTrackedRotationTHs() };
+    }
+
+    const data = getRecruitmentData();
+    if (!data._metadata) data._metadata = {};
+    if (!Array.isArray(data._metadata.trackedTHs)) {
+        data._metadata.trackedTHs = [...DEFAULT_TRACKED_THS];
+    }
+
+    if (!data._metadata.trackedTHs.includes(thKey)) {
+        return {
+            success: false,
+            notFound: true,
+            th: thKey,
+            trackedTHs: getTrackedRotationTHs(data)
+        };
+    }
+
+    data._metadata.trackedTHs = data._metadata.trackedTHs.filter(t => t !== thKey);
+
+    // Remove from presentRotation of each clan
+    for (const [tag, clan] of Object.entries(data)) {
+        if (tag.startsWith('_')) continue;
+        if (clan.presentRotation && clan.presentRotation[thKey]) {
+            delete clan.presentRotation[thKey];
+        }
+    }
+
+    saveRecruitmentData(data);
+    return {
+        success: true,
+        th: thKey,
+        trackedTHs: getTrackedRotationTHs(data)
+    };
+}
+
+/**
+ * Initialize a clan entry with required presentRotation and recruitments structure
+ */
+function initClanEntry(data, clanTag) {
+    const formattedTag = formatClanTag(clanTag);
+    if (!formattedTag) return null;
+
+    const tracked = getTrackedRotationTHs(data);
+
+    if (!data[formattedTag]) {
+        const clanObj = {
+            presentRotation: {},
+            recruitments: {
+                TH19: 0,
+                TH18: 0,
+                TH17: 0,
+                TH16: 0
+            }
+        };
+        for (const th of tracked) {
+            clanObj.presentRotation[th] = {
+                count: 0,
+                rotationId: data._metadata?.rotations?.[th] || 1,
+                players: []
+            };
+        }
+        data[formattedTag] = clanObj;
+    } else {
+        // Ensure presentRotation structure
+        if (!data[formattedTag].presentRotation) {
+            data[formattedTag].presentRotation = {};
+        }
+        for (const th of tracked) {
+            if (!data[formattedTag].presentRotation[th]) {
+                data[formattedTag].presentRotation[th] = {
+                    count: 0,
+                    rotationId: data._metadata?.rotations?.[th] || 1,
+                    players: []
+                };
+            } else {
+                if (!Array.isArray(data[formattedTag].presentRotation[th].players)) {
+                    data[formattedTag].presentRotation[th].players = [];
+                }
+                if (data[formattedTag].presentRotation[th].rotationId === undefined) {
+                    data[formattedTag].presentRotation[th].rotationId = data._metadata?.rotations?.[th] || 1;
+                }
+                data[formattedTag].presentRotation[th].count = data[formattedTag].presentRotation[th].players.length;
+            }
+        }
+
+        // Ensure recruitments structure
+        if (!data[formattedTag].recruitments) {
+            data[formattedTag].recruitments = {
+                TH19: 0,
+                TH18: 0,
+                TH17: 0,
+                TH16: 0
+            };
+        } else {
+            for (const th of ['TH19', 'TH18', 'TH17', 'TH16']) {
+                if (data[formattedTag].recruitments[th] === undefined) {
+                    data[formattedTag].recruitments[th] = 0;
+                }
+            }
+        }
+    }
+
+    return data[formattedTag];
+}
+
+/**
+ * Synchronize registered FWA clans list with recruitment data
+ */
+function syncFwaClans(data, fwaClanTags = []) {
+    if (!data || typeof data !== 'object') return data;
+    if (!Array.isArray(fwaClanTags) || fwaClanTags.length === 0) return data;
+
+    for (const tag of fwaClanTags) {
+        initClanEntry(data, tag);
+    }
+    return data;
+}
+
+/**
+ * Check if assigning this player/TH to the clan triggers a duplicate assignment warning.
+ * Returns { isDuplicate: boolean, previousPlayer: Object | null }
+ */
+function checkDuplicate(clanTag, thLevel, playerTag = null, ticketId = null) {
+    const thKey = normalizeTh(thLevel);
+    const data = getRecruitmentData();
+    const tracked = getTrackedRotationTHs(data);
+
+    if (!tracked.includes(thKey)) {
+        return { isDuplicate: false, previousPlayer: null };
+    }
+
+    const formattedClanTag = formatClanTag(clanTag);
+    const clanEntry = data[formattedClanTag];
+    if (!clanEntry || !clanEntry.presentRotation || !clanEntry.presentRotation[thKey]) {
+        return { isDuplicate: false, previousPlayer: null };
+    }
+
+    const rotationObj = clanEntry.presentRotation[thKey];
+    const players = rotationObj.players || [];
+
+    // Filter out the current player if they were already assigned in this same ticket
+    const otherPlayers = players.filter(p => {
+        if (playerTag && cleanTag(p.playerTag) === cleanTag(playerTag)) {
+            if (ticketId && p.ticketId === ticketId) {
+                return false; // same player and same ticket => reassignment, not duplicate
+            }
+        }
+        return true;
+    });
+
+    if (otherPlayers.length >= ROTATION_LIMIT) {
+        // Most recent recruitment from the list
+        const previousPlayer = otherPlayers[otherPlayers.length - 1];
+        return {
+            isDuplicate: true,
+            previousPlayer: {
+                playerName: previousPlayer.playerName || "Unknown",
+                playerTag: previousPlayer.playerTag || "",
+                ticketId: previousPlayer.ticketId || "",
+                dateTime: previousPlayer.dateTime || "",
+                formattedDate: formatAssignmentDate(previousPlayer.dateTime)
+            }
+        };
+    }
+
+    return { isDuplicate: false, previousPlayer: null };
+}
+
+/**
+ * Find existing assignment in current rotations for playerTag + ticketId
+ */
+function findExistingAssignment(data, playerTag, ticketId, channelId = null) {
+    if (!playerTag || (!ticketId && !channelId)) return null;
+    const cleanP = cleanTag(playerTag);
+    const tracked = getTrackedRotationTHs(data);
+
+    for (const [tag, clanData] of Object.entries(data)) {
+        if (tag.startsWith('_')) continue;
+        if (!clanData.presentRotation) continue;
+
+        for (const thKey of tracked) {
+            const rot = clanData.presentRotation[thKey];
+            if (!rot || !Array.isArray(rot.players)) continue;
+
+            const index = rot.players.findIndex(p => {
+                if (cleanTag(p.playerTag) !== cleanP) return false;
+                if (ticketId && p.ticketId && p.ticketId === ticketId) return true;
+                if (channelId && p.channelId && p.channelId === channelId) return true;
+                return false;
+            });
+
+            if (index !== -1) {
+                return {
+                    clanTag: tag,
+                    thKey,
+                    playerIndex: index,
+                    playerEntry: rot.players[index],
+                    rotationId: rot.rotationId
+                };
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Record a clan assignment transaction.
+ *
+ * Handles:
+ * - Independent rotations for all tracked TH levels
+ * - Lifetime recruitment count increments
+ * - Reassignment within the same ticket (same playerTag + ticketId)
+ * - Safe removal of old rotation entry without double-counting lifetime
+ * - Independent auto-reset when all FWA clans reach allocation limit
+ *
+ * @param {Object} params
+ * @param {string} params.clanTag - Selected clan tag
+ * @param {Object} params.player - Player data { name, tag, townHallLevel }
+ * @param {string} params.ticketId - Ticket ID (e.g. "TICKET-1")
+ * @param {string} [params.channelId] - Ticket channel ID
+ * @param {Array<string>} params.fwaClanTags - List of all registered FWA clan tags
+ * @returns {Object} Result summary { success, isReassignment, isDuplicate, previousAssignment, rotationReset, thKey }
+ */
+function recordAssignment({ clanTag, player, ticketId, channelId = null, fwaClanTags = [] }) {
+    if (!clanTag || !player || !player.tag) {
+        return { success: false, error: "Missing required clan or player data" };
+    }
+
+    const formattedClanTag = formatClanTag(clanTag);
+    const formattedPlayerTag = formatClanTag(player.tag);
+    const thKey = normalizeTh(player.townHallLevel || player.thLevel);
+
+    // Read full store
+    const data = getRecruitmentData();
+    const tracked = getTrackedRotationTHs(data);
+    const isTrackedRotation = tracked.includes(thKey);
+
+    // Ensure all FWA clans exist in data
+    syncFwaClans(data, fwaClanTags);
+    initClanEntry(data, formattedClanTag);
+
+    let isReassignment = false;
+    let oldAssignmentInfo = null;
+
+    // 1. Check for existing assignment with same playerTag + ticketId across all clans
+    const existing = findExistingAssignment(data, formattedPlayerTag, ticketId, channelId);
+
+    if (existing) {
+        isReassignment = true;
+        oldAssignmentInfo = {
+            clanTag: existing.clanTag,
+            thKey: existing.thKey,
+            playerEntry: existing.playerEntry
+        };
+
+        const oldClanEntry = data[existing.clanTag];
+        if (oldClanEntry && oldClanEntry.presentRotation && oldClanEntry.presentRotation[existing.thKey]) {
+            const rot = oldClanEntry.presentRotation[existing.thKey];
+            // Rotation safety: Only remove if the clan is still in the same rotation generation
+            if (rot.rotationId === existing.playerEntry.rotationId) {
+                rot.players = rot.players.filter((_, idx) => idx !== existing.playerIndex);
+                rot.count = rot.players.length;
+            }
+        }
+    }
+
+    // 2. Lifetime recruitment counts
+    // Only increment for genuinely new recruitments (never for reassignment in the same ticket)
+    const clanEntry = data[formattedClanTag];
+    if (!isReassignment) {
+        if (!clanEntry.recruitments) clanEntry.recruitments = {};
+        if (thKey) {
+            clanEntry.recruitments[thKey] = (clanEntry.recruitments[thKey] || 0) + 1;
+        }
+    }
+
+    let isDuplicate = false;
+    let previousDuplicatePlayer = null;
+    let rotationReset = false;
+
+    // 3. Present Rotation Tracking (Only for tracked TH levels)
+    if (isTrackedRotation) {
+        const rotObj = clanEntry.presentRotation[thKey];
+        if (rotObj.count >= ROTATION_LIMIT) {
+            isDuplicate = true;
+            if (rotObj.players.length > 0) {
+                previousDuplicatePlayer = rotObj.players[rotObj.players.length - 1];
+            }
+        }
+
+        const newPlayerEntry = {
+            playerName: player.name || "Unknown",
+            playerTag: formattedPlayerTag,
+            ticketId: ticketId || "",
+            dateTime: new Date().toISOString(),
+            clanTag: formattedClanTag,
+            thLevel: thKey,
+            rotationId: rotObj.rotationId || data._metadata.rotations[thKey] || 1
+        };
+        if (channelId) newPlayerEntry.channelId = channelId;
+
+        rotObj.players.push(newPlayerEntry);
+        rotObj.count = rotObj.players.length;
+
+        // 4. Check if all registered FWA clans have reached the rotation limit for this TH level
+        const activeFwaTags = fwaClanTags.map(formatClanTag).filter(Boolean);
+        if (activeFwaTags.length > 0) {
+            let allClansReachedLimit = true;
+            for (const fwaTag of activeFwaTags) {
+                const cEntry = data[fwaTag];
+                if (!cEntry || !cEntry.presentRotation || !cEntry.presentRotation[thKey] || cEntry.presentRotation[thKey].count < ROTATION_LIMIT) {
+                    allClansReachedLimit = false;
+                    break;
+                }
+            }
+
+            // 5. Automatic Rotation Reset when ALL FWA clans have at least ROTATION_LIMIT players for this TH
+            if (allClansReachedLimit) {
+                // Increment rotation generation for this TH
+                data._metadata.rotations[thKey] = (data._metadata.rotations[thKey] || 1) + 1;
+                const nextRotationId = data._metadata.rotations[thKey];
+
+                for (const fwaTag of activeFwaTags) {
+                    if (data[fwaTag] && data[fwaTag].presentRotation && data[fwaTag].presentRotation[thKey]) {
+                        data[fwaTag].presentRotation[thKey].count = 0;
+                        data[fwaTag].presentRotation[thKey].players = [];
+                        data[fwaTag].presentRotation[thKey].rotationId = nextRotationId;
+                    }
+                }
+                rotationReset = true;
+            }
+        }
+    }
+
+    // 6. Safe Save
+    saveRecruitmentData(data);
+
+    return {
+        success: true,
+        isReassignment,
+        oldAssignmentInfo,
+        isDuplicate,
+        previousDuplicatePlayer,
+        rotationReset,
+        thKey,
+        clanTag: formattedClanTag
+    };
+}
+
+/**
+ * Remove a clan from clan-recruitments.json when revoked
+ */
+function removeClanFromRecruitments(clanTag) {
+    try {
+        const formattedTag = formatClanTag(clanTag);
+        const data = getRecruitmentData();
+        let changed = false;
+
+        if (data[formattedTag]) {
+            delete data[formattedTag];
+            changed = true;
+        }
+
+        const tagNoHash = cleanTag(clanTag);
+        if (data[tagNoHash]) {
+            delete data[tagNoHash];
+            changed = true;
+        }
+
+        if (changed) {
+            saveRecruitmentData(data);
+        }
+        return changed;
+    } catch (err) {
+        console.error(`[ClanRecruitments] Error removing clan ${clanTag}:`, err.message);
+        return false;
+    }
+}
+
+module.exports = {
+    getRecruitmentData,
+    saveRecruitmentData,
+    initClanEntry,
+    syncFwaClans,
+    checkDuplicate,
+    findExistingAssignment,
+    recordAssignment,
+    removeClanFromRecruitments,
+    formatAssignmentDate,
+    getTrackedRotationTHs,
+    addTrackedRotationTH,
+    removeTrackedRotationTH,
+    normalizeTh,
+    TRACKED_ROTATION_THS: DEFAULT_TRACKED_THS,
+    ROTATION_LIMIT
+};

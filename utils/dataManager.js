@@ -23,7 +23,9 @@ const PATHS = {
     recruitments: path.join(DATA_DIR, "recruitments.json"),
     reapplyreasons: path.join(DATA_DIR, "reapplyreasons.json"),
     ticketData: path.join(DATA_DIR, "ticketData.json"),
-    clanrules: path.join(DATA_DIR, "clanrules.json")
+    clanrules: path.join(DATA_DIR, "clanrules.json"),
+    clanmembers: path.join(DATA_DIR, "clan-members.json"),
+    clanrecruitments: path.join(DATA_DIR, "clan-recruitments.json")
 };
 
 
@@ -210,6 +212,23 @@ function saveClanRoles(data) {
 
                 if (changed) {
                     saveClanRules(rulesConfig);
+                }
+
+                // Auto-sync FWA clans to clan-recruitments.json
+                try {
+                    const clanRecruitments = require("./clanRecruitments");
+                    const fwaTags = Object.keys(data).filter(t => (data[t].clanType || "fwa").toLowerCase() === "fwa");
+                    const recData = clanRecruitments.getRecruitmentData();
+                    clanRecruitments.syncFwaClans(recData, fwaTags);
+                    for (const existingTag of Object.keys(recData)) {
+                        if (existingTag.startsWith("_")) continue;
+                        if (!activeTags.has(existingTag)) {
+                            delete recData[existingTag];
+                        }
+                    }
+                    clanRecruitments.saveRecruitmentData(recData);
+                } catch (recSyncErr) {
+                    console.error("Error auto-syncing clan recruitments in saveClanRoles:", recSyncErr.message);
                 }
             }
         } catch (syncErr) {
@@ -992,6 +1011,198 @@ function updateClanWarRule(clanTag, type, ruleData) {
     return updated;
 }
 
+/**
+ * Get clan members data (custom member roster for clans)
+ * @returns {Object} Clan members data object
+ */
+function getClanMembers() {
+    try {
+        if (!fs.existsSync(PATHS.clanmembers)) {
+            fs.writeFileSync(PATHS.clanmembers, JSON.stringify({}, null, 2));
+            return {};
+        }
+        const raw = fs.readFileSync(PATHS.clanmembers, "utf8");
+        return raw ? JSON.parse(raw) : {};
+    } catch (err) {
+        console.error("Error reading clan-members.json:", err.message);
+        return {};
+    }
+}
+
+/**
+ * Save clan members data
+ * @param {Object} data - Clan members data object
+ */
+function saveClanMembers(data) {
+    try {
+        fs.writeFileSync(PATHS.clanmembers, JSON.stringify(data, null, 2));
+    } catch (err) {
+        console.error("Error writing clan-members.json:", err.message);
+        throw err;
+    }
+}
+
+/**
+ * Add or update a member in clan-members.json for a clan.
+ * Automatically cleans up their old entry if they were listed under another clan.
+ * @param {string} clanTag - Clan tag with or without #
+ * @param {Object} player - Player object with tag, name, thLevel/townHallLevel, role
+ * @returns {boolean} true if added/updated successfully
+ */
+function addClanMember(clanTag, player) {
+    if (!clanTag || !player || !player.tag) return false;
+    const cleanTag = t => (t || "").toUpperCase().replace(/^#/, "").trim();
+    const formattedClanTag = clanTag.startsWith("#") ? clanTag.toUpperCase().trim() : "#" + clanTag.toUpperCase().trim();
+    const formattedPlayerTag = player.tag.startsWith("#") ? player.tag.toUpperCase().trim() : "#" + player.tag.toUpperCase().trim();
+
+    const data = getClanMembers();
+
+    // Remove player from any other clan if they switched clans
+    for (const [tag, members] of Object.entries(data)) {
+        if (cleanTag(tag) !== cleanTag(formattedClanTag) && Array.isArray(members)) {
+            data[tag] = members.filter(m => cleanTag(m.tag) !== cleanTag(formattedPlayerTag));
+        }
+    }
+
+    if (!Array.isArray(data[formattedClanTag])) {
+        data[formattedClanTag] = [];
+    }
+
+    const existingIndex = data[formattedClanTag].findIndex(m => cleanTag(m.tag) === cleanTag(formattedPlayerTag));
+    const memberEntry = {
+        tag: formattedPlayerTag,
+        name: player.name || "Unknown",
+        thLevel: Number(player.thLevel || player.townHallLevel) || 0,
+        role: player.role || "member"
+    };
+
+    if (existingIndex >= 0) {
+        data[formattedClanTag][existingIndex] = memberEntry;
+    } else {
+        data[formattedClanTag].push(memberEntry);
+    }
+
+    saveClanMembers(data);
+    return true;
+}
+
+/**
+ * Remove a member by player tag from a specific clan (or from all clans if clanTag is omitted/null)
+ * @param {string|null} clanTag - Clan tag to remove from, or null to remove from all clans
+ * @param {string} playerTag - Player tag with or without #
+ * @returns {boolean} true if any entry was removed
+ */
+function removeClanMember(clanTag, playerTag) {
+    if (!playerTag) return false;
+    const cleanTag = t => (t || "").toUpperCase().replace(/^#/, "").trim();
+    const targetPlayerTag = cleanTag(playerTag);
+    const targetClanTag = clanTag ? cleanTag(clanTag) : null;
+
+    const data = getClanMembers();
+    let removedAny = false;
+
+    for (const [tag, members] of Object.entries(data)) {
+        if (!targetClanTag || cleanTag(tag) === targetClanTag) {
+            if (Array.isArray(members)) {
+                const beforeLen = members.length;
+                data[tag] = members.filter(m => cleanTag(m.tag) !== targetPlayerTag);
+                if (data[tag].length !== beforeLen) {
+                    removedAny = true;
+                }
+            }
+        }
+    }
+
+    if (removedAny) {
+        saveClanMembers(data);
+    }
+    return removedAny;
+}
+
+
+
+/**
+ * Get clan recruitments data
+ * @returns {Object} Clan recruitments object
+ */
+function getClanRecruitments() {
+    try {
+        const clanRecruitments = require("./clanRecruitments");
+        return clanRecruitments.getRecruitmentData();
+    } catch (err) {
+        console.error("Error reading clan-recruitments.json:", err.message);
+        return {};
+    }
+}
+
+/**
+ * Save clan recruitments data
+ * @param {Object} data - Recruitment data to save
+ */
+function saveClanRecruitments(data) {
+    try {
+        const clanRecruitments = require("./clanRecruitments");
+        return clanRecruitments.saveRecruitmentData(data);
+    } catch (err) {
+        console.error("Error writing clan-recruitments.json:", err.message);
+        throw err;
+    }
+}
+
+/**
+ * Remove clan from clan-recruitments.json
+ * @param {string} clanTag - Clan tag
+ */
+function removeClanRecruitmentEntry(clanTag) {
+    try {
+        const clanRecruitments = require("./clanRecruitments");
+        return clanRecruitments.removeClanFromRecruitments(clanTag);
+    } catch (err) {
+        console.error("Error removing clan from recruitments:", err.message);
+        return false;
+    }
+}
+
+
+/**
+ * Get tracked Town Hall levels for rotations
+ */
+function getTrackedRotationTHs() {
+    try {
+        const clanRecruitments = require("./clanRecruitments");
+        return clanRecruitments.getTrackedRotationTHs();
+    } catch (err) {
+        console.error("Error getting tracked rotation THs:", err.message);
+        return ["TH19", "TH18"];
+    }
+}
+
+/**
+ * Add a Town Hall level to rotation tracking
+ */
+function addTrackedRotationTH(th) {
+    try {
+        const clanRecruitments = require("./clanRecruitments");
+        return clanRecruitments.addTrackedRotationTH(th);
+    } catch (err) {
+        console.error("Error adding tracked rotation TH:", err.message);
+        throw err;
+    }
+}
+
+/**
+ * Remove a Town Hall level from rotation tracking
+ */
+function removeTrackedRotationTH(th) {
+    try {
+        const clanRecruitments = require("./clanRecruitments");
+        return clanRecruitments.removeTrackedRotationTH(th);
+    } catch (err) {
+        console.error("Error removing tracked rotation TH:", err.message);
+        throw err;
+    }
+}
+
 module.exports = {
     getUserData,
     getClanRoles,
@@ -1006,6 +1217,16 @@ module.exports = {
     getRecruitments,
     getReapplyReasons,
     getClanRules,
+    getClanMembers,
+    saveClanMembers,
+    addClanMember,
+    removeClanMember,
+    getClanRecruitments,
+    saveClanRecruitments,
+    removeClanRecruitmentEntry,
+    getTrackedRotationTHs,
+    addTrackedRotationTH,
+    removeTrackedRotationTH,
     getMailRules,
     getMailRule,
     formatMailRuleText,

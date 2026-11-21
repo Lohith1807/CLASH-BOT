@@ -253,6 +253,12 @@ async function processMemberReapply({
                 await member.roles.remove(leftClan.leaderRoleId).catch(() => null);
             }
         }
+        // Automatically remove from /clan-members data for the leaving clan
+        if (data && typeof data.removeClanMember === "function") {
+            for (const leftClan of rolesToRemove) {
+                if (accTag) data.removeClanMember(leftClan.tag, accTag);
+            }
+        }
 
         // Compute remaining clan nicknames: keep clan nicknames for accounts still in clans and remaining clan roles
         const remainingClanNicks = [];
@@ -314,6 +320,16 @@ async function processMemberReapply({
             }
             if (info.leaderRoleId && member.roles.cache.has(info.leaderRoleId)) {
                 await member.roles.remove(info.leaderRoleId).catch(() => null);
+            }
+        }
+
+        // Automatically remove from /clan-members data for all left clans / accounts
+        if (data && typeof data.removeClanMember === "function") {
+            if (accTag) data.removeClanMember(null, accTag);
+            if (Array.isArray(userAccounts)) {
+                for (const acc of userAccounts) {
+                    if (acc.tag) data.removeClanMember(null, acc.tag);
+                }
             }
         }
 

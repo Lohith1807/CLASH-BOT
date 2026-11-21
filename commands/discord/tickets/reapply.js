@@ -366,6 +366,12 @@ module.exports = {
                         await member.roles.remove(leftClan.leaderRoleId).catch(() => null);
                     }
                 }
+                // Automatically remove from /clan-members data for the leaving clan
+                if (data && typeof data.removeClanMember === "function") {
+                    for (const leftClan of rolesToRemove) {
+                        if (accTag) data.removeClanMember(leftClan.tag, accTag);
+                    }
+                }
                 
                 // Update nickname for remaining clans
                 const clanRolesList = data.getClanRoles();
@@ -442,6 +448,16 @@ module.exports = {
                     }
                     if (info.leaderRoleId && member.roles.cache.has(info.leaderRoleId)) {
                         await member.roles.remove(info.leaderRoleId).catch(() => null);
+                    }
+                }
+
+                // Automatically remove from /clan-members data for all left clans / accounts
+                if (data && typeof data.removeClanMember === "function") {
+                    if (accTag) data.removeClanMember(null, accTag);
+                    if (Array.isArray(userAccounts)) {
+                        for (const acc of userAccounts) {
+                            if (acc.tag) data.removeClanMember(null, acc.tag);
+                        }
                     }
                 }
 

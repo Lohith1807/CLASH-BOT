@@ -1,0 +1,446 @@
+const {
+    SlashCommandBuilder,
+    PermissionFlagsBits,
+    EmbedBuilder,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+    ComponentType,
+    MessageFlags
+} = require('discord.js');
+const { checkPermission } = require('../../../utils/checkPermission.js');
+const clanRecruitments = require('../../../utils/clanRecruitments');
+const dataManager = require('../../../utils/dataManager');
+const { getThEmoji, getThEmojiObject, getEmojiObject } = require('../../../utils/emoji');
+
+// In-memory cache for clan names to reduce CoC API lookups
+const clanNameCache = new Map();
+
+// Maximum characters per page before splitting into pagination
+const MAX_PAGE_CHARS = 2800;
+
+/**
+ * Get clan badge emoji (matching clan nickname or whitefwa fallback)
+ */
+function getClanBadge(nickName, emojiUtils) {
+    if (!nickName) return emojiUtils?.getEmoji("whitefwa") || "🛡️";
+    const clean = nickName.trim().toLowerCase();
+    let e = null;
+    if (emojiUtils && typeof emojiUtils.getEmoji === 'function') {
+        e = emojiUtils.getEmoji(clean);
+    }
+    if (!e) {
+        e = emojiUtils?.getEmoji("whitefwa") || "🛡️";
+    }
+    return e;
+}
+
+/**
+ * Format timestamp into Discord markdown <t:unix:d> (<t:unix:R>) or fallback
+ */
+function formatAssignmentDateStr(isoString) {
+    if (!isoString) return "Unknown";
+    try {
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return isoString;
+        const unix = Math.floor(d.getTime() / 1000);
+        return `<t:${unix}:d> (<t:${unix}:R>)`;
+    } catch (_) {
+        return isoString;
+    }
+}
+
+/**
+ * Build pages for a specific Town Hall rotation queue.
+ * If total text exceeds MAX_PAGE_CHARS, splits into multiple pages.
+ * @returns {string[]} Array of page description strings
+ */
+function buildPages(clanRoles, recruitmentsData, activeTh, emojiUtils = null, rulesData = null, maxChars = MAX_PAGE_CHARS) {
+    const fwaClanTags = Object.keys(clanRoles).filter(tag => (clanRoles[tag].clanType || 'fwa').toLowerCase() === 'fwa');
+
+    // 1. Identify which clan is "just received", "on cooldown", "next in the list", "waiting"
+    let latestTimestamp = -1;
+    let justReceivedTag = null;
+    const receivedTags = new Set();
+
+    for (const tag of fwaClanTags) {
+        const clanRec = recruitmentsData[tag];
+        const rotObj = clanRec?.presentRotation?.[activeTh];
+        const players = rotObj?.players || [];
+        if (players.length > 0) {
+            receivedTags.add(tag);
+            const latestPlayer = players[players.length - 1];
+            const time = new Date(latestPlayer.dateTime).getTime();
+            if (time > latestTimestamp) {
+                latestTimestamp = time;
+                justReceivedTag = tag;
+            }
+        }
+    }
+
+    // Find first waiting clan in list order for "next in the list"
+    let nextInListTag = null;
+    for (const tag of fwaClanTags) {
+        if (!receivedTags.has(tag)) {
+            nextInListTag = tag;
+            break;
+        }
+    }
+
+    // 2. Build block for each clan
+    const cleanNum = activeTh.toLowerCase().replace(/^th/, '');
+    let thEmoji = null;
+    if (emojiUtils && typeof emojiUtils.getEmoji === 'function') {
+        thEmoji = emojiUtils.getEmoji("th" + cleanNum);
+    }
+    if (!thEmoji) {
+        thEmoji = getThEmoji(cleanNum) || "🏰";
+    }
+
+    const clanBlocks = [];
+
+    fwaClanTags.forEach((tag, idx) => {
+        const config = clanRoles[tag];
+        const nick = config.nickName || "";
+        const badgeEmoji = getClanBadge(nick, emojiUtils);
+
+        // Resolve clan name
+        let clanName = clanNameCache.get(tag) || rulesData?.clans?.[tag]?.name;
+        if (!clanName || clanName === nick) {
+            clanName = config.name || nick || tag;
+        }
+
+        const clanRec = recruitmentsData[tag];
+        const rotObj = clanRec?.presentRotation?.[activeTh];
+        const players = rotObj?.players || [];
+
+        let statusLabel = "";
+        let playerSubLine = null;
+
+        if (tag === justReceivedTag) {
+            statusLabel = "(just received)";
+            const lastPlayer = players[players.length - 1];
+            const dateStr = formatAssignmentDateStr(lastPlayer.dateTime);
+            playerSubLine = `• ${thEmoji} Last assigned: **${lastPlayer.playerName}** \`${lastPlayer.playerTag}\` date: ${dateStr}`;
+        } else if (receivedTags.has(tag)) {
+            statusLabel = "(on cooldown)";
+            const lastPlayer = players[players.length - 1];
+            const dateStr = formatAssignmentDateStr(lastPlayer.dateTime);
+            playerSubLine = `• ${thEmoji} Last assigned: **${lastPlayer.playerName}** \`${lastPlayer.playerTag}\` date: ${dateStr}`;
+        } else if (tag === nextInListTag) {
+            statusLabel = "(next in the list)";
+        } else {
+            statusLabel = "(waiting)";
+        }
+
+        let block = `${idx + 1}. ${badgeEmoji} **${clanName}** - \`${tag}\` ${statusLabel}`;
+        if (playerSubLine) {
+            block += `\n${playerSubLine}`;
+        }
+        clanBlocks.push(block);
+    });
+
+    const fullText = clanBlocks.join('\n\n');
+
+    // If size does not exceed limit, return 1 page
+    if (fullText.length <= maxChars) {
+        return [fullText];
+    }
+
+    // If size exceeded, paginate dynamically
+    const pages = [];
+    let currentBlocks = [];
+    let currentLen = 0;
+
+    for (const block of clanBlocks) {
+        const addedLen = (currentLen > 0 ? 2 : 0) + block.length;
+        if (currentLen + addedLen > maxChars && currentBlocks.length > 0) {
+            pages.push(currentBlocks.join('\n\n'));
+            currentBlocks = [block];
+            currentLen = block.length;
+        } else {
+            currentBlocks.push(block);
+            currentLen += addedLen;
+        }
+    }
+
+    if (currentBlocks.length > 0) {
+        pages.push(currentBlocks.join('\n\n'));
+    }
+
+    return pages;
+}
+
+/**
+ * Build the embed for a specific page of a Town Hall rotation
+ */
+function buildRotationEmbed(pageContent, activeTh, currentPage = 0, totalPages = 1) {
+    const embed = new EmbedBuilder()
+        .setTitle(`🔄 FWA Clan Rotation — ${activeTh}`)
+        .setColor(0x3498DB)
+        .setDescription(pageContent)
+        .setTimestamp();
+
+    if (totalPages > 1) {
+        embed.setFooter({
+            text: `Page ${currentPage + 1}/${totalPages} • Independent rotation • Limit: 1 per clan before reset`
+        });
+    } else {
+        embed.setFooter({
+            text: "Independent rotation • Limit: 1 per clan before reset"
+        });
+    }
+
+    return embed;
+}
+
+/**
+ * Build interactive action row buttons for switching TH rotations, refreshing,
+ * and navigating pages when size exceeded.
+ * Uses emojis from emoji.js for TH, refresh, and pagination buttons.
+ * Guarantees no ActionRow exceeds Discord's 5 components limit.
+ */
+function buildComponents(trackedTHs, activeTh, interactionId, currentPage = 0, totalPages = 1, emojiUtils = null) {
+    const rows = [];
+    const thAndRefreshButtons = [];
+
+    const resolveEmojiObj = (name) => {
+        if (emojiUtils && typeof emojiUtils.getEmojiObject === 'function') {
+            const obj = emojiUtils.getEmojiObject(name);
+            if (obj) return obj;
+        }
+        return getEmojiObject(name);
+    };
+
+    const resolveThEmojiObj = (cleanNum) => {
+        if (emojiUtils && typeof emojiUtils.getThEmojiObject === 'function') {
+            const obj = emojiUtils.getThEmojiObject(cleanNum);
+            if (obj) return obj;
+        }
+        return getThEmojiObject(cleanNum);
+    };
+
+    // TH buttons (strictly emojis from emoji.js, NO text names!)
+    for (const th of trackedTHs) {
+        const clean = th.toLowerCase().replace(/^th/, '');
+        const thEmojiObj = resolveThEmojiObj(clean);
+
+        const thBtn = new ButtonBuilder()
+            .setCustomId(`rot_th_${th}_${interactionId}`)
+            .setStyle(th === activeTh ? ButtonStyle.Primary : ButtonStyle.Secondary);
+
+        if (thEmojiObj) {
+            thBtn.setEmoji(thEmojiObj);
+        } else {
+            thBtn.setEmoji("🏰");
+        }
+
+        thAndRefreshButtons.push(thBtn);
+    }
+
+    // Refresh button using refresh emoji from emoji.js (no text name!)
+    const refreshEmojiObj = resolveEmojiObj('refresh');
+
+    const refreshBtn = new ButtonBuilder()
+        .setCustomId(`rot_refresh_${interactionId}`)
+        .setStyle(ButtonStyle.Success);
+
+    if (refreshEmojiObj) {
+        refreshBtn.setEmoji(refreshEmojiObj);
+    } else {
+        refreshBtn.setEmoji("🔄");
+    }
+
+    thAndRefreshButtons.push(refreshBtn);
+
+    // Split buttons into rows with maximum 5 buttons each
+    for (let i = 0; i < thAndRefreshButtons.length; i += 5) {
+        const row = new ActionRowBuilder().addComponents(thAndRefreshButtons.slice(i, i + 5));
+        rows.push(row);
+    }
+
+    // Pagination row (ONLY added when totalPages > 1, max 5 rows in Discord message)
+    if (totalPages > 1 && rows.length < 5) {
+        const pagRow = new ActionRowBuilder();
+
+        // Previous button using leftarrow / larrow from emoji.js
+        const lArrowObj = resolveEmojiObj('leftarrow') || resolveEmojiObj('larrow');
+        const prevBtn = new ButtonBuilder()
+            .setCustomId(`rot_prev_${interactionId}`)
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(currentPage === 0);
+
+        if (lArrowObj) {
+            prevBtn.setEmoji(lArrowObj);
+        } else {
+            prevBtn.setEmoji("◀️");
+        }
+
+        const pageIndicator = new ButtonBuilder()
+            .setCustomId(`rot_page_info_${interactionId}`)
+            .setLabel(`${currentPage + 1}/${totalPages}`)
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(true);
+
+        // Next button using arrow / rarrow from emoji.js
+        const rArrowObj = resolveEmojiObj('arrow') || resolveEmojiObj('rarrow');
+        const nextBtn = new ButtonBuilder()
+            .setCustomId(`rot_next_${interactionId}`)
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(currentPage === totalPages - 1);
+
+        if (rArrowObj) {
+            nextBtn.setEmoji(rArrowObj);
+        } else {
+            nextBtn.setEmoji("▶️");
+        }
+
+        pagRow.addComponents(prevBtn, pageIndicator, nextBtn);
+        rows.push(pagRow);
+    }
+
+    return rows;
+}
+
+module.exports = {
+    name: "clan-rotation",
+    description: "Display current recruitment rotation status for all FWA clans",
+    data: new SlashCommandBuilder()
+        .setName("clan-rotation")
+        .setDescription("Display current recruitment rotation status for all FWA clans")
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages)
+        .addStringOption(option =>
+            option.setName("th")
+                .setDescription("Select Town Hall level rotation to view (e.g. TH19, TH18)")
+                .setRequired(false)
+                .setAutocomplete(true)
+        ),
+
+    async autocomplete(interaction) {
+        const focused = interaction.options.getFocused(true);
+        const currentList = clanRecruitments.getTrackedRotationTHs();
+        const input = (focused.value || "").toLowerCase().trim();
+
+        const choices = currentList
+            .filter(th => th.toLowerCase().includes(input))
+            .map(th => ({ name: th, value: th }));
+        return interaction.respond(choices.slice(0, 25)).catch(() => {});
+    },
+
+    async execute(interaction, context) {
+        const { emoji: emojiUtils, coc, data: dataMgr } = context;
+
+        // Permission check
+        if (!checkPermission('clan-rotation', interaction) && !checkPermission('assignclan', interaction)) {
+            return interaction.reply({
+                content: "❌ You do not have permission to view clan rotations.",
+                flags: [MessageFlags.Ephemeral]
+            });
+        }
+
+        const clanRoles = dataMgr ? dataMgr.getClanRoles() : dataManager.getClanRoles();
+        const fwaTags = Object.keys(clanRoles).filter(tag => (clanRoles[tag].clanType || 'fwa').toLowerCase() === 'fwa');
+
+        // Pre-fetch clan names in background if CoC client is present
+        if (coc && typeof coc.getClan === 'function') {
+            for (const tag of fwaTags) {
+                if (!clanNameCache.has(tag)) {
+                    coc.getClan(tag).then(clan => {
+                        if (clan && clan.name) {
+                            clanNameCache.set(tag, clan.name);
+                        }
+                    }).catch(() => {});
+                }
+            }
+        }
+
+        const rulesData = dataMgr && typeof dataMgr.getClanRules === 'function' ? dataMgr.getClanRules() : dataManager.getClanRules();
+        let recruitmentsData = clanRecruitments.getRecruitmentData();
+        let trackedTHs = clanRecruitments.getTrackedRotationTHs(recruitmentsData);
+
+        const thOptionRaw = interaction.options.getString("th");
+        let activeTh = thOptionRaw ? clanRecruitments.normalizeTh(thOptionRaw) : null;
+        if (!activeTh || !trackedTHs.includes(activeTh)) {
+            activeTh = trackedTHs[0] || "TH19";
+        }
+
+        let currentPage = 0;
+        let pages = buildPages(clanRoles, recruitmentsData, activeTh, emojiUtils, rulesData);
+        let currentEmbed = buildRotationEmbed(pages[currentPage], activeTh, currentPage, pages.length);
+        let componentRows = buildComponents(trackedTHs, activeTh, interaction.id, currentPage, pages.length, emojiUtils);
+
+        const response = await interaction.reply({
+            embeds: [currentEmbed],
+            components: componentRows,
+            flags: [MessageFlags.Ephemeral]
+        });
+
+        // 90-second collector for switching THs, refreshing, and pagination
+        const collector = response.createMessageComponentCollector({
+            componentType: ComponentType.Button,
+            time: 90000
+        });
+
+        collector.on('collect', async (btnInteraction) => {
+            if (btnInteraction.user.id !== interaction.user.id) {
+                return btnInteraction.reply({
+                    content: "❌ Only the command caller can use these buttons.",
+                    flags: [MessageFlags.Ephemeral]
+                });
+            }
+
+            const customId = btnInteraction.customId;
+
+            // 1. Pagination Previous
+            if (customId === `rot_prev_${interaction.id}`) {
+                if (currentPage > 0) {
+                    currentPage--;
+                }
+            }
+            // 2. Pagination Next
+            else if (customId === `rot_next_${interaction.id}`) {
+                if (currentPage < pages.length - 1) {
+                    currentPage++;
+                }
+            }
+            // 3. Switch Town Hall
+            else if (customId.startsWith(`rot_th_`)) {
+                const parts = customId.split('_');
+                const selectedTh = parts[2];
+                if (selectedTh && selectedTh !== activeTh) {
+                    activeTh = selectedTh;
+                    currentPage = 0; // Reset to first page
+                }
+            }
+            // 4. Refresh button (rot_refresh_)
+            // Always reload fresh recruitment data on any action or refresh
+            recruitmentsData = clanRecruitments.getRecruitmentData();
+            trackedTHs = clanRecruitments.getTrackedRotationTHs(recruitmentsData);
+            pages = buildPages(clanRoles, recruitmentsData, activeTh, emojiUtils, rulesData);
+            if (currentPage >= pages.length) {
+                currentPage = Math.max(0, pages.length - 1);
+            }
+
+            currentEmbed = buildRotationEmbed(pages[currentPage], activeTh, currentPage, pages.length);
+            componentRows = buildComponents(trackedTHs, activeTh, interaction.id, currentPage, pages.length, emojiUtils);
+
+            await btnInteraction.update({
+                embeds: [currentEmbed],
+                components: componentRows
+            }).catch(() => {});
+        });
+
+        collector.on('end', async () => {
+            componentRows.forEach(row => {
+                row.components.forEach(c => c.setDisabled(true));
+            });
+            await interaction.editReply({
+                components: componentRows
+            }).catch(() => {});
+        });
+    },
+
+    buildPages,
+    buildRotationEmbed,
+    buildComponents
+};

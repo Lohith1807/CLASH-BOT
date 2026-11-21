@@ -351,6 +351,21 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                                 .catch(() => results.push("⚠️ Failed to add leader role."));
                         }
                     }
+
+                    // Automatically add/update player in /clan-members data for this clan
+                    if (data && typeof data.addClanMember === "function") {
+                        try {
+                            data.addClanMember(clanTag, {
+                                tag: playerData.tag,
+                                name: playerData.name,
+                                thLevel: playerData.townHallLevel,
+                                role: playerData.role || "member"
+                            });
+                            results.push(`${tickEmoji} Added to **/clan-members** roster.`);
+                        } catch (cmErr) {
+                            console.error("Error adding to clan-members in ;as:", cmErr);
+                        }
+                    }
                 } else {
                     results.push("⚠️ Clan is not registered.");
                 }

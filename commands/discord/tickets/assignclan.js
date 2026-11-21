@@ -14,6 +14,7 @@ const path = require('path');
 const { getEmoji } = require('../../../utils/emoji');
 const dataManager = require('../../../utils/dataManager');
 const ticketDataStore = require('../../../utils/ticketDataStore');
+const clanRecruitments = require('../../../utils/clanRecruitments');
 
 // In-memory cache for clan names to speed up autocomplete
 const clanNameCache = new Map();
@@ -700,6 +701,34 @@ module.exports = {
             });
         }
 
+        // 9. Check Duplicate Rotation Warning (TH19 / TH18 in FWA clans)
+        let warningEmbed = null;
+        if (clanType === 'fwa') {
+            const ticketRec = ticketDataStore.findByChannelId(ticketChannel.id);
+            const duplicateCheck = clanRecruitments.checkDuplicate(
+                clanTag,
+                player.townHallLevel,
+                player.tag,
+                ticketRec?.ticketId || ticketChannel.id
+            );
+
+            if (duplicateCheck.isDuplicate && duplicateCheck.previousPlayer) {
+                const prev = duplicateCheck.previousPlayer;
+                const thKey = `TH${player.townHallLevel}`;
+                warningEmbed = new EmbedBuilder()
+                    .setTitle(`⚠️ ${thKey} Rotation Notice`)
+                    .setColor(0xE67E22)
+                    .setDescription(
+                        `This clan has already received a ${thKey} player in the current rotation.\n\n` +
+                        `**Previous recruitment:**\n` +
+                        `- Player: ${prev.playerName}\n` +
+                        `- Player Tag: ${prev.playerTag}\n` +
+                        `- Assigned: ${prev.formattedDate}\n\n` +
+                        `You can still assign another ${thKey} player to this clan if needed.`
+                    );
+            }
+        }
+
         // 9. Build Ephemeral Confirmation Embed
         const thEmoji = emojiUtils.getEmoji(`th${player.townHallLevel}`) || "🏰";
         const dot = emojiUtils.getEmoji("cyandot") || "•";
@@ -734,9 +763,10 @@ module.exports = {
 
         const actionRow = new ActionRowBuilder().addComponents(confirmBtn, cancelBtn);
 
+        const confirmationEmbeds = warningEmbed ? [warningEmbed, confirmationEmbed] : [confirmationEmbed];
         const response = await interaction.reply({
             content: `<@${interaction.user.id}>`,
-            embeds: [confirmationEmbed],
+            embeds: confirmationEmbeds,
             components: [actionRow],
             flags: [MessageFlags.Ephemeral]
         });
@@ -819,6 +849,28 @@ module.exports = {
                     });
                 }
 
+                // Step A.1: Record clan recruitment & rotation tracking (FWA clans)
+                let recruitmentResult = null;
+                if (clanType === 'fwa') {
+                    try {
+                        const allClanRoles = dataManager.getClanRoles();
+                        const fwaClanTags = Object.keys(allClanRoles).filter(tag => (allClanRoles[tag].clanType || 'fwa').toLowerCase() === 'fwa');
+                        recruitmentResult = clanRecruitments.recordAssignment({
+                            clanTag,
+                            player: {
+                                name: player.name,
+                                tag: player.tag,
+                                townHallLevel: player.townHallLevel
+                            },
+                            ticketId: ticketRecord?.ticketId || ticketChannel.id,
+                            channelId: ticketChannel.id,
+                            fwaClanTags
+                        });
+                    } catch (recErr) {
+                        console.error('[AssignClan] Error recording recruitment tracking:', recErr);
+                    }
+                }
+
                 // Step B: Add configured clan leader role permissions
                 let leaderRoleAdded = false;
                 let leaderRoleError = null;
@@ -891,6 +943,15 @@ module.exports = {
                 const disabledRow = new ActionRowBuilder().addComponents(confirmBtn, cancelBtn);
 
                 const statusNotes = [];
+                if (recruitmentResult) {
+                    if (recruitmentResult.rotationReset) {
+                        statusNotes.push(`🔄 All FWA clans received a ${recruitmentResult.thKey} player. ${recruitmentResult.thKey} rotation automatically reset.`);
+                    } else if (recruitmentResult.isDuplicate) {
+                        statusNotes.push(`⚠️ Assigned as an additional ${recruitmentResult.thKey} player in current rotation.`);
+                    } else if (recruitmentResult.isReassignment) {
+                        statusNotes.push(`🔁 Reassigned player within ticket (rotation transferred, lifetime count preserved).`);
+                    }
+                }
                 if (leaderRoleAdded) {
                     statusNotes.push(`✅ Leader role access granted (<@&${leaderRoleId}>).`);
                 } else if (leaderRoleError) {
