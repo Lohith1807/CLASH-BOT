@@ -62,6 +62,119 @@ function formatAssignmentDateStr(isoString) {
 }
 
 /**
+ * Resolve Town Hall emoji string safely with fallbacks
+ */
+function resolveThEmojiString(cleanNum, emojiUtils) {
+    let thEmoji = null;
+    if (emojiUtils && typeof emojiUtils.getEmoji === 'function') {
+        thEmoji = emojiUtils.getEmoji("th" + cleanNum);
+    }
+    if (!thEmoji && typeof getEmoji === 'function') {
+        thEmoji = getEmoji("th" + cleanNum);
+    }
+    if (!thEmoji && typeof getThEmoji === 'function') {
+        thEmoji = getThEmoji(cleanNum);
+    }
+    if (!thEmoji && rawEmojis["th" + cleanNum]) {
+        thEmoji = `<:th${cleanNum}:${rawEmojis["th" + cleanNum]}>`;
+    }
+    return thEmoji || "🏰";
+}
+
+/**
+ * Build pages for the public clan rotation overview embed.
+ * Lists all FWA clans and under each clan displays every tracked TH emoji.
+ * If a player is assigned in the present rotation: shows player details.
+ * If no player is assigned in the present rotation: leaves empty after hyphen ("Th18 emoji - ").
+ */
+function buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils = null, rulesData = null, maxChars = MAX_PAGE_CHARS) {
+    const fwaClanTags = Object.keys(clanRoles).filter(tag => (clanRoles[tag].clanType || 'fwa').toLowerCase() === 'fwa');
+    const clanBlocks = [];
+
+    fwaClanTags.forEach((tag, idx) => {
+        const config = clanRoles[tag];
+        const nick = config.nickName || "";
+        const badgeEmoji = getClanBadge(nick, emojiUtils);
+
+        // Resolve clan name
+        let clanName = clanNameCache.get(tag) || rulesData?.clans?.[tag]?.name;
+        if (!clanName || clanName === nick) {
+            clanName = config.name || nick || tag;
+        }
+
+        const clanRec = recruitmentsData[tag];
+        const lines = [`${idx + 1}. ${badgeEmoji} **${clanName}** - \`${tag}\``];
+
+        for (const th of trackedTHs) {
+            const cleanNum = th.toLowerCase().replace(/^th/, '');
+            const thEmoji = resolveThEmojiString(cleanNum, emojiUtils);
+            const rotObj = clanRec?.presentRotation?.[th];
+            const players = rotObj?.players || [];
+
+            if (players.length > 0) {
+                const lastPlayer = players[players.length - 1];
+                const dateStr = formatAssignmentDateStr(lastPlayer.dateTime);
+                lines.push(`${thEmoji} - **${lastPlayer.playerName}** \`${lastPlayer.playerTag}\` date: ${dateStr}`);
+            } else {
+                lines.push(`${thEmoji} - `);
+            }
+        }
+
+        clanBlocks.push(lines.join('\n'));
+    });
+
+    const fullText = clanBlocks.join('\n\n');
+    if (fullText.length <= maxChars) {
+        return [fullText];
+    }
+
+    const pages = [];
+    let currentBlocks = [];
+    let currentLen = 0;
+
+    for (const block of clanBlocks) {
+        const addedLen = (currentLen > 0 ? 2 : 0) + block.length;
+        if (currentLen + addedLen > maxChars && currentBlocks.length > 0) {
+            pages.push(currentBlocks.join('\n\n'));
+            currentBlocks = [block];
+            currentLen = block.length;
+        } else {
+            currentBlocks.push(block);
+            currentLen += addedLen;
+        }
+    }
+
+    if (currentBlocks.length > 0) {
+        pages.push(currentBlocks.join('\n\n'));
+    }
+
+    return pages;
+}
+
+/**
+ * Build the public overview embed
+ */
+function buildPublicRotationEmbed(pageContent, currentPage = 0, totalPages = 1) {
+    const embed = new EmbedBuilder()
+        .setTitle("🔄 FWA Clan Recruitment Rotations")
+        .setColor(0x3498DB)
+        .setDescription(pageContent)
+        .setTimestamp();
+
+    if (totalPages > 1) {
+        embed.setFooter({
+            text: `Page ${currentPage + 1}/${totalPages} • Click any TH button below for private rotation breakdown`
+        });
+    } else {
+        embed.setFooter({
+            text: "Click any TH button below for private rotation breakdown"
+        });
+    }
+
+    return embed;
+}
+
+/**
  * Build pages for a specific Town Hall rotation queue.
  * If total text exceeds MAX_PAGE_CHARS, splits into multiple pages.
  * @returns {string[]} Array of page description strings
@@ -382,71 +495,62 @@ module.exports = {
         let recruitmentsData = clanRecruitments.getRecruitmentData();
         let trackedTHs = clanRecruitments.getTrackedRotationTHs(recruitmentsData);
 
-        const thOptionRaw = interaction.options.getString("th");
-        let activeTh = thOptionRaw ? clanRecruitments.normalizeTh(thOptionRaw) : null;
-        if (!activeTh || !trackedTHs.includes(activeTh)) {
-            activeTh = trackedTHs[0] || "TH19";
-        }
-
         let currentPage = 0;
-        let pages = buildPages(clanRoles, recruitmentsData, activeTh, emojiUtils, rulesData);
-        let currentEmbed = buildRotationEmbed(pages[currentPage], activeTh, currentPage, pages.length);
-        let componentRows = buildComponents(trackedTHs, activeTh, interaction.id, currentPage, pages.length, emojiUtils);
+        let publicPages = buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils, rulesData);
+        let currentEmbed = buildPublicRotationEmbed(publicPages[currentPage], currentPage, publicPages.length);
+        let componentRows = buildComponents(trackedTHs, null, interaction.id, currentPage, publicPages.length, emojiUtils);
 
+        // Public embed in channel
         const response = await interaction.reply({
             embeds: [currentEmbed],
-            components: componentRows,
-            flags: [MessageFlags.Ephemeral]
+            components: componentRows
         });
 
-        // 90-second collector for switching THs, refreshing, and pagination
+        // 15-minute collector for viewing private TH breakdowns, refreshing, and pagination
         const collector = response.createMessageComponentCollector({
             componentType: ComponentType.Button,
-            time: 90000
+            time: 15 * 60 * 1000
         });
 
         collector.on('collect', async (btnInteraction) => {
-            if (btnInteraction.user.id !== interaction.user.id) {
-                return btnInteraction.reply({
-                    content: "❌ Only the command caller can use these buttons.",
-                    flags: [MessageFlags.Ephemeral]
-                });
-            }
-
             const customId = btnInteraction.customId;
 
-            // 1. Pagination Previous
+            // 1. Click on Town Hall button -> SHOW PRIVATE (EPHEMERAL) BREAKDOWN
+            if (customId.startsWith(`rot_th_`)) {
+                const parts = customId.split('_');
+                const selectedTh = parts[2];
+                const freshRec = clanRecruitments.getRecruitmentData();
+                const thPages = buildPages(clanRoles, freshRec, selectedTh, emojiUtils, rulesData);
+                const thEmbed = buildRotationEmbed(thPages[0], selectedTh, 0, thPages.length);
+
+                return btnInteraction.reply({
+                    embeds: [thEmbed],
+                    flags: [MessageFlags.Ephemeral]
+                }).catch(() => {});
+            }
+
+            // 2. Pagination Previous
             if (customId === `rot_prev_${interaction.id}`) {
                 if (currentPage > 0) {
                     currentPage--;
                 }
             }
-            // 2. Pagination Next
+            // 3. Pagination Next
             else if (customId === `rot_next_${interaction.id}`) {
-                if (currentPage < pages.length - 1) {
+                if (currentPage < publicPages.length - 1) {
                     currentPage++;
                 }
             }
-            // 3. Switch Town Hall
-            else if (customId.startsWith(`rot_th_`)) {
-                const parts = customId.split('_');
-                const selectedTh = parts[2];
-                if (selectedTh && selectedTh !== activeTh) {
-                    activeTh = selectedTh;
-                    currentPage = 0; // Reset to first page
-                }
-            }
             // 4. Refresh button (rot_refresh_)
-            // Always reload fresh recruitment data on any action or refresh
             recruitmentsData = clanRecruitments.getRecruitmentData();
             trackedTHs = clanRecruitments.getTrackedRotationTHs(recruitmentsData);
-            pages = buildPages(clanRoles, recruitmentsData, activeTh, emojiUtils, rulesData);
-            if (currentPage >= pages.length) {
-                currentPage = Math.max(0, pages.length - 1);
+            publicPages = buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils, rulesData);
+            if (currentPage >= publicPages.length) {
+                currentPage = Math.max(0, publicPages.length - 1);
             }
 
-            currentEmbed = buildRotationEmbed(pages[currentPage], activeTh, currentPage, pages.length);
-            componentRows = buildComponents(trackedTHs, activeTh, interaction.id, currentPage, pages.length, emojiUtils);
+            currentEmbed = buildPublicRotationEmbed(publicPages[currentPage], currentPage, publicPages.length);
+            componentRows = buildComponents(trackedTHs, null, interaction.id, currentPage, publicPages.length, emojiUtils);
 
             await btnInteraction.update({
                 embeds: [currentEmbed],
@@ -464,6 +568,8 @@ module.exports = {
         });
     },
 
+    buildPublicPages,
+    buildPublicRotationEmbed,
     buildPages,
     buildRotationEmbed,
     buildComponents
