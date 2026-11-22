@@ -619,6 +619,99 @@ function removeClanFromRecruitments(clanTag) {
     }
 }
 
+/**
+ * Save an active rotation message reference for real-time auto-updates
+ */
+function saveActiveRotationMessage(entry) {
+    if (!entry || !entry.channelId || !entry.messageId) return;
+    const data = getRecruitmentData();
+    if (!data._metadata) data._metadata = {};
+    if (!Array.isArray(data._metadata.activeRotationMessages)) {
+        data._metadata.activeRotationMessages = [];
+    }
+
+    // Keep only latest message per channel, max 10 channels
+    data._metadata.activeRotationMessages = data._metadata.activeRotationMessages.filter(
+        m => m.channelId !== entry.channelId
+    );
+    data._metadata.activeRotationMessages.push({
+        channelId: entry.channelId,
+        messageId: entry.messageId,
+        guildId: entry.guildId,
+        timestamp: Date.now()
+    });
+
+    if (data._metadata.activeRotationMessages.length > 10) {
+        data._metadata.activeRotationMessages = data._metadata.activeRotationMessages.slice(-10);
+    }
+
+    saveRecruitmentData(data);
+}
+
+/**
+ * Get active rotation messages
+ */
+function getActiveRotationMessages(data = null) {
+    const store = data || getRecruitmentData();
+    return Array.isArray(store._metadata?.activeRotationMessages)
+        ? store._metadata.activeRotationMessages
+        : [];
+}
+
+/**
+ * Auto-update all active rotation messages on Discord when rotations change
+ */
+async function updateAllActiveRotationMessages(client) {
+    if (!client) return;
+    try {
+        const clanRotationCmd = require('../commands/discord/tickets/clan-rotation.js');
+        const dataManager = require('./dataManager');
+        const emojiUtils = require('./emoji');
+
+        const clanRoles = dataManager.getClanRoles();
+        const recData = getRecruitmentData();
+        const trackedTHs = getTrackedRotationTHs(recData);
+        const rulesData = dataManager.getClanRules();
+
+        const activeMsgs = getActiveRotationMessages(recData);
+        if (activeMsgs.length === 0) return;
+
+        const remaining = [];
+
+        for (const entry of activeMsgs) {
+            try {
+                const channel = await client.channels.fetch(entry.channelId).catch(() => null);
+                if (!channel) continue;
+                const message = await channel.messages.fetch(entry.messageId).catch(() => null);
+                if (!message) continue;
+
+                const publicPages = clanRotationCmd.buildPublicPages(clanRoles, recData, trackedTHs, emojiUtils, rulesData);
+                const updatedEmbed = clanRotationCmd.buildPublicRotationEmbed(publicPages[0], 0, publicPages.length);
+                const updatedRows = clanRotationCmd.buildComponents(trackedTHs, 0, publicPages.length, emojiUtils);
+
+                await message.edit({
+                    embeds: [updatedEmbed],
+                    components: updatedRows
+                }).catch(() => null);
+
+                remaining.push(entry);
+            } catch (err) {
+                // Ignore failure for individual message
+            }
+        }
+
+        if (remaining.length !== activeMsgs.length) {
+            const freshData = getRecruitmentData();
+            if (freshData._metadata) {
+                freshData._metadata.activeRotationMessages = remaining;
+                saveRecruitmentData(freshData);
+            }
+        }
+    } catch (err) {
+        console.error('[ClanRecruitments] Error auto-updating active rotation messages:', err.message);
+    }
+}
+
 module.exports = {
     getRecruitmentData,
     saveRecruitmentData,
@@ -633,6 +726,9 @@ module.exports = {
     addTrackedRotationTH,
     removeTrackedRotationTH,
     normalizeTh,
+    saveActiveRotationMessage,
+    getActiveRotationMessages,
+    updateAllActiveRotationMessages,
     TRACKED_ROTATION_THS: DEFAULT_TRACKED_THS,
     ROTATION_LIMIT
 };

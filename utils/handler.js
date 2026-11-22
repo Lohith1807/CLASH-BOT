@@ -35,6 +35,14 @@ async function handleInteraction(interaction, context) {
         return syncCommand.handleSyncButton(interaction, context);
     }
 
+    // ── /clan-rotation persistent buttons handler ────────────────────────────
+    if (interaction.isButton() && interaction.customId.startsWith("rot_")) {
+        const clanRotationCmd = require("../commands/discord/tickets/clan-rotation.js");
+        if (clanRotationCmd && typeof clanRotationCmd.handleRotationButton === "function") {
+            return clanRotationCmd.handleRotationButton(interaction, context);
+        }
+    }
+
     // ── /clan-members handler ───────────────────────────────────────────────
     if (
         (interaction.isButton() || interaction.isStringSelectMenu() || interaction.isModalSubmit()) &&

@@ -332,8 +332,23 @@ function buildRotationEmbed(pageContent, activeTh, currentPage = 0, totalPages =
  * and navigating pages when size exceeded.
  * Uses emojis from emoji.js for TH, refresh, and pagination buttons.
  * Guarantees no ActionRow exceeds Discord's 5 components limit.
+ * Buttons use persistent, stateless IDs so they never expire.
  */
-function buildComponents(trackedTHs, activeTh, interactionId, currentPage = 0, totalPages = 1, emojiUtils = null) {
+function buildComponents(trackedTHs, arg2 = 0, arg3 = 1, arg4 = null) {
+    let currentPage = 0;
+    let totalPages = 1;
+    let emojiUtils = null;
+
+    if (typeof arg2 === 'number') {
+        currentPage = arg2;
+        totalPages = typeof arg3 === 'number' ? arg3 : 1;
+        emojiUtils = arg4;
+    } else {
+        currentPage = typeof arguments[3] === 'number' ? arguments[3] : 0;
+        totalPages = typeof arguments[4] === 'number' ? arguments[4] : 1;
+        emojiUtils = arguments[5] || null;
+    }
+
     const rows = [];
     const thAndRefreshButtons = [];
 
@@ -374,14 +389,14 @@ function buildComponents(trackedTHs, activeTh, interactionId, currentPage = 0, t
         return resolveEmojiObj("th" + clean) || resolveEmojiObj(clean);
     };
 
-    // TH buttons (strictly emojis from emoji.js, NO text names!)
+    // TH buttons (strictly emojis from emoji.js, NO text names! Stateless persistent customId)
     for (const th of trackedTHs) {
         const clean = th.toLowerCase().replace(/^th/, '');
         const thEmojiObj = resolveThEmojiObj(clean);
 
         const thBtn = new ButtonBuilder()
-            .setCustomId(`rot_th_${th}_${interactionId}`)
-            .setStyle(th === activeTh ? ButtonStyle.Primary : ButtonStyle.Secondary);
+            .setCustomId(`rot_th_${th}`)
+            .setStyle(ButtonStyle.Secondary);
 
         if (thEmojiObj) {
             thBtn.setEmoji(thEmojiObj);
@@ -392,11 +407,11 @@ function buildComponents(trackedTHs, activeTh, interactionId, currentPage = 0, t
         thAndRefreshButtons.push(thBtn);
     }
 
-    // Refresh button using refresh emoji from emoji.js (no text name!)
+    // Refresh button using refresh emoji from emoji.js (stateless persistent customId)
     const refreshEmojiObj = resolveEmojiObj('refresh');
 
     const refreshBtn = new ButtonBuilder()
-        .setCustomId(`rot_refresh_${interactionId}`)
+        .setCustomId("rot_refresh")
         .setStyle(ButtonStyle.Success);
 
     if (refreshEmojiObj) {
@@ -420,7 +435,7 @@ function buildComponents(trackedTHs, activeTh, interactionId, currentPage = 0, t
         // Previous button using leftarrow / larrow from emoji.js
         const lArrowObj = resolveEmojiObj('leftarrow') || resolveEmojiObj('larrow');
         const prevBtn = new ButtonBuilder()
-            .setCustomId(`rot_prev_${interactionId}`)
+            .setCustomId(`rot_prev_${Math.max(0, currentPage - 1)}`)
             .setStyle(ButtonStyle.Secondary)
             .setDisabled(currentPage === 0);
 
@@ -431,7 +446,7 @@ function buildComponents(trackedTHs, activeTh, interactionId, currentPage = 0, t
         }
 
         const pageIndicator = new ButtonBuilder()
-            .setCustomId(`rot_page_info_${interactionId}`)
+            .setCustomId("rot_page_info")
             .setLabel(`${currentPage + 1}/${totalPages}`)
             .setStyle(ButtonStyle.Secondary)
             .setDisabled(true);
@@ -439,7 +454,7 @@ function buildComponents(trackedTHs, activeTh, interactionId, currentPage = 0, t
         // Next button using arrow / rarrow from emoji.js
         const rArrowObj = resolveEmojiObj('arrow') || resolveEmojiObj('rarrow');
         const nextBtn = new ButtonBuilder()
-            .setCustomId(`rot_next_${interactionId}`)
+            .setCustomId(`rot_next_${Math.min(totalPages - 1, currentPage + 1)}`)
             .setStyle(ButtonStyle.Secondary)
             .setDisabled(currentPage === totalPages - 1);
 
@@ -608,74 +623,95 @@ module.exports = {
         let currentPage = 0;
         let publicPages = buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils, rulesData);
         let currentEmbed = buildPublicRotationEmbed(publicPages[currentPage], currentPage, publicPages.length);
-        let componentRows = buildComponents(trackedTHs, null, interaction.id, currentPage, publicPages.length, emojiUtils);
+        let componentRows = buildComponents(trackedTHs, currentPage, publicPages.length, emojiUtils);
 
         // Public embed in channel
-        const response = await interaction.reply({
+        await interaction.reply({
             embeds: [currentEmbed],
             components: componentRows
         });
 
-        // 15-minute collector for viewing private TH breakdowns, refreshing, and pagination
-        const collector = response.createMessageComponentCollector({
-            componentType: ComponentType.Button,
-            time: 15 * 60 * 1000
-        });
-
-        collector.on('collect', async (btnInteraction) => {
-            const customId = btnInteraction.customId;
-
-            // 1. Click on Town Hall button -> SHOW PRIVATE (EPHEMERAL) BREAKDOWN
-            if (customId.startsWith(`rot_th_`)) {
-                const parts = customId.split('_');
-                const selectedTh = parts[2];
-                const freshRec = clanRecruitments.getRecruitmentData();
-                const thPages = buildPages(clanRoles, freshRec, selectedTh, emojiUtils, rulesData);
-                const thEmbed = buildRotationEmbed(thPages[0], selectedTh, 0, thPages.length);
-
-                return btnInteraction.reply({
-                    embeds: [thEmbed],
-                    flags: [MessageFlags.Ephemeral]
-                }).catch(() => {});
+        // Register message for real-time automatic updates
+        try {
+            const replyMsg = await interaction.fetchReply();
+            if (replyMsg) {
+                clanRecruitments.saveActiveRotationMessage({
+                    channelId: interaction.channelId,
+                    messageId: replyMsg.id,
+                    guildId: interaction.guildId
+                });
             }
+        } catch (_) {}
+    },
 
-            // 2. Pagination Previous
-            if (customId === `rot_prev_${interaction.id}`) {
-                if (currentPage > 0) {
-                    currentPage--;
+    /**
+     * Stateless persistent button handler called by utils/handler.js
+     * Buttons never expire and will work even after bot restarts.
+     */
+    async handleRotationButton(interaction, context) {
+        const customId = interaction.customId;
+        const { emoji: emojiUtils, data: dataMgr } = context || {};
+        const clanRoles = dataMgr ? dataMgr.getClanRoles() : dataManager.getClanRoles();
+        const rulesData = dataMgr && typeof dataMgr.getClanRules === 'function' ? dataMgr.getClanRules() : dataManager.getClanRules();
+
+        // 1. Town Hall button clicked -> Show private (ephemeral) breakdown for that TH
+        if (customId.startsWith("rot_th_")) {
+            const selectedTh = customId.replace("rot_th_", "").toUpperCase();
+            const freshRec = clanRecruitments.getRecruitmentData();
+            const thPages = buildPages(clanRoles, freshRec, selectedTh, emojiUtils, rulesData);
+            const thEmbed = buildRotationEmbed(thPages[0], selectedTh, 0, thPages.length);
+
+            return interaction.reply({
+                embeds: [thEmbed],
+                flags: [MessageFlags.Ephemeral]
+            }).catch(() => {});
+        }
+
+        // 2. Refresh button clicked -> Update the public message with latest data
+        if (customId === "rot_refresh") {
+            const freshRec = clanRecruitments.getRecruitmentData();
+            const trackedTHs = clanRecruitments.getTrackedRotationTHs(freshRec);
+            const publicPages = buildPublicPages(clanRoles, freshRec, trackedTHs, emojiUtils, rulesData);
+            const currentPage = 0;
+            const currentEmbed = buildPublicRotationEmbed(publicPages[currentPage], currentPage, publicPages.length);
+            const componentRows = buildComponents(trackedTHs, currentPage, publicPages.length, emojiUtils);
+
+            // Re-register / touch this active rotation message
+            try {
+                if (interaction.message && interaction.message.id) {
+                    clanRecruitments.saveActiveRotationMessage({
+                        channelId: interaction.channelId,
+                        messageId: interaction.message.id,
+                        guildId: interaction.guildId
+                    });
                 }
-            }
-            // 3. Pagination Next
-            else if (customId === `rot_next_${interaction.id}`) {
-                if (currentPage < publicPages.length - 1) {
-                    currentPage++;
-                }
-            }
-            // 4. Refresh button (rot_refresh_)
-            recruitmentsData = clanRecruitments.getRecruitmentData();
-            trackedTHs = clanRecruitments.getTrackedRotationTHs(recruitmentsData);
-            publicPages = buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils, rulesData);
-            if (currentPage >= publicPages.length) {
-                currentPage = Math.max(0, publicPages.length - 1);
-            }
+            } catch (_) {}
 
-            currentEmbed = buildPublicRotationEmbed(publicPages[currentPage], currentPage, publicPages.length);
-            componentRows = buildComponents(trackedTHs, null, interaction.id, currentPage, publicPages.length, emojiUtils);
-
-            await btnInteraction.update({
+            return interaction.update({
                 embeds: [currentEmbed],
                 components: componentRows
             }).catch(() => {});
-        });
+        }
 
-        collector.on('end', async () => {
-            componentRows.forEach(row => {
-                row.components.forEach(c => c.setDisabled(true));
-            });
-            await interaction.editReply({
+        // 3. Pagination Previous / Next
+        if (customId.startsWith("rot_prev_") || customId.startsWith("rot_next_")) {
+            const targetPage = parseInt(customId.split("_")[2], 10) || 0;
+            const freshRec = clanRecruitments.getRecruitmentData();
+            const trackedTHs = clanRecruitments.getTrackedRotationTHs(freshRec);
+            const publicPages = buildPublicPages(clanRoles, freshRec, trackedTHs, emojiUtils, rulesData);
+            const safePage = Math.max(0, Math.min(targetPage, publicPages.length - 1));
+            const currentEmbed = buildPublicRotationEmbed(publicPages[safePage], safePage, publicPages.length);
+            const componentRows = buildComponents(trackedTHs, safePage, publicPages.length, emojiUtils);
+
+            return interaction.update({
+                embeds: [currentEmbed],
                 components: componentRows
             }).catch(() => {});
-        });
+        }
+
+        if (customId === "rot_page_info") {
+            return interaction.deferUpdate().catch(() => {});
+        }
     },
 
     buildPublicPages,

@@ -866,6 +866,9 @@ module.exports = {
                             channelId: ticketChannel.id,
                             fwaClanTags
                         });
+                        if (recruitmentResult && recruitmentResult.success) {
+                            clanRecruitments.updateAllActiveRotationMessages(interaction.client).catch(() => {});
+                        }
                     } catch (recErr) {
                         console.error('[AssignClan] Error recording recruitment tracking:', recErr);
                     }

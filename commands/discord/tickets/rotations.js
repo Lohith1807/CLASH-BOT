@@ -139,6 +139,10 @@ module.exports = {
                     });
                 }
 
+                if (result.success) {
+                    clanRecruitments.updateAllActiveRotationMessages(interaction.client).catch(() => {});
+                }
+
                 const embed = new EmbedBuilder()
                     .setTitle("✅ Town Hall Added to Rotation")
                     .setColor(0x2ECC71)
@@ -213,6 +217,10 @@ module.exports = {
                         embeds: [embed],
                         flags: [MessageFlags.Ephemeral]
                     });
+                }
+
+                if (result.success) {
+                    clanRecruitments.updateAllActiveRotationMessages(interaction.client).catch(() => {});
                 }
 
                 const embed = new EmbedBuilder()
