@@ -127,6 +127,46 @@ module.exports = {
             }
         }
 
+        // 7.1. Send forfeit notice to clan leadership chat
+        if (clanConfig.leadChannelId && interaction.guild) {
+            try {
+                const leadChannel = interaction.guild.channels.cache.get(clanConfig.leadChannelId)
+                    || await interaction.guild.channels.fetch(clanConfig.leadChannelId).catch(() => null);
+
+                if (leadChannel) {
+                    const leaderPing = clanConfig.leaderRoleId ? `<@&${clanConfig.leaderRoleId}>` : "@Clan Leader";
+                    const cocEmoji = emojiUtils && typeof emojiUtils.getEmoji === 'function' ? (emojiUtils.getEmoji("coc") || "⚔️") : "⚔️";
+                    const ticketEmoji = emojiUtils && typeof emojiUtils.getEmoji === 'function' ? (emojiUtils.getEmoji("mem") || "🎫") : "🎫";
+                    const playerCocLink = playerTag
+                        ? `https://link.clashofclans.com/en?action=OpenPlayerProfile&tag=${encodeURIComponent(playerTag)}`
+                        : null;
+
+                    const forfeitEmbed = new EmbedBuilder()
+                        .setTitle("⚠️ Recruitment Forfeited")
+                        .setColor(0xE74C3C)
+                        .setDescription(
+                            `Your clan has forfeited this recruitment opportunity because leadership did not respond within the 1-hour window. Consequently, this player is being reassigned to another clan.\n\n` +
+                            `Please ensure your leadership team stays active and attentive when pinged. Leadership notifications are strictly reserved for critical clan matters.\n\n` +
+                            `**Player Details :**\n` +
+                            `• **Player Name :** **${playerName}**\n` +
+                            `• **Player Tag :** \`${playerTag || 'N/A'}\`\n` +
+                            (thKey ? `• **Player TH :** ${resolveThEmojiString(thKey, emojiUtils)} **${thKey}**\n` : '') +
+                            (playerCocLink ? `• **Open in Game :** ${cocEmoji} [Open in Game](${playerCocLink})\n` : '') +
+                            `• **Ticket :** ${ticketEmoji} <#${channel.id}>`
+                        )
+                        .setFooter({ text: "Blood Alliance Recruitment" })
+                        .setTimestamp();
+
+                    await leadChannel.send({
+                        content: leaderPing,
+                        embeds: [forfeitEmbed]
+                    });
+                }
+            } catch (leadErr) {
+                console.error('[Unassign] Failed to send leadership forfeit notice:', leadErr.message);
+            }
+        }
+
         // 8. Auto-update all active /clan-rotation embeds in Discord in real-time
         try {
             clanRecruitments.updateAllActiveRotationMessages(interaction.client).catch(() => {});

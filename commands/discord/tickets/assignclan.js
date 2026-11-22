@@ -982,6 +982,43 @@ module.exports = {
                     announcementError = `Failed to send public announcement in ticket channel: ${err.message}`;
                 }
 
+                // Step C.1: Send notification to clan leadership chat
+                let leadNotificationSent = false;
+                if (clanConfig.leadChannelId) {
+                    try {
+                        const leadChannel = guild.channels.cache.get(clanConfig.leadChannelId)
+                            || await guild.channels.fetch(clanConfig.leadChannelId).catch(() => null);
+
+                        if (leadChannel) {
+                            const leaderPing = clanConfig.leaderRoleId ? `<@&${clanConfig.leaderRoleId}>` : "@Clan Leader";
+                            const cocEmoji = emojiUtils && typeof emojiUtils.getEmoji === 'function' ? (emojiUtils.getEmoji("coc") || "⚔️") : "⚔️";
+                            const ticketEmoji = emojiUtils && typeof emojiUtils.getEmoji === 'function' ? (emojiUtils.getEmoji("mem") || "🎫") : "🎫";
+
+                            const leadEmbed = new EmbedBuilder()
+                                .setTitle("📥 Player Assigned to Your Clan")
+                                .setColor(0x2ECC71)
+                                .setDescription(
+                                    `We assigned a player to your clan!\n\n` +
+                                    `• **Player Name :** **${player.name}**\n` +
+                                    `• **Player Tag :** \`${player.tag}\`\n` +
+                                    `• **Player TH :** ${thEmoji} **TH${player.townHallLevel}**\n` +
+                                    `• **Open in Game :** ${cocEmoji} [Open in Game](${playerCocLink})\n` +
+                                    `• **Ticket :** ${ticketEmoji} <#${ticketChannel.id}>`
+                                )
+                                .setFooter({ text: "Blood Alliance Recruitment" })
+                                .setTimestamp();
+
+                            await leadChannel.send({
+                                content: leaderPing,
+                                embeds: [leadEmbed]
+                            });
+                            leadNotificationSent = true;
+                        }
+                    } catch (leadErr) {
+                        console.error('[AssignClan] Failed to send leadership notification:', leadErr.message);
+                    }
+                }
+
                 // Step D: Update ephemeral confirmation message (no separate ephemeral success message!)
                 confirmBtn.setDisabled(true);
                 cancelBtn.setDisabled(true);
@@ -1005,6 +1042,9 @@ module.exports = {
 
                 if (!announcementSent && announcementError) {
                     statusNotes.push(`⚠️ ${announcementError}`);
+                }
+                if (leadNotificationSent) {
+                    statusNotes.push(`📨 Notification sent to leadership chat (<#${clanConfig.leadChannelId}>).`);
                 }
 
                 const updatedDescription =
