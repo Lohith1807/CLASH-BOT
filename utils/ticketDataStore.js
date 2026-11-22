@@ -349,6 +349,35 @@ function setAssignedClan(channelId, clanTag, clanName, assignedBy = null, catego
     }
 }
 
+/**
+ * Clear assigned clan fields for a ticket identified by its channel ID.
+ *
+ * @param {string} channelId - Discord channel ID
+ * @returns {boolean} True if cleared successfully, false otherwise
+ */
+function clearAssignedClan(channelId) {
+    try {
+        const store = loadStore();
+        for (const cat of ['fwa', 'warEntry', 'allianceApply']) {
+            for (const [ticketId, record] of Object.entries(store[cat])) {
+                if (record.channelId === channelId) {
+                    delete record.assignedClan;
+                    delete record.assignedClanTag;
+                    delete record.assignedClanName;
+                    delete record.assignedAt;
+                    delete record.assignedBy;
+                    saveStore(store);
+                    return true;
+                }
+            }
+        }
+        return false;
+    } catch (err) {
+        console.error('[TicketDataStore] Error clearing assigned clan:', err);
+        return false;
+    }
+}
+
 module.exports = {
     loadStore,
     saveStore,
@@ -359,5 +388,6 @@ module.exports = {
     setTicketOwnerName,
     setTranscript,
     setAppliedAccount,
-    setAssignedClan
+    setAssignedClan,
+    clearAssignedClan
 };

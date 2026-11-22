@@ -590,6 +590,85 @@ function recordAssignment({ clanTag, player, ticketId, channelId = null, fwaClan
 }
 
 /**
+ * Unassign a player from clan rotations and recruitment counts
+ *
+ * @param {Object} params
+ * @param {string} [params.clanTag] - Clan tag
+ * @param {string} [params.playerTag] - Player tag
+ * @param {string} [params.ticketId] - Ticket ID
+ * @param {string} [params.channelId] - Ticket channel ID
+ * @param {string|number} [params.thLevel] - Town hall level hint
+ * @returns {Object} Result summary { success: boolean, removedFromRotation: boolean, clanTag: string, thKey: string, player: Object }
+ */
+function unassignPlayer({ clanTag = null, playerTag = null, ticketId = null, channelId = null, thLevel = null } = {}) {
+    const data = getRecruitmentData();
+    const formattedClanTag = clanTag ? formatClanTag(clanTag) : null;
+    const formattedPlayerTag = playerTag ? formatClanTag(playerTag) : null;
+    const cleanP = formattedPlayerTag ? cleanTag(formattedPlayerTag) : null;
+    const tracked = getTrackedRotationTHs(data);
+
+    let targetClanTag = formattedClanTag;
+    let targetThKey = thLevel ? normalizeTh(thLevel) : null;
+    let foundPlayerEntry = null;
+    let removedFromRotation = false;
+
+    // 1. Search in presentRotation for matching entry
+    const clansToSearch = targetClanTag && data[targetClanTag] ? [targetClanTag] : Object.keys(data).filter(k => !k.startsWith('_'));
+
+    for (const cTag of clansToSearch) {
+        const clanData = data[cTag];
+        if (!clanData || !clanData.presentRotation) continue;
+
+        const thList = targetThKey ? [targetThKey] : tracked;
+        for (const th of thList) {
+            const rot = clanData.presentRotation[th];
+            if (!rot || !Array.isArray(rot.players)) continue;
+
+            const index = rot.players.findIndex(p => {
+                if (channelId && p.channelId && p.channelId === channelId) return true;
+                if (ticketId && p.ticketId && p.ticketId === ticketId) return true;
+                if (cleanP && cleanTag(p.playerTag) === cleanP) return true;
+                return false;
+            });
+
+            if (index !== -1) {
+                foundPlayerEntry = rot.players[index];
+                targetClanTag = cTag;
+                targetThKey = th;
+
+                // Remove player from rotation list
+                rot.players.splice(index, 1);
+                rot.count = rot.players.length;
+                removedFromRotation = true;
+                break;
+            }
+        }
+        if (foundPlayerEntry) break;
+    }
+
+    // 2. Adjust lifetime recruitment counts for the clan if targetClanTag and targetThKey are known
+    if (targetClanTag && targetThKey && data[targetClanTag]) {
+        const clanEntry = data[targetClanTag];
+        if (clanEntry.recruitments && typeof clanEntry.recruitments[targetThKey] === 'number' && clanEntry.recruitments[targetThKey] > 0) {
+            clanEntry.recruitments[targetThKey] -= 1;
+            clanEntry.recruitments.total = Object.entries(clanEntry.recruitments)
+                .filter(([k]) => k.startsWith('TH'))
+                .reduce((sum, [, v]) => sum + (typeof v === 'number' ? v : 0), 0);
+        }
+    }
+
+    saveRecruitmentData(data);
+
+    return {
+        success: true,
+        removedFromRotation,
+        clanTag: targetClanTag,
+        thKey: targetThKey,
+        player: foundPlayerEntry
+    };
+}
+
+/**
  * Remove a clan from clan-recruitments.json when revoked
  */
 function removeClanFromRecruitments(clanTag) {
@@ -720,6 +799,7 @@ module.exports = {
     checkDuplicate,
     findExistingAssignment,
     recordAssignment,
+    unassignPlayer,
     removeClanFromRecruitments,
     formatAssignmentDate,
     getTrackedRotationTHs,
