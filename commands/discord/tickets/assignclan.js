@@ -11,13 +11,33 @@ const {
 const { checkPermission } = require('../../../utils/checkPermission.js');
 const fs = require('fs');
 const path = require('path');
-const { getEmoji } = require('../../../utils/emoji');
+const emojiModule = require('../../../utils/emoji');
+const { getEmoji } = emojiModule || {};
+const rawEmojis = emojiModule?.emojis || {};
 const dataManager = require('../../../utils/dataManager');
 const ticketDataStore = require('../../../utils/ticketDataStore');
 const clanRecruitments = require('../../../utils/clanRecruitments');
 
 // In-memory cache for clan names to speed up autocomplete
 const clanNameCache = new Map();
+
+/**
+ * Get clan badge emoji matching nickname with fallbacks
+ */
+function getClanBadge(nickName, emojiUtils) {
+    const fallbackEmoji = (emojiUtils && typeof emojiUtils.getEmoji === 'function' ? emojiUtils.getEmoji("whitefwa") : null)
+        || (rawEmojis.whitefwa ? `<:whitefwa:${rawEmojis.whitefwa}>` : "🛡️");
+    if (!nickName) return fallbackEmoji;
+    const clean = nickName.trim().toLowerCase();
+    let e = null;
+    if (emojiUtils && typeof emojiUtils.getEmoji === 'function') {
+        e = emojiUtils.getEmoji(clean);
+    }
+    if (!e && rawEmojis[clean]) {
+        e = `<:${clean}:${rawEmojis[clean]}>`;
+    }
+    return e || fallbackEmoji;
+}
 
 const DEFAULT_CLAN_RULES = [
     "Be active daily and participate in wars and CWL.",
@@ -701,7 +721,7 @@ module.exports = {
             });
         }
 
-        // 9. Check Duplicate Rotation Warning (TH19 / TH18 in FWA clans)
+        // 9. Check Rotation Status & Next in List for FWA clans
         let warningEmbed = null;
         if (clanType === 'fwa') {
             const ticketRec = ticketDataStore.findByChannelId(ticketChannel.id);
@@ -712,19 +732,41 @@ module.exports = {
                 ticketRec?.ticketId || ticketChannel.id
             );
 
+            const allFwaTags = Object.keys(clanRoles).filter(tag => (clanRoles[tag].clanType || 'fwa').toLowerCase() === 'fwa');
+            const nextInfo = clanRecruitments.getNextInListClan(player.townHallLevel, allFwaTags);
+            const thKey = `TH${player.townHallLevel}`;
+            const warningLines = [];
+
+            // Out of rotation order check: if assigned clan is not the next clan in list
+            if (nextInfo.isTracked && nextInfo.clanTag && clanRecruitments.formatClanTag(clanTag) !== nextInfo.clanTag) {
+                const nextTag = nextInfo.clanTag;
+                const nextConfig = clanRoles[nextTag] || {};
+                const nextNick = nextConfig.nickName || "";
+                const nextBadge = getClanBadge(nextNick, emojiUtils);
+                const clanRules = dataManager && typeof dataManager.getClanRules === 'function' ? dataManager.getClanRules() : null;
+                const rulesData = clanRules?.clans?.[nextTag];
+                let nextName = clanNameCache.get(nextTag) || rulesData?.name || nextConfig.name || nextNick || nextTag;
+
+                warningLines.push(
+                    `Next clan should be assigned is ${nextBadge} **${nextName}** - \`${nextTag}\``
+                );
+            }
+
+            // Duplicate assignment check (clan already received player in current rotation)
             if (duplicateCheck.isDuplicate && duplicateCheck.previousPlayer) {
                 const prev = duplicateCheck.previousPlayer;
-                const thKey = `TH${player.townHallLevel}`;
+                warningLines.push(
+                    `Note: **${clanData.name}** has already received a ${thKey} player in the current rotation (Last: **${prev.playerName}** \`${prev.playerTag}\` on ${prev.formattedDate}).`
+                );
+            }
+
+            if (warningLines.length > 0) {
                 warningEmbed = new EmbedBuilder()
-                    .setTitle(`⚠️ ${thKey} Rotation Notice`)
+                    .setTitle(`⚠️ Rotation Notice`)
                     .setColor(0xE67E22)
                     .setDescription(
-                        `This clan has already received a ${thKey} player in the current rotation.\n\n` +
-                        `**Previous recruitment:**\n` +
-                        `- Player: ${prev.playerName}\n` +
-                        `- Player Tag: ${prev.playerTag}\n` +
-                        `- Assigned: ${prev.formattedDate}\n\n` +
-                        `You can still assign another ${thKey} player to this clan if needed.`
+                        warningLines.join('\n\n') +
+                        `\n\nStill if you want to proceed, please confirm below.`
                     );
             }
         }

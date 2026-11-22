@@ -356,6 +356,57 @@ function syncFwaClans(data, fwaClanTags = []) {
 }
 
 /**
+ * Find the next clan in rotation list order for a given Town Hall level
+ *
+ * @param {string|number} thInput - Town Hall level (e.g. 18, "TH18")
+ * @param {Array<string>} [fwaClanTags] - Optional ordered list of FWA clan tags
+ * @param {Object} [recruitmentData] - Optional pre-loaded recruitment data
+ * @returns {{ clanTag: string|null, isTracked: boolean, thKey: string, allReceived: boolean }}
+ */
+function getNextInListClan(thInput, fwaClanTags = null, recruitmentData = null) {
+    const data = recruitmentData || getRecruitmentData();
+    const thKey = normalizeTh(thInput);
+    const tracked = getTrackedRotationTHs(data);
+    const isTracked = tracked.includes(thKey);
+
+    let tags = fwaClanTags;
+    if (!Array.isArray(tags) || tags.length === 0) {
+        const dataManager = require('./dataManager');
+        const clanRoles = dataManager.getClanRoles();
+        tags = Object.keys(clanRoles).filter(t => (clanRoles[t].clanType || 'fwa').toLowerCase() === 'fwa');
+    }
+
+    const receivedTags = new Set();
+    for (const tag of tags) {
+        const formattedTag = formatClanTag(tag);
+        const clanRec = data[formattedTag];
+        const rotObj = clanRec?.presentRotation?.[thKey];
+        const players = rotObj?.players || [];
+        if (players.length >= ROTATION_LIMIT) {
+            receivedTags.add(formattedTag);
+        }
+    }
+
+    let nextInListTag = null;
+    for (const tag of tags) {
+        const formattedTag = formatClanTag(tag);
+        if (!receivedTags.has(formattedTag)) {
+            nextInListTag = formattedTag;
+            break;
+        }
+    }
+
+    const allReceived = tags.length > 0 && receivedTags.size === tags.length;
+
+    return {
+        clanTag: nextInListTag,
+        isTracked,
+        thKey,
+        allReceived
+    };
+}
+
+/**
  * Check if assigning this player/TH to the clan triggers a duplicate assignment warning.
  * Returns { isDuplicate: boolean, previousPlayer: Object | null }
  */
@@ -797,11 +848,14 @@ module.exports = {
     initClanEntry,
     syncFwaClans,
     checkDuplicate,
+    getNextInListClan,
     findExistingAssignment,
     recordAssignment,
     unassignPlayer,
     removeClanFromRecruitments,
     formatAssignmentDate,
+    formatClanTag,
+    cleanTag,
     getTrackedRotationTHs,
     addTrackedRotationTH,
     removeTrackedRotationTH,
