@@ -84,11 +84,47 @@ function resolveThEmojiString(cleanNum, emojiUtils) {
 /**
  * Build pages for the public clan rotation overview embed.
  * Lists all FWA clans and under each clan displays every tracked TH emoji.
- * If a player is assigned in the present rotation: shows player details.
- * If no player is assigned in the present rotation: leaves empty after hyphen ("Th18 emoji - ").
+ * Shows rotation statuses: (waiting), (next in the list), (on cooldown) / (just received).
  */
 function buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils = null, rulesData = null, maxChars = MAX_PAGE_CHARS) {
     const fwaClanTags = Object.keys(clanRoles).filter(tag => (clanRoles[tag].clanType || 'fwa').toLowerCase() === 'fwa');
+
+    // Precalculate status per tracked TH across all FWA clans:
+    // - Clans that already received a player in current rotation: on cooldown (most recent is just received)
+    // - First waiting clan in list order: next in the list
+    // - Other clans: waiting
+    const thMeta = {};
+    for (const th of trackedTHs) {
+        const receivedTags = new Set();
+        let justReceivedTag = null;
+        let latestTimestamp = -1;
+
+        for (const tag of fwaClanTags) {
+            const clanRec = recruitmentsData[tag];
+            const rotObj = clanRec?.presentRotation?.[th];
+            const players = rotObj?.players || [];
+            if (players.length > 0) {
+                receivedTags.add(tag);
+                const lastPlayer = players[players.length - 1];
+                const time = new Date(lastPlayer.dateTime).getTime();
+                if (time > latestTimestamp) {
+                    latestTimestamp = time;
+                    justReceivedTag = tag;
+                }
+            }
+        }
+
+        let nextInListTag = null;
+        for (const tag of fwaClanTags) {
+            if (!receivedTags.has(tag)) {
+                nextInListTag = tag;
+                break;
+            }
+        }
+
+        thMeta[th] = { receivedTags, justReceivedTag, nextInListTag };
+    }
+
     const clanBlocks = [];
 
     fwaClanTags.forEach((tag, idx) => {
@@ -110,13 +146,16 @@ function buildPublicPages(clanRoles, recruitmentsData, trackedTHs, emojiUtils = 
             const thEmoji = resolveThEmojiString(cleanNum, emojiUtils);
             const rotObj = clanRec?.presentRotation?.[th];
             const players = rotObj?.players || [];
+            const meta = thMeta[th];
 
             if (players.length > 0) {
                 const lastPlayer = players[players.length - 1];
                 const dateStr = formatAssignmentDateStr(lastPlayer.dateTime);
-                lines.push(`${thEmoji} - **${lastPlayer.playerName}** \`${lastPlayer.playerTag}\` date: ${dateStr}`);
+                const statusLabel = tag === meta.justReceivedTag ? "(just received)" : "(on cooldown)";
+                lines.push(`${thEmoji} - ${statusLabel} **${lastPlayer.playerName}** \`${lastPlayer.playerTag}\` date: ${dateStr}`);
             } else {
-                lines.push(`${thEmoji} - `);
+                const statusLabel = tag === meta.nextInListTag ? "(next in the list)" : "(waiting)";
+                lines.push(`${thEmoji} - ${statusLabel}`);
             }
         }
 
@@ -471,6 +510,65 @@ function buildComponents(trackedTHs, arg2 = 0, arg3 = 1, arg4 = null) {
     return rows;
 }
 
+/**
+ * Build persistent action row for private ephemeral TH rotation pagination
+ * Buttons never expire and are handled globally via utils/handler.js
+ */
+function buildEphemeralComponents(selectedTh, currentPage = 0, totalPages = 1, emojiUtils = null) {
+    if (totalPages <= 1) return [];
+
+    const resolveEmojiObj = (name) => {
+        if (!name) return null;
+        const key = String(name).trim();
+        if (emojiUtils && typeof emojiUtils.getEmojiObject === 'function') {
+            const obj = emojiUtils.getEmojiObject(key);
+            if (obj) return obj;
+        }
+        if (typeof getEmojiObject === 'function') {
+            const obj = getEmojiObject(key);
+            if (obj) return obj;
+        }
+        if (rawEmojis[key]) {
+            return { id: rawEmojis[key], name: key, animated: false };
+        }
+        return null;
+    };
+
+    const pagRow = new ActionRowBuilder();
+    const lArrowObj = resolveEmojiObj('leftarrow') || resolveEmojiObj('larrow');
+    const prevBtn = new ButtonBuilder()
+        .setCustomId(`rot_ephem_prev_${selectedTh}_${Math.max(0, currentPage - 1)}`)
+        .setStyle(ButtonStyle.Secondary)
+        .setDisabled(currentPage === 0);
+
+    if (lArrowObj) {
+        prevBtn.setEmoji(lArrowObj);
+    } else {
+        prevBtn.setEmoji("◀️");
+    }
+
+    const pageIndicator = new ButtonBuilder()
+        .setCustomId(`rot_ephem_info_${selectedTh}`)
+        .setLabel(`${currentPage + 1}/${totalPages}`)
+        .setStyle(ButtonStyle.Secondary)
+        .setDisabled(true);
+
+    const rArrowObj = resolveEmojiObj('arrow') || resolveEmojiObj('rarrow');
+    const nextBtn = new ButtonBuilder()
+        .setCustomId(`rot_ephem_next_${selectedTh}_${Math.min(totalPages - 1, currentPage + 1)}`)
+        .setStyle(ButtonStyle.Secondary)
+        .setDisabled(currentPage === totalPages - 1);
+
+    if (rArrowObj) {
+        nextBtn.setEmoji(rArrowObj);
+    } else {
+        nextBtn.setEmoji("▶️");
+    }
+
+    pagRow.addComponents(prevBtn, pageIndicator, nextBtn);
+    return [pagRow];
+}
+
 module.exports = {
     name: "clan-rotation",
     description: "Display current recruitment rotation status for all FWA clans",
@@ -660,11 +758,38 @@ module.exports = {
             const freshRec = clanRecruitments.getRecruitmentData();
             const thPages = buildPages(clanRoles, freshRec, selectedTh, emojiUtils, rulesData);
             const thEmbed = buildRotationEmbed(thPages[0], selectedTh, 0, thPages.length);
+            const compRows = buildEphemeralComponents(selectedTh, 0, thPages.length, emojiUtils);
 
-            return interaction.reply({
+            const replyPayload = {
                 embeds: [thEmbed],
                 flags: [MessageFlags.Ephemeral]
+            };
+            if (compRows.length > 0) {
+                replyPayload.components = compRows;
+            }
+
+            return interaction.reply(replyPayload).catch(() => {});
+        }
+
+        // Ephemeral private pagination Previous / Next
+        if (customId.startsWith("rot_ephem_prev_") || customId.startsWith("rot_ephem_next_")) {
+            const parts = customId.split("_");
+            const selectedTh = parts[3];
+            const targetPage = parseInt(parts[4], 10) || 0;
+            const freshRec = clanRecruitments.getRecruitmentData();
+            const thPages = buildPages(clanRoles, freshRec, selectedTh, emojiUtils, rulesData);
+            const safePage = Math.max(0, Math.min(targetPage, thPages.length - 1));
+            const thEmbed = buildRotationEmbed(thPages[safePage], selectedTh, safePage, thPages.length);
+            const compRows = buildEphemeralComponents(selectedTh, safePage, thPages.length, emojiUtils);
+
+            return interaction.update({
+                embeds: [thEmbed],
+                components: compRows
             }).catch(() => {});
+        }
+
+        if (customId.startsWith("rot_ephem_info_")) {
+            return interaction.deferUpdate().catch(() => {});
         }
 
         // 2. Refresh button clicked -> Update the public message with latest data
@@ -718,5 +843,6 @@ module.exports = {
     buildPublicRotationEmbed,
     buildPages,
     buildRotationEmbed,
-    buildComponents
+    buildComponents,
+    buildEphemeralComponents
 };
