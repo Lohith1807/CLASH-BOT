@@ -142,11 +142,11 @@ module.exports = {
                         : null;
 
                     const forfeitEmbed = new EmbedBuilder()
-                        .setTitle("⚠️ Recruitment Forfeited")
+                        .setTitle("⚠️ You Lost a Recruitment")
                         .setColor(0xE74C3C)
                         .setDescription(
-                            `Your clan has forfeited this recruitment opportunity because leadership did not respond within the 1-hour window. Consequently, this player is being reassigned to another clan.\n\n` +
-                            `Please ensure your leadership team stays active and attentive when pinged. Leadership notifications are strictly reserved for critical clan matters.\n\n` +
+                            `You lost this recruitment because you didn't reply in 1 hour, so we sent this player to another clan.\n\n` +
+                            `Please be online when you get pinged. You only get pinged for important things, not silly things.\n\n` +
                             `**Player Details :**\n` +
                             `• **Player Name :** **${playerName}**\n` +
                             `• **Player Tag :** \`${playerTag || 'N/A'}\`\n` +
