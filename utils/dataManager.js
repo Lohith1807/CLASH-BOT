@@ -20,8 +20,6 @@ const PATHS = {
     recruitingths: path.join(DATA_DIR, "recruitingths.json"),
     scanwar: path.join(DATA_DIR, "scanwar.json"),
     strikecounters: path.join(DATA_DIR, "strikecounters.json"),
-    recruitments: path.join(DATA_DIR, "recruitments.json"),
-    reapplyreasons: path.join(DATA_DIR, "reapplyreasons.json"),
     ticketData: path.join(DATA_DIR, "ticketData.json")
 };
 
@@ -422,57 +420,105 @@ function saveStrikeCounters(data) {
 }
 
 /**
- * Get recruitments data
- * @returns {Object} Recruitments data object
- */
-function getRecruitments() {
-    try {
-        if (!fs.existsSync(PATHS.recruitments)) return {};
-        const raw = fs.readFileSync(PATHS.recruitments, "utf8");
-        return raw ? JSON.parse(raw) : {};
-    } catch (err) {
-        console.error("Error reading recruitments.json:", err.message);
-        return {};
-    }
-}
-
-/**
- * Save recruitments data
- * @param {Object} data - Recruitments data to save
- */
-function saveRecruitments(data) {
-    try {
-        fs.writeFileSync(PATHS.recruitments, JSON.stringify(data, null, 2));
-    } catch (err) {
-        console.error("Error writing recruitments.json:", err.message);
-        throw err;
-    }
-}
-
-/**
- * Get reapply reasons data
+ * Get reapply reasons data from unified userdata.json (stored under each player tag)
  * @returns {Object} Reapply reasons object (keyed by userId)
  */
 function getReapplyReasons() {
-    try {
-        if (!fs.existsSync(PATHS.reapplyreasons)) return {};
-        const raw = fs.readFileSync(PATHS.reapplyreasons, "utf8");
-        return raw ? JSON.parse(raw) : {};
-    } catch (err) {
-        console.error("Error reading reapplyreasons.json:", err.message);
-        return {};
+    const ud = getUserData();
+    const result = {};
+    for (const [userId, accounts] of Object.entries(ud)) {
+        if (!Array.isArray(accounts)) continue;
+        const userReasons = [];
+        for (const acct of accounts) {
+            if (!acct || !Array.isArray(acct.reapplyReasons) || acct.reapplyReasons.length === 0) continue;
+            for (const r of acct.reapplyReasons) {
+                userReasons.push({
+                    ...r,
+                    accountName: acct.name || "Unknown",
+                    accountTag: acct.tag || ""
+                });
+            }
+        }
+        if (userReasons.length > 0) {
+            result[userId] = userReasons;
+        }
     }
+    return result;
 }
 
 /**
- * Save reapply reasons data
- * @param {Object} data - Reapply reasons data to save
+ * Add a reapply reason directly under a player's tag in userdata.json
+ * @param {string} userId - Discord user ID
+ * @param {string} playerTag - CoC player tag
+ * @param {Object} reasonEntry - { reason, timestamp, addedBy, clanName, status }
+ * @returns {boolean} true if saved under a player tag
+ */
+function addReapplyReason(userId, playerTag, reasonEntry) {
+    if (!userId || !reasonEntry) return false;
+    const ud = getUserData();
+    const accounts = ud[userId];
+    if (!Array.isArray(accounts) || accounts.length === 0) return false;
+
+    const clean = t => String(t || "").replace(/^#/, "").trim().toUpperCase();
+    const targetClean = clean(playerTag);
+    let targetAcct = targetClean ? accounts.find(a => clean(a.tag) === targetClean) : null;
+    if (!targetAcct) targetAcct = accounts[0];
+
+    if (!Array.isArray(targetAcct.reapplyReasons)) {
+        targetAcct.reapplyReasons = [];
+    }
+    targetAcct.reapplyReasons.push({
+        reason: reasonEntry.reason,
+        timestamp: reasonEntry.timestamp || Math.floor(Date.now() / 1000),
+        addedBy: reasonEntry.addedBy,
+        clanName: reasonEntry.clanName,
+        status: reasonEntry.status || "ADDED"
+    });
+    saveUserData(ud);
+    return true;
+}
+
+/**
+ * Save reapply reasons data back into unified userdata.json under each player tag
+ * @param {Object} data - Reapply reasons data keyed by userId
  */
 function saveReapplyReasons(data) {
     try {
-        fs.writeFileSync(PATHS.reapplyreasons, JSON.stringify(data, null, 2));
+        const ud = getUserData();
+        const clean = t => String(t || "").replace(/^#/, "").trim().toUpperCase();
+
+        for (const [userId, accounts] of Object.entries(ud)) {
+            if (!Array.isArray(accounts) || accounts.length === 0) continue;
+            const list = data && Array.isArray(data[userId]) ? data[userId] : null;
+            if (!list) continue;
+
+            for (const acct of accounts) {
+                acct.reapplyReasons = [];
+            }
+
+            for (const item of list) {
+                const targetClean = clean(item.accountTag);
+                let targetAcct = targetClean ? accounts.find(a => clean(a.tag) === targetClean) : null;
+                if (!targetAcct) targetAcct = accounts[0];
+                targetAcct.reapplyReasons.push({
+                    reason: item.reason,
+                    timestamp: item.timestamp,
+                    addedBy: item.addedBy,
+                    clanName: item.clanName,
+                    status: item.status || "ADDED"
+                });
+            }
+
+            for (const acct of accounts) {
+                if (acct.reapplyReasons.length === 0) {
+                    delete acct.reapplyReasons;
+                }
+            }
+        }
+
+        saveUserData(ud);
     } catch (err) {
-        console.error("Error writing reapplyreasons.json:", err.message);
+        console.error("Error writing reapply reasons to userdata.json:", err.message);
         throw err;
     }
 }
@@ -1290,8 +1336,8 @@ module.exports = {
     getRecruitingTHs,
     getScanWar,
     getStrikeCounters,
-    getRecruitments,
     getReapplyReasons,
+    addReapplyReason,
     getClanRules,
     getClanMembers,
     saveClanMembers,
@@ -1336,7 +1382,6 @@ module.exports = {
     saveRecruitingTHs,
     saveScanWar,
     saveStrikeCounters,
-    saveRecruitments,
     saveReapplyReasons,
     saveClanRules,
     saveMailRules,

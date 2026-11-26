@@ -334,24 +334,26 @@ module.exports = {
                 )
             );
 
-            // Save the reason first
+            // Save the reason directly under the player's tag in userdata.json
             const clanNamesStr = rolesToRemove.map(c => c.nickName || cleanTag(c.tag)).join(", ");
-            const reasonsData = data.getReapplyReasons();
-            if (!reasonsData[member.id]) reasonsData[member.id] = [];
-            
             const accName = selectedPlayer?.name || selectedPlayer?.linkedName || (validPlayers[0] && (validPlayers[0].name || validPlayers[0].linkedName)) || (userAccounts[0] && userAccounts[0].name) || "Unknown";
             const accTag = selectedPlayer?.tag || (validPlayers[0] && validPlayers[0].tag) || (userAccounts[0] && userAccounts[0].tag) || "";
 
-            reasonsData[member.id].push({
+            const reasonEntry = {
                 reason: reason,
                 timestamp: Math.floor(Date.now() / 1000),
                 addedBy: executorUser.id,
                 clanName: clanNamesStr,
-                status: "ADDED",
-                accountName: accName,
-                accountTag: accTag
-            });
-            data.saveReapplyReasons(reasonsData);
+                status: "ADDED"
+            };
+            if (typeof data.addReapplyReason === "function") {
+                data.addReapplyReason(member.id, accTag, reasonEntry);
+            } else {
+                const reasonsData = data.getReapplyReasons();
+                if (!reasonsData[member.id]) reasonsData[member.id] = [];
+                reasonsData[member.id].push({ ...reasonEntry, accountName: accName, accountTag: accTag });
+                data.saveReapplyReasons(reasonsData);
+            }
 
             const isStaff = isStaffMember(member, config);
 

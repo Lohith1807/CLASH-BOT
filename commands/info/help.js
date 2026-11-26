@@ -328,22 +328,6 @@ const leaderCommands = [
         details: "Scan current live war matches across all FWA clans."
     },
     {
-        name: "post-recruitment",
-        description: "Manually post a recruitment ad for a clan",
-        usage: "/post-recruitment clan:<tag> th:<levels>",
-        aliases: ["postrecruitment"],
-        example: "/post-recruitment clan:#2QG2C889 th:15,16",
-        details: "Post a formatted clan recruitment advertisement into designated recruitment channels."
-    },
-    {
-        name: "edit-recruitment",
-        description: "Edit an active recruitment post for a clan",
-        usage: "/edit-recruitment clan:<tag>",
-        aliases: ["editrecruitment"],
-        example: "/edit-recruitment clan:#2QG2C889",
-        details: "Update requirements or text of an active clan recruitment post."
-    },
-    {
         name: "playerlookup",
         description: "Lookup a player by tag or Discord user with account selection dropdown",
         usage: "/playerlookup [tag:#TAG] [user:@user]",

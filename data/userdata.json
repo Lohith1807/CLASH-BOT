@@ -13,7 +13,16 @@
     {
       "tag": "#9URPL9202",
       "name": "LEGEND",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238914,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#P2228VVY8",
@@ -215,10 +224,6 @@
       "name": "iqbal"
     },
     {
-      "tag": "#GG2RQJUYY",
-      "name": "Game+Changer"
-    },
-    {
       "tag": "#YGV9RYCU2",
       "name": "bx"
     },
@@ -235,7 +240,23 @@
     {
       "tag": "#PGYPC8PYV",
       "name": "Lv.69 lashon™",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314464,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842582,
+          "addedBy": "1393061101838532630",
+          "clanName": "DH",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GJ80U2G8G",
@@ -379,7 +400,23 @@
     {
       "tag": "#P0C2QRUGP",
       "name": "alien93",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843294,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238879,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#YG9PUC2RC",
@@ -396,7 +433,16 @@
   "667011170229682201": [
     {
       "tag": "#8Y8YRQ8JR",
-      "name": "Tejas"
+      "name": "Tejas",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238907,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#2JQLVGQLY",
@@ -438,7 +484,16 @@
     {
       "tag": "#QQJL8CV0U",
       "name": "Dracula",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Taking break",
+          "timestamp": 1789575172,
+          "addedBy": "855449588228161548",
+          "clanName": "CC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1077737570890432612": [
@@ -499,7 +554,16 @@
     {
       "tag": "#YV8PU2G2U",
       "name": "Afonso",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Leaving alliance",
+          "timestamp": 1791127273,
+          "addedBy": "1393061101838532630",
+          "clanName": "EON",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LQJ8UV0QQ",
@@ -597,7 +661,23 @@
     {
       "tag": "#G8RLGYPU0",
       "name": "Dhoni",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Not in clan anymore",
+          "timestamp": 1792203148,
+          "addedBy": "1393061101838532630",
+          "clanName": "C2W",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314641,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#R292PJPJR",
@@ -606,10 +686,6 @@
     {
       "tag": "#GURU8U80V",
       "name": "lamine yamal"
-    },
-    {
-      "tag": "#GJ99YRCUP",
-      "name": "kylian mbapps"
     },
     {
       "tag": "#LCJVR98VP",
@@ -630,6 +706,14 @@
     {
       "tag": "#GYG8LV0Y9",
       "name": "messi"
+    },
+    {
+      "tag": "#GRRC80QLG",
+      "name": "! T O N Y !"
+    },
+    {
+      "tag": "#GR09GR09U",
+      "name": "! S P I D E Y !"
     }
   ],
   "539770184236269568": [
@@ -796,28 +880,51 @@
     {
       "tag": "#LVQY88Y8L",
       "name": "Nasty",
-      "strikes": 1,
-      "totalStrikes": 1,
-      "strikeHistory": [
-        {
-          "id": "CC012",
-          "reason": "For 3 staring in 2nd before the 8hr mark in war against PHOENIX",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        }
-      ],
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
       "sixStrikeAlertSent": false
     },
     {
       "tag": "#YR2YYU2LY",
       "name": "NoISY々2 0 0 2",
-      "strikes": 0,
-      "totalStrikes": 0,
-      "strikeHistory": [],
+      "strikes": 3,
+      "totalStrikes": 3,
+      "strikeHistory": [
+        {
+          "id": "CC063",
+          "reason": "For missing war attack against JOHN CENA in all ids",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "clanTag": "#2L80LY0CP",
+          "date": "07-11-2026"
+        },
+        {
+          "id": "CC064",
+          "reason": "For missing war attack against  PAPA's clan in all ids",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "clanTag": "#2L80LY0CP",
+          "date": "07-11-2026"
+        },
+        {
+          "id": "CC065",
+          "reason": "For missing war attack against war snipers 2.din all ids",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 3,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "clanTag": "#2L80LY0CP",
+          "date": "07-11-2026"
+        }
+      ],
       "sixStrikeAlertSent": false
     },
     {
@@ -842,7 +949,7 @@
     {
       "tag": "#YV8UGPCV9",
       "name": "Sapphire",
-      "totalStrikes": 4,
+      "totalStrikes": 3,
       "strikeHistory": [
         {
           "id": "CC007",
@@ -873,19 +980,9 @@
           "addedBy": "855449588228161548",
           "clan": "CLASHING COBRAS",
           "date": "21-09-2026"
-        },
-        {
-          "id": "CC026",
-          "reason": "For missing war attack against Phoenix",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 4,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
         }
       ],
-      "strikes": 4,
+      "strikes": 3,
       "sixStrikeAlertSent": false
     }
   ],
@@ -1055,7 +1152,16 @@
     {
       "tag": "#YYCLCVVJR",
       "name": "ArrowgantArcher",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1792203120,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GUPJ8UPCQ",
@@ -1331,7 +1437,16 @@
     {
       "tag": "#PPLJ9LC2J",
       "name": "dFuZe 7",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238926,
+          "addedBy": "1393061101838532630",
+          "clanName": "HD",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#9J2UGCCCL",
@@ -1480,7 +1595,16 @@
     {
       "tag": "#GQP0G8VQ",
       "name": "zBlackPanda_",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315319,
+          "addedBy": "910063105403400243",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1206841854038118450": [
@@ -1506,7 +1630,16 @@
     {
       "tag": "#GLJUYCGVG",
       "name": "Psj9820",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238835,
+          "addedBy": "1393061101838532630",
+          "clanName": "TL",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GJRV98Y2Q",
@@ -1529,7 +1662,16 @@
     {
       "tag": "#9JCV8R9P0",
       "name": "SS VENOM",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1792203250,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1238795883689279509": [
@@ -1544,7 +1686,16 @@
     {
       "tag": "#9PGPG99U",
       "name": "Marko Polo",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan without informing",
+          "timestamp": 1787714834,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1421085962351677531": [
@@ -1565,7 +1716,30 @@
     {
       "tag": "#GLGCCC8RJ",
       "name": "LEGION 9",
-      "strikes": 0
+      "strikes": 1,
+      "totalStrikes": 1,
+      "strikeHistory": [
+        {
+          "id": "UNK002",
+          "reason": "abced",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "1416822914950496366",
+          "clan": "Blood Demons",
+          "clanTag": "#2CCYPQYG0",
+          "date": "08-11-2026"
+        }
+      ],
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315515,
+          "addedBy": "1256130360329371664",
+          "clanName": "BB",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#2PP",
@@ -1597,7 +1771,16 @@
     {
       "tag": "#P0YGVGUPL",
       "name": "Dynamic//Protap",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1792203175,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#P99U8U80U",
@@ -1887,7 +2070,16 @@
     {
       "tag": "#8CGUQPGJV",
       "name": "Danger Boy",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843281,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "848200188320284692": [
@@ -1956,7 +2148,16 @@
     {
       "tag": "#G0CG2CG9Y",
       "name": "Mini Bana",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "not in clan by miss i have used as command",
+          "timestamp": 1786366388,
+          "addedBy": "1393061101838532630",
+          "clanName": "TL, IK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#90L0PP2UJ",
@@ -1976,39 +2177,33 @@
     {
       "tag": "#YG9PQJJV2",
       "name": "saravana",
-      "strikes": 1,
-      "totalStrikes": 1,
-      "strikeHistory": [
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false,
+      "reapplyReasons": [
         {
-          "id": "EZ6ZW",
-          "reason": "test",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "1393061101838532630",
-          "clan": "CLASHING COBRAS",
-          "date": "11-05-2026"
+          "reason": "TEST",
+          "timestamp": 1794247304,
+          "addedBy": "855449588228161548",
+          "clanName": "CC",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314837,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
         }
-      ],
-      "sixStrikeAlertSent": false
+      ]
     },
     {
       "tag": "#P9CULJJP9",
       "name": "RK",
-      "strikes": 1,
-      "totalStrikes": 1,
-      "strikeHistory": [
-        {
-          "id": "CC023",
-          "reason": "For missing war attack against Phoenix",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        }
-      ],
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
       "sixStrikeAlertSent": false
     },
     {
@@ -2096,89 +2291,18 @@
     {
       "tag": "#G0Q9VV0CY",
       "name": "Aditya",
-      "strikes": 2,
-      "totalStrikes": 2,
-      "strikeHistory": [
-        {
-          "id": "CC029",
-          "reason": "For missing war attack against war snipes 2.1",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC038",
-          "reason": "For missing war attack against BL war with war snipers 2.0",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 2,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        }
-      ],
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
       "sixStrikeAlertSent": false
     },
     {
       "tag": "#G9RVJPVJG",
       "name": "Deadshot ☠️",
-      "strikes": 5,
-      "totalStrikes": 5,
-      "strikeHistory": [
-        {
-          "id": "CC027",
-          "reason": "For missing war attack against Phoenix",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC031",
-          "reason": "For missing war attack against war snipes 2.1",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 2,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC040",
-          "reason": "For missing war attack against BL war with war snipers 2.0",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 3,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC041",
-          "reason": "For missing war attack against BL war with 俠盜聯盟國際⚔️一統天下",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 4,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC058",
-          "reason": "For missing war attacks against 100 proof",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 5,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "02-10-2026"
-        }
-      ]
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false
     }
   ],
   "848019756535644160": [
@@ -2264,7 +2388,16 @@
     {
       "tag": "#8GVLYC0YV",
       "name": "mritunjay",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315518,
+          "addedBy": "1256130360329371664",
+          "clanName": "BB",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1185573496273780777": [
@@ -2391,7 +2524,16 @@
     {
       "tag": "#9JR0PLC0L",
       "name": "Moond",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314845,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1464507268438691891": [
@@ -2506,7 +2648,16 @@
     {
       "tag": "#GGGC9LLLR",
       "name": "☘️Poor Batman☘️",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314850,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "940325234685390898": [
@@ -2520,7 +2671,16 @@
     {
       "tag": "#8YYJVCJPY",
       "name": "Siyam",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Inactive from Few Weeks",
+          "timestamp": 1787471418,
+          "addedBy": "1315947502226247692",
+          "clanName": "TL",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#9VP0LLY8U",
@@ -2567,72 +2727,10 @@
     {
       "tag": "#PV98VP2U9",
       "name": "KaiDranzer15",
-      "strikes": 6,
-      "totalStrikes": 6,
-      "strikeHistory": [
-        {
-          "id": "CC015",
-          "reason": "For missing war attack against BL war with hindustani lion",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC039",
-          "reason": "For missing war attack against BL war with war snipers 2.0",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 2,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC044",
-          "reason": "For missing war attack against سيف الحق",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 3,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC046",
-          "reason": "For missing war attack against war snipers 2.8",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 4,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC049",
-          "reason": "For missing war attack against 50 Ronnin",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 5,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC062",
-          "reason": "For missing war attacks against REQ N REQ N GO",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 6,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "clanTag": "#2L80LY0CP",
-          "date": "02-10-2026"
-        }
-      ],
-      "sixStrikeAlertSent": true
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false
     }
   ],
   "773207145801056297": [
@@ -2692,7 +2790,16 @@
     {
       "tag": "#8YUL989R9",
       "name": "NiKeT",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left Clan",
+          "timestamp": 1786726774,
+          "addedBy": "1315947502226247692",
+          "clanName": "SU",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "200037597681025024": [
@@ -2760,20 +2867,10 @@
     {
       "tag": "#Q2RLV29LV",
       "name": "ɴᴀʜɪʏᴀɴ✔︎",
-      "totalStrikes": 1,
-      "strikeHistory": [
-        {
-          "id": "CC033",
-          "reason": "For missing war attack against phenomenal",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        }
-      ],
-      "strikes": 1
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "strikes": 0,
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#QU9RLP0QC",
@@ -2806,7 +2903,16 @@
       "strikes": 0,
       "totalStrikes": 0,
       "strikeHistory": [],
-      "sixStrikeAlertSent": false
+      "sixStrikeAlertSent": false,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314831,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LY0Y88JPP",
@@ -2826,7 +2932,10 @@
     {
       "tag": "#Y90CUUC2G",
       "name": "N£®®¥™",
-      "strikes": 0
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false
     },
     {
       "tag": "#9VV2URQ2G",
@@ -2915,48 +3024,17 @@
     {
       "tag": "#G2R08LR8Q",
       "name": "fatterport",
-      "strikes": 4,
-      "totalStrikes": 4,
-      "strikeHistory": [
+      "strikes": 0,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false,
+      "reapplyReasons": [
         {
-          "id": "CC017",
-          "reason": "For missing war attack against Kerala Dragons",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794940445,
           "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC032",
-          "reason": "For missing war attack against 长相思兮长相忆",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 2,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC035",
-          "reason": "For missing war attack against BL war with hindustani lion",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 3,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC042",
-          "reason": "For missing war attack against War snipes 2.3",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 4,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
+          "clanName": "CV",
+          "status": "ADDED"
         }
       ]
     }
@@ -3046,7 +3124,16 @@
     {
       "tag": "#GRGQPYPJP",
       "name": "ego4u",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Taking break",
+          "timestamp": 1790405622,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GR0CG0Q8C",
@@ -3109,7 +3196,16 @@
     {
       "tag": "#8PJJYP9GJ",
       "name": "SKS.SUCHITH",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Taking break from clash for higher studies",
+          "timestamp": 1789575110,
+          "addedBy": "855449588228161548",
+          "clanName": "CC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#9VC8GLPQJ",
@@ -3154,7 +3250,23 @@
     {
       "tag": "#29289YJ9C",
       "name": "Clarity",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left without informing",
+          "timestamp": 1790695353,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan without informing",
+          "timestamp": 1790778293,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LV000VQ0J",
@@ -3215,7 +3327,16 @@
     {
       "tag": "#QUP2L2U8U",
       "name": "visper",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Inactive 7days+",
+          "timestamp": 1785561150,
+          "addedBy": "1315947502226247692",
+          "clanName": "TL",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GUVR9JC8L",
@@ -3352,7 +3473,16 @@
     {
       "tag": "#QYULCC9Q2",
       "name": "OM12@",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1789574570,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "556523761617338368": [
@@ -3436,7 +3566,16 @@
     {
       "tag": "#9JUJGRPR",
       "name": "Nick",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Leave During Cwl",
+          "timestamp": 1789097089,
+          "addedBy": "1315947502226247692",
+          "clanName": "TL",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "171270098911232000": [
@@ -3457,7 +3596,16 @@
     {
       "tag": "#YRPGJ2C2Q",
       "name": "HAtaRSnyHa",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238803,
+          "addedBy": "1393061101838532630",
+          "clanName": "BL",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LJUUJ2JU9",
@@ -3593,12 +3741,6 @@
       "strikes": 0
     }
   ],
-  "1494945280401870889": [
-    {
-      "tag": "#GG0RGVPG2",
-      "name": "Ayush 3"
-    }
-  ],
   "331769925540773888": [
     {
       "tag": "#Q98JQJ0L",
@@ -3638,7 +3780,16 @@
     {
       "tag": "#Y2VPJ2PJ9",
       "name": "$ DHRUV $",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238886,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#Y2VRP9LGV",
@@ -3687,7 +3838,16 @@
     {
       "tag": "#G80PJ22VP",
       "name": "Killer",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1793455056,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GCV0CC29R",
@@ -3710,7 +3870,16 @@
     {
       "tag": "#GGJYV0C9",
       "name": "ManOfSun",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1786790979,
+          "addedBy": "1256130360329371664",
+          "clanName": "BB",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#9QJGYPJQU",
@@ -3745,7 +3914,16 @@
     {
       "tag": "#8U02RV92V",
       "name": "Zultra",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842595,
+          "addedBy": "1393061101838532630",
+          "clanName": "ASR",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QR9GY8P88",
@@ -3755,18 +3933,27 @@
   ],
   "965295354805383228": [
     {
+      "tag": "#Y9L99009R",
+      "name": "sk kapil"
+    },
+    {
       "tag": "#LCG2JR0U2",
       "name": "PLMS PRINCE",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842585,
+          "addedBy": "1393061101838532630",
+          "clanName": "DH",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LQVC9Y22U",
       "name": "RENDOM EDGE",
       "strikes": 0
-    },
-    {
-      "tag": "#Y9L99009R",
-      "name": "sk kapil"
     },
     {
       "tag": "#LJ0PGV892",
@@ -3777,7 +3964,16 @@
     {
       "tag": "#PGLVGPR2P",
       "name": "sambhunath",
-      "strikes": 0
+      "strikes": 0,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1793455064,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#PLCJ9JYR2",
@@ -3872,41 +4068,33 @@
     {
       "tag": "#2LVUC9L2J",
       "name": "Officially_Veer",
-      "totalStrikes": 2,
-      "strikeHistory": [
-        {
-          "id": "CC014",
-          "reason": "For missing war attacks against Centum Aquila",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC019",
-          "reason": "for missing one of the war attacks against Zen nation",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 2,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        }
-      ],
-      "strikes": 2,
+      "totalStrikes": 0,
+      "strikeHistory": [],
+      "strikes": 0,
       "sixStrikeAlertSent": false
     }
   ],
   "875923239375872022": [
     {
       "tag": "#QJQ92222Q",
-      "name": "Ayush"
+      "name": "Ayush",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238831,
+          "addedBy": "1393061101838532630",
+          "clanName": "TL",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GLYUJC29C",
       "name": "Ayush 2"
+    },
+    {
+      "tag": "#GG0RGVPG2",
+      "name": "Ayush 3"
     }
   ],
   "396572775340441601": [
@@ -4010,7 +4198,16 @@
   "559554954713628672": [
     {
       "tag": "#LQQL9UQV",
-      "name": "EVIL WITCH"
+      "name": "EVIL WITCH",
+      "reapplyReasons": [
+        {
+          "reason": "Offline",
+          "timestamp": 1794594351,
+          "addedBy": "1315947502226247692",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "307938921726214154": [
@@ -4089,7 +4286,30 @@
           "date": "02-10-2026"
         }
       ],
-      "strikes": 5
+      "strikes": 5,
+      "reapplyReasons": [
+        {
+          "reason": ".",
+          "timestamp": 1792991891,
+          "addedBy": "855449588228161548",
+          "clanName": "CV",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315191,
+          "addedBy": "855449588228161548",
+          "clanName": "CC",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794415377,
+          "addedBy": "855449588228161548",
+          "clanName": "CV",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "452861157686902784": [
@@ -4101,7 +4321,23 @@
   "582987123087638529": [
     {
       "tag": "#GC2Q9Q9U2",
-      "name": "Good Morty"
+      "name": "Good Morty",
+      "reapplyReasons": [
+        {
+          "reason": "Left Clan",
+          "timestamp": 1786611492,
+          "addedBy": "1315947502226247692",
+          "clanName": "TL",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314833,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#VYUPYQJR",
@@ -4117,7 +4353,16 @@
   "1358878620810088679": [
     {
       "tag": "#Q889VQV9P",
-      "name": "dani"
+      "name": "dani",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive 7days",
+          "timestamp": 1786602532,
+          "addedBy": "1315947502226247692",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1506312420564406387": [
@@ -4185,7 +4430,16 @@
   "506174433506099210": [
     {
       "tag": "#80YL02YYQ",
-      "name": "Leo light"
+      "name": "Leo light",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843267,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GQLP8LVY2",
@@ -4215,7 +4469,16 @@
   "1507276833312473159": [
     {
       "tag": "#GRY9JVLP9",
-      "name": "drizz"
+      "name": "drizz",
+      "reapplyReasons": [
+        {
+          "reason": ".",
+          "timestamp": 1791737331,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LG0Q9PYL9",
@@ -4335,7 +4598,16 @@
   "726732048194338858": [
     {
       "tag": "#2VP2QV29U",
-      "name": "niel"
+      "name": "niel",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238810,
+          "addedBy": "1393061101838532630",
+          "clanName": "BL",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LG9VGG0L",
@@ -4789,7 +5061,16 @@
   "602888457575989248": [
     {
       "tag": "#YLQPJUPV9",
-      "name": "SHADOW"
+      "name": "SHADOW",
+      "reapplyReasons": [
+        {
+          "reason": "Left Clan 🙂",
+          "timestamp": 1786607874,
+          "addedBy": "1315947502226247692",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "751638793349759067": [
@@ -4814,7 +5095,16 @@
   "868554427336896512": [
     {
       "tag": "#2UCQ0Q8UG",
-      "name": "Dööfënşhmïrtş"
+      "name": "Dööfënşhmïrtş",
+      "reapplyReasons": [
+        {
+          "reason": "Offline for 2 weeks",
+          "timestamp": 1786611268,
+          "addedBy": "1315947502226247692",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QYRLRVLVU",
@@ -4824,7 +5114,16 @@
   "815440418892021790": [
     {
       "tag": "#PR20Q02LP",
-      "name": "Sky"
+      "name": "Sky",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan",
+          "timestamp": 1788187223,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "558334336336658461": [
@@ -4856,7 +5155,16 @@
   "672670507975442442": [
     {
       "tag": "#PPQG9P0RP",
-      "name": "GLÁDÍÃTØR"
+      "name": "GLÁDÍÃTØR",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan",
+          "timestamp": 1786883709,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ, CC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#PGC0VP28C",
@@ -4890,7 +5198,16 @@
   "681258519621664811": [
     {
       "tag": "#PQV9LU9C",
-      "name": "bearwolf 2.0"
+      "name": "bearwolf 2.0",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan",
+          "timestamp": 1789692289,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#202LLP0LV",
@@ -4958,7 +5275,16 @@
   "1092905995870670951": [
     {
       "tag": "#GYGGL8QRY",
-      "name": "INTELLIGENT"
+      "name": "INTELLIGENT",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238929,
+          "addedBy": "1393061101838532630",
+          "clanName": "HD",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#8LCCPCGGY",
@@ -4980,7 +5306,16 @@
   "743308518223904848": [
     {
       "tag": "#G9J0RYQRV",
-      "name": "okl"
+      "name": "okl",
+      "reapplyReasons": [
+        {
+          "reason": "Going inactive...",
+          "timestamp": 1794283881,
+          "addedBy": "910063105403400243",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QY2C828JV",
@@ -4990,7 +5325,16 @@
   "884790045146501171": [
     {
       "tag": "#2J2Q0RQ0R",
-      "name": "LEO1987"
+      "name": "LEO1987",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238949,
+          "addedBy": "1393061101838532630",
+          "clanName": "HD",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#YL92V0QGC",
@@ -5026,7 +5370,16 @@
   "1496768315727806535": [
     {
       "tag": "#QVR902R80",
-      "name": "NIR MAX"
+      "name": "NIR MAX",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842576,
+          "addedBy": "1393061101838532630",
+          "clanName": "ASR",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QCJLJPU9P",
@@ -5059,6 +5412,30 @@
     {
       "tag": "#GLQLYJVJ0",
       "name": "SHIHAB"
+    },
+    {
+      "tag": "#GY0GL0929",
+      "name": "Void Monarch"
+    },
+    {
+      "tag": "#GPY8YJQQV",
+      "name": "Blood Knight"
+    },
+    {
+      "tag": "#R22P02YG0",
+      "name": "★ NIR'S TH8 ★"
+    },
+    {
+      "tag": "#QUPLY2CGU",
+      "name": "Thunder Emperor"
+    },
+    {
+      "tag": "#GCPCRU9CY",
+      "name": "Fire Phoenix"
+    },
+    {
+      "tag": "#GR9YJ9GCV",
+      "name": "Golden Dragon"
     }
   ],
   "1165194582561148940": [
@@ -5070,7 +5447,16 @@
   "857142082584969216": [
     {
       "tag": "#2L099V8CY",
-      "name": "Harry Sandhu"
+      "name": "Harry Sandhu",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238896,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1402875812692365454": [
@@ -5188,7 +5574,16 @@
   "617323202204663838": [
     {
       "tag": "#PV2J229VU",
-      "name": "αʍαη ツ ψαδαѵ"
+      "name": "αʍαη ツ ψαδαѵ",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238880,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1172541997861576759": [
@@ -5246,7 +5641,16 @@
   "997781016011878420": [
     {
       "tag": "#9QGPQVGP9",
-      "name": "ANAS R Master"
+      "name": "ANAS R Master",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843305,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#G2PR2982P",
@@ -5278,7 +5682,16 @@
   "1462121218613182631": [
     {
       "tag": "#GC0JC22U9",
-      "name": "DonAK"
+      "name": "DonAK",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843295,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GCUPCVJQV",
@@ -5292,7 +5705,16 @@
   "777032533568127018": [
     {
       "tag": "#90P2QU8CJ",
-      "name": "✨Kreed☄️"
+      "name": "✨Kreed☄️",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843273,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#PRVV9CJ8J",
@@ -5309,6 +5731,10 @@
     {
       "tag": "#8YRCP8Y82",
       "name": "Smokin' Chongke"
+    },
+    {
+      "tag": "#GLCLJ89UU",
+      "name": "fre$h2def"
     }
   ],
   "766803884559433739": [
@@ -5348,13 +5774,45 @@
   "861477213006462977": [
     {
       "tag": "#Y9L0G9ULL",
-      "name": "abbys?"
+      "name": "abbys?",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan , not responding to pings",
+          "timestamp": 1786291216,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Not responding to subzero",
+          "timestamp": 1791713204,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Not responding to subzero",
+          "timestamp": 1791713204,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "790472986494631976": [
     {
       "tag": "#LVLPLPC99",
-      "name": "Drew.2"
+      "name": "Drew.2",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842572,
+          "addedBy": "1393061101838532630",
+          "clanName": "ASR",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LYQGJ08J",
@@ -5461,6 +5919,10 @@
     {
       "tag": "#QCGJPLPP0",
       "name": "⚡maxwar⚡"
+    },
+    {
+      "tag": "#GJ29GQY0U",
+      "name": "C2W×͜×Sʜɪᴠᴀᴍ"
     }
   ],
   "1505016586845818958": [
@@ -5472,7 +5934,23 @@
   "900071151043227689": [
     {
       "tag": "#2U2PCL2V9",
-      "name": "RaY"
+      "name": "RaY",
+      "reapplyReasons": [
+        {
+          "reason": "His friend is playing on his ids",
+          "timestamp": 1788413426,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Joined another clan",
+          "timestamp": 1791736757,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#ULJUQJCQ",
@@ -5602,7 +6080,23 @@
   "556800204729221130": [
     {
       "tag": "#Y0JG0LGL8",
-      "name": "GRANTXGAURAV"
+      "name": "GRANTXGAURAV",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive and bz needs space",
+          "timestamp": 1786786009,
+          "addedBy": "910063105403400243",
+          "clanName": "BZ",
+          "status": "ADDED"
+        },
+        {
+          "reason": "(Meow you) offline for many days, open ticket for re entry",
+          "timestamp": 1793454939,
+          "addedBy": "910063105403400243",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1520361711331442830": [
@@ -5664,7 +6158,16 @@
   "1313534090666053724": [
     {
       "tag": "#P29C0QG8C",
-      "name": "Hunter 2"
+      "name": "Hunter 2",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238884,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1520684916566921331": [
@@ -5772,6 +6275,10 @@
     {
       "tag": "#QQ8PYQ0GG",
       "name": "shubh17"
+    },
+    {
+      "tag": "#GVY8Q8J98",
+      "name": "! T H O R !"
     }
   ],
   "1447630873846481007": [
@@ -5802,7 +6309,16 @@
   "1002926541170286652": [
     {
       "tag": "#2YPJQJRC",
-      "name": "Hugh Jr"
+      "name": "Hugh Jr",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1792501218,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "535370620863774726": [
@@ -5814,7 +6330,16 @@
   "866774498266447882": [
     {
       "tag": "#G8GG29CRP",
-      "name": "Ramir"
+      "name": "Ramir",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1786784918,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1013300464017752184": [
@@ -5847,12 +6372,25 @@
     {
       "tag": "#GUUQUPC2R",
       "name": "Wolf"
+    },
+    {
+      "tag": "#R28GQPJYU",
+      "name": "Flame"
     }
   ],
   "715902955152474163": [
     {
       "tag": "#R9YJR8QQG",
-      "name": "Harry Potter"
+      "name": "Harry Potter",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238927,
+          "addedBy": "1393061101838532630",
+          "clanName": "HD",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#G990G0LUP",
@@ -5884,7 +6422,16 @@
   "1029756436185612371": [
     {
       "tag": "#GLYQY0C80",
-      "name": "The Conqueror"
+      "name": "The Conqueror",
+      "reapplyReasons": [
+        {
+          "reason": "Left Clan",
+          "timestamp": 1789441069,
+          "addedBy": "1315947502226247692",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "812930666722492426": [
@@ -5908,7 +6455,16 @@
   "978541688895180800": [
     {
       "tag": "#LCJQ9YU09",
-      "name": "nikki"
+      "name": "nikki",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238909,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#YVG9G0VVP",
@@ -6066,7 +6622,16 @@
   "1487822301092253898": [
     {
       "tag": "#GC0RULC9J",
-      "name": "Edison"
+      "name": "Edison",
+      "reapplyReasons": [
+        {
+          "reason": "Left and joined",
+          "timestamp": 1789574625,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#GCULQV20G",
@@ -6116,7 +6681,16 @@
   "1508850684613890209": [
     {
       "tag": "#Q82UQGGPG",
-      "name": "LYSANDER"
+      "name": "LYSANDER",
+      "reapplyReasons": [
+        {
+          "reason": "Left cause of love",
+          "timestamp": 1791652463,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "364388982081191936": [
@@ -6128,7 +6702,16 @@
   "431017799998242826": [
     {
       "tag": "#L2C8P8RUR",
-      "name": "Rex~~K♛ng"
+      "name": "Rex~~K♛ng",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843278,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#YR0UUYR0R",
@@ -6148,19 +6731,46 @@
   "852561159337148436": [
     {
       "tag": "#LGJY0VJ9R",
-      "name": "ROYAL_SUBHO"
+      "name": "ROYAL_SUBHO",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1792503689,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1276804979188826145": [
     {
       "tag": "#LVQGVCPP9",
-      "name": "⚡⚡《HERO》⚡⚡"
+      "name": "⚡⚡《HERO》⚡⚡",
+      "reapplyReasons": [
+        {
+          "reason": "Left Clan",
+          "timestamp": 1786611398,
+          "addedBy": "1315947502226247692",
+          "clanName": "TL",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "803291726998536213": [
     {
       "tag": "#LLUYQGQP0",
-      "name": "Samarvir"
+      "name": "Samarvir",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238940,
+          "addedBy": "1393061101838532630",
+          "clanName": "BWC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#Q9UULRJVR",
@@ -6180,13 +6790,35 @@
   "458253351214252032": [
     {
       "tag": "#L8G2VR2LL",
-      "name": "Criskooo"
+      "name": "Criskooo",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and will join when he needs fwa clan",
+          "timestamp": 1785749842,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "920570176271974410": [
     {
       "tag": "#99UCRPJ8Q",
-      "name": "Ghost rider"
+      "name": "Ghost rider",
+      "reapplyReasons": [
+        {
+          "reason": "Going is friends clan",
+          "timestamp": 1791868782,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
+    },
+    {
+      "tag": "#988Y9RUYR",
+      "name": "Naruto"
     }
   ],
   "1036166009687658506": [
@@ -6260,7 +6892,23 @@
   "736960222748344372": [
     {
       "tag": "#PCJLGCQ8L",
-      "name": "Looner"
+      "name": "Looner",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842648,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238931,
+          "addedBy": "1393061101838532630",
+          "clanName": "HD",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#L0V9V0990",
@@ -6288,7 +6936,16 @@
   "1208098909302300692": [
     {
       "tag": "#PUL9V2U2",
-      "name": "Master J"
+      "name": "Master J",
+      "reapplyReasons": [
+        {
+          "reason": "Taking break from Game",
+          "timestamp": 1793535383,
+          "addedBy": "855449588228161548",
+          "clanName": "HD",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1180770206218457099": [
@@ -6304,7 +6961,23 @@
   "506354776586452992": [
     {
       "tag": "#2UURU829Q",
-      "name": "$w£@sh™"
+      "name": "$w£@sh™",
+      "reapplyReasons": [
+        {
+          "reason": "Went to filler clan",
+          "timestamp": 1786447615,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794911065,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "459424917654339585": [
@@ -6328,7 +7001,16 @@
   "1525101549355798539": [
     {
       "tag": "#G2P2890U0",
-      "name": "Edgee_"
+      "name": "Edgee_",
+      "reapplyReasons": [
+        {
+          "reason": "Not responding to subzero",
+          "timestamp": 1791713265,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1397454871052943380": [
@@ -6388,7 +7070,16 @@
   "945580502428045342": [
     {
       "tag": "#GUUQU00L8",
-      "name": "Akioo"
+      "name": "Akioo",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842641,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "599838811777662980": [
@@ -6412,7 +7103,16 @@
   "911117664301232129": [
     {
       "tag": "#QYYVQLJRR",
-      "name": "CARGO MINI"
+      "name": "CARGO MINI",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238938,
+          "addedBy": "1393061101838532630",
+          "clanName": "HD",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1030834233909968926": [
@@ -6424,7 +7124,16 @@
   "1410699052793991353": [
     {
       "tag": "#QVGR2R0QV",
-      "name": "Grimholder"
+      "name": "Grimholder",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238894,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#Q00PCGRR8",
@@ -6478,7 +7187,16 @@
   "748216305101963317": [
     {
       "tag": "#GJULLQPRQ",
-      "name": "broodie"
+      "name": "broodie",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238832,
+          "addedBy": "1393061101838532630",
+          "clanName": "TL",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1193989502478327861": [
@@ -6569,6 +7287,10 @@
     {
       "tag": "#GCRPYVP8Q",
       "name": "⭐️HARSH⭐️"
+    },
+    {
+      "tag": "#GCJRLGCV0",
+      "name": "FOUND_SAGE"
     }
   ],
   "1530086128181313627": [],
@@ -6591,13 +7313,31 @@
   "1428769463552970824": [
     {
       "tag": "#2UGQPUVQ2",
-      "name": "Trapmaker"
+      "name": "Trapmaker",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843290,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1427657755065319435": [
     {
       "tag": "#V8JUGR2J",
-      "name": "Maximus"
+      "name": "Maximus",
+      "reapplyReasons": [
+        {
+          "reason": "Clan hopper and left clan without informing",
+          "timestamp": 1787500191,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#P88U00LRV",
@@ -6631,7 +7371,16 @@
   "1147815176486260736": [
     {
       "tag": "#RJRCY00U",
-      "name": "Knull"
+      "name": "Knull",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1793455058,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#8QQUQCVY2",
@@ -6653,7 +7402,23 @@
   "718360914079776911": [
     {
       "tag": "#892RVPQJ2",
-      "name": "Andreas Brahma"
+      "name": "Andreas Brahma",
+      "reapplyReasons": [
+        {
+          "reason": "Taking Break",
+          "timestamp": 1789627059,
+          "addedBy": "1315947502226247692",
+          "clanName": "TL",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Taking Break",
+          "timestamp": 1789627059,
+          "addedBy": "1315947502226247692",
+          "clanName": "TL",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#88PQUPUQ8",
@@ -6663,7 +7428,16 @@
   "1277259776744624289": [
     {
       "tag": "#9Q28GCGPV",
-      "name": "surya"
+      "name": "surya",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan without informing",
+          "timestamp": 1787193309,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#PQG9UL2PL",
@@ -6673,7 +7447,16 @@
   "706488115971227728": [
     {
       "tag": "#PP889RRGL",
-      "name": "Dragon"
+      "name": "Dragon",
+      "reapplyReasons": [
+        {
+          "reason": "Will join after one month",
+          "timestamp": 1791553144,
+          "addedBy": "910063105403400243",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#P8PQJ8UVP",
@@ -6697,7 +7480,16 @@
   "1021474206036283473": [
     {
       "tag": "#LPVYLRCQC",
-      "name": "☆SIWAR☆"
+      "name": "☆SIWAR☆",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315496,
+          "addedBy": "1256130360329371664",
+          "clanName": "BB",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#PVGQL2C2Q",
@@ -6767,7 +7559,16 @@
   "468585275258437677": [
     {
       "tag": "#QQY9PYCJ",
-      "name": "EmperorPenguin"
+      "name": "EmperorPenguin",
+      "reapplyReasons": [
+        {
+          "reason": "Left Clan",
+          "timestamp": 1786268705,
+          "addedBy": "1315947502226247692",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "779024011073945611": [
@@ -6779,7 +7580,16 @@
   "283960804703862784": [
     {
       "tag": "#QUJQC2V9J",
-      "name": "ZAI❤️KAY"
+      "name": "ZAI❤️KAY",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239071,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#89UQGCL0",
@@ -6813,13 +7623,31 @@
   "598768125823156225": [
     {
       "tag": "#99Q29C0V",
-      "name": "Vidar2"
+      "name": "Vidar2",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan",
+          "timestamp": 1792203242,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "694393199321677865": [
     {
       "tag": "#QQLYLQVC2",
-      "name": "Houdini"
+      "name": "Houdini",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive from last 1 week",
+          "timestamp": 1794300567,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QJ8CQQQR",
@@ -6853,7 +7681,16 @@
   "1059554665194344460": [
     {
       "tag": "#YRGQQ9LL0",
-      "name": "⚡KOKūJEN❗Lᵒᵖ™️⚡"
+      "name": "⚡KOKūJEN❗Lᵒᵖ™️⚡",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238910,
+          "addedBy": "1393061101838532630",
+          "clanName": "KC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#U88CC2QG",
@@ -6869,7 +7706,16 @@
   "1226008569636323379": [
     {
       "tag": "#2YQ0P2JG0",
-      "name": "TITAN"
+      "name": "TITAN",
+      "reapplyReasons": [
+        {
+          "reason": "Not a fwa player",
+          "timestamp": 1786494332,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "583214820921442306": [
@@ -6895,7 +7741,16 @@
   "1106066750774190091": [
     {
       "tag": "#LQUV92LVR",
-      "name": "Shimbundu"
+      "name": "Shimbundu",
+      "reapplyReasons": [
+        {
+          "reason": "Left playing game",
+          "timestamp": 1791554248,
+          "addedBy": "910063105403400243",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1313028061377200128": [
@@ -6907,7 +7762,16 @@
   "424423078542704640": [
     {
       "tag": "#GQUP9VRJ",
-      "name": "JONG ❤❤"
+      "name": "JONG ❤❤",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive for weeks.",
+          "timestamp": 1793404928,
+          "addedBy": "910063105403400243",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1202042559216484417": [
@@ -6929,7 +7793,16 @@
   "1456363315700961387": [
     {
       "tag": "#LG9QC0PCG",
-      "name": "Zhalek"
+      "name": "Zhalek",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238933,
+          "addedBy": "1393061101838532630",
+          "clanName": "BWC",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#G8PRLPP0U",
@@ -6969,20 +7842,47 @@
   "753325099226235000": [
     {
       "tag": "#Q809PCVRL",
-      "name": "crispy york"
+      "name": "crispy york",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842577,
+          "addedBy": "1393061101838532630",
+          "clanName": "ASR",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "529604464613654539": [
     {
       "tag": "#LG8G8GGR",
-      "name": "あＲｏｎｎ"
+      "name": "あＲｏｎｎ",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238826,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1336201443639689276": [],
   "624205753019924491": [
     {
       "tag": "#YQ9L0020J",
-      "name": "Mr. Unknown"
+      "name": "Mr. Unknown",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842611,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#2QVL9PR2R",
@@ -6996,7 +7896,16 @@
   "785467641841451058": [
     {
       "tag": "#GPQ9P9YUU",
-      "name": "Mariothons"
+      "name": "Mariothons",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842579,
+          "addedBy": "1393061101838532630",
+          "clanName": "ASR",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "683714390952116232": [
@@ -7018,7 +7927,23 @@
   "748494181839667251": [
     {
       "tag": "#LQC9J8QVP",
-      "name": "ADI 07"
+      "name": "ADI 07",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and leaders still keeping in clan role",
+          "timestamp": 1793452038,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and leaders still keeping in clan role",
+          "timestamp": 1793452043,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "479016945715380225": [
@@ -7044,7 +7969,37 @@
   "1537705764829929554": [
     {
       "tag": "#9JJ0GYJ0G",
-      "name": "Lvl-7 Shinchan"
+      "name": "Lvl-7 Shinchan",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive",
+          "timestamp": 1791736826,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1793454449,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1793454542,
+          "addedBy": "910063105403400243",
+          "clanName": "DW",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315512,
+          "addedBy": "1256130360329371664",
+          "clanName": "BB",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#9CY9LCJ0Y",
@@ -7099,12 +8054,6 @@
       "name": "Dragon king"
     }
   ],
-  "1493492487199658087": [
-    {
-      "tag": "#Q0YU988GY",
-      "name": "S.S.GAMER"
-    }
-  ],
   "783464825954631690": [
     {
       "tag": "#JQRGCR88",
@@ -7156,7 +8105,16 @@
   "393444997539561472": [
     {
       "tag": "#R28U9JPYQ",
-      "name": "឵឵឵឵឵឵"
+      "name": "឵឵឵឵឵឵",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238783,
+          "addedBy": "1393061101838532630",
+          "clanName": "BB",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "478070202983251968": [
@@ -7175,6 +8133,10 @@
     {
       "tag": "#YJQQ889QY",
       "name": "FerginTN"
+    },
+    {
+      "tag": "#8P8GLY80L",
+      "name": "Kazz Manclenta"
     }
   ],
   "651452273146462238": [
@@ -7234,7 +8196,16 @@
   "1399495085816676546": [
     {
       "tag": "#LYG22G8L8",
-      "name": "Mo"
+      "name": "Mo",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794843270,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1365531267239510129": [
@@ -7279,6 +8250,10 @@
     {
       "tag": "#Y980UPGJU",
       "name": "BATMAN"
+    },
+    {
+      "tag": "#9RCGYG9GR",
+      "name": "Abhijeet"
     }
   ],
   "1446554124165582863": [
@@ -7373,12 +8348,25 @@
     {
       "tag": "#9JYR899QR",
       "name": "{#}The One{#}"
+    },
+    {
+      "tag": "#GG2RQJUYY",
+      "name": "Game+Changer"
     }
   ],
   "769722506135207966": [
     {
       "tag": "#GCVLUCPRQ",
-      "name": "mason"
+      "name": "mason",
+      "reapplyReasons": [
+        {
+          "reason": "Offline for many days, open ticket once u get back",
+          "timestamp": 1793455087,
+          "addedBy": "910063105403400243",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "867455613633036320": [
@@ -7389,10 +8377,6 @@
   ],
   "827270004533100586": [
     {
-      "tag": "#9LUQU0G9G",
-      "name": "Dur e Najaf"
-    },
-    {
       "tag": "#QJY9V2UUY",
       "name": "Wolf"
     }
@@ -7400,13 +8384,26 @@
   "602498856424439821": [
     {
       "tag": "#8J89R9RY0",
-      "name": "W∆®LO¢ M€T∆L"
+      "name": "W∆®LO¢ M€T∆L",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794290373,
+          "addedBy": "910063105403400243",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1500558906349457538": [
     {
       "tag": "#Y2YJ80RCP",
       "name": "$$AVIRAL ROCK$$"
+    },
+    {
+      "tag": "#LQQYJ8JU9",
+      "name": "$$AVIRAL$$"
     }
   ],
   "1187356523677110397": [
@@ -7418,7 +8415,16 @@
   "1237776618337075233": [
     {
       "tag": "#GCCVRQJYR",
-      "name": "Rush Hour"
+      "name": "Rush Hour",
+      "reapplyReasons": [
+        {
+          "reason": "Hopper and left clan",
+          "timestamp": 1787537183,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1441901956569239655": [
@@ -7442,7 +8448,42 @@
   "634780550355484702": [
     {
       "tag": "#9CYP0G8JY",
-      "name": "bless"
+      "name": "bless",
+      "totalStrikes": 2,
+      "strikeHistory": [
+        {
+          "id": "CC066",
+          "reason": "For missing war attack against war snipers 2.7",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 1,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "clanTag": "#2L80LY0CP",
+          "date": "07-11-2026"
+        },
+        {
+          "id": "CC069",
+          "reason": "For missing war attack against Metal nation",
+          "weight": 1,
+          "strikeCountAdded": 1,
+          "totalAtTime": 2,
+          "addedBy": "855449588228161548",
+          "clan": "CLASHING COBRAS",
+          "clanTag": "#2L80LY0CP",
+          "date": "07-11-2026"
+        }
+      ],
+      "strikes": 2,
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794963451,
+          "addedBy": "910063105403400243",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#P28PJPP0Q",
@@ -7470,13 +8511,31 @@
   "1498480489638527080": [
     {
       "tag": "#Y2UUJL2JL",
-      "name": "chrisUZUMAKI"
+      "name": "chrisUZUMAKI",
+      "reapplyReasons": [
+        {
+          "reason": "Player is not active more then a week",
+          "timestamp": 1794979970,
+          "addedBy": "965295354805383228",
+          "clanName": "ASR",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "254099021814169609": [
     {
       "tag": "#LVCRPCLQ",
-      "name": "JBurd"
+      "name": "JBurd",
+      "reapplyReasons": [
+        {
+          "reason": "Left due to timezone differences",
+          "timestamp": 1794320297,
+          "addedBy": "855449588228161548",
+          "clanName": "CV",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "558328597086208020": [
@@ -7494,11 +8553,24 @@
   "836116394155311154": [
     {
       "tag": "#LLYLVQ8GU",
-      "name": "VIRAJ3.0"
+      "name": "VIRAJ3.0",
+      "reapplyReasons": [
+        {
+          "reason": ".",
+          "timestamp": 1791736942,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LV8UVYQ22",
       "name": "VIRAJ4.0"
+    },
+    {
+      "tag": "#YPJJ2RYRJ",
+      "name": "VIRAJ 2.0"
     }
   ],
   "1185910877384351824": [
@@ -7520,7 +8592,16 @@
     },
     {
       "tag": "#GLPYYPGQ8",
-      "name": "TORNADO"
+      "name": "TORNADO",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive and didn't attack in last few wars",
+          "timestamp": 1794320135,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#9J02R8VLV",
@@ -7541,12 +8622,25 @@
     {
       "tag": "#80RUCV0QY",
       "name": "ANOTHER ONE"
+    },
+    {
+      "tag": "#GPVGGRGUV",
+      "name": "Kio"
     }
   ],
   "589469853346168834": [
     {
       "tag": "#9UL90VL99",
-      "name": "Kaustubh"
+      "name": "Kaustubh",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795260392,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#9VPRUVVC9",
@@ -7570,7 +8664,23 @@
   "1478228968401408142": [
     {
       "tag": "#QG9GYYQ2Y",
-      "name": "Jagdodes"
+      "name": "Jagdodes",
+      "reapplyReasons": [
+        {
+          "reason": "No responding on and in-game, left without informing",
+          "timestamp": 1789701101,
+          "addedBy": "1179429119524610058",
+          "clanName": "IK",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Inactive from last 6 days",
+          "timestamp": 1793444471,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1469910223115255910": [
@@ -7588,19 +8698,46 @@
   "1540616442683199498": [
     {
       "tag": "#LP8200UCP",
-      "name": "pradeep2"
+      "name": "pradeep2",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315172,
+          "addedBy": "855449588228161548",
+          "clanName": "CV",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "734708610898067557": [
     {
       "tag": "#L8YGYYQVQ",
-      "name": "Rohan king"
+      "name": "Rohan king",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive from 5 days",
+          "timestamp": 1792382449,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1540625712363348020": [
     {
       "tag": "#GQYUJLUVU",
-      "name": "LORD JARIF⚡️"
+      "name": "LORD JARIF⚡️",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive and didn't respond to ping",
+          "timestamp": 1791737188,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QJJQYRUQL",
@@ -7790,7 +8927,16 @@
   "484266633469231114": [
     {
       "tag": "#UY8CYLP9",
-      "name": "mike y0"
+      "name": "mike y0",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315166,
+          "addedBy": "855449588228161548",
+          "clanName": "CV",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QG88PU8JC",
@@ -7806,7 +8952,16 @@
   "1264616531396919347": [
     {
       "tag": "#YQ0C8GYGP",
-      "name": "Cookie"
+      "name": "Cookie",
+      "reapplyReasons": [
+        {
+          "reason": ".",
+          "timestamp": 1791737092,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QVVQ8RPCV",
@@ -7860,7 +9015,16 @@
   "1438158182718504971": [
     {
       "tag": "#Q88U0UURP",
-      "name": "Exprt~yxsh"
+      "name": "Exprt~yxsh",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan without informing",
+          "timestamp": 1791736899,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#9GG9QRPJ8",
@@ -7890,7 +9054,16 @@
   "930052747749912576": [
     {
       "tag": "#QPY2PJ80Y",
-      "name": "☠Ṩ℘ideℝ☠︎"
+      "name": "☠Ṩ℘ideℝ☠︎",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794415375,
+          "addedBy": "855449588228161548",
+          "clanName": "CV",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#PUJC8CLYP",
@@ -7968,7 +9141,16 @@
   "430012231703330816": [
     {
       "tag": "#L0PCRR0GP",
-      "name": "Tzktik"
+      "name": "Tzktik",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive from last 5 days",
+          "timestamp": 1794916525,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1440005161207730257": [
@@ -7986,7 +9168,16 @@
   "779373909450686475": [
     {
       "tag": "#CGY28QRY",
-      "name": "ULTRA字ˡᵉᵍᵉᶰᵈ"
+      "name": "ULTRA字ˡᵉᵍᵉᶰᵈ",
+      "reapplyReasons": [
+        {
+          "reason": "Sub-Zero",
+          "timestamp": 1791713451,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ, DW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#PG02U82GR",
@@ -8072,7 +9263,16 @@
   "578651270185746462": [
     {
       "tag": "#G2JYG2Q9U",
-      "name": "orid"
+      "name": "orid",
+      "reapplyReasons": [
+        {
+          "reason": "Inactive, not doing war hits, not responding on pings",
+          "timestamp": 1791877177,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1494344116673445932": [
@@ -8095,6 +9295,10 @@
     {
       "tag": "#QPLRJC0QV",
       "name": "MFN V2"
+    },
+    {
+      "tag": "#QQLCYRGUR",
+      "name": "TheGrandMaster"
     }
   ],
   "773070833496227850": [
@@ -8166,7 +9370,16 @@
   "931478143791951903": [
     {
       "tag": "#929JC0YVU",
-      "name": "◆THE MASTER◆"
+      "name": "◆THE MASTER◆",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314847,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#G8RGJUQYP",
@@ -8176,7 +9389,16 @@
   "849375497023651880": [
     {
       "tag": "#LQPQYJY8J",
-      "name": "Clasher"
+      "name": "Clasher",
+      "reapplyReasons": [
+        {
+          "reason": "Left",
+          "timestamp": 1789574597,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "758919371443142706": [
@@ -8221,12 +9443,21 @@
   ],
   "869965822553100308": [
     {
-      "tag": "#GJURCLYRY",
-      "name": "C02"
+      "tag": "#JVRQJC2V",
+      "name": "val",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794315171,
+          "addedBy": "855449588228161548",
+          "clanName": "CV",
+          "status": "ADDED"
+        }
+      ]
     },
     {
-      "tag": "#JVRQJC2V",
-      "name": "val"
+      "tag": "#GJURCLYRY",
+      "name": "C02"
     },
     {
       "tag": "#8PJGQV8PG",
@@ -8252,7 +9483,16 @@
   "547117646055735298": [
     {
       "tag": "#LJ8PU2QRQ",
-      "name": "lisan al gaib"
+      "name": "lisan al gaib",
+      "reapplyReasons": [
+        {
+          "reason": "Using war base instead of fwa in 3 wars in row and not responding when I am saying to swap",
+          "timestamp": 1790744278,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "873617239289499678": [
@@ -8264,7 +9504,16 @@
   "1240375431333543936": [
     {
       "tag": "#L998JC0CV",
-      "name": "FLAMING SLAYER"
+      "name": "FLAMING SLAYER",
+      "reapplyReasons": [
+        {
+          "reason": "Left with all ids",
+          "timestamp": 1789701142,
+          "addedBy": "1179429119524610058",
+          "clanName": "BZ, C2W, ASR",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LPQ9JG0RV",
@@ -8286,7 +9535,16 @@
   "1134058203999637556": [
     {
       "tag": "#29CRPLYCU",
-      "name": "$Mighty2$"
+      "name": "$Mighty2$",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and leaders still keeping in clan role",
+          "timestamp": 1793451923,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "714331695683207179": [
@@ -8332,7 +9590,23 @@
   "970144860722036816": [
     {
       "tag": "#YG22YYVYC",
-      "name": "PRANAV14124"
+      "name": "PRANAV14124",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314835,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239067,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "763733115339800597": [
@@ -8485,6 +9759,19 @@
   ],
   "1250374399723573360": [
     {
+      "tag": "#Q2PUGVC09",
+      "name": "rishiet",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842586,
+          "addedBy": "1393061101838532630",
+          "clanName": "ASR",
+          "status": "ADDED"
+        }
+      ]
+    },
+    {
       "tag": "#GLUQ9YJRL",
       "name": "rishiet316"
     },
@@ -8508,13 +9795,38 @@
   "456522121062121483": [
     {
       "tag": "#PG2JU9LUC",
-      "name": "baddu"
+      "name": "baddu",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan in last few hours of sync, and didn't informed before",
+          "timestamp": 1790252162,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Testing",
+          "timestamp": 1791295831,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1396387577350717564": [
     {
       "tag": "#2CLY29YVG",
-      "name": "destiny"
+      "name": "destiny",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan",
+          "timestamp": 1792203283,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1217010643711037543": [
@@ -8530,19 +9842,46 @@
   "786833702726533170": [
     {
       "tag": "#YRUY8R8YV",
-      "name": "FUTURE FIGHT 2"
+      "name": "FUTURE FIGHT 2",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and leaders still keeping in clan role",
+          "timestamp": 1793452051,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1427972613350625340": [
     {
       "tag": "#LQQQ89J0Y",
-      "name": "ɭ๏รՇ๓ץคภﻮєɭ"
+      "name": "ɭ๏รՇ๓ץคภﻮєɭ",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842588,
+          "addedBy": "1393061101838532630",
+          "clanName": "ASR",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "659207348551942145": [
     {
       "tag": "#P0QGURV8C",
-      "name": "Phosphophyllite"
+      "name": "Phosphophyllite",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and leaders still keeping in role",
+          "timestamp": 1793451911,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1381273576715325583": [
@@ -8560,7 +9899,16 @@
   "106026916405878784": [
     {
       "tag": "#2PCYPRG8L",
-      "name": "j alt"
+      "name": "j alt",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238968,
+          "addedBy": "1393061101838532630",
+          "clanName": "EON",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1235663202369667082": [
@@ -8602,7 +9950,16 @@
   "886104530712948763": [
     {
       "tag": "#P88GPPGL8",
-      "name": "M.VAMSHI KRISH"
+      "name": "M.VAMSHI KRISH",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239034,
+          "addedBy": "1393061101838532630",
+          "clanName": "AU",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#P2UQP0VGR",
@@ -8624,7 +9981,16 @@
   "378991410239635477": [
     {
       "tag": "#8UJPPPJYP",
-      "name": "Squid"
+      "name": "Squid",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238932,
+          "addedBy": "1393061101838532630",
+          "clanName": "HD",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "703149003877122128": [
@@ -8646,7 +10012,16 @@
   "731083955960414224": [
     {
       "tag": "#QRYCYQQ9",
-      "name": "AliEvilNinja"
+      "name": "AliEvilNinja",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795238964,
+          "addedBy": "1393061101838532630",
+          "clanName": "EON",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1543502379125706786": [
@@ -8678,7 +10053,16 @@
   "1553315341202100266": [
     {
       "tag": "#LYPCPG8Q0",
-      "name": "SUPER CLASHER"
+      "name": "SUPER CLASHER",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1793455059,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LUJ9QGL8Q",
@@ -8710,13 +10094,31 @@
   "311551031396007937": [
     {
       "tag": "#CU2LLLC0",
-      "name": "•Crystal Ice1•"
+      "name": "•Crystal Ice1•",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239043,
+          "addedBy": "1393061101838532630",
+          "clanName": "AU",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "570532893437460491": [
     {
       "tag": "#LP9UPRYPV",
-      "name": "pro_copycat"
+      "name": "pro_copycat",
+      "reapplyReasons": [
+        {
+          "reason": "Leaving clan",
+          "timestamp": 1791391005,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "604946702922678282": [
@@ -8798,7 +10200,16 @@
   "423047199253856256": [
     {
       "tag": "#9PLP98PC8",
-      "name": "Rudra Pratap"
+      "name": "Rudra Pratap",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239037,
+          "addedBy": "1393061101838532630",
+          "clanName": "AU",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "929871661208051752": [
@@ -8816,7 +10227,16 @@
   "1194962889900036126": [
     {
       "tag": "#G92VP8PQV",
-      "name": "Aken"
+      "name": "Aken",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794963454,
+          "addedBy": "910063105403400243",
+          "clanName": "DW",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "875363807457845319": [
@@ -8838,7 +10258,16 @@
   "1311744011224088629": [
     {
       "tag": "#QGCC9YV28",
-      "name": "rohit"
+      "name": "rohit",
+      "reapplyReasons": [
+        {
+          "reason": "Quitting game bcoz of exams",
+          "timestamp": 1790963139,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1247947331312156676": [
@@ -8867,6 +10296,10 @@
     {
       "tag": "#YJJRL802R",
       "name": "☄️☄️KOTIX 12☄️☄"
+    },
+    {
+      "tag": "#Q9VVU008J",
+      "name": "☄️KOTIX 16☄️"
     }
   ],
   "490290728942043136": [
@@ -8926,7 +10359,16 @@
   "1521027765715861545": [
     {
       "tag": "#QP0CU9VUL",
-      "name": "A R P I T"
+      "name": "A R P I T",
+      "reapplyReasons": [
+        {
+          "reason": "Come after changing your base",
+          "timestamp": 1791207133,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "974287515928391720": [
@@ -8998,7 +10440,16 @@
   "752855638043787366": [
     {
       "tag": "#9U90PCUG",
-      "name": "❤️~VeRoNiCa~❤️"
+      "name": "❤️~VeRoNiCa~❤️",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239057,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#G9CLJCVL",
@@ -9012,7 +10463,16 @@
   "945708707696758785": [
     {
       "tag": "#9J0U9JQ88",
-      "name": "Shreyas K.S."
+      "name": "Shreyas K.S.",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314839,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QQRQ08LL8",
@@ -9022,13 +10482,31 @@
   "836467804500000808": [
     {
       "tag": "#YGCQ220GY",
-      "name": "sarthak-1"
+      "name": "sarthak-1",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239069,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1265014069333725326": [
     {
       "tag": "#PL882GYYJ",
-      "name": "M.A.A. AHAMED"
+      "name": "M.A.A. AHAMED",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239059,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LYJ00VJ2J",
@@ -9042,19 +10520,46 @@
   "767418151498940417": [
     {
       "tag": "#LU0RYCYP0",
-      "name": "ASAD KHAN"
+      "name": "ASAD KHAN",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239065,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "907257033689034763": [
     {
       "tag": "#9GC8RYPR0",
-      "name": "Haider"
+      "name": "Haider",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239066,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1267075238932512798": [
     {
       "tag": "#QCRP0QCLJ",
-      "name": "ALPESH003"
+      "name": "ALPESH003",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239064,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#PYQQQUJPL",
@@ -9079,6 +10584,10 @@
     {
       "tag": "#GQ09LJGQR",
       "name": "ALPESH007"
+    },
+    {
+      "tag": "#GJ29P8VUP",
+      "name": "AKSHAY"
     }
   ],
   "1267735491818553376": [
@@ -9108,77 +10617,24 @@
   "1544656666769756332": [
     {
       "tag": "#L0YRLR08R",
-      "name": "DILWALE❤"
+      "name": "DILWALE❤",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314829,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#LYPPQYR2C",
       "name": "Ｄｉｌｗａｌｅ♡",
-      "totalStrikes": 6,
-      "strikes": 6,
-      "strikeHistory": [
-        {
-          "id": "CC022",
-          "reason": "For missing war attack against Phoenix",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 1,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC030",
-          "reason": "For missing war attack against war snipes 2.1",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 2,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC034",
-          "reason": "For missing war attack against phenomenal",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 3,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC047",
-          "reason": "For missing war attack against war snipers 2.8",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 4,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC050",
-          "reason": "For missing war attack against 50 Ronnin",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 5,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "date": "21-09-2026"
-        },
-        {
-          "id": "CC061",
-          "reason": "Missing raids",
-          "weight": 1,
-          "strikeCountAdded": 1,
-          "totalAtTime": 6,
-          "addedBy": "855449588228161548",
-          "clan": "CLASHING COBRAS",
-          "clanTag": "#2L80LY0CP",
-          "date": "02-10-2026"
-        }
-      ],
-      "sixStrikeAlertSent": true
+      "totalStrikes": 0,
+      "strikes": 0,
+      "strikeHistory": [],
+      "sixStrikeAlertSent": false
     }
   ],
   "1555252992863764672": [
@@ -9208,7 +10664,23 @@
   "1477745362583162960": [
     {
       "tag": "#8JJRGJJLL",
-      "name": "I'M HRX"
+      "name": "I'M HRX",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan without informing",
+          "timestamp": 1792503632,
+          "addedBy": "1393061101838532630",
+          "clanName": "DW",
+          "status": "ADDED"
+        },
+        {
+          "reason": "Left clan without informing",
+          "timestamp": 1792584600,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     },
     {
       "tag": "#QCVYU9CUL",
@@ -9244,7 +10716,16 @@
   "447549467239907328": [
     {
       "tag": "#Q89P08828",
-      "name": "Emo_Eostmuh"
+      "name": "Emo_Eostmuh",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794398290,
+          "addedBy": "1179429119524610058",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1043504596347269170": [
@@ -9273,9 +10754,17 @@
     {
       "tag": "#2YQGPQCLY",
       "name": "LOVE"
+    },
+    {
+      "tag": "#890CQ999G",
+      "name": "Rahil"
     }
   ],
   "1558485274474844261": [
+    {
+      "tag": "#8GU8JLYVJ",
+      "name": "ZAIN kettavan"
+    },
     {
       "tag": "#9VP0UP9CL",
       "name": "ZAIN kettavan"
@@ -9296,13 +10785,31 @@
   "1558154118814638233": [
     {
       "tag": "#YCV0CPJ9Q",
-      "name": "ireland beer"
+      "name": "ireland beer",
+      "reapplyReasons": [
+        {
+          "reason": "Left without informing",
+          "timestamp": 1792987515,
+          "addedBy": "855449588228161548",
+          "clanName": "CC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "923352157296689152": [
     {
       "tag": "#QVVJQ8LY9",
-      "name": "satinee juga"
+      "name": "satinee juga",
+      "reapplyReasons": [
+        {
+          "reason": "Bro is active , but not having time to respond on clan or discord",
+          "timestamp": 1792245916,
+          "addedBy": "855449588228161548",
+          "clanName": "CC",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1348778486252310701": [
@@ -9314,13 +10821,31 @@
   "391275971379986443": [
     {
       "tag": "#9LJ82P2PP",
-      "name": "Path™"
+      "name": "Path™",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan without informing",
+          "timestamp": 1793070592,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "445197931461738498": [
     {
       "tag": "#9PVVC0Y2U",
-      "name": "KHÖNSHÚ"
+      "name": "KHÖNSHÚ",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314771,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "723669649543266356": [
@@ -9332,7 +10857,16 @@
   "1561008839980228764": [
     {
       "tag": "#LQ9JR82QG",
-      "name": "⚡PANDA KING⚡"
+      "name": "⚡PANDA KING⚡",
+      "reapplyReasons": [
+        {
+          "reason": "Noob , hopping clans , ban list from blood fwa clans",
+          "timestamp": 1792261095,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "1551093106957484165": [
@@ -9430,7 +10964,16 @@
   "1331665599881023552": [
     {
       "tag": "#G2RYV2GQQ",
-      "name": "kingb"
+      "name": "kingb",
+      "reapplyReasons": [
+        {
+          "reason": "Left the clan long ago",
+          "timestamp": 1794917723,
+          "addedBy": "910063105403400243",
+          "clanName": "EON",
+          "status": "ADDED"
+        }
+      ]
     }
   ],
   "756403225845825568": [
@@ -9467,16 +11010,750 @@
       "name": "N.I.K.Z."
     }
   ],
-  "1231703496017973375": [
+  "822485631737135104": [
+    {
+      "tag": "#QPRVYJ2QV",
+      "name": "gpgiorgi"
+    },
+    {
+      "tag": "#GJQ9L9JUL",
+      "name": "gpgiorgi2"
+    }
+  ],
+  "1062331118998798447": [
+    {
+      "tag": "#9LQ0YPLGC",
+      "name": "ICY"
+    }
+  ],
+  "1564400475808333934": [
+    {
+      "tag": "#G899UR88L",
+      "name": "Ashiq"
+    }
+  ],
+  "621201269213757450": [
+    {
+      "tag": "#8VJ89C98Q",
+      "name": "SubhronilBaghu❤"
+    },
+    {
+      "tag": "#QV8J88LLJ",
+      "name": "♥️Hope 〽️"
+    },
+    {
+      "tag": "#Y9QGRCU8C",
+      "name": "♥️SB▪️TH9♥️"
+    }
+  ],
+  "1537038110628646984": [
+    {
+      "tag": "#2PV2R9RV",
+      "name": "J@Y"
+    }
+  ],
+  "758384719988785173": [
+    {
+      "tag": "#99LG2GYQL",
+      "name": "Vîçký Dâff"
+    }
+  ],
+  "342110173818519552": [
+    {
+      "tag": "#QG2UPUC0L",
+      "name": "Mike"
+    }
+  ],
+  "614889781352202317": [
+    {
+      "tag": "#PQG2J2RV2",
+      "name": "Atlas"
+    }
+  ],
+  "824391688825864292": [
+    {
+      "tag": "#9VRCVPJYR",
+      "name": "ＫＺ_Ｓｐａｒｒｏｗｈａｗｋ_",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239058,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
+    }
+  ],
+  "1130280293752901752": [
+    {
+      "tag": "#YLJUGRLVL",
+      "name": "abhiray",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794314822,
+          "addedBy": "855449588228161548",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
+    },
+    {
+      "tag": "#99Q0VJL9C",
+      "name": "Abhiray"
+    }
+  ],
+  "587896732613083146": [
+    {
+      "tag": "#JUYUUPP",
+      "name": "ROSHAN"
+    }
+  ],
+  "1072140109954175006": [
+    {
+      "tag": "#9Q88LQJRG",
+      "name": "Ïgñëél Flãrê"
+    }
+  ],
+  "1203783863449690195": [
+    {
+      "tag": "#GVGY888L9",
+      "name": "toystory"
+    }
+  ],
+  "1179703210445905920": [
+    {
+      "tag": "#GRUPV9Y9J",
+      "name": "sw1r9"
+    }
+  ],
+  "1085636961924038687": [
+    {
+      "tag": "#Y9V2R8GP",
+      "name": "♠Lucas♠"
+    }
+  ],
+  "1453604750137233493": [
+    {
+      "tag": "#RVCCQ8V2",
+      "name": "virendra"
+    }
+  ],
+  "1534981795404185672": [
+    {
+      "tag": "#YC08Y9VUP",
+      "name": "shubh",
+      "reapplyReasons": [
+        {
+          "reason": "Didn't joined clan after cwl",
+          "timestamp": 1794665954,
+          "addedBy": "1179429119524610058",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
+    }
+  ],
+  "495898008119148565": [
+    {
+      "tag": "#2LCCL8Y9C",
+      "name": "Dextore"
+    }
+  ],
+  "752458979317121074": [
+    {
+      "tag": "#RJLGJR98",
+      "name": "Zeger"
+    }
+  ],
+  "760828214980378634": [
+    {
+      "tag": "#G2YQCR0YG",
+      "name": "electro 1"
+    },
+    {
+      "tag": "#L92ULC0JL",
+      "name": "jod"
+    },
+    {
+      "tag": "#R2CR82RL9",
+      "name": "adiii"
+    }
+  ],
+  "556748956256829441": [
+    {
+      "tag": "#PRG0C9Y0Y",
+      "name": "Yash"
+    },
+    {
+      "tag": "#PPPPRRCYJ",
+      "name": "Rebel"
+    }
+  ],
+  "965780640408674374": [
+    {
+      "tag": "#GPQUYPL8Y",
+      "name": "psiomega"
+    }
+  ],
+  "571339760619225092": [
+    {
+      "tag": "#CCQGCLV0",
+      "name": "CastieL"
+    }
+  ],
+  "424105727448317962": [
+    {
+      "tag": "#YGRGPVYRR",
+      "name": "G-TRAIN",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1793455062,
+          "addedBy": "1393061101838532630",
+          "clanName": "CFW",
+          "status": "ADDED"
+        }
+      ]
+    }
+  ],
+  "368028460079251457": [
+    {
+      "tag": "#288PGPPC",
+      "name": "Kirbs"
+    }
+  ],
+  "1565651766706704403": [
+    {
+      "tag": "#G2VJ8LJJ0",
+      "name": "Santhosh"
+    }
+  ],
+  "1041253600749432832": [
+    {
+      "tag": "#G2CRLY29U",
+      "name": "žaba car"
+    }
+  ],
+  "1402255096443699282": [
+    {
+      "tag": "#LCVJ2YYY9",
+      "name": "Light Yagami."
+    }
+  ],
+  "757869970481741864": [
+    {
+      "tag": "#YPYP902QJ",
+      "name": "Munna"
+    }
+  ],
+  "1280693840948236411": [
+    {
+      "tag": "#QLLRLYUC2",
+      "name": "TDK"
+    }
+  ],
+  "768043977416376350": [
+    {
+      "tag": "#QGYVCGJ8",
+      "name": "ICEARROW"
+    }
+  ],
+  "700906349583663197": [
+    {
+      "tag": "#80LJ9J0V0",
+      "name": "Lsza ralte"
+    }
+  ],
+  "176604235260100609": [
+    {
+      "tag": "#JGQJ0Q02",
+      "name": "Fnd"
+    },
+    {
+      "tag": "#2CLLR292",
+      "name": "Fnd 1.0"
+    }
+  ],
+  "224607968421740546": [
+    {
+      "tag": "#9VLQGUV8U",
+      "name": "Magwaa V2"
+    },
+    {
+      "tag": "#PLYQVU2G2",
+      "name": "Magwaa V3"
+    }
+  ],
+  "1557878657727471737": [
+    {
+      "tag": "#QUP0LGP0G",
+      "name": "JEROME"
+    },
+    {
+      "tag": "#GGQ909VCL",
+      "name": "jxrome"
+    },
+    {
+      "tag": "#GLJUJU9CJ",
+      "name": "ＣＯＣ'Ｕ ⚡️ ＪＳＭＩＮ¹"
+    }
+  ],
+  "1516677684413861918": [
+    {
+      "tag": "#GGR22P8CQ",
+      "name": "Shinigima"
+    }
+  ],
+  "603222156146376725": [
+    {
+      "tag": "#LLR0RUPJR",
+      "name": "Sloth",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794842618,
+          "addedBy": "1393061101838532630",
+          "clanName": "BZ",
+          "status": "ADDED"
+        }
+      ]
+    },
+    {
+      "tag": "#R0QGPGQ20",
+      "name": "NOVA ⚡️ CH"
+    },
+    {
+      "tag": "#GRL2R2LL2",
+      "name": "ch²"
+    },
+    {
+      "tag": "#Y09JJR2U0",
+      "name": "Nova CH"
+    }
+  ],
+  "728176351663751218": [
+    {
+      "tag": "#2QQQG0JRR",
+      "name": "KING KEYUR 10"
+    }
+  ],
+  "1521859393183023329": [
+    {
+      "tag": "#9LUQU0G9G",
+      "name": "Dur e Najaf"
+    }
+  ],
+  "1493325029986009252": [
+    {
+      "tag": "#QJLPQLYQJ",
+      "name": "Shkembo"
+    }
+  ],
+  "1537546060862591039": [
+    {
+      "tag": "#8JCP9ULCR",
+      "name": "DJ.NiCk"
+    },
+    {
+      "tag": "#9PQQ89028",
+      "name": "NICK .Y. RØMERØ"
+    }
+  ],
+  "753482250007347270": [
+    {
+      "tag": "#2GGCJVVRJ",
+      "name": "Hritik..."
+    }
+  ],
+  "325127312725114881": [
+    {
+      "tag": "#220JPQPCV",
+      "name": "PotatoPvP200"
+    }
+  ],
+  "1566676201261633637": [
+    {
+      "tag": "#Q0YU988GY",
+      "name": "DEVIL DESU"
+    }
+  ],
+  "714838248748220527": [
+    {
+      "tag": "#QQUJCPU9",
+      "name": "iP4LM3R x"
+    }
+  ],
+  "948474333381156924": [
+    {
+      "tag": "#G09PJ2RJ0",
+      "name": "Craftless"
+    }
+  ],
+  "1567740685216518254": [
     {
       "tag": "#QCPGQP0P9",
       "name": "TO Phqs"
     }
   ],
-  "822485631737135104": [
+  "406292743837712384": [
     {
-      "tag": "#QPRVYJ2QV",
-      "name": "gpgiorgi"
+      "tag": "#JLUVGVRY",
+      "name": "Noodles"
+    }
+  ],
+  "1380796362555396198": [
+    {
+      "tag": "#829RRQ90P",
+      "name": "Scratch"
+    }
+  ],
+  "1182926124523724810": [
+    {
+      "tag": "#GPY2L9PGU",
+      "name": "Eugene"
+    }
+  ],
+  "973196457454755901": [
+    {
+      "tag": "#QJP0GQC9R",
+      "name": "Britz2.0"
+    }
+  ],
+  "1429679106189951059": [
+    {
+      "tag": "#GPQC2PLQR",
+      "name": "dampened",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1794415369,
+          "addedBy": "855449588228161548",
+          "clanName": "CV",
+          "status": "ADDED"
+        }
+      ]
+    }
+  ],
+  "1221882544467742860": [
+    {
+      "tag": "#28CRU09J9",
+      "name": "KING"
+    },
+    {
+      "tag": "#YJ90R9C8",
+      "name": "GUNSHOT"
+    }
+  ],
+  "487138007053238273": [
+    {
+      "tag": "#PVCJLRRCL",
+      "name": "LOKI"
+    }
+  ],
+  "1041370065406283836": [
+    {
+      "tag": "#9098JCCUU",
+      "name": "N A X I D"
+    }
+  ],
+  "789527229398384680": [
+    {
+      "tag": "#99290CR88",
+      "name": "sparw siam",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239003,
+          "addedBy": "1393061101838532630",
+          "clanName": "C2W",
+          "status": "ADDED"
+        }
+      ]
+    },
+    {
+      "tag": "#8LR0PU2PR",
+      "name": "Art"
+    }
+  ],
+  "515009514924277785": [
+    {
+      "tag": "#2802JCUJ0",
+      "name": "Forsaken"
+    }
+  ],
+  "361328750165753886": [
+    {
+      "tag": "#R9GP9R",
+      "name": "Scarlet"
+    }
+  ],
+  "1417458828005605376": [
+    {
+      "tag": "#GPLPQ8P2V",
+      "name": "Zen"
+    }
+  ],
+  "895151477922861067": [
+    {
+      "tag": "#GGG0LC8RR",
+      "name": "Night owl"
+    },
+    {
+      "tag": "#RPUL29J82",
+      "name": "Big ben"
+    }
+  ],
+  "734513620737720350": [
+    {
+      "tag": "#2VGCPURQ",
+      "name": "mahmoud11809"
+    }
+  ],
+  "1337056256757596180": [
+    {
+      "tag": "#PVVQVC0QR",
+      "name": "lalit"
+    }
+  ],
+  "190874795301273600": [
+    {
+      "tag": "#GJ8JUG2CQ",
+      "name": "RS"
+    }
+  ],
+  "1060931332995285122": [
+    {
+      "tag": "#LP0YCGRL0",
+      "name": "the barrbarian"
+    }
+  ],
+  "698280177322557530": [
+    {
+      "tag": "#L8GPJP0YG",
+      "name": "SAM-EH",
+      "reapplyReasons": [
+        {
+          "reason": "Left clan and Leaders still keeping him in clan role",
+          "timestamp": 1795239068,
+          "addedBy": "1393061101838532630",
+          "clanName": "KK",
+          "status": "ADDED"
+        }
+      ]
+    }
+  ],
+  "491737737498722315": [
+    {
+      "tag": "#QQLYRVCRG",
+      "name": "Syphrus"
+    }
+  ],
+  "1417381938569941043": [
+    {
+      "tag": "#R89JR0YPC",
+      "name": "manvi_taya"
+    }
+  ],
+  "561906101088550913": [
+    {
+      "tag": "#8CGUVL8JG",
+      "name": "Smiley Nirojan"
+    }
+  ],
+  "364429312557842432": [
+    {
+      "tag": "#Q9C290JLR",
+      "name": "David"
+    },
+    {
+      "tag": "#LV99QLQLY",
+      "name": "ahad ali"
+    }
+  ],
+  "517340123205992527": [
+    {
+      "tag": "#9RGV09RYG",
+      "name": "BrokeN"
+    }
+  ],
+  "1558975798428303420": [
+    {
+      "tag": "#Q0G8J8922",
+      "name": "HOMELANDER"
+    }
+  ],
+  "1327474798997012542": [
+    {
+      "tag": "#R0RJLQQQ2",
+      "name": "WARIS KING"
+    }
+  ],
+  "1266525600504348815": [
+    {
+      "tag": "#PUQJQ8URV",
+      "name": "Shubham...."
+    }
+  ],
+  "1417731100767420468": [
+    {
+      "tag": "#PCPJQQ0QP",
+      "name": "The dark heart"
+    }
+  ],
+  "802217472006684693": [
+    {
+      "tag": "#9Y92C8QG8",
+      "name": "THË LÉĞÊÑĐ 27"
+    }
+  ],
+  "1356038435047211068": [
+    {
+      "tag": "#GP9RCVGRQ",
+      "name": "° § rasta"
+    }
+  ],
+  "694153955705487480": [
+    {
+      "tag": "#90JQLJG02",
+      "name": "WHITE-BLADE"
+    }
+  ],
+  "311095559890927616": [
+    {
+      "tag": "#8L88L8CJV",
+      "name": "Anurag Roy"
+    }
+  ],
+  "192235624072216577": [
+    {
+      "tag": "#Q8VPRLVV9",
+      "name": "Tso"
+    }
+  ],
+  "1502618085411127470": [
+    {
+      "tag": "#Q8GVUVQGG",
+      "name": "pack"
+    }
+  ],
+  "651408146383896596": [
+    {
+      "tag": "#9PUVP88J9",
+      "name": "ZÃKÃRIÃ"
+    }
+  ],
+  "357237849671860232": [
+    {
+      "tag": "#2CPGL2L88",
+      "name": "Marco"
+    }
+  ],
+  "545213835963793420": [
+    {
+      "tag": "#R82808J99",
+      "name": "white pharaoh"
+    }
+  ],
+  "640618380096962580": [
+    {
+      "tag": "#9VRUVQ28C",
+      "name": "Vortex Ninjaa25"
+    }
+  ],
+  "460482699891572736": [
+    {
+      "tag": "#CLGVR0VG",
+      "name": "danny"
+    }
+  ],
+  "1010608994424991865": [
+    {
+      "tag": "#LYCRC22VY",
+      "name": "V⠀"
+    }
+  ],
+  "1573662759617568905": [
+    {
+      "tag": "#GGY0RR9VV",
+      "name": "feeltheTHR1LL"
+    }
+  ],
+  "850666839981293570": [
+    {
+      "tag": "#LQPRVP2RJ",
+      "name": "Clasher"
+    }
+  ],
+  "1423214807372398592": [
+    {
+      "tag": "#LG2YU0PJC",
+      "name": "Rayyan"
+    },
+    {
+      "tag": "#GRRJ29JVG",
+      "name": "GOKU"
+    }
+  ],
+  "774836832411713556": [
+    {
+      "tag": "#RL0VQ0JVC",
+      "name": "Gh0stPants"
+    }
+  ],
+  "782677762925920266": [
+    {
+      "tag": "#PR9PCQYVL",
+      "name": "Anayet78"
+    },
+    {
+      "tag": "#PRRQYRGRQ",
+      "name": "Anayet"
+    }
+  ],
+  "1368082897151463485": [
+    {
+      "tag": "#2PQ08PVLQ",
+      "name": "Ɩᴏɢɪᴄ"
+    },
+    {
+      "tag": "#YJCR928Y",
+      "name": "L̶o̶g̶i̶c̶"
+    },
+    {
+      "tag": "#GGV22Q280",
+      "name": "logic"
+    }
+  ],
+  "1407730831711146036": [
+    {
+      "tag": "#LLP0R2QGP",
+      "name": "bicter"
+    }
+  ],
+  "343418353676845056": [
+    {
+      "tag": "#2U2220LRV",
+      "name": "KILLER AK......"
+    }
+  ],
+  "454571322245251077": [
+    {
+      "tag": "#L9R09PY9",
+      "name": "Kitteshwar"
+    }
+  ],
+  "866248700594094081": [
+    {
+      "tag": "#PY8V8JGY2",
+      "name": "☣️Jatïn☣️"
+    }
+  ],
+  "900254088116199424": [
+    {
+      "tag": "#U0LJJG",
+      "name": "The Lonely Clan"
     }
   ]
 }

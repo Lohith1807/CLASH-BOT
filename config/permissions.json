@@ -292,18 +292,6 @@
     },
     "members": []
   },
-  "edit-recruitment": {
-    "roles": {
-      "⌁🔱 𝐎𝐖𝐍𝐄𝐑 🔱⌁": "1397128468461916282",
-      "⌁⚜️ 𝐀𝐃𝐌𝐈𝐍 ⚜️⌁": "1153997630112792577",
-      "〢・🦁 FWA LEADERS・〢": "1394230094675050616",
-      "〢・🦁 Chief of the Crimson Pact": "1510301412280635585",
-      "〢・⚜️ Server Moderator 🔨": "1513940638909988874",
-      "〢・⚜️ T - Moderator 🔨": "1513942017196167389",
-      "〢・⚜️ Executive Staff 🚬": "1154276716982833154"
-    },
-    "members": []
-  },
   "family-clans": {
     "roles": {
       "@everyone": "@everyone"
@@ -477,18 +465,6 @@
   "playerlookup": {
     "roles": {
       "@everyone": "@everyone"
-    },
-    "members": []
-  },
-  "post-recruitment": {
-    "roles": {
-      "⌁🔱 𝐎𝐖𝐍𝐄𝐑 🔱⌁": "1397128468461916282",
-      "⌁⚜️ 𝐀𝐃𝐌𝐈𝐍 ⚜️⌁": "1153997630112792577",
-      "〢・🦁 FWA LEADERS・〢": "1394230094675050616",
-      "〢・🦁 Chief of the Crimson Pact": "1510301412280635585",
-      "〢・⚜️ Server Moderator 🔨": "1513940638909988874",
-      "〢・⚜️ T - Moderator 🔨": "1513942017196167389",
-      "〢・⚜️ Executive Staff 🚬": "1154276716982833154"
     },
     "members": []
   },

@@ -207,10 +207,8 @@ async function processMemberReapply({
         (!clanInfo?.roleId || !c.roleId || c.roleId !== clanInfo.roleId)
     );
 
-    // Save reason to data store
+    // Save reason directly under the player's tag in userdata.json
     const clanNamesStr = (clanInfo && (clanInfo.nickName || cleanTag(clanInfo.tag))) || "Clan";
-    const reasonsData = data.getReapplyReasons();
-    if (!reasonsData[member.id]) reasonsData[member.id] = [];
 
     let accName = "Unknown";
     let accTag = "";
@@ -230,16 +228,21 @@ async function processMemberReapply({
         accTag = userAccounts[0].tag || "";
     }
 
-    reasonsData[member.id].push({
+    const reasonEntry = {
         reason: reason,
         timestamp: Math.floor(Date.now() / 1000),
         addedBy: executorUser.id,
         clanName: clanNamesStr,
-        status: "ADDED",
-        accountName: accName,
-        accountTag: accTag
-    });
-    data.saveReapplyReasons(reasonsData);
+        status: "ADDED"
+    };
+    if (typeof data.addReapplyReason === "function") {
+        data.addReapplyReason(member.id, accTag, reasonEntry);
+    } else {
+        const reasonsData = data.getReapplyReasons();
+        if (!reasonsData[member.id]) reasonsData[member.id] = [];
+        reasonsData[member.id].push({ ...reasonEntry, accountName: accName, accountTag: accTag });
+        data.saveReapplyReasons(reasonsData);
+    }
 
     const isStaff = isStaffMember(member, config);
 
