@@ -482,7 +482,14 @@ async function createTicketChannel(interaction, context, currentOption, recruitm
         const tdCat = ticketDataStore.resolveCategory(channel.name);
         if (tdCat) {
             const ownerName = member?.nickname || member?.displayName || user.displayName || user.globalName || user.username;
-            ticketDataStore.createTicket(tdCat, user.id, channel.id, ownerName, appliedAccount?.tag, appliedAccount?.name);
+            let appliedTh = appliedAccount?.townHallLevel || appliedAccount?.thLevel || null;
+            if (!appliedTh && appliedAccount?.tag && coc && typeof coc.getPlayer === 'function') {
+                const pData = await coc.getPlayer(appliedAccount.tag).catch(() => null);
+                if (pData && pData.townHallLevel) {
+                    appliedTh = pData.townHallLevel;
+                }
+            }
+            ticketDataStore.createTicket(tdCat, user.id, channel.id, ownerName, appliedAccount?.tag, appliedAccount?.name, appliedTh);
         }
 
         await interaction.editReply({ content: `Successfully created your ticket: ${channel}` }).catch(() => {});

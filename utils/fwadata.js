@@ -3,6 +3,60 @@ const proxyFetch = require("./proxyFetch");
 const fs = require("fs");
 const path = require("path");
 
+const FWASTATS_CLANS_URL = "https://fwastats.com/Clans.json";
+
+/**
+ * Fetch clan metadata map from https://fwastats.com/Clans.json
+ * Returns Map<#TAG, clanObj>
+ */
+async function fetchFwaStatsClansMap() {
+    const map = new Map();
+    let list = null;
+    try {
+        const res = await fetch(FWASTATS_CLANS_URL, {
+            headers: { "User-Agent": "ClashBot/1.0" }
+        });
+        if (res && res.ok) {
+            list = await res.json();
+        }
+    } catch (_) {
+        // Fallback to proxyFetch below
+    }
+
+    if (!Array.isArray(list)) {
+        try {
+            const proxied = await proxyFetch(FWASTATS_CLANS_URL);
+            list = typeof proxied === "string" ? JSON.parse(proxied) : proxied;
+        } catch (_) {
+            list = null;
+        }
+    }
+
+    if (Array.isArray(list)) {
+        for (const entry of list) {
+            if (entry && entry.tag) {
+                const normTag = entry.tag.trim().toUpperCase();
+                const key = normTag.startsWith("#") ? normTag : `#${normTag}`;
+                map.set(key, entry);
+            }
+        }
+    }
+    return map;
+}
+
+/**
+ * Format an ISO date string (e.g. "2026-10-29T15:00:44Z") to "DD/MM/YYYY"
+ */
+function formatIsoToDDMMYYYY(isoStr) {
+    if (!isoStr) return "";
+    const d = new Date(isoStr);
+    if (isNaN(d.getTime())) return "";
+    const day = String(d.getUTCDate()).padStart(2, "0");
+    const month = String(d.getUTCMonth() + 1).padStart(2, "0");
+    const year = d.getUTCFullYear();
+    return `${day}/${month}/${year}`;
+}
+
 async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild }) {
     const tagMatch = tag.match(/#([A-Z0-9]+)/i);
     const cleanTag = tagMatch ? tagMatch[1].toUpperCase() : tag.replace("#", "").toUpperCase();
@@ -78,10 +132,21 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
 
     let lastDate = "";
 
-    const wwPath = path.join(__dirname, "../data/ww.json");
+    // 1. Prefer weightSubmitDate from https://fwastats.com/Clans.json
+    try {
+        const clansMap = await fetchFwaStatsClansMap();
+        const statsEntry = clansMap.get(formattedTag);
+        if (statsEntry && statsEntry.weightSubmitDate) {
+            lastDate = formatIsoToDDMMYYYY(statsEntry.weightSubmitDate);
+        }
+    } catch (err) {
+        console.error("Error fetching Clans.json for weightSubmitDate:", err.message);
+    }
 
+    // 2. Fallback to ww.json if Clans.json didn't have it
+    const wwPath = path.join(__dirname, "../data/ww.json");
     let wwData = {};
-    if (fs.existsSync(wwPath)) {
+    if (!lastDate && fs.existsSync(wwPath)) {
         try {
             wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
             
@@ -241,15 +306,21 @@ async function checkFWAWeights(client) {
         console.error("checkFWAWeights: client is not defined");
         return;
     }
-    const wwPath = path.join(__dirname, "../data/ww.json");
-    if (!fs.existsSync(wwPath)) return;
 
-    let wwData;
-    try {
-        wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
-    } catch (err) {
-        console.error("checkFWAWeights read error:", err);
+    const now = new Date();
+    // Send war weight submission reminder only on the 27th of every month
+    if (now.getDate() !== 27) {
         return;
+    }
+
+    const wwPath = path.join(__dirname, "../data/ww.json");
+    let wwData = {};
+    if (fs.existsSync(wwPath)) {
+        try {
+            wwData = JSON.parse(fs.readFileSync(wwPath, "utf8"));
+        } catch (err) {
+            console.error("checkFWAWeights read error:", err);
+        }
     }
 
     const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
@@ -273,21 +344,15 @@ async function checkFWAWeights(client) {
         }
     }
 
-    const statsWorkerBase = process.env.FWASTATS_WORKER_URL;
-    const fwaHeaders = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Cookie": process.env.FWA_COOKIE || ""
-    };
+    // Fetch last submitted dates from https://fwastats.com/Clans.json
+    const clansMap = await fetchFwaStatsClansMap().catch(() => new Map());
 
-    let updated = false;
     let lastCheckUpdated = false;
-    const now = new Date();
     const day = String(now.getDate()).padStart(2, '0');
     const month = String(now.getMonth() + 1).padStart(2, '0');
     const year = now.getFullYear();
     const todayStr = `${day}/${month}/${year}`;
+    const currentMonthKey = `${month}/${year}`;
 
     const keysToCheck = new Set(Object.keys(wwData));
 
@@ -296,21 +361,6 @@ async function checkFWAWeights(client) {
         if (info && info.clanType && info.clanType.toLowerCase() === "fwa") {
             const formattedTag = tag.startsWith("#") ? tag.toUpperCase() : `#${tag.toUpperCase()}`;
             keysToCheck.add(formattedTag);
-            if (!wwData[formattedTag]) {
-                wwData[formattedTag] = {
-                    clanName: info.nickName || formattedTag,
-                    lastUpdated: todayStr
-                };
-                updated = true;
-            }
-        }
-    }
-
-    if (updated) {
-        try {
-            fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
-        } catch (err) {
-            console.error("checkFWAWeights wwData write error:", err);
         }
     }
 
@@ -320,6 +370,13 @@ async function checkFWAWeights(client) {
         }
 
         const record = wwData[clanTag];
+        // If already confirmed via Submitted button for this month, do not send reminder again
+        if (record && record.confirmedMonth === currentMonthKey) {
+            lastCheckData[clanTag] = todayStr;
+            lastCheckUpdated = true;
+            continue;
+        }
+
         const tagMatch = clanTag.match(/#([A-Z0-9]+)/i);
         const cleanTag = tagMatch ? tagMatch[1].toUpperCase() : clanTag.replace("#", "").toUpperCase();
         const normalizedClanTag = `#${cleanTag}`;
@@ -334,115 +391,60 @@ async function checkFWAWeights(client) {
             : roleData.channelId;
         if (!targetChannelId) continue;
 
-        // Check FWA Weight Reminder (25 days ago)
-        if (record && record.lastUpdated) {
-            let diffDays = -1;
-            const match = record.lastUpdated.match(/(\d{2})\/(\d{2})\/(\d{4})/);
-            if (match) {
-                const [_, dayStr, monthStr, yearStr] = match;
-                const d = parseInt(dayStr, 10);
-                const m = parseInt(monthStr, 10);
-                const y = parseInt(yearStr, 10);
-                const today = new Date();
-                today.setHours(0, 0, 0, 0);
-                const subDate = new Date(y, m - 1, d);
-                subDate.setHours(0, 0, 0, 0);
-                const diffMs = today.getTime() - subDate.getTime();
-                diffDays = Math.round(diffMs / (1000 * 60 * 60 * 24));
+        // Get last submitted date from FWAStats Clans.json
+        const statsEntry = clansMap.get(normalizedClanTag);
+        let submittedDisplay = "Unknown";
+        if (statsEntry && statsEntry.weightSubmitDate) {
+            const ddmmyyyy = formatIsoToDDMMYYYY(statsEntry.weightSubmitDate);
+            const subDateObj = new Date(statsEntry.weightSubmitDate);
+            const todayZero = new Date();
+            todayZero.setHours(0, 0, 0, 0);
+            const subZero = new Date(subDateObj.getFullYear(), subDateObj.getMonth(), subDateObj.getDate());
+            const diffDays = Math.round((todayZero.getTime() - subZero.getTime()) / (1000 * 60 * 60 * 24));
+            if (ddmmyyyy) {
+                submittedDisplay = diffDays >= 0 ? `${ddmmyyyy} (${diffDays} days ago)` : ddmmyyyy;
             }
+        }
 
-            if (diffDays === 25) {
-                try {
-                    const channel = await client.channels.fetch(targetChannelId).catch(() => null);
-                    if (channel) {
-                        const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
-                        const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
+        try {
+            const channel = await client.channels.fetch(targetChannelId).catch(() => null);
+            if (channel) {
+                const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
+                const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
 
-                        const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
-                        const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡️";
-                        const heartEmoji = emojiUtils.getEmoji("heart") || "❤️";
+                const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
+                const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡️";
+                const heartEmoji = emojiUtils.getEmoji("heart") || "❤️";
 
-                        const reminderEmbed = new EmbedBuilder()
-                            .setTitle(`${alaramEmoji} **War Weight Submission Reminder**`)
-                            .setDescription(
-                                `Hey Cheif ,\n` +
-                                `the war weight submission done before 25 days  this is just a reminder , make sure submit it on time \n\n` +
-                                `**Submission Link :** ${arrowEmoji} [Click here](${submissionUrl})\n\n` +
-                                `Yours Truly\n` +
-                                `${heartEmoji} **Blood Team**`
-                            )
-                            .setColor("Orange")
-                            .setTimestamp();
+                const reminderEmbed = new EmbedBuilder()
+                    .setTitle(`${alaramEmoji} **War Weight Submission Reminder**`)
+                    .setDescription(
+                        `Hey Chief,\n` +
+                        `Your clan's war weight was last submitted on **${submittedDisplay}**.\n` +
+                        `This is a reminder to submit your war weight, as it is used for assigning clans in CWL.\n\n` +
+                        `**Submission Link :** ${arrowEmoji} [Click here](${submissionUrl})\n\n` +
+                        `After submitting, click **Submitted** below so we don't remind you again this month.\n\n` +
+                        `Yours Truly\n` +
+                        `${heartEmoji} **Blood Team**`
+                    )
+                    .setColor("Orange")
+                    .setTimestamp();
 
-                        const submittedBtn = new ButtonBuilder()
-                            .setCustomId(`ww_submit_update_${cleanTag}`)
-                            .setLabel("Submitted")
-                            .setStyle(ButtonStyle.Success)
-                            .setEmoji(emojiUtils.getEmojiObject("gtick") || "✅");
-                        const btnRow = new ActionRowBuilder().addComponents(submittedBtn);
+                const submittedBtn = new ButtonBuilder()
+                    .setCustomId(`ww_submit_update_${cleanTag}`)
+                    .setLabel("Submitted")
+                    .setStyle(ButtonStyle.Success)
+                    .setEmoji(emojiUtils.getEmojiObject("gtick") || "✅");
+                const btnRow = new ActionRowBuilder().addComponents(submittedBtn);
 
-                        await channel.send({
-                            content: leaderRolePing,
-                            embeds: [reminderEmbed],
-                            components: [btnRow]
-                        });
-                    }
-                } catch (sendErr) {
-                    console.error(`Failed to send reminder for ${clanTag}:`, sendErr);
-                }
-            } else if (diffDays >= 27) {
-                try {
-                    const channel = await client.channels.fetch(targetChannelId).catch(() => null);
-                    if (channel) {
-                        const leaderRolePing = roleData.leaderRoleId ? `<@&${roleData.leaderRoleId}>` : "";
-                        const submissionUrl = `https://fwastats.com/Clan/${cleanTag}/Weight`;
-
-                        const alaramEmoji = emojiUtils.getEmoji("alaram") || "⏰";
-                        const arrowEmoji = emojiUtils.getEmoji("arrow") || "➡️";
-                        const heartEmoji = emojiUtils.getEmoji("heart") || "❤️";
-
-                        // 1. Missing / overdue warning message
-                        const lazyEmbed = new EmbedBuilder()
-                            .setTitle(`⚠️ **War Weight Submission Overdue**`)
-                            .setDescription(`I think you guys are lazy to submit war weight 😭\nIt has been **${diffDays} days** since your last submission!`)
-                            .setColor("Red")
-                            .setTimestamp();
-                            
-                        await channel.send({
-                            content: leaderRolePing,
-                            embeds: [lazyEmbed]
-                        });
-
-                        // 2. Immediately send the submission message with link & button
-                        const submissionEmbed = new EmbedBuilder()
-                            .setTitle(`${alaramEmoji} **War Weight Submission Reminder**`)
-                            .setDescription(
-                                `Hey Cheif ,\n` +
-                                `the war weight submission is overdue! Make sure to submit it now.\n\n` +
-                                `**Submission Link :** ${arrowEmoji} [Click here](${submissionUrl})\n\n` +
-                                `After submitting, click the button below to update records.\n\n` +
-                                `Yours Truly\n` +
-                                `${heartEmoji} **Blood Team**`
-                            )
-                            .setColor("Red")
-                            .setTimestamp();
-
-                        const submittedBtn = new ButtonBuilder()
-                            .setCustomId(`ww_submit_update_${cleanTag}`)
-                            .setLabel("Submitted")
-                            .setStyle(ButtonStyle.Success)
-                            .setEmoji(emojiUtils.getEmojiObject("gtick") || "✅");
-                        const btnRow = new ActionRowBuilder().addComponents(submittedBtn);
-
-                        await channel.send({
-                            embeds: [submissionEmbed],
-                            components: [btnRow]
-                        });
-                    }
-                } catch (sendErr) {
-                    console.error(`Failed to send overdue reminder for ${clanTag}:`, sendErr);
-                }
+                await channel.send({
+                    content: leaderRolePing,
+                    embeds: [reminderEmbed],
+                    components: [btnRow]
+                });
             }
+        } catch (sendErr) {
+            console.error(`Failed to send reminder for ${clanTag}:`, sendErr);
         }
 
         // Mark as checked today

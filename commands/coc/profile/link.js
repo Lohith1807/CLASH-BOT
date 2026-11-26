@@ -1,5 +1,26 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, ComponentType, PermissionFlagsBits, MessageFlags } = require('discord.js');
+const axios = require('axios');
 const { checkPermission } = require('../../../utils/checkPermission.js');
+
+const SUPABASE_COC_API_URL = 'https://gqgckjillwwgnnojulah.supabase.co/functions/v1/coc-api';
+
+/**
+ * Sync linked player to Supabase after MongoDB save
+ */
+async function syncLinkToSupabase(userId, playerTag) {
+    try {
+        await axios.post(SUPABASE_COC_API_URL, {
+            action: 'link',
+            type: 'player',
+            user_id: String(userId),
+            tag: String(playerTag)
+        }, { timeout: 10000 });
+    } catch (err) {
+        const errMsg = String(err?.response?.data?.error || err?.message || '').toLowerCase();
+        if (errMsg.includes('already linked')) return;
+        console.error('[Link] Failed to sync link to Supabase:', err?.response?.data || err.message);
+    }
+}
 
 function canForceAction(author, member, config, guild, dataManager = null) {
     if (!author) return false;
@@ -316,6 +337,10 @@ module.exports = {
                         if (!freshUserData[targetUser.id].some(acc => acc.tag.toUpperCase() === data.tag.toUpperCase())) {
                             freshUserData[targetUser.id].push(newAccount);
                             dataManager.saveUserData(freshUserData);
+                            if (typeof dataManager.flushUserDataToMongo === 'function') {
+                                await dataManager.flushUserDataToMongo();
+                            }
+                            await syncLinkToSupabase(targetUser.id, data.tag);
                         }
 
                         const tickbox = emojiUtils.getEmoji('tickbox') || '✅';
@@ -376,6 +401,10 @@ module.exports = {
 
             userData[author.id].push(newAccount);
             dataManager.saveUserData(userData);
+            if (typeof dataManager.flushUserDataToMongo === 'function') {
+                await dataManager.flushUserDataToMongo();
+            }
+            await syncLinkToSupabase(author.id, data.tag);
 
             const randomColor = Math.floor(Math.random() * 16777215);
             const embed = new EmbedBuilder()

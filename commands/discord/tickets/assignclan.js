@@ -6,7 +6,10 @@ const {
     ButtonStyle,
     ComponentType,
     PermissionFlagsBits,
-    MessageFlags
+    MessageFlags,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle
 } = require('discord.js');
 const { checkPermission } = require('../../../utils/checkPermission.js');
 const fs = require('fs');
@@ -20,6 +23,71 @@ const clanRecruitments = require('../../../utils/clanRecruitments');
 
 // In-memory cache for clan names to speed up autocomplete
 const clanNameCache = new Map();
+
+/**
+ * Parse a war weight string (e.g. "175000", "175,000", "175k") into an integer.
+ * Returns null if invalid.
+ */
+function parseWarWeight(rawInput) {
+    if (!rawInput || typeof rawInput !== 'string') return null;
+    const cleaned = rawInput.trim().replace(/,/g, '').replace(/\s+/g, '');
+    if (!cleaned) return null;
+
+    const kMatch = cleaned.match(/^(\d+(?:\.\d+)?)[kK]$/);
+    if (kMatch) {
+        const val = Math.round(parseFloat(kMatch[1]) * 1000);
+        return Number.isFinite(val) && val > 0 ? val : null;
+    }
+
+    if (/^\d+$/.test(cleaned)) {
+        const val = parseInt(cleaned, 10);
+        return Number.isFinite(val) && val > 0 ? val : null;
+    }
+
+    return null;
+}
+
+/**
+ * Resolve which Town Hall level a war weight falls into using data/ww_thresholds.json.
+ * Uses the same threshold comparison convention as utils/fwadata.js (weight > threshold).
+ */
+function resolveThFromWarWeight(weight, actualTh) {
+    const thresholdsPath = path.join(__dirname, '../../../data/ww_thresholds.json');
+    let thresholds = null;
+    if (fs.existsSync(thresholdsPath)) {
+        try {
+            thresholds = JSON.parse(fs.readFileSync(thresholdsPath, 'utf8'));
+        } catch (err) {
+            console.error('[AssignClan] Failed to parse ww_thresholds.json:', err.message);
+        }
+    }
+
+    if (thresholds && typeof thresholds === 'object' && Object.keys(thresholds).length > 0) {
+        const sortedTHs = Object.keys(thresholds)
+            .map(Number)
+            .filter(n => Number.isFinite(n))
+            .sort((a, b) => b - a);
+        let equivalent = actualTh > 10 ? 10 : actualTh;
+        for (const th of sortedTHs) {
+            if (weight > Number(thresholds[th])) {
+                equivalent = th;
+                break;
+            }
+        }
+        return equivalent;
+    }
+
+    // Fallback thresholds matching utils/fwadata.js
+    if (weight > 170000 && weight <= 179000) return 18;
+    if (weight > 160000 && weight <= 169000) return 17;
+    if (weight > 150000 && weight <= 160000) return 16;
+    if (weight > 140000 && weight <= 150000) return 15;
+    if (weight > 130000 && weight <= 140000) return 14;
+    if (weight > 120000 && weight <= 130000) return 13;
+    if (weight > 110000 && weight <= 120000) return 12;
+    if (weight > 90000 && weight <= 110000) return 11;
+    return actualTh;
+}
 
 /**
  * Get clan badge emoji matching nickname with fallbacks
@@ -712,20 +780,70 @@ module.exports = {
             });
         }
 
+        // 8.5 Ask for War Weight via Modal if player's TH is in the tracked rotation THs (FWA clans)
+        let effectiveTh = player.townHallLevel;
+        let warWeight = null;
+        let replyTarget = interaction;
+
+        const trackedRotationTHs = clanRecruitments.getTrackedRotationTHs();
+        const playerThKey = clanRecruitments.normalizeTh(player.townHallLevel);
+
+        if (clanType === 'fwa' && playerThKey && trackedRotationTHs.includes(playerThKey)) {
+            const modalCustomId = `ww_modal_${interaction.id}`;
+            const modal = new ModalBuilder()
+                .setCustomId(modalCustomId)
+                .setTitle(`War Weight (TH${player.townHallLevel})`);
+
+            const wwInput = new TextInputBuilder()
+                .setCustomId('war_weight_input')
+                .setLabel('Enter Player War Weight (e.g. 175000 or 175k)')
+                .setStyle(TextInputStyle.Short)
+                .setPlaceholder('e.g. 175000')
+                .setRequired(true)
+                .setMinLength(2)
+                .setMaxLength(12);
+
+            modal.addComponents(new ActionRowBuilder().addComponents(wwInput));
+
+            await interaction.showModal(modal);
+
+            let modalSubmit;
+            try {
+                modalSubmit = await interaction.awaitModalSubmit({
+                    filter: (m) => m.customId === modalCustomId && m.user.id === interaction.user.id,
+                    time: 900000
+                });
+            } catch (modalErr) {
+                return;
+            }
+
+            const rawWeight = modalSubmit.fields.getTextInputValue('war_weight_input');
+            warWeight = parseWarWeight(rawWeight);
+            if (!warWeight) {
+                return modalSubmit.reply({
+                    content: `❌ Invalid war weight \`${rawWeight}\`. Please run \`/assignclan\` again and enter a valid number (e.g., \`175000\` or \`175k\`).`,
+                    flags: [MessageFlags.Ephemeral]
+                });
+            }
+
+            effectiveTh = resolveThFromWarWeight(warWeight, player.townHallLevel);
+            replyTarget = modalSubmit;
+        }
+
         // 9. Check Rotation Status & Next in List for FWA clans
         let warningEmbed = null;
         if (clanType === 'fwa') {
             const ticketRec = ticketDataStore.findByChannelId(ticketChannel.id);
             const duplicateCheck = clanRecruitments.checkDuplicate(
                 clanTag,
-                player.townHallLevel,
+                effectiveTh,
                 player.tag,
                 ticketRec?.ticketId || ticketChannel.id
             );
 
             const allFwaTags = Object.keys(clanRoles).filter(tag => (clanRoles[tag].clanType || 'fwa').toLowerCase() === 'fwa');
-            const nextInfo = clanRecruitments.getNextInListClan(player.townHallLevel, allFwaTags);
-            const thKey = `TH${player.townHallLevel}`;
+            const nextInfo = clanRecruitments.getNextInListClan(effectiveTh, allFwaTags);
+            const thKey = `TH${effectiveTh}`;
             const warningLines = [];
 
             // Out of rotation order check: if assigned clan is not the next clan in list
@@ -769,13 +887,18 @@ module.exports = {
         const playerCcLink = `https://cc.fwafarm.com/cc_n/member.php?tag=${encodeURIComponent(player.tag)}`;
         const clanCocLink = `https://link.clashofclans.com/en?action=OpenClanProfile&tag=${clanData.tag.replace('#', '')}`;
 
+        const wwInfoLine = warWeight !== null
+            ? `\n**War Weight:** \`${warWeight.toLocaleString()}\` → **TH${effectiveTh}**`
+            : '';
+
         const confirmationEmbed = new EmbedBuilder()
             .setTitle("Clan Assignment Confirmation")
             .setColor(0x3498DB)
             .setDescription(
                 `Please confirm that you are assigning this player to **${clanData.name}**.\n\n` +
                 `${thEmoji} [${player.name}](${playerCocLink}) ${dot} [${player.tag}](${playerCcLink})\n` +
-                `**Assigned Clan:** [${clanData.name}](${clanCocLink})`
+                `**Assigned Clan:** [${clanData.name}](${clanCocLink})` +
+                wwInfoLine
             )
             .setTimestamp();
 
@@ -797,90 +920,93 @@ module.exports = {
         const actionRow = new ActionRowBuilder().addComponents(confirmBtn, cancelBtn);
 
         const confirmationEmbeds = warningEmbed ? [warningEmbed, confirmationEmbed] : [confirmationEmbed];
-        const response = await interaction.reply({
+        const response = await replyTarget.reply({
             content: `<@${interaction.user.id}>`,
             embeds: confirmationEmbeds,
             components: [actionRow],
             flags: [MessageFlags.Ephemeral]
         });
 
-        // 10. Confirmation Collector with 60s timeout
+        // 10. Confirmation Collector (no expiration timeout)
         const collector = response.createMessageComponentCollector({
-            componentType: ComponentType.Button,
-            time: 60000
+            componentType: ComponentType.Button
         });
 
         let isActionCompleted = false;
 
         collector.on('collect', async (btnInteraction) => {
-            // Only command executor can use buttons
-            if (btnInteraction.user.id !== interaction.user.id) {
-                return btnInteraction.reply({
-                    content: `❌ Only <@${interaction.user.id}> who executed the command can confirm or cancel this assignment.`,
-                    flags: [MessageFlags.Ephemeral]
-                });
-            }
+            try {
+                // Only command executor can use buttons
+                if (btnInteraction.user.id !== interaction.user.id) {
+                    return btnInteraction.reply({
+                        content: `❌ Only <@${interaction.user.id}> who executed the command can confirm or cancel this assignment.`,
+                        flags: [MessageFlags.Ephemeral]
+                    });
+                }
 
-            if (isActionCompleted) {
-                return btnInteraction.reply({
-                    content: "❌ This assignment action has already been processed.",
-                    flags: [MessageFlags.Ephemeral]
-                });
-            }
+                if (isActionCompleted) {
+                    return btnInteraction.reply({
+                        content: "❌ This assignment action has already been processed.",
+                        flags: [MessageFlags.Ephemeral]
+                    });
+                }
 
-            if (btnInteraction.customId === cancelButtonId) {
-                isActionCompleted = true;
-                collector.stop('cancelled');
+                if (btnInteraction.customId === cancelButtonId) {
+                    isActionCompleted = true;
+                    collector.stop('cancelled');
 
-                confirmBtn.setDisabled(true);
-                cancelBtn.setDisabled(true);
-                const disabledRow = new ActionRowBuilder().addComponents(confirmBtn, cancelBtn);
-
-                const cancelledEmbed = EmbedBuilder.from(confirmationEmbed)
-                    .setColor(0x95A5A6)
-                    .setDescription("Clan assignment cancelled.");
-
-                return await btnInteraction.update({
-                    content: `<@${interaction.user.id}>`,
-                    embeds: [cancelledEmbed],
-                    components: [disabledRow]
-                });
-            }
-
-            if (btnInteraction.customId === confirmButtonId) {
-                isActionCompleted = true;
-                collector.stop('confirmed');
-
-                // Step A: Save assignment persistently
-                const saved = ticketDataStore.setAssignedClan(
-                    ticketChannel.id,
-                    clanTag,
-                    clanData.name,
-                    interaction.user.id,
-                    ticketCategory,
-                    targetUser.id,
-                    {
-                        playerName: player.name,
-                        playerTh: player.townHallLevel,
-                        appliedTag: player.tag
-                    }
-                );
-
-                if (!saved) {
                     confirmBtn.setDisabled(true);
                     cancelBtn.setDisabled(true);
                     const disabledRow = new ActionRowBuilder().addComponents(confirmBtn, cancelBtn);
 
-                    const errorEmbed = EmbedBuilder.from(confirmationEmbed)
-                        .setColor(0xE74C3C)
-                        .setDescription("❌ Failed to save clan assignment to database. Public announcement was aborted.");
+                    const cancelledEmbed = EmbedBuilder.from(confirmationEmbed)
+                        .setColor(0x95A5A6)
+                        .setDescription("Clan assignment cancelled.");
 
                     return await btnInteraction.update({
                         content: `<@${interaction.user.id}>`,
-                        embeds: [errorEmbed],
+                        embeds: [cancelledEmbed],
                         components: [disabledRow]
                     });
                 }
+
+                if (btnInteraction.customId === confirmButtonId) {
+                    isActionCompleted = true;
+                    collector.stop('confirmed');
+
+                    // Acknowledge immediately so multi-step Discord API calls never hit the 3s interaction timeout
+                    await btnInteraction.deferUpdate();
+
+                    // Step A: Save assignment persistently
+                    const saved = ticketDataStore.setAssignedClan(
+                        ticketChannel.id,
+                        clanTag,
+                        clanData.name,
+                        interaction.user.id,
+                        ticketCategory,
+                        targetUser.id,
+                        {
+                            playerName: player.name,
+                            playerTh: player.townHallLevel,
+                            appliedTag: player.tag
+                        }
+                    );
+
+                    if (!saved) {
+                        confirmBtn.setDisabled(true);
+                        cancelBtn.setDisabled(true);
+                        const disabledRow = new ActionRowBuilder().addComponents(confirmBtn, cancelBtn);
+
+                        const errorEmbed = EmbedBuilder.from(confirmationEmbed)
+                            .setColor(0xE74C3C)
+                            .setDescription("❌ Failed to save clan assignment to database. Public announcement was aborted.");
+
+                        return await btnInteraction.editReply({
+                            content: `<@${interaction.user.id}>`,
+                            embeds: [errorEmbed],
+                            components: [disabledRow]
+                        });
+                    }
 
                 // Step A.1: Record clan recruitment & rotation tracking (FWA clans)
                 let recruitmentResult = null;
@@ -893,7 +1019,7 @@ module.exports = {
                             player: {
                                 name: player.name,
                                 tag: player.tag,
-                                townHallLevel: player.townHallLevel
+                                townHallLevel: effectiveTh
                             },
                             ticketId: ticketRecord?.ticketId || ticketChannel.id,
                             channelId: ticketChannel.id,
@@ -1048,11 +1174,23 @@ module.exports = {
                     .setColor(leaderRoleError || announcementError ? 0xE67E22 : 0x2ECC71)
                     .setDescription(updatedDescription);
 
-                return await btnInteraction.update({
+                return await btnInteraction.editReply({
                     content: `<@${interaction.user.id}>`,
                     embeds: [confirmedEmbed],
                     components: [disabledRow]
                 });
+            }
+            } catch (collectErr) {
+                console.error('[AssignClan] Error handling confirmation button:', collectErr);
+                const errPayload = {
+                    content: `❌ An error occurred while processing the assignment: ${collectErr.message || 'Unknown error'}`,
+                    flags: [MessageFlags.Ephemeral]
+                };
+                if (btnInteraction.deferred || btnInteraction.replied) {
+                    await btnInteraction.followUp(errPayload).catch(() => { });
+                } else {
+                    await btnInteraction.reply(errPayload).catch(() => { });
+                }
             }
         });
 
@@ -1070,7 +1208,7 @@ module.exports = {
                         `The 60-second confirmation window has elapsed and the clan assignment was not completed.`
                     );
 
-                await interaction.editReply({
+                await replyTarget.editReply({
                     content: `<@${interaction.user.id}>`,
                     embeds: [expiredEmbed],
                     components: [disabledRow]

@@ -915,7 +915,7 @@ async function handleInteraction(interaction, context) {
                 }
 
                 if (!wwData[clanTag]) {
-                    wwData[clanTag] = { clanName: clanName, lastUpdated: "" };
+                    wwData[clanTag] = { clanName: clanName };
                 } else {
                     wwData[clanTag].clanName = clanName;
                 }
@@ -925,8 +925,11 @@ async function handleInteraction(interaction, context) {
                 const month = String(now.getMonth() + 1).padStart(2, '0');
                 const year = now.getFullYear();
                 const todayStr = `${day}/${month}/${year}`;
+                const currentMonthKey = `${month}/${year}`;
 
-                wwData[clanTag].lastUpdated = todayStr;
+                // Save confirmation only (so reminder isn't sent again this month) without overwriting submitted date
+                wwData[clanTag].confirmedMonth = currentMonthKey;
+                wwData[clanTag].confirmedAt = now.toISOString();
 
                 fs.writeFileSync(wwPath, JSON.stringify(wwData, null, 2), "utf8");
 
@@ -939,13 +942,13 @@ async function handleInteraction(interaction, context) {
                 const actionRow = new ActionRowBuilder().addComponents(disabledBtn);
 
                 await interaction.editReply({ components: [actionRow] }).catch(() => {});
-                await interaction.followUp({ content: `${getEmoji("gtick")} Successfully updated war weight submission time for ${clanTag} to ${todayStr}!`, flags: [MessageFlags.Ephemeral] }).catch(() => {});
+                await interaction.followUp({ content: `${getEmoji("gtick")} Confirmed war weight submission for ${clanTag} (${currentMonthKey}). No further reminder will be sent this month!`, flags: [MessageFlags.Ephemeral] }).catch(() => {});
 
                 try {
                     const fwaLogId = process.env.FWA_LOG_CHANNEL_ID || "1516719047348326493";
                     const logChannel = await interaction.client.channels.fetch(fwaLogId).catch(() => null);
                     if (logChannel) {
-                        await logChannel.send(`📢 **FWA Weight Update Detected!**\nClan: **${wwData[clanTag].clanName || clanTag}** (${clanTag})\nNew weight update submitted on: **${todayStr}**`).catch(() => {});
+                        await logChannel.send(`📢 **FWA Weight Submission Confirmed!**\nClan: **${wwData[clanTag].clanName || clanTag}** (${clanTag})\nConfirmed on: **${todayStr}**`).catch(() => {});
                     }
                 } catch (err) {
                     console.error("Failed to send log message:", err);
