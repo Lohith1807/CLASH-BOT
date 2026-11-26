@@ -1,13 +1,12 @@
 /**
  * Clan Recruitment Tracking & Independent Rotation System
- * Manages clan-recruitments.json for tracking TH rotations
- * and lifetime recruitment counts for all Town Halls.
+ * Manages TH rotations and lifetime recruitment counts inside unified data/clanrole.json.
  */
 
 const fs = require('fs');
 const path = require('path');
 
-const RECRUITMENTS_PATH = path.join(__dirname, '../data/clan-recruitments.json');
+const CLANROLE_PATH = path.join(__dirname, '../data/clanrole.json');
 const DEFAULT_TRACKED_THS = ['TH19', 'TH18'];
 const ROTATION_LIMIT = 1;
 
@@ -68,73 +67,93 @@ function formatAssignmentDate(isoString) {
 }
 
 /**
- * Safely read recruitment data from disk
+ * Safely read recruitment data from unified data/clanrole.json
  */
 function getRecruitmentData() {
+    const defaultMetadata = {
+        rotations: { TH19: 1, TH18: 1 },
+        trackedTHs: [...DEFAULT_TRACKED_THS]
+    };
+
     try {
-        if (!fs.existsSync(RECRUITMENTS_PATH)) {
-            const initial = {
-                _metadata: {
-                    rotations: {
-                        TH19: 1,
-                        TH18: 1
-                    },
-                    trackedTHs: [...DEFAULT_TRACKED_THS]
-                }
-            };
-            fs.writeFileSync(RECRUITMENTS_PATH, JSON.stringify(initial, null, 2), 'utf8');
-            return initial;
+        if (!fs.existsSync(CLANROLE_PATH)) {
+            return { _metadata: defaultMetadata };
         }
 
-        const raw = fs.readFileSync(RECRUITMENTS_PATH, 'utf8');
-        if (!raw || !raw.trim()) {
-            const initial = {
-                _metadata: {
-                    rotations: {
-                        TH19: 1,
-                        TH18: 1
-                    },
-                    trackedTHs: [...DEFAULT_TRACKED_THS]
-                }
-            };
-            fs.writeFileSync(RECRUITMENTS_PATH, JSON.stringify(initial, null, 2), 'utf8');
-            return initial;
+        const rawText = fs.readFileSync(CLANROLE_PATH, 'utf8');
+        if (!rawText || !rawText.trim()) {
+            return { _metadata: defaultMetadata };
         }
 
-        const data = JSON.parse(raw);
-        if (!data._metadata) {
-            data._metadata = {};
-        }
+        const rawStore = JSON.parse(rawText);
+        const data = {
+            _metadata: rawStore._metadata ? JSON.parse(JSON.stringify(rawStore._metadata)) : { ...defaultMetadata }
+        };
+
         if (!data._metadata.rotations) {
             data._metadata.rotations = { TH19: 1, TH18: 1 };
         }
         if (!Array.isArray(data._metadata.trackedTHs) || data._metadata.trackedTHs.length === 0) {
             data._metadata.trackedTHs = [...DEFAULT_TRACKED_THS];
         }
+
+        for (const [tag, clanInfo] of Object.entries(rawStore)) {
+            if (tag.startsWith('_') || !clanInfo || typeof clanInfo !== 'object') continue;
+            if (clanInfo.presentRotation || clanInfo.recruitments) {
+                data[tag] = {};
+                if (clanInfo.presentRotation) data[tag].presentRotation = clanInfo.presentRotation;
+                if (clanInfo.recruitments) data[tag].recruitments = clanInfo.recruitments;
+            }
+        }
+
         return data;
     } catch (err) {
-        console.error('[ClanRecruitments] Error reading clan-recruitments.json:', err.message);
-        return {
-            _metadata: {
-                rotations: {
-                    TH19: 1,
-                    TH18: 1
-                },
-                trackedTHs: [...DEFAULT_TRACKED_THS]
-            }
-        };
+        console.error('[ClanRecruitments] Error reading clanrole.json:', err.message);
+        return { _metadata: defaultMetadata };
     }
 }
 
 /**
- * Safely save recruitment data to disk
+ * Safely save recruitment data into unified data/clanrole.json
  */
 function saveRecruitmentData(data) {
     try {
-        fs.writeFileSync(RECRUITMENTS_PATH, JSON.stringify(data, null, 2), 'utf8');
+        let rawStore = {};
+        if (fs.existsSync(CLANROLE_PATH)) {
+            const rawText = fs.readFileSync(CLANROLE_PATH, 'utf8');
+            if (rawText && rawText.trim()) {
+                rawStore = JSON.parse(rawText);
+            }
+        }
+
+        if (data && data._metadata) {
+            rawStore._metadata = data._metadata;
+        }
+
+        // Update recruitment fields for clans in data; clear if removed from data
+        for (const tag of Object.keys(rawStore)) {
+            if (tag.startsWith('_') || !rawStore[tag] || typeof rawStore[tag] !== 'object') continue;
+            if (data && data[tag]) {
+                if (data[tag].presentRotation) {
+                    rawStore[tag].presentRotation = data[tag].presentRotation;
+                } else {
+                    delete rawStore[tag].presentRotation;
+                }
+                if (data[tag].recruitments) {
+                    rawStore[tag].recruitments = data[tag].recruitments;
+                } else {
+                    delete rawStore[tag].recruitments;
+                }
+            } else {
+                delete rawStore[tag].presentRotation;
+                delete rawStore[tag].recruitments;
+            }
+        }
+
+        fs.writeFileSync(CLANROLE_PATH, JSON.stringify(rawStore, null, 2), 'utf8');
         return true;
     } catch (err) {
-        console.error('[ClanRecruitments] Error writing clan-recruitments.json:', err.message);
+        console.error('[ClanRecruitments] Error writing clanrole.json:', err.message);
         return false;
     }
 }

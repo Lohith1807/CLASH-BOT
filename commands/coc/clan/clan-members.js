@@ -2,35 +2,16 @@ const {
     SlashCommandBuilder, EmbedBuilder, ActionRowBuilder,
     ButtonBuilder, ButtonStyle, StringSelectMenuBuilder,
     PermissionFlagsBits, ModalBuilder, TextInputBuilder, TextInputStyle, MessageFlags } = require("discord.js");
-const fs   = require("fs");
-const path = require("path");
+const dataManager = require("../../../utils/dataManager");
 
-const MEMBERS_REPLACE_PATH = path.join(__dirname, "../../../data/members-replace.json");
-const CLAN_MEMBERS_PATH = path.join(__dirname, "../../../data/clan-members.json");
-
-// ─── Data helpers ─────────────────────────────────────────────────────────────
+// ─── Data helpers (delegating to unified dataManager -> clanrole.json) ────────
 
 function getClanMembersData() {
-    try {
-        if (!fs.existsSync(CLAN_MEMBERS_PATH)) {
-            fs.writeFileSync(CLAN_MEMBERS_PATH, JSON.stringify({}, null, 2));
-            return {};
-        }
-        const raw = fs.readFileSync(CLAN_MEMBERS_PATH, "utf8");
-        return raw ? JSON.parse(raw) : {};
-    } catch (err) {
-        console.error("Error reading clan-members.json:", err.message);
-        return {};
-    }
+    return dataManager.getClanMembers();
 }
 
 function saveClanMembersData(data) {
-    try {
-        fs.writeFileSync(CLAN_MEMBERS_PATH, JSON.stringify(data, null, 2));
-    } catch (err) {
-        console.error("Error writing clan-members.json:", err.message);
-        throw err;
-    }
+    return dataManager.saveClanMembers(data);
 }
 
 // ─── In-memory store for pending add selections ───────────────────────────────
@@ -42,29 +23,14 @@ const pendingSelections = new Map();
 const pendingRemovals = new Map();
 
 
-// ─── Replacement Data helpers ─────────────────────────────────────────────────────────────
+// ─── Replacement Data helpers ─────────────────────────────────────────────────
 
 function getMembersReplace() {
-    try {
-        if (!fs.existsSync(MEMBERS_REPLACE_PATH)) {
-            fs.writeFileSync(MEMBERS_REPLACE_PATH, JSON.stringify({}, null, 2));
-            return {};
-        }
-        const raw = fs.readFileSync(MEMBERS_REPLACE_PATH, "utf8");
-        return raw ? JSON.parse(raw) : {};
-    } catch (err) {
-        console.error("Error reading members-replace.json:", err.message);
-        return {};
-    }
+    return dataManager.getMembersReplace();
 }
 
 function saveMembersReplace(data) {
-    try {
-        fs.writeFileSync(MEMBERS_REPLACE_PATH, JSON.stringify(data, null, 2));
-    } catch (err) {
-        console.error("Error writing members-replace.json:", err.message);
-        throw err;
-    }
+    return dataManager.saveMembersReplace(data);
 }
 
 // ─── Replacement Embed builders ──────────────────────────────────────────────────────────

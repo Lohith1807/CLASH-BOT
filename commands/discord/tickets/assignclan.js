@@ -51,24 +51,15 @@ const DEFAULT_CLAN_RULES = [
 /**
  * Safely load clan rules configuration from dataManager or filesystem
  */
-function loadClanRules(dataManager) {
-    if (dataManager && typeof dataManager.getClanRules === 'function') {
+function loadClanRules(dm) {
+    const targetDm = dm || dataManager;
+    if (targetDm && typeof targetDm.getClanRules === 'function') {
         try {
-            const rules = dataManager.getClanRules();
+            const rules = targetDm.getClanRules();
             if (rules && typeof rules === 'object') return rules;
         } catch (err) {
             console.error('[AssignClan] Error loading rules via dataManager:', err.message);
         }
-    }
-
-    const dataPath = path.join(__dirname, '../../../data/clanrules.json');
-    try {
-        if (fs.existsSync(dataPath)) {
-            const raw = fs.readFileSync(dataPath, 'utf8');
-            if (raw && raw.trim()) return JSON.parse(raw);
-        }
-    } catch (err) {
-        console.error('[AssignClan] Error loading rules:', err.message);
     }
 
     return {

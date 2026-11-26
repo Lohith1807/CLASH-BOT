@@ -23,19 +23,11 @@ const DEFAULT_CLAN_RULES = [
  */
 function fallbackBuildClanRulesEmbed(clanTag, clanData, clanConfig, context) {
     try {
-        const dataManager = context?.data;
+        const dm = context?.data || require("../../../utils/dataManager");
         let allRules = null;
-        if (dataManager && typeof dataManager.getClanRules === "function") {
+        if (dm && typeof dm.getClanRules === "function") {
             try {
-                allRules = dataManager.getClanRules();
-            } catch (_) {}
-        }
-        if (!allRules) {
-            const dataPath = path.join(__dirname, "../../../data/clanrules.json");
-            try {
-                if (fs.existsSync(dataPath)) {
-                    allRules = JSON.parse(fs.readFileSync(dataPath, "utf8"));
-                }
+                allRules = dm.getClanRules();
             } catch (_) {}
         }
 

@@ -22,10 +22,7 @@ const PATHS = {
     strikecounters: path.join(DATA_DIR, "strikecounters.json"),
     recruitments: path.join(DATA_DIR, "recruitments.json"),
     reapplyreasons: path.join(DATA_DIR, "reapplyreasons.json"),
-    ticketData: path.join(DATA_DIR, "ticketData.json"),
-    clanrules: path.join(DATA_DIR, "clanrules.json"),
-    clanmembers: path.join(DATA_DIR, "clan-members.json"),
-    clanrecruitments: path.join(DATA_DIR, "clan-recruitments.json")
+    ticketData: path.join(DATA_DIR, "ticketData.json")
 };
 
 
@@ -60,10 +57,10 @@ function getUserData() {
 }
 
 /**
- * Get clan roles (clan tag to Discord role mappings)
- * @returns {Object} Clan roles object
+ * Read the raw unified clanrole.json store (including _metadata and _defaultRules)
+ * @returns {Object} Raw clanrole.json object
  */
-function getClanRoles() {
+function readRawClanRoleStore() {
     try {
         if (!fs.existsSync(PATHS.clanrole)) return {};
         const raw = fs.readFileSync(PATHS.clanrole, "utf8");
@@ -72,6 +69,33 @@ function getClanRoles() {
         console.error("Error reading clanrole.json:", err.message);
         return {};
     }
+}
+
+/**
+ * Write the raw unified clanrole.json store to disk
+ * @param {Object} rawStore - Full clanrole.json object
+ */
+function writeRawClanRoleStore(rawStore) {
+    try {
+        fs.writeFileSync(PATHS.clanrole, JSON.stringify(rawStore, null, 2));
+    } catch (err) {
+        console.error("Error writing clanrole.json:", err.message);
+        throw err;
+    }
+}
+
+/**
+ * Get clan roles (clan tag to Discord role mappings, excluding _metadata/_defaultRules)
+ * @returns {Object} Clan roles object keyed by clan tag
+ */
+function getClanRoles() {
+    const raw = readRawClanRoleStore();
+    const result = {};
+    for (const [key, val] of Object.entries(raw)) {
+        if (key.startsWith("_")) continue;
+        result[key] = val;
+    }
+    return result;
 }
 
 
@@ -153,86 +177,90 @@ function saveUserData(data) {
 }
 
 /**
- * Save clan roles
+ * Save clan roles (preserves _metadata, _defaultRules, and per-clan nested data in clanrole.json)
  * @param {Object} data - Clan roles to save
  */
 function saveClanRoles(data) {
     try {
-        fs.writeFileSync(PATHS.clanrole, JSON.stringify(data, null, 2));
+        const existingRaw = readRawClanRoleStore();
+        const nextRaw = {};
 
-        // Automatically ensure all clans exist in clanrules.json with basic rules
+        // Preserve top-level metadata keys (_metadata, _defaultRules, etc.)
+        for (const [key, val] of Object.entries(existingRaw)) {
+            if (key.startsWith("_")) {
+                nextRaw[key] = val;
+            }
+        }
+
+        const defaultRules = (nextRaw._defaultRules && Array.isArray(nextRaw._defaultRules.rules) && nextRaw._defaultRules.rules.length > 0)
+            ? nextRaw._defaultRules.rules
+            : [
+                "Be active daily and participate in wars and CWL.",
+                "Always use both war attacks — missing attacks may lead to demotion.",
+                "Donate correct troops only as requested.",
+                "Respect all members — teamwork builds victory.",
+                "No rushed bases allowed in main clan — use feeder clans if needed.",
+                "Maintain a healthy competitive spirit, no toxicity."
+            ];
+
+        for (const [rawTag, clanInfo] of Object.entries(data || {})) {
+            if (rawTag.startsWith("_")) continue;
+            const prevEntry = existingRaw[rawTag] || {};
+            const mergedEntry = {
+                ...clanInfo,
+                members: Array.isArray(clanInfo.members) ? clanInfo.members : (Array.isArray(prevEntry.members) ? prevEntry.members : []),
+                membersReplace: Array.isArray(clanInfo.membersReplace) ? clanInfo.membersReplace : (Array.isArray(prevEntry.membersReplace) ? prevEntry.membersReplace : [])
+            };
+
+            if (!mergedEntry.presentRotation && prevEntry.presentRotation) {
+                mergedEntry.presentRotation = prevEntry.presentRotation;
+            }
+            if (!mergedEntry.recruitments && prevEntry.recruitments) {
+                mergedEntry.recruitments = prevEntry.recruitments;
+            }
+
+            // Ensure rulesConfig exists on this clan
+            const existingRules = mergedEntry.rulesConfig || prevEntry.rulesConfig;
+            if (!existingRules) {
+                mergedEntry.rulesConfig = {
+                    name: clanInfo.nickName || rawTag,
+                    nickName: clanInfo.nickName || "",
+                    clanType: clanInfo.clanType || "fwa",
+                    title: "{clanName} Rules",
+                    image: "",
+                    thumbnail: "",
+                    footer: { text: "", iconURL: "" },
+                    color: "#E74C3C",
+                    rules: [...defaultRules]
+                };
+            } else {
+                if (!Array.isArray(existingRules.rules) || existingRules.rules.length === 0) {
+                    existingRules.rules = [...defaultRules];
+                }
+                mergedEntry.rulesConfig = existingRules;
+            }
+
+            nextRaw[rawTag] = mergedEntry;
+        }
+
+        writeRawClanRoleStore(nextRaw);
+
+        // Auto-sync FWA clans' presentRotation and recruitments inside clanrole.json
         try {
-            const rulesConfig = getClanRules();
-            if (rulesConfig && rulesConfig.clans) {
-                const defaultRules = (rulesConfig.default && Array.isArray(rulesConfig.default.rules) && rulesConfig.default.rules.length > 0)
-                    ? rulesConfig.default.rules
-                    : [
-                        "Be active daily and participate in wars and CWL.",
-                        "Always use both war attacks — missing attacks may lead to demotion.",
-                        "Donate correct troops only as requested.",
-                        "Respect all members — teamwork builds victory.",
-                        "No rushed bases allowed in main clan — use feeder clans if needed.",
-                        "Maintain a healthy competitive spirit, no toxicity."
-                    ];
-
-                let changed = false;
-                const activeTags = new Set(Object.keys(data).map(t => (t.startsWith('#') ? t : '#' + t).toUpperCase()));
-
-                for (const [rawTag, clanInfo] of Object.entries(data)) {
-                    const tag = (rawTag.startsWith('#') ? rawTag : '#' + rawTag).toUpperCase();
-                    if (!rulesConfig.clans[tag]) {
-                        rulesConfig.clans[tag] = {
-                            name: clanInfo.nickName || tag,
-                            nickName: clanInfo.nickName || "",
-                            clanType: clanInfo.clanType || "fwa",
-                            title: "{clanName} Rules",
-                            image: "",
-                            thumbnail: "",
-                            footer: { text: "", iconURL: "" },
-                            color: "#E74C3C",
-                            rules: [...defaultRules]
-                        };
-                        changed = true;
-                    } else {
-                        // Ensure basic rules are added if rules array is missing or empty
-                        if (!Array.isArray(rulesConfig.clans[tag].rules) || rulesConfig.clans[tag].rules.length === 0) {
-                            rulesConfig.clans[tag].rules = [...defaultRules];
-                            changed = true;
-                        }
-                    }
-                }
-
-                // If any clan was removed from clanrole.json, clean it up from clanrules.json
-                for (const existingTag of Object.keys(rulesConfig.clans)) {
-                    if (!activeTags.has(existingTag)) {
-                        delete rulesConfig.clans[existingTag];
-                        changed = true;
-                    }
-                }
-
-                if (changed) {
-                    saveClanRules(rulesConfig);
-                }
-
-                // Auto-sync FWA clans to clan-recruitments.json
-                try {
-                    const clanRecruitments = require("./clanRecruitments");
-                    const fwaTags = Object.keys(data).filter(t => (data[t].clanType || "fwa").toLowerCase() === "fwa");
-                    const recData = clanRecruitments.getRecruitmentData();
-                    clanRecruitments.syncFwaClans(recData, fwaTags);
-                    for (const existingTag of Object.keys(recData)) {
-                        if (existingTag.startsWith("_")) continue;
-                        if (!activeTags.has(existingTag)) {
-                            delete recData[existingTag];
-                        }
-                    }
-                    clanRecruitments.saveRecruitmentData(recData);
-                } catch (recSyncErr) {
-                    console.error("Error auto-syncing clan recruitments in saveClanRoles:", recSyncErr.message);
+            const clanRecruitments = require("./clanRecruitments");
+            const fwaTags = Object.keys(nextRaw).filter(t => !t.startsWith("_") && (nextRaw[t].clanType || "fwa").toLowerCase() === "fwa");
+            const recData = clanRecruitments.getRecruitmentData();
+            clanRecruitments.syncFwaClans(recData, fwaTags);
+            const activeTags = new Set(Object.keys(nextRaw).filter(t => !t.startsWith("_")).map(t => (t.startsWith("#") ? t : "#" + t).toUpperCase()));
+            for (const existingTag of Object.keys(recData)) {
+                if (existingTag.startsWith("_")) continue;
+                if (!activeTags.has(existingTag)) {
+                    delete recData[existingTag];
                 }
             }
-        } catch (syncErr) {
-            console.error("Error auto-syncing clan rules in saveClanRoles:", syncErr.message);
+            clanRecruitments.saveRecruitmentData(recData);
+        } catch (recSyncErr) {
+            console.error("Error auto-syncing clan recruitments in saveClanRoles:", recSyncErr.message);
         }
     } catch (err) {
         console.error("Error writing clanrole.json:", err.message);
@@ -553,47 +581,54 @@ const DEFAULT_RULES_CONFIG = {
 };
 
 function getClanRules() {
-    let config = null;
-    try {
-        if (fs.existsSync(PATHS.clanrules)) {
-            const raw = fs.readFileSync(PATHS.clanrules, "utf8");
-            if (raw && raw.trim()) {
-                config = JSON.parse(raw);
-            }
+    const raw = readRawClanRoleStore();
+    const defaultConf = raw._defaultRules
+        ? JSON.parse(JSON.stringify(raw._defaultRules))
+        : JSON.parse(JSON.stringify(DEFAULT_RULES_CONFIG.default));
+
+    if (!defaultConf.warrules && !defaultConf.mailrules) {
+        defaultConf.warrules = { ...DEFAULT_MAIL_RULES };
+    }
+
+    const clans = {};
+    for (const [tag, clanInfo] of Object.entries(raw)) {
+        if (tag.startsWith("_") || !clanInfo || typeof clanInfo !== "object") continue;
+        if (clanInfo.rulesConfig) {
+            clans[tag] = clanInfo.rulesConfig;
         }
-    } catch (err) {
-        console.error(`Error reading ${PATHS.clanrules}:`, err.message);
     }
 
-    if (!config) {
-        config = { ...DEFAULT_RULES_CONFIG };
-        try {
-            saveClanRules(config);
-        } catch (_) {}
-        return config;
-    }
-
-    if (!config.default) {
-        config.default = { ...DEFAULT_RULES_CONFIG.default };
-    }
-
-    if (!config.default.warrules && !config.default.mailrules) {
-        config.default.warrules = { ...DEFAULT_MAIL_RULES };
-    }
-
-    return config;
+    return {
+        default: defaultConf,
+        clans
+    };
 }
 
 /**
- * Save clan rules configuration to data/clanrules.json
- * @param {Object} data - Clan rules object to save
+ * Save clan rules configuration into unified data/clanrole.json
+ * @param {Object} data - Clan rules object { default, clans }
  */
 function saveClanRules(data) {
     try {
-        const content = JSON.stringify(data, null, 2);
-        fs.writeFileSync(PATHS.clanrules, content);
+        const raw = readRawClanRoleStore();
+        if (data && data.default) {
+            raw._defaultRules = data.default;
+        }
+        const clansMap = (data && data.clans) ? data.clans : {};
+
+        // Update rulesConfig on existing clans, and clear if removed
+        for (const tag of Object.keys(raw)) {
+            if (tag.startsWith("_") || !raw[tag] || typeof raw[tag] !== "object") continue;
+            if (clansMap[tag]) {
+                raw[tag].rulesConfig = clansMap[tag];
+            } else {
+                delete raw[tag].rulesConfig;
+            }
+        }
+
+        writeRawClanRoleStore(raw);
     } catch (err) {
-        console.error("Error writing data/clanrules.json:", err.message);
+        console.error("Error writing rules to data/clanrole.json:", err.message);
         throw err;
     }
 }
@@ -1012,32 +1047,73 @@ function updateClanWarRule(clanTag, type, ruleData) {
 }
 
 /**
- * Get clan members data (custom member roster for clans)
- * @returns {Object} Clan members data object
+ * Get clan members data (custom member roster for clans) from unified clanrole.json
+ * @returns {Object} Clan members data object keyed by clan tag
  */
 function getClanMembers() {
-    try {
-        if (!fs.existsSync(PATHS.clanmembers)) {
-            fs.writeFileSync(PATHS.clanmembers, JSON.stringify({}, null, 2));
-            return {};
+    const raw = readRawClanRoleStore();
+    const result = {};
+    for (const [tag, clanInfo] of Object.entries(raw)) {
+        if (tag.startsWith("_") || !clanInfo || typeof clanInfo !== "object") continue;
+        if (Array.isArray(clanInfo.members)) {
+            result[tag] = clanInfo.members;
         }
-        const raw = fs.readFileSync(PATHS.clanmembers, "utf8");
-        return raw ? JSON.parse(raw) : {};
+    }
+    return result;
+}
+
+/**
+ * Save clan members data into unified clanrole.json
+ * @param {Object} data - Clan members data object keyed by clan tag
+ */
+function saveClanMembers(data) {
+    try {
+        const raw = readRawClanRoleStore();
+        for (const [tag, members] of Object.entries(data || {})) {
+            if (tag.startsWith("_")) continue;
+            if (raw[tag] && typeof raw[tag] === "object") {
+                raw[tag].members = Array.isArray(members) ? members : [];
+            }
+        }
+        writeRawClanRoleStore(raw);
     } catch (err) {
-        console.error("Error reading clan-members.json:", err.message);
-        return {};
+        console.error("Error writing clan members to clanrole.json:", err.message);
+        throw err;
     }
 }
 
 /**
- * Save clan members data
- * @param {Object} data - Clan members data object
+ * Get members replacement list from unified clanrole.json
+ * @returns {Object} Members replace object keyed by clan tag
  */
-function saveClanMembers(data) {
+function getMembersReplace() {
+    const raw = readRawClanRoleStore();
+    const result = {};
+    for (const [tag, clanInfo] of Object.entries(raw)) {
+        if (tag.startsWith("_") || !clanInfo || typeof clanInfo !== "object") continue;
+        if (Array.isArray(clanInfo.membersReplace)) {
+            result[tag] = clanInfo.membersReplace;
+        }
+    }
+    return result;
+}
+
+/**
+ * Save members replacement list into unified clanrole.json
+ * @param {Object} data - Members replace object keyed by clan tag
+ */
+function saveMembersReplace(data) {
     try {
-        fs.writeFileSync(PATHS.clanmembers, JSON.stringify(data, null, 2));
+        const raw = readRawClanRoleStore();
+        for (const [tag, replaceList] of Object.entries(data || {})) {
+            if (tag.startsWith("_")) continue;
+            if (raw[tag] && typeof raw[tag] === "object") {
+                raw[tag].membersReplace = Array.isArray(replaceList) ? replaceList : [];
+            }
+        }
+        writeRawClanRoleStore(raw);
     } catch (err) {
-        console.error("Error writing clan-members.json:", err.message);
+        console.error("Error writing membersReplace to clanrole.json:", err.message);
         throw err;
     }
 }
@@ -1219,6 +1295,8 @@ module.exports = {
     getClanRules,
     getClanMembers,
     saveClanMembers,
+    getMembersReplace,
+    saveMembersReplace,
     addClanMember,
     removeClanMember,
     getClanRecruitments,

@@ -1,4 +1,109 @@
 {
+  "_metadata": {
+    "rotations": {
+      "TH19": 1,
+      "TH18": 1,
+      "TH17": 1,
+      "TH16": 1
+    },
+    "trackedTHs": [
+      "TH19",
+      "TH18"
+    ],
+    "activeRotationMessages": [
+      {
+        "channelId": "1503298102860320829",
+        "messageId": "1573959049731645511",
+        "guildId": "1153720899715993681",
+        "timestamp": 1795599683141
+      }
+    ]
+  },
+  "_defaultRules": {
+    "title": "{clanName} Rules",
+    "image": "",
+    "thumbnail": "",
+    "footer": {
+      "text": "",
+      "iconURL": ""
+    },
+    "color": "#E74C3C",
+    "rules": [
+      "Be active daily and participate in wars and CWL.",
+      "Always use both war attacks — missing attacks may lead to demotion.",
+      "Donate correct troops only as requested.",
+      "Respect all members — teamwork builds victory.",
+      "No rushed bases allowed in main clan — use feeder clans if needed.",
+      "Maintain a healthy competitive spirit, no toxicity."
+    ],
+    "warrules": {
+      "win": {
+        "header": "🟩 **This war has been declared a win as per FWA rules.**",
+        "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+        "instructions": [
+          "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+          "2nd attack - ⭐(1 Star) on any base.",
+          "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+        ],
+        "important": [
+          "Use both attacks",
+          "Don’t rush attacks",
+          "Ask if you need help"
+        ],
+        "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+      },
+      "lose": {
+        "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+        "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+        "instructions": [
+          "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+          "2nd attack - ⭐(1 Star) on any base.",
+          "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+        ],
+        "important": [
+          "Use both attacks",
+          "No extra attacks without permission",
+          "Don’t rush attacks",
+          "Ask if you need help"
+        ],
+        "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+      },
+      "bl": {
+        "header": "🛡️ This is a blacklisted war — we're not backing down!",
+        "title": "{cocfight} **Instructions:**",
+        "instructions": [
+          "Change your war base to a real war base — no FWA layouts!",
+          "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+          "Coordinate with your team for cleanup and efficient hits."
+        ],
+        "goals": [
+          "30 war bases changed",
+          "60% destruction",
+          "Win the war 💪"
+        ],
+        "notes": [
+          "Need a base? Visit: clashofclans-layouts.com",
+          "After war ends: Switch your base back to FWA format immediately!"
+        ],
+        "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+      },
+      "mis": {
+        "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+        "title": "{cocfight} **Instructions:**",
+        "instructions": [
+          "Change your war base to a real war base — no FWA layouts!",
+          "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+          "Coordinate with your team for cleanup and efficient hits."
+        ],
+        "important": [
+          "Use both attacks",
+          "Don’t rush attacks",
+          "Switch your base back to FWA format after war ends!"
+        ],
+        "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+      }
+    }
+  },
   "#CYQVL002": {
     "roleId": "1154279073086971976",
     "leaderRoleId": "1154278231881560154",
@@ -19,8 +124,376 @@
       "<@921637134899744788>",
       "<@1256130360329371664>"
     ],
-    "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "joinLeaveTracker": true,
+    "clanStatus": "official",
+    "members": [
+      {
+        "tag": "#R9ULP9VQ",
+        "name": "⚡️FlasH⚡️",
+        "thLevel": 18
+      },
+      {
+        "tag": "#8GL0GG822",
+        "name": "Alexvard",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9L802C0VR",
+        "name": "blanc_stan",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9LULR2L22",
+        "name": "Chamberbane",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PVPYCPL9G",
+        "name": "dablu_A",
+        "thLevel": 18
+      },
+      {
+        "tag": "#L90GUPR0Y",
+        "name": "dablu_B",
+        "thLevel": 18
+      },
+      {
+        "tag": "#29LJRUJGQ",
+        "name": "Domínguez [⚜️]",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2GJC22PLR",
+        "name": "el rey de ck",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GL8V2JLGC",
+        "name": "Ferro",
+        "thLevel": 18
+      },
+      {
+        "tag": "#R2JLYVCV",
+        "name": "frob28",
+        "thLevel": 18
+      },
+      {
+        "tag": "#299RC89J9",
+        "name": "GanesH",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PY8LJRCY",
+        "name": "JayJ",
+        "thLevel": 18
+      },
+      {
+        "tag": "#8VPPL8VG0",
+        "name": "Katiee",
+        "thLevel": 18
+      },
+      {
+        "tag": "#G8PRLPP0U",
+        "name": "Néstorx",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YQY0C89J",
+        "name": "Nur",
+        "thLevel": 18
+      },
+      {
+        "tag": "#P0R92292J",
+        "name": "Rimi",
+        "thLevel": 18
+      },
+      {
+        "tag": "#VQ99CQUL",
+        "name": "Onajs",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QGVQCJPVC",
+        "name": "Rocafort",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QCJLJPU9P",
+        "name": "SHIHAB MAHMUD",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9CVV0QLC8",
+        "name": "SLAYER",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LG9QC0PCG",
+        "name": "Zhalek",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9G99LCYQ",
+        "name": "Biplob khan",
+        "thLevel": 17
+      },
+      {
+        "tag": "#PY8JPLUJC",
+        "name": "HT么Anshuman",
+        "thLevel": 17
+      },
+      {
+        "tag": "#PQPQLUGL9",
+        "name": "HT么Anshuman II",
+        "thLevel": 17
+      },
+      {
+        "tag": "#QJU0U0UP2",
+        "name": "iampavel",
+        "thLevel": 17
+      },
+      {
+        "tag": "#Q92QG0CL9",
+        "name": "ORËO",
+        "thLevel": 17
+      },
+      {
+        "tag": "#LJRCJJ9P0",
+        "name": "⚡SPARK⚡",
+        "thLevel": 16
+      },
+      {
+        "tag": "#LUP88JP8Y",
+        "name": "catharsis",
+        "thLevel": 16
+      },
+      {
+        "tag": "#GYYPRRP09",
+        "name": "Darkness",
+        "thLevel": 16
+      },
+      {
+        "tag": "#G8UPGRCLQ",
+        "name": "Sʜɪᴠᴀᴍ×͜×max",
+        "thLevel": 16
+      },
+      {
+        "tag": "#PU9GYRQP9",
+        "name": "Clasher",
+        "thLevel": 15
+      },
+      {
+        "tag": "#YGV8U0YJJ",
+        "name": "Defne",
+        "thLevel": 15
+      },
+      {
+        "tag": "#Y2LJGJ8PP",
+        "name": "Dragon",
+        "thLevel": 15
+      },
+      {
+        "tag": "#QVGR2R0QV",
+        "name": "Grimholder",
+        "thLevel": 15
+      },
+      {
+        "tag": "#YGUCLU9QU",
+        "name": "Inksans",
+        "thLevel": 15
+      },
+      {
+        "tag": "#GLQJJUGLQ",
+        "name": "isenis",
+        "thLevel": 15
+      },
+      {
+        "tag": "#2GQULRRPQ",
+        "name": "Lord Avitus",
+        "thLevel": 15
+      },
+      {
+        "tag": "#PVGQL2C2Q",
+        "name": "sans",
+        "thLevel": 15
+      },
+      {
+        "tag": "#P8PQJ8UVP",
+        "name": "WE ARE AWSOME",
+        "thLevel": 15
+      },
+      {
+        "tag": "#9RRGRR800",
+        "name": "WE ARE BEST",
+        "thLevel": 15
+      },
+      {
+        "tag": "#LPVYLRCQC",
+        "name": "☆SIWAR☆",
+        "thLevel": 14
+      },
+      {
+        "tag": "#Y0R88P2JP",
+        "name": "HT么Anshuman III",
+        "thLevel": 14
+      },
+      {
+        "tag": "#9CQUC8RYP",
+        "name": "Isaac",
+        "thLevel": 14
+      },
+      {
+        "tag": "#QGV8G2CP",
+        "name": "Goudse Mocro",
+        "thLevel": 13
+      },
+      {
+        "tag": "#YGJYGP8GR",
+        "name": "ALPHA WARRIOR",
+        "thLevel": 13
+      }
+    ],
+    "membersReplace": [
+      {
+        "tag": "#9LR0VVQRU",
+        "name": "karthick",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9Q2VGQP2",
+        "name": "vaibhav",
+        "thLevel": 17
+      },
+      {
+        "tag": "#8U0C9JRY",
+        "name": "ShadowBl4d3",
+        "thLevel": 16
+      },
+      {
+        "tag": "#2LJGR8PU9",
+        "name": "⚡Boruto⚡",
+        "thLevel": 13
+      },
+      {
+        "tag": "#Y08209QGL",
+        "name": "Koushik™",
+        "thLevel": 13
+      },
+      {
+        "tag": "#9VUCQGUVR",
+        "name": "Sahil Negi",
+        "thLevel": 13
+      }
+    ],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 1,
+      "TH17": 0,
+      "TH16": 0,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 1
+    },
+    "rulesConfig": {
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "https://api-assets.clashofclans.com/badges/512/eYG_s56AxbXMthYHwzvsHiUJxuuPVCVAHou4emOn4mA.png",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "name": "Blood Bound",
+      "nickName": "BB",
+      "clanType": "fwa",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2PRJYL99P": {
     "roleId": "1492398681226346607",
@@ -32,7 +505,7 @@
     "nickName": "BL",
     "clanType": "fwa",
     "autoRole": true,
-    "welcomeMessage": false,
+    "welcomeMessage": true,
     "leaders": [
       "<@562951110562938880>"
     ],
@@ -42,8 +515,119 @@
       "<@1256130360329371664>",
       "<@730445144637177927>"
     ],
-    "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "joinLeaveTracker": true,
+    "clanStatus": "official",
+    "members": [],
+    "membersReplace": [],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 1,
+      "TH18": 2,
+      "TH17": 0,
+      "TH16": 0,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 3
+    },
+    "rulesConfig": {
+      "name": "Blood Lust",
+      "nickName": "BL",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2L90V8PYY": {
     "roleId": "1519223238704496680",
@@ -64,7 +648,366 @@
     ],
     "joinLeaveTracker": true,
     "autoRole": true,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [
+      {
+        "tag": "#PYGRC92L",
+        "name": "Arshdeep Nijjar",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2LU9JUJJR",
+        "name": "BOSS",
+        "thLevel": 18
+      },
+      {
+        "tag": "#80R22VQ9",
+        "name": "DIZ NUTS",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GUVC8P2GV",
+        "name": "Dragon Purist",
+        "thLevel": 18
+      },
+      {
+        "tag": "#29GGQ0G88",
+        "name": "dragonblade",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GQCCVPURV",
+        "name": "EmInShadow",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QC2QRC22C",
+        "name": "MINI ZONE",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LCJQ9YU09",
+        "name": "nikki",
+        "thLevel": 18
+      },
+      {
+        "tag": "#G8LUVJPPL",
+        "name": "ꜱɪʟᴠᴇʀᴀʀʀᴏᴡ",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GG8CYP9Y",
+        "name": "trilliam",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GGJUC02UL",
+        "name": "Zer0",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YPUUJRGRR",
+        "name": "71121",
+        "thLevel": 17
+      },
+      {
+        "tag": "#2CJ8P2QPY",
+        "name": "Dovydas",
+        "thLevel": 17
+      },
+      {
+        "tag": "#80UJ0UQQ0",
+        "name": "Fendi",
+        "thLevel": 17
+      },
+      {
+        "tag": "#QRCGJVQVC",
+        "name": "Sub - zero",
+        "thLevel": 17
+      },
+      {
+        "tag": "#PPP2JCQG8",
+        "name": "Ash",
+        "thLevel": 16
+      },
+      {
+        "tag": "#VLQRRCG8",
+        "name": "lil burt",
+        "thLevel": 16
+      },
+      {
+        "tag": "#LG9YCQG0U",
+        "name": "R E D D Y ! !",
+        "thLevel": 16
+      },
+      {
+        "tag": "#QQYGYGU9V",
+        "name": "Niloy 93",
+        "thLevel": 13
+      },
+      {
+        "tag": "#GCPYRR2QU",
+        "name": "Her0",
+        "thLevel": 18,
+        "role": "member"
+      },
+      {
+        "tag": "#Q99Y2JP8U",
+        "name": "亗『CHHETRI』亗",
+        "thLevel": 18
+      },
+      {
+        "tag": "#8P908J9UV",
+        "name": "亗『YOGESH』亗",
+        "thLevel": 18
+      },
+      {
+        "tag": "#90RLRCJGC",
+        "name": "Ｏｂｉｔｏ Ｋｕｎ",
+        "thLevel": 17
+      },
+      {
+        "tag": "#8VULVR2LV",
+        "name": "AK - 47",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LG8G8GGR",
+        "name": "あＲｏｎｎ",
+        "thLevel": 17
+      },
+      {
+        "tag": "#PPQG9P0RP",
+        "name": "GLÁDÍÃTØR",
+        "thLevel": 18,
+        "role": "member"
+      },
+      {
+        "tag": "#8VPPL8VG0",
+        "name": "Katiee",
+        "thLevel": 18,
+        "role": "coLeader"
+      },
+      {
+        "tag": "#202GLJU2G",
+        "name": "YenniferLee",
+        "thLevel": 17
+      },
+      {
+        "tag": "#PCCLRRRVG",
+        "name": "Raftaar2✌️✌️",
+        "thLevel": 18
+      },
+      {
+        "tag": "#P2GJ0V9P2",
+        "name": "Rezu",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PCJLGCQ8L",
+        "name": "Looner",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2LRLLGLY",
+        "name": "rblundie",
+        "thLevel": 15
+      },
+      {
+        "tag": "#8CGUQPGJV",
+        "name": "Danger Boy",
+        "thLevel": 17
+      },
+      {
+        "tag": "#G08G8LVR",
+        "name": "TheJolyPoly",
+        "thLevel": 17
+      },
+      {
+        "tag": "#99VYCJ2GG",
+        "name": "amony",
+        "thLevel": 15
+      },
+      {
+        "tag": "#YC8YG298Y",
+        "name": "Dody",
+        "thLevel": 17
+      },
+      {
+        "tag": "#9GLY0QG9R",
+        "name": "Silent Killer",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QVJC88P0G",
+        "name": "мαχωαя gαмιηg",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QJY9V2UUY",
+        "name": "Wolf",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2UP9PLR99",
+        "name": "Assass1n",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9LUQU0G9G",
+        "name": "Dur e Najaf",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GV28U0Y2P",
+        "name": "HealthMinistry",
+        "thLevel": 15
+      },
+      {
+        "tag": "#GJ22RCL",
+        "name": "Weneki",
+        "thLevel": 17,
+        "role": "member"
+      },
+      {
+        "tag": "#Q82UQGGPG",
+        "name": "LYSANDER",
+        "thLevel": 19,
+        "role": "member"
+      },
+      {
+        "tag": "#U0LJJG",
+        "name": "The Lonely Clan",
+        "thLevel": 19,
+        "role": "member"
+      }
+    ],
+    "membersReplace": [
+      {
+        "tag": "#80UJ0UQQ0",
+        "name": "Fendi",
+        "thLevel": 17
+      },
+      {
+        "tag": "#GQUP9VRJ",
+        "name": "JONG ❤❤",
+        "thLevel": 17
+      },
+      {
+        "tag": "#LG8G8GGR",
+        "name": "あＲｏｎｎ",
+        "thLevel": 17
+      }
+    ],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 1,
+      "TH17": 1,
+      "TH16": 0,
+      "TH15": 4,
+      "TH14": 0,
+      "total": 6
+    },
+    "rulesConfig": {
+      "title": "{clanName} Rules",
+      "image": "https://media.discordapp.net/attachments/1521070384869408868/1563153642037444699/Gemini_Generated_Image_9q45s59q45s59q45.jpg?ex=6adc97c6&is=6adb4646&hm=ba3c937482b4a87ab0787f89e7f8c9e236b44dc299fc0df3bcc20c57bad20d4c&=&format=webp&width=1536&height=857",
+      "thumbnail": "https://api-assets.clashofclans.com/badges/512/EGs925iIFQd7CaZZevyV6DpVNuSbUp1KssH0txD8F_I.png",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#9000ff",
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases should be changed compulsry",
+            "100% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: [Website](clashofclans-layouts.com]",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases should be changed compulsry\n100% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** Need a base? Visit: [Website](clashofclans-layouts.com]\n\n🔁 **After war ends:**\nAfter war ends: Switch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Don't change your fwanbase to a real war base",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Don't change your fwanbase to a real war base\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks"
+        }
+      },
+      "name": "Blood Zero",
+      "nickName": "BZ",
+      "clanType": "fwa",
+      "rules": [
+        "Follow war rules of clan mail. Not doing so may result in a strike.",
+        "Always use both war attacks.",
+        "Be responsive to the in - game and discord pings",
+        "Get confirmation from leaders before upgrading your townhall.",
+        "No rushed accounts/alts allowed in main clan",
+        "Kindly complete all 6 attacks of clan capital raid weekend.",
+        "Note: clan has relaxed environment. No d+r rule here."
+      ]
+    }
   },
   "#2L80RLGJ8": {
     "roleId": "1394697516313739404",
@@ -86,7 +1029,118 @@
       "<@1345003406409994310>"
     ],
     "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [],
+    "membersReplace": [],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 1,
+      "TH17": 1,
+      "TH16": 0,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 2
+    },
+    "rulesConfig": {
+      "name": "☠️#Team☠Legend☠",
+      "nickName": "TL",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2Y9G28C9Q": {
     "roleId": "1408284979590467655",
@@ -104,10 +1158,122 @@
     ],
     "coLeaders": [
       "<@712700922807189504>",
-      "<@1299282477076058156>"
+      "<@1299282477076058156>",
+      "<@1179429119524610058>"
     ],
     "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [],
+    "membersReplace": [],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 0,
+      "TH17": 0,
+      "TH16": 0,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 0
+    },
+    "rulesConfig": {
+      "name": "Impéríal_Kingz",
+      "nickName": "IK",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2YUPCY9GV": {
     "roleId": "1420294321055203380",
@@ -124,11 +1290,401 @@
       "<@1393061101838532630>"
     ],
     "coLeaders": [
-      "<@1299282477076058156>",
-      "<@1508850684613890209>"
+      "<@910063105403400243>"
     ],
     "joinLeaveTracker": true,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [
+      {
+        "tag": "#Y82VCQGJL",
+        "name": "Krish-Da-Mighty",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QULCUVYPY",
+        "name": "L8THAL",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YY2QVU8Q8",
+        "name": "shiv",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GG0RGVPG2",
+        "name": "Ayush 3",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LU0YGGUYV",
+        "name": "! K I N G !",
+        "thLevel": 17
+      },
+      {
+        "tag": "#Y2YJ80RCP",
+        "name": "$$AVIRAL ROCK$$",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9PPVU820G",
+        "name": "VICIOUS",
+        "thLevel": 17
+      },
+      {
+        "tag": "#P28PJPP0Q",
+        "name": "JoLL ur fav Boy",
+        "thLevel": 18
+      },
+      {
+        "tag": "#L0V9V0990",
+        "name": "`°'JohN_❌_WiCk'",
+        "thLevel": 10
+      },
+      {
+        "tag": "#GUUQU00L8",
+        "name": "Akioo",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GUUQUPC2R",
+        "name": "Wolf",
+        "thLevel": 18
+      },
+      {
+        "tag": "#C0CPQQQ9",
+        "name": "Lucas",
+        "thLevel": 18
+      },
+      {
+        "tag": "#G92VP8PQV",
+        "name": "Aken",
+        "thLevel": 18
+      },
+      {
+        "tag": "#P88U00LRV",
+        "name": "DEEPAK PATEL#",
+        "thLevel": 17
+      },
+      {
+        "tag": "#R8VR899J9",
+        "name": "Mld",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2VQ0RL289",
+        "name": "scammer",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LQQYJ8JU9",
+        "name": "$$AVIRAL$$",
+        "thLevel": 16
+      },
+      {
+        "tag": "#P00R28R2R",
+        "name": "Luffy",
+        "thLevel": 16
+      },
+      {
+        "tag": "#PUJC8CLYP",
+        "name": "KING KHAN",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YP2RV8Y0J",
+        "name": "Zamo",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QLQ2LR20V",
+        "name": "JustAmo",
+        "thLevel": 13
+      },
+      {
+        "tag": "#288PGPPC",
+        "name": "Kirbs",
+        "thLevel": 18
+      },
+      {
+        "tag": "#JUYUUPP",
+        "name": "ROSHAN",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YC92LG28C",
+        "name": "A$$asin",
+        "thLevel": 16
+      },
+      {
+        "tag": "#GPQUYPL8Y",
+        "name": "psiomega",
+        "thLevel": 14
+      },
+      {
+        "tag": "#GGG0LC8RR",
+        "name": "Night owl",
+        "thLevel": 14
+      },
+      {
+        "tag": "#CCQGCLV0",
+        "name": "CastieL",
+        "thLevel": 15
+      },
+      {
+        "tag": "#QJLPQLYQJ",
+        "name": "Shkembo",
+        "thLevel": 15
+      },
+      {
+        "tag": "#9QJG8YGYP",
+        "name": "pranav",
+        "thLevel": 17
+      },
+      {
+        "tag": "#2C82QRVYV",
+        "name": "Just_Om",
+        "thLevel": 17
+      },
+      {
+        "tag": "#PQ99V8CR2",
+        "name": "Aichi_Kun",
+        "thLevel": 16
+      },
+      {
+        "tag": "#9VLQGUV8U",
+        "name": "Magwaa V2",
+        "thLevel": 16
+      },
+      {
+        "tag": "#PLYQVU2G2",
+        "name": "Magwaa V3",
+        "thLevel": 16
+      },
+      {
+        "tag": "#9098JCCUU",
+        "name": "N A X I D",
+        "thLevel": 16
+      },
+      {
+        "tag": "#9QG0PVJG8",
+        "name": "MaHaDeV ❤️",
+        "thLevel": 13
+      },
+      {
+        "tag": "#QQ8PYQ0GG",
+        "name": "Sub - zero 2.0",
+        "thLevel": 15
+      },
+      {
+        "tag": "#99GQGCG8L",
+        "name": "Deepak",
+        "thLevel": 17
+      },
+      {
+        "tag": "#G2RJ0CQJL",
+        "name": "raftaar..✌️✌️",
+        "thLevel": 17
+      },
+      {
+        "tag": "#JCLJVP89",
+        "name": "EPIIC",
+        "thLevel": 18
+      },
+      {
+        "tag": "#JGQJ0Q02",
+        "name": "Fnd",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2CLLR292",
+        "name": "Fnd 1.0",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2802JCUJ0",
+        "name": "Forsaken",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9LQ0YPLGC",
+        "name": "ICY",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GCYVGQQP0",
+        "name": "JustBumi",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2VGCPURQ",
+        "name": "mahmoud11809",
+        "thLevel": 18
+      },
+      {
+        "tag": "#209P9VPL2",
+        "name": "Murtuza T",
+        "thLevel": 18
+      },
+      {
+        "tag": "#292YGQ2",
+        "name": "Suddenimpact04",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GRJURYRJP",
+        "name": "Tony",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YPJJ2RYRJ",
+        "name": "VIRAJ 2.0",
+        "thLevel": 18
+      },
+      {
+        "tag": "#99LG2GYQL",
+        "name": "Vîçký Dâff",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LLP0R2QGP",
+        "name": "bicter",
+        "thLevel": 14,
+        "role": "member"
+      }
+    ],
+    "membersReplace": [
+      {
+        "tag": "#YP2RV8Y0J",
+        "name": "Zamo",
+        "thLevel": 18
+      },
+      {
+        "tag": "#G2RJ0CQJL",
+        "name": "raftaar..✌️✌️",
+        "thLevel": 17
+      }
+    ],
+    "presentRotation": {
+      "TH19": {
+        "count": 1,
+        "rotationId": 1,
+        "players": [
+          {
+            "playerName": "Lord of Wars",
+            "playerTag": "#999YLYL02",
+            "ticketId": "TICKET-184",
+            "dateTime": "2026-11-23T06:58:09.066Z",
+            "clanTag": "#2YUPCY9GV",
+            "thLevel": "TH19",
+            "rotationId": 1,
+            "channelId": "1574286364416024597"
+          }
+        ]
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 1,
+      "TH18": 7,
+      "TH17": 3,
+      "TH16": 0,
+      "TH15": 3,
+      "TH14": 2,
+      "total": 16
+    },
+    "rulesConfig": {
+      "title": "Before you go in : ",
+      "image": "https://media.discordapp.net/attachments/1521070384869408868/1563153642566193214/Gemini_Generated_Image_549ks9549ks9549k.jpg?ex=6adc97c6&is=6adb4646&hm=0601b852c281de2f164bd782b7e53e647f19ad04a2a873dff10bc4652b3d889e&=&format=webp&width=1536&height=857",
+      "thumbnail": "https://api-assets.clashofclans.com/badges/512/zAh2c6jXbsJTqwoNNQQt1a8oSWlflCvjWhUtEPh8ip4.png",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#ffffff",
+      "name": "dragon warriors",
+      "nickName": "DW",
+      "clanType": "fwa",
+      "rules": [
+        "Follow war rules of clan mail. Not doing so may result in a strike.",
+        "Always use both war attacks.",
+        "Be responsive to the in - game and discord pings",
+        "Get confirmation from leaders before upgrading your townhall.",
+        "No rushed accounts/alts allowed in main clan",
+        "Kindly complete all 6 attacks of clan capital raid weekend.",
+        "Note: clan has relaxed environment. No d+r rule here."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2L80LY0CP": {
     "roleId": "1429740872614023309",
@@ -149,7 +1705,325 @@
       "<@976081743859822612>"
     ],
     "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [
+      {
+        "tag": "#9J208Y022",
+        "name": "☣️Lazykiller☣️",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PJG9CC8R",
+        "name": "ALBION",
+        "thLevel": 18
+      },
+      {
+        "tag": "#Q0R29PLJ8",
+        "name": "ALBION 13",
+        "thLevel": 18
+      },
+      {
+        "tag": "#92LQGC20Q",
+        "name": "ALBION 15",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YY8G209VL",
+        "name": "ALBION 2",
+        "thLevel": 18
+      },
+      {
+        "tag": "#Q00Y82UVY",
+        "name": "ALBION 3",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PPG8CYVPC",
+        "name": "ALBION 9",
+        "thLevel": 18
+      },
+      {
+        "tag": "#Y9Y2UYG9R",
+        "name": "CLASTON",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LYPPQYR2C",
+        "name": "Ｄｉｌｗａｌｅ♡",
+        "thLevel": 18
+      },
+      {
+        "tag": "#L0YRLR08R",
+        "name": "DILWALE❤",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GJRR9J890",
+        "name": "fenix",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2PPYR2PR0",
+        "name": "Lv.Max lashon™",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YLR0C2VV0",
+        "name": "m m the great",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9JR0PLC0L",
+        "name": "Moond",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LY0Y88JPP",
+        "name": "N€®®¥™",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9YJUY0G9Q",
+        "name": "NERRY",
+        "thLevel": 18
+      },
+      {
+        "tag": "#98JR0R0Q",
+        "name": "NERRY..Max™",
+        "thLevel": 18
+      },
+      {
+        "tag": "#8UQPG0VQC",
+        "name": "NERRY™",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YR2YYU2LY",
+        "name": "NoISY々2 0 0 2",
+        "thLevel": 18
+      },
+      {
+        "tag": "#Q2RLV29LV",
+        "name": "ɴᴀʜɪʏᴀɴ✔︎",
+        "thLevel": 18
+      },
+      {
+        "tag": "#P9CULJJP9",
+        "name": "Optimus Prime‿",
+        "thLevel": 18
+      },
+      {
+        "tag": "#L0QV92YG9",
+        "name": "Rusher ✅",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YG9PQJJV2",
+        "name": "saravana",
+        "thLevel": 18
+      },
+      {
+        "tag": "#22C2GCGR9",
+        "name": "thePUNISHER",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LYR8CPRY9",
+        "name": "ÃNgLE_283",
+        "thLevel": 17
+      },
+      {
+        "tag": "#9CYP0G8JY",
+        "name": "bless",
+        "thLevel": 17
+      },
+      {
+        "tag": "#L22C22CR2",
+        "name": "Mr. Fernandes",
+        "thLevel": 17
+      },
+      {
+        "tag": "#Y90CUUC2G",
+        "name": "N£®®¥™",
+        "thLevel": 17
+      },
+      {
+        "tag": "#LVQY88Y8L",
+        "name": "Nasty",
+        "thLevel": 17
+      },
+      {
+        "tag": "#2LVUC9L2J",
+        "name": "Officially_Veer",
+        "thLevel": 17
+      },
+      {
+        "tag": "#9VP0UP9CL",
+        "name": "ZAIN kettavan",
+        "thLevel": 17
+      },
+      {
+        "tag": "#GLG8CCGCG",
+        "name": "Amîshä",
+        "thLevel": 16
+      },
+      {
+        "tag": "#PGYPC8PYV",
+        "name": "Lv.69 lashon™",
+        "thLevel": 16
+      },
+      {
+        "tag": "#YV8UGPCV9",
+        "name": "Sapphire",
+        "thLevel": 16
+      },
+      {
+        "tag": "#LQ2G9R8QJ",
+        "name": "aunagha",
+        "thLevel": 15
+      },
+      {
+        "tag": "#LRYRVRQ0R",
+        "name": "Heavenly Yaksha",
+        "thLevel": 15
+      },
+      {
+        "tag": "#QJC9CQ9VY",
+        "name": "Ice Fury",
+        "thLevel": 16,
+        "role": "member"
+      },
+      {
+        "tag": "#99CGPG8QL",
+        "name": "Lv.13 lashon™",
+        "thLevel": 15
+      },
+      {
+        "tag": "#9JP9RUGLU",
+        "name": "R MADRID BOY",
+        "thLevel": 15
+      },
+      {
+        "tag": "#R0PYVV9P8",
+        "name": "Dushtu Shawarma",
+        "thLevel": 13
+      },
+      {
+        "tag": "#P9R9L2L9P",
+        "name": "Lv.5 lashon™",
+        "thLevel": 13
+      }
+    ],
+    "membersReplace": [],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 1,
+      "TH18": 0,
+      "TH17": 1,
+      "TH16": 0,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 2
+    },
+    "rulesConfig": {
+      "title": "{clanName} Rules",
+      "image": "https://media.discordapp.net/attachments/1427670112533614623/1562042838387007508/New_strike_rules.webp?ex=6ad88d42&is=6ad73bc2&hm=154242a215e0962889c3dba83dbbb0a881d788e19dae32c3afeabb58a4182f5e&=&format=webp&width=1280&height=854",
+      "thumbnail": "https://api-assets.clashofclans.com/badges/512/fNvh9B5bLHJfie6wWP8Gl3gD4ZN4UND6S0qlxacaccY.png",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "name": "CLASHING COBRAS",
+      "nickName": "CC",
+      "clanType": "fwa",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#VYPQC9YP": {
     "roleId": "1504511520971952198",
@@ -171,7 +2045,134 @@
     ],
     "autoRole": true,
     "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [],
+    "membersReplace": [
+      {
+        "tag": "#9URPL9202",
+        "name": "LEGEND",
+        "thLevel": 18
+      },
+      {
+        "tag": "#P2228VVY8",
+        "name": "Legendary",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YQ0Q8RUUY",
+        "name": "ROHIT",
+        "thLevel": 18
+      }
+    ],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 1,
+      "TH17": 1,
+      "TH16": 0,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 2
+    },
+    "rulesConfig": {
+      "name": "KOLKATA CITY 09",
+      "nickName": "KC",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2G2PR2YYQ": {
     "roleId": "1510263557999169627",
@@ -190,29 +2191,97 @@
       "<@1510236564813385859>"
     ],
     "joinLeaveTracker": false,
-    "clanStatus": "official"
-  },
-  "#2VR8VG2Y": {
-    "roleId": "1518669387496816783",
-    "leaderRoleId": "1518669386041397510",
-    "channelId": "1518669409906987209",
-    "mailChannelId": "1518669399974875280",
-    "leadChannelId": "1518669398167257198",
-    "feedChannelId": "1518669411907801148",
-    "clanType": "fwa",
-    "nickName": "CFW",
-    "welcomeMessage": false,
-    "leaders": [
-      "<@562951110562938880>"
-    ],
-    "coLeaders": [
-      "<@1315947502226247692>",
-      "<@1256130360329371664>",
-      "<@1393061101838532630>"
-    ],
-    "joinLeaveTracker": true,
-    "autoRole": true,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [],
+    "membersReplace": [],
+    "rulesConfig": {
+      "name": "BWC",
+      "nickName": "BWC",
+      "clanType": "war",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#ULY0Q9G": {
     "roleId": "1524774373473517811",
@@ -232,7 +2301,136 @@
       "<@827125642256056371>"
     ],
     "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [
+      {
+        "tag": "#LG2YU0PJC",
+        "name": "Rayyan",
+        "thLevel": 18,
+        "role": "admin"
+      }
+    ],
+    "membersReplace": [],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 1,
+        "rotationId": 1,
+        "players": [
+          {
+            "playerName": "GOKU",
+            "playerTag": "#GRRJ29JVG",
+            "ticketId": "TICKET-182",
+            "dateTime": "2026-11-22T12:37:13.944Z",
+            "clanTag": "#ULY0Q9G",
+            "thLevel": "TH18",
+            "rotationId": 1,
+            "channelId": "1574035994263425086"
+          }
+        ]
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 1,
+      "TH17": 2,
+      "TH16": 0,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 3
+    },
+    "rulesConfig": {
+      "name": "# Happy Devil #",
+      "nickName": "HD",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2GPCPRL29": {
     "roleId": "1525172164255551488",
@@ -251,7 +2449,97 @@
       "<@1496768315727806535>"
     ],
     "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [],
+    "membersReplace": [],
+    "rulesConfig": {
+      "name": "Empire of Nir",
+      "nickName": "EON",
+      "clanType": "war",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2J00P2QUP": {
     "roleId": "1540269671469682758",
@@ -271,7 +2559,139 @@
       "<@976081743859822612>"
     ],
     "joinLeaveTracker": false,
-    "clanStatus": "official"
+    "clanStatus": "official",
+    "members": [
+      {
+        "tag": "#QV8CV8U20",
+        "name": "Shaki2.0",
+        "thLevel": 13
+      },
+      {
+        "tag": "#9J2Q20QGY",
+        "name": "PH CHAD",
+        "thLevel": 13
+      },
+      {
+        "tag": "#PU00Y80PR",
+        "name": "kalyan2",
+        "thLevel": 13
+      },
+      {
+        "tag": "#LL8CJPYC9",
+        "name": "K A O R I <3",
+        "thLevel": 13
+      }
+    ],
+    "membersReplace": [],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 1,
+      "TH17": 1,
+      "TH16": 1,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 3
+    },
+    "rulesConfig": {
+      "name": "CLASHING VIPERS",
+      "nickName": "CV",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2RUJCRPVJ": {
     "roleId": "1541737915909144676",
@@ -287,11 +2707,249 @@
       "<@1179429119524610058>"
     ],
     "coLeaders": [
-      "<@667011170229682201>"
+      "<@667011170229682201>",
+      "<@777032533568127018>"
     ],
     "joinLeaveTracker": true,
     "clanStatus": "official",
-    "autoRole": true
+    "autoRole": true,
+    "members": [
+      {
+        "tag": "#GJUP8RYQ9",
+        "name": "Ash",
+        "thLevel": 19
+      },
+      {
+        "tag": "#GLCQ2Y899",
+        "name": "DungKatori",
+        "thLevel": 19
+      },
+      {
+        "tag": "#9PULY22P2",
+        "name": "Farhan",
+        "thLevel": 19
+      },
+      {
+        "tag": "#8U2V9Y292",
+        "name": "Farhan©Emperor™",
+        "thLevel": 19
+      },
+      {
+        "tag": "#99UCRPJ8Q",
+        "name": "Ghost rider",
+        "thLevel": 19
+      },
+      {
+        "tag": "#QY00UV9PC",
+        "name": "GOD OF NORD",
+        "thLevel": 19
+      },
+      {
+        "tag": "#9VG02Q882",
+        "name": "HACKER",
+        "thLevel": 19
+      },
+      {
+        "tag": "#2GRPYQ8GJ",
+        "name": "ImBumi",
+        "thLevel": 19
+      },
+      {
+        "tag": "#20RVL2GY8",
+        "name": "MONKEY D LUFFY",
+        "thLevel": 19
+      },
+      {
+        "tag": "#988Y9RUYR",
+        "name": "Naruto",
+        "thLevel": 19
+      },
+      {
+        "tag": "#Q8VYCR988",
+        "name": "Noko-tan 鹿",
+        "thLevel": 19
+      },
+      {
+        "tag": "#LLCPLGPJG",
+        "name": "PRINCE",
+        "thLevel": 19
+      },
+      {
+        "tag": "#R9GP9R",
+        "name": "Scarlet",
+        "thLevel": 19
+      },
+      {
+        "tag": "#GJ99YRCUP",
+        "name": "! ♡ L o K i ♡ !",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QCGJPLPP0",
+        "name": "⚡maxwar⚡",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9RCGYG9GR",
+        "name": "Abhijeet",
+        "thLevel": 18
+      },
+      {
+        "tag": "#UYUC2R0V",
+        "name": "AKMAL KHAN",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YJYGL09Y9",
+        "name": "anahita",
+        "thLevel": 18
+      },
+      {
+        "tag": "#Q220G80JL",
+        "name": "Areeb CH",
+        "thLevel": 18
+      },
+      {
+        "tag": "#Y980UPGJU",
+        "name": "BATMAN",
+        "thLevel": 18
+      },
+      {
+        "tag": "#Q0RPLJR80",
+        "name": "Divine General",
+        "thLevel": 18
+      },
+      {
+        "tag": "#G9CLJCVL",
+        "name": "dukie69",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GPY2L9PGU",
+        "name": "Eugene",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QC0PRLP88",
+        "name": "P R I N C E",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YG22YYVYC",
+        "name": "PRANAV14124",
+        "thLevel": 18
+      }
+    ],
+    "membersReplace": [],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 7,
+      "TH17": 4,
+      "TH16": 2,
+      "TH15": 1,
+      "TH14": 1,
+      "total": 15
+    },
+    "rulesConfig": {
+      "title": "{clanName} Rules",
+      "image": "https://cdn.discordapp.com/attachments/1352883238825103432/1563162767433670706/1792493773999.png?ex=6adca045&is=6adb4ec5&hm=382b3737f4dcaea7b1fa33d389b7fd34761113264bcf28e62da2e923a39d6139",
+      "thumbnail": "https://api-assets.clashofclans.com/badges/512/nc_v39d-3T2Y_WhF7uCh7zsEdPOybkPT1wpTUdBUEk0.png",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#a88c00",
+      "name": "CLASH 2 WIN",
+      "nickName": "C2W",
+      "clanType": "fwa",
+      "rules": [
+        "Be active daily and participate in all wars,cwl and clan events.",
+        "Always use both war attacks — missing 3 b2b wars may lead to kick.",
+        "Minimum 1k clan games points mandatory for everyone.",
+        "If you are going to upgrade townhall take leader's permission first.",
+        "No d/r rule but always try to donate if someone ask.",
+        "Respect all members — Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2LRGQ2L9L": {
     "roleId": "1549799401168306206",
@@ -300,7 +2958,7 @@
     "mailChannelId": "1549799417211523133",
     "leadChannelId": "1549799415236132945",
     "feedChannelId": "1549799422328709290",
-    "clanStatus": "unofficial",
+    "clanStatus": "official",
     "clanType": "fwa",
     "welcomeMessage": true,
     "nickName": "ASR",
@@ -311,26 +2969,176 @@
       "<@1454102900631666815>",
       "<@922410685269434389>"
     ],
-    "joinLeaveTracker": false
-  },
-  "#2U09UQL80": {
-    "roleId": "1551610577007149071",
-    "leaderRoleId": "1551610572921901157",
-    "channelId": "1551610594371698850",
-    "mailChannelId": "1551610589908832298",
-    "leadChannelId": "1551610586520100884",
-    "feedChannelId": "1551610595931979846",
-    "clanStatus": "unofficial",
-    "clanType": "fwa",
-    "welcomeMessage": true,
-    "nickName": "DH",
-    "leaders": [
-      "<@965295354805383228>"
+    "joinLeaveTracker": false,
+    "members": [
+      {
+        "tag": "#CLGVR0VG",
+        "name": "danny",
+        "thLevel": 17,
+        "role": "member"
+      }
     ],
-    "coLeaders": [
-      "<@965295354805383228>"
+    "membersReplace": [
+      {
+        "tag": "#Y9LJGUVPC",
+        "name": "Jashanchahal",
+        "thLevel": 13
+      },
+      {
+        "tag": "#Y9GRPGR00",
+        "name": "Chronicles",
+        "thLevel": 15
+      },
+      {
+        "tag": "#GQG9VPYQ8",
+        "name": "JAAT",
+        "thLevel": 16
+      },
+      {
+        "tag": "#LC0UC20VR",
+        "name": "mlkmahim",
+        "thLevel": 16
+      },
+      {
+        "tag": "#GPUQR9VG9",
+        "name": "JAAT",
+        "thLevel": 17
+      },
+      {
+        "tag": "#9LQVJ9RQU",
+        "name": "K1TERETSU`",
+        "thLevel": 17
+      },
+      {
+        "tag": "#PV0UPQ20Y",
+        "name": "Saquib",
+        "thLevel": 17
+      },
+      {
+        "tag": "#8U02RV92V",
+        "name": "Zultra",
+        "thLevel": 17
+      },
+      {
+        "tag": "#PVGVRRQ20",
+        "name": "αƙԋιʅ",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PQLUVJQP9",
+        "name": "Dipak Kr Mahato",
+        "thLevel": 18
+      }
     ],
-    "joinLeaveTracker": false
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 1,
+      "TH18": 4,
+      "TH17": 5,
+      "TH16": 3,
+      "TH15": 2,
+      "TH14": 2,
+      "total": 16
+    },
+    "rulesConfig": {
+      "name": "A-S-R",
+      "nickName": "ASR",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   },
   "#2LQ2PRJL9": {
     "roleId": "1553773099999039488",
@@ -339,7 +3147,7 @@
     "mailChannelId": "1553773123998978061",
     "leadChannelId": "1553773122254151782",
     "feedChannelId": "1553773128063254718",
-    "clanStatus": "unofficial",
+    "clanStatus": "official",
     "clanType": "fwa",
     "welcomeMessage": true,
     "nickName": "AU",
@@ -349,6 +3157,526 @@
     "coLeaders": [
       "<@1445096112838148269>"
     ],
-    "joinLeaveTracker": false
+    "joinLeaveTracker": false,
+    "autoRole": true,
+    "members": [
+      {
+        "tag": "#2U2220LRV",
+        "name": "KILLER AK......",
+        "thLevel": 17,
+        "role": "member"
+      }
+    ],
+    "membersReplace": [],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 0,
+      "TH17": 1,
+      "TH16": 1,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 2
+    },
+    "rulesConfig": {
+      "name": "Air Hounds Utd",
+      "nickName": "AU",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
+  },
+  "#20JPC9YCU": {
+    "roleId": "1558179699564224722",
+    "leaderRoleId": "1558179696330547261",
+    "channelId": "1558179713355087942",
+    "mailChannelId": "1558179712080019486",
+    "leadChannelId": "1558179709924147335",
+    "feedChannelId": "1558179714663981187",
+    "clanStatus": "official",
+    "clanType": "war",
+    "welcomeMessage": true,
+    "nickName": "KK",
+    "leaders": [
+      "<@869965822553100308>"
+    ],
+    "coLeaders": [
+      "<@869965822553100308>"
+    ],
+    "joinLeaveTracker": false,
+    "members": [],
+    "membersReplace": [],
+    "rulesConfig": {
+      "name": "KK",
+      "nickName": "KK",
+      "clanType": "war",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
+  },
+  "#2VR8VG2Y": {
+    "roleId": "1575093121241579520",
+    "leaderRoleId": "1575093117688741898",
+    "channelId": "1575093134151393342",
+    "mailChannelId": "1575093132373004361",
+    "leadChannelId": "1575093130808791102",
+    "feedChannelId": "1575093146340036620",
+    "clanStatus": "official",
+    "clanType": "fwa",
+    "welcomeMessage": true,
+    "nickName": "CFW",
+    "leaders": [
+      "<@562951110562938880>"
+    ],
+    "coLeaders": [
+      "<@1256130360329371664>",
+      "<@1566676201261633637>"
+    ],
+    "members": [
+      {
+        "tag": "#PLCJ9JYR2",
+        "name": "Clasher",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PGLVGPR2P",
+        "name": "Clasher",
+        "thLevel": 18
+      },
+      {
+        "tag": "#QCGJPLPP0",
+        "name": "⚡maxwar⚡",
+        "thLevel": 18
+      },
+      {
+        "tag": "#Y8R9PQ2YJ",
+        "name": "✨✨TRICKSTAR✨✨",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YGCRCVQPU",
+        "name": "✨✨TRICKSTAR✨✨",
+        "thLevel": 18
+      },
+      {
+        "tag": "#YV92RPCYP",
+        "name": "✨✨TRICKSTAR✨✨",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2JG8QCR0V",
+        "name": "❇️ Chun Hua ❇️",
+        "thLevel": 18
+      },
+      {
+        "tag": "#9GUCC2V2C",
+        "name": "❤️RÍSHÂBH❤️",
+        "thLevel": 18
+      },
+      {
+        "tag": "#8YGVP8C2",
+        "name": "£ m",
+        "thLevel": 18
+      },
+      {
+        "tag": "#LUGRYQR90",
+        "name": "Grey on GFUEL",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GJ8UGJC9",
+        "name": "hades",
+        "thLevel": 18
+      },
+      {
+        "tag": "#RJRCY00U",
+        "name": "Knull",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2JUYPL0P9",
+        "name": "Last Devil",
+        "thLevel": 18
+      },
+      {
+        "tag": "#P20Y9UC0Y",
+        "name": "Looping_Fox",
+        "thLevel": 18
+      },
+      {
+        "tag": "#898G0YGJ9",
+        "name": "ManiChis",
+        "thLevel": 18
+      },
+      {
+        "tag": "#P9RCQ0JVJ",
+        "name": "MR. CRIMINAL",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PJR20U2VP",
+        "name": "MR. CRIMINAL",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2QCRYJVCG",
+        "name": "RAiNma",
+        "thLevel": null
+      },
+      {
+        "tag": "#GC0C0GG9P",
+        "name": "Water",
+        "thLevel": 18
+      },
+      {
+        "tag": "#GCPR9J0LC",
+        "name": "Wind",
+        "thLevel": 18
+      },
+      {
+        "tag": "#P0CJUGR8R",
+        "name": "乃เՇς๏เภ",
+        "thLevel": 18
+      },
+      {
+        "tag": "#2VYP9RC0",
+        "name": "Traboo",
+        "thLevel": 18
+      },
+      {
+        "tag": "#L9YV8QRQ",
+        "name": "ＣＨＵＮ ＨＵＡ",
+        "thLevel": 17
+      },
+      {
+        "tag": "#LC2GV8JCG",
+        "name": "famousang",
+        "thLevel": 17
+      },
+      {
+        "tag": "#P2UQUQ0CR",
+        "name": "MangoNut",
+        "thLevel": 17
+      },
+      {
+        "tag": "#9GG920QPL",
+        "name": "mashir anwar",
+        "thLevel": 17
+      },
+      {
+        "tag": "#Q90C8PYYL",
+        "name": "MR. CRIMINAL",
+        "thLevel": 17
+      },
+      {
+        "tag": "#QJQP0C2LP",
+        "name": "MR.CRIMINAL",
+        "thLevel": 17
+      },
+      {
+        "tag": "#GJG2RLPPG",
+        "name": "ToxicAdi2211",
+        "thLevel": 17
+      },
+      {
+        "tag": "#LC8PQU20",
+        "name": "Thanatos",
+        "thLevel": 17
+      }
+    ],
+    "membersReplace": [
+      {
+        "tag": "#PGLVGPR2P",
+        "name": "Clasher",
+        "thLevel": 18
+      },
+      {
+        "tag": "#PLCJ9JYR2",
+        "name": "Clasher",
+        "thLevel": 18
+      }
+    ],
+    "presentRotation": {
+      "TH19": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      },
+      "TH18": {
+        "count": 0,
+        "rotationId": 1,
+        "players": []
+      }
+    },
+    "recruitments": {
+      "TH19": 0,
+      "TH18": 0,
+      "TH17": 0,
+      "TH16": 0,
+      "TH15": 0,
+      "TH14": 0,
+      "total": 0
+    },
+    "rulesConfig": {
+      "name": "Christ Farm War",
+      "nickName": "CFW",
+      "clanType": "fwa",
+      "title": "{clanName} Rules",
+      "image": "",
+      "thumbnail": "",
+      "footer": {
+        "text": "",
+        "iconURL": ""
+      },
+      "color": "#E74C3C",
+      "rules": [
+        "Be active daily and participate in wars and CWL.",
+        "Always use both war attacks — missing attacks may lead to demotion.",
+        "Donate correct troops only as requested.",
+        "Respect all members — teamwork builds victory.",
+        "No rushed bases allowed in main clan — use feeder clans if needed.",
+        "Maintain a healthy competitive spirit, no toxicity."
+      ],
+      "warrules": {
+        "win": {
+          "header": "🟩 **This war has been declared a win as per FWA rules.**",
+          "title": "⚔️ **WIN WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟩 **This war has been declared a win as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **WIN WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐⭐(3 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐⭐(3 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "lose": {
+          "header": "🟥 **This war has been declared a loss as per FWA rules.**",
+          "title": "⚔️ **LOSE WAR INSTRUCTIONS** ⚔️",
+          "instructions": [
+            "1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)",
+            "2nd attack - ⭐(1 Star) on any base.",
+            "Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)"
+          ],
+          "important": [
+            "Use both attacks",
+            "No extra attacks without permission",
+            "Don’t rush attacks",
+            "Ask if you need help"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🟥 **This war has been declared a loss as per FWA rules.**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n⚔️ **LOSE WAR INSTRUCTIONS** ⚔️\n\n{rarrow} 1st Attack - ⭐⭐(2 Stars) on your mirror (Compulsory)\n{rarrow} 2nd attack - ⭐(1 Star) on any base.\n{rarrow} Last 8 hours - go for ⭐⭐(2 Stars) (clean ups)\n\n📌 **Important**\n\n{rarrow} Use both attacks\n{rarrow} No extra attacks without permission\n{rarrow} Don’t rush attacks\n{rarrow} Ask if you need help"
+        },
+        "bl": {
+          "header": "🛡️ This is a blacklisted war — we're not backing down!",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "goals": [
+            "30 war bases changed",
+            "60% destruction",
+            "Win the war 💪"
+          ],
+          "notes": [
+            "Need a base? Visit: clashofclans-layouts.com",
+            "After war ends: Switch your base back to FWA format immediately!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n🛡️ This is a blacklisted war — we're not backing down!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **War Goals:**\n30 war bases changed\n60% destruction\nWin the war 💪\n\n📚 **Need a base? Visit:** clashofclans-layouts.com\n\n🔁 **After war ends:**\nSwitch your base back to FWA format immediately!"
+        },
+        "mis": {
+          "header": "⚠️ **This is a mismatch war against a non-FWA clan!**",
+          "title": "{cocfight} **Instructions:**",
+          "instructions": [
+            "Change your war base to a real war base — no FWA layouts!",
+            "Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.",
+            "Coordinate with your team for cleanup and efficient hits."
+          ],
+          "important": [
+            "Use both attacks",
+            "Don’t rush attacks",
+            "Switch your base back to FWA format after war ends!"
+          ],
+          "text": "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n⚠️ **This is a mismatch war against a non-FWA clan!**\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n{cocfight} **Instructions:**\n\n🔸 Change your war base to a real war base — no FWA layouts!\n🔸 Attack freely and aim for ⭐️⭐️⭐️ 3 stars on both hits.\n🔸 Coordinate with your team for cleanup and efficient hits.\n\n📌 **Important:**\n\n🔸 Use both attacks\n🔸 Don’t rush attacks\n🔸 Switch your base back to FWA format after war ends!"
+        }
+      }
+    }
   }
 }
