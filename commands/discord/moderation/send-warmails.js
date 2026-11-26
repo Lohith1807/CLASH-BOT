@@ -143,8 +143,8 @@ async function sendWarNotification(client, coc, emojiUtils, clanTag, roleData, a
  */
 async function startAutoMonitoring(client, config, emojiUtils) {
     const coc = require("../../../utils/cocManager.js");
+    const dataManager = require("../../../utils/dataManager.js");
     const STATE_PATH = path.join(__dirname, "../../../data/warState.json");
-    const CLAN_ROLES_PATH = path.join(__dirname, "../../../data/clanrole.json");
     const API_LOGS_ID = process.env.API_LOGS || "1482784031954305024";
 
     const apiLogger = async (msg) => {
@@ -237,8 +237,8 @@ module.exports = {
         try { await interaction.deferReply({ flags: MessageFlags.Ephemeral }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
-            const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
-            const clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf-8"));
+            const dataManager = require("../../../utils/dataManager.js");
+            const clanRoles = dataManager.getClanRoles();
             const clanInput = interaction.options.getString("clan");
 
             const apiLogger = async (msg) => {

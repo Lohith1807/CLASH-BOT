@@ -9,18 +9,12 @@ const path = require("path");
 const DATA_DIR = path.join(__dirname, "../data");
 
 const PATHS = {
-    userdata: path.join(DATA_DIR, "userdata.json"),
-    clanrole: path.join(DATA_DIR, "clanrole.json"),
-    clandata: path.join(DATA_DIR, "clandata.json"),
-    clans: path.join(DATA_DIR, "clans.json"),
     strikeplayers: path.join(DATA_DIR, "strikeplayers.json"),
-    helpData: path.join(DATA_DIR, "helpData.json"),
     ticketTimers: path.join(DATA_DIR, "ticketTimers.json"),
     wartype: path.join(DATA_DIR, "wartype.json"),
     recruitingths: path.join(DATA_DIR, "recruitingths.json"),
     scanwar: path.join(DATA_DIR, "scanwar.json"),
-    strikecounters: path.join(DATA_DIR, "strikecounters.json"),
-    ticketData: path.join(DATA_DIR, "ticketData.json")
+    strikecounters: path.join(DATA_DIR, "strikecounters.json")
 };
 
 
@@ -39,46 +33,137 @@ function getStrikePlayers() {
     }
 }
 
+let userDataCache = null;
+let userDataLoadedFromMongo = false;
+let pendingMongoSync = Promise.resolve();
+
 /**
- * Get user data (linked Discord users to CoC accounts)
+ * Load all user records from MongoDB (discord.userdata) into the in-memory cache.
+ * Called automatically by connectToDatabase() on startup.
+ */
+async function initUserDataFromMongo() {
+    try {
+        const { UserData } = require("./mongodb");
+        const docs = await UserData.find({}, { _id: 0, userId: 1, accounts: 1 }).lean();
+        const nextCache = {};
+        for (const doc of docs) {
+            if (doc && doc.userId) {
+                nextCache[doc.userId] = Array.isArray(doc.accounts) ? doc.accounts : [];
+            }
+        }
+        userDataCache = nextCache;
+        userDataLoadedFromMongo = true;
+        console.log(`✅ Loaded ${docs.length} user records from MongoDB (discord.userdata)`);
+    } catch (err) {
+        console.error("Error loading userData from MongoDB:", err.message);
+    }
+}
+
+/**
+ * Wait for any queued MongoDB userData writes to finish
+ */
+function flushUserDataToMongo() {
+    return pendingMongoSync;
+}
+
+/**
+ * Get user data (linked Discord users to CoC accounts) from MongoDB-backed cache
  * @returns {Object} User data object
  */
 function getUserData() {
+    if (userDataCache !== null) {
+        return JSON.parse(JSON.stringify(userDataCache));
+    }
+    return {};
+}
+
+let clanDetailsCache = null;
+let pendingClanDetailsSync = Promise.resolve();
+
+/**
+ * Load all clan details from MongoDB (discord.clandetails) into the in-memory cache.
+ * Called automatically by connectToDatabase() on startup.
+ */
+async function initClanDetailsFromMongo() {
     try {
-        if (!fs.existsSync(PATHS.userdata)) return {};
-        const raw = fs.readFileSync(PATHS.userdata, "utf8");
-        return raw ? JSON.parse(raw) : {};
+        const { ClanDetails } = require("./mongodb");
+        const docs = await ClanDetails.find({}, { _id: 0, key: 1, data: 1 }).lean();
+        const nextCache = {};
+        for (const doc of docs) {
+            if (doc && doc.key) {
+                nextCache[doc.key] = doc.data;
+            }
+        }
+        clanDetailsCache = nextCache;
+        console.log(`✅ Loaded ${docs.length} clan detail records from MongoDB (discord.clandetails)`);
     } catch (err) {
-        console.error("Error reading userdata.json:", err.message);
-        return {};
+        console.error("Error loading clanDetails from MongoDB:", err.message);
     }
 }
 
 /**
- * Read the raw unified clanrole.json store (including _metadata and _defaultRules)
- * @returns {Object} Raw clanrole.json object
+ * Wait for any queued MongoDB clanDetails writes to finish
+ */
+function flushClanDetailsToMongo() {
+    return pendingClanDetailsSync;
+}
+
+/**
+ * Read the raw unified clan details store (including _metadata and _defaultRules) from MongoDB-backed cache
+ * @returns {Object} Raw clan details object
  */
 function readRawClanRoleStore() {
-    try {
-        if (!fs.existsSync(PATHS.clanrole)) return {};
-        const raw = fs.readFileSync(PATHS.clanrole, "utf8");
-        return raw ? JSON.parse(raw) : {};
-    } catch (err) {
-        console.error("Error reading clanrole.json:", err.message);
-        return {};
+    if (clanDetailsCache !== null) {
+        return JSON.parse(JSON.stringify(clanDetailsCache));
     }
+    return {};
 }
 
 /**
- * Write the raw unified clanrole.json store to disk
- * @param {Object} rawStore - Full clanrole.json object
+ * Write the raw unified clan details store to cache and sync diffs to MongoDB (discord.clandetails)
+ * @param {Object} rawStore - Full clan details object
  */
 function writeRawClanRoleStore(rawStore) {
-    try {
-        fs.writeFileSync(PATHS.clanrole, JSON.stringify(rawStore, null, 2));
-    } catch (err) {
-        console.error("Error writing clanrole.json:", err.message);
-        throw err;
+    const prevCache = clanDetailsCache || {};
+    const nextStore = rawStore ? JSON.parse(JSON.stringify(rawStore)) : {};
+    clanDetailsCache = nextStore;
+
+    const ops = [];
+    for (const [key, val] of Object.entries(nextStore)) {
+        const prevVal = prevCache[key];
+        if (!prevVal || JSON.stringify(prevVal) !== JSON.stringify(val)) {
+            ops.push({
+                updateOne: {
+                    filter: { key },
+                    update: { $set: { key, data: val } },
+                    upsert: true
+                }
+            });
+        }
+    }
+
+    for (const oldKey of Object.keys(prevCache)) {
+        if (!Object.prototype.hasOwnProperty.call(nextStore, oldKey)) {
+            ops.push({
+                deleteOne: { filter: { key: oldKey } }
+            });
+        }
+    }
+
+    if (ops.length > 0) {
+        pendingClanDetailsSync = pendingClanDetailsSync.then(async () => {
+            try {
+                const mongoose = require("mongoose");
+                const { ClanDetails, connectToDatabase } = require("./mongodb");
+                if (mongoose.connection.readyState !== 1) {
+                    await connectToDatabase();
+                }
+                if (mongoose.connection.readyState !== 1) return;
+                await ClanDetails.bulkWrite(ops, { ordered: false });
+            } catch (err) {
+                console.error("Error syncing clanDetails to MongoDB (discord.clandetails):", err.message);
+            }
+        });
     }
 }
 
@@ -99,36 +184,6 @@ function getClanRoles() {
 
 
 
-
-/**
- * Get clans data
- * @returns {Object} Clans data object
- */
-function getClans() {
-    try {
-        if (!fs.existsSync(PATHS.clans)) return {};
-        const raw = fs.readFileSync(PATHS.clans, "utf8");
-        return raw ? JSON.parse(raw) : {};
-    } catch (err) {
-        console.error("Error reading clans.json:", err.message);
-        return {};
-    }
-}
-
-/**
- * Get help data for the /help command
- * @returns {Object} Help data object
- */
-function getHelpData() {
-    try {
-        if (!fs.existsSync(PATHS.helpData)) return {};
-        const raw = fs.readFileSync(PATHS.helpData, "utf8");
-        return raw ? JSON.parse(raw) : {};
-    } catch (err) {
-        console.error("Error reading helpData.json:", err.message);
-        return {};
-    }
-}
 
 /**
  * Get ticket timers data
@@ -162,15 +217,51 @@ function getWarType() {
 
 
 /**
- * Save user data
+ * Save user data to in-memory cache and sync diffs to MongoDB (discord.userdata)
  * @param {Object} data - User data to save
  */
 function saveUserData(data) {
-    try {
-        fs.writeFileSync(PATHS.userdata, JSON.stringify(data, null, 2));
-    } catch (err) {
-        console.error("Error writing userdata.json:", err.message);
-        throw err;
+    const prevCache = userDataCache || {};
+    const nextData = data ? JSON.parse(JSON.stringify(data)) : {};
+    userDataCache = nextData;
+
+    const ops = [];
+    for (const [userId, accounts] of Object.entries(nextData)) {
+        const nextArr = Array.isArray(accounts) ? accounts : [];
+        const prevArr = prevCache[userId];
+        if (!prevArr || JSON.stringify(prevArr) !== JSON.stringify(nextArr)) {
+            ops.push({
+                updateOne: {
+                    filter: { userId },
+                    update: { $set: { userId, accounts: nextArr } },
+                    upsert: true
+                }
+            });
+        }
+    }
+
+    for (const oldUserId of Object.keys(prevCache)) {
+        if (!Object.prototype.hasOwnProperty.call(nextData, oldUserId)) {
+            ops.push({
+                deleteOne: { filter: { userId: oldUserId } }
+            });
+        }
+    }
+
+    if (ops.length > 0) {
+        pendingMongoSync = pendingMongoSync.then(async () => {
+            try {
+                const mongoose = require("mongoose");
+                const { UserData, connectToDatabase } = require("./mongodb");
+                if (mongoose.connection.readyState !== 1) {
+                    await connectToDatabase();
+                }
+                if (mongoose.connection.readyState !== 1) return;
+                await UserData.bulkWrite(ops, { ordered: false });
+            } catch (err) {
+                console.error("Error syncing userData to MongoDB (discord.userdata):", err.message);
+            }
+        });
     }
 }
 
@@ -271,19 +362,6 @@ function saveClanRoles(data) {
 
 
 /**
- * Save clans data
- * @param {Object} data - Clans data to save
- */
-function saveClans(data) {
-    try {
-        fs.writeFileSync(PATHS.clans, JSON.stringify(data, null, 2));
-    } catch (err) {
-        console.error("Error writing clans.json:", err.message);
-        throw err;
-    }
-}
-
-/**
  * Save strike players data
  * @param {Object} data - Strike players data to save
  */
@@ -292,19 +370,6 @@ function saveStrikePlayers(data) {
         fs.writeFileSync(PATHS.strikeplayers, JSON.stringify(data, null, 2));
     } catch (err) {
         console.error("Error writing strikeplayers.json:", err.message);
-        throw err;
-    }
-}
-
-/**
- * Save help data
- * @param {Object} data - Help data to save
- */
-function saveHelpData(data) {
-    try {
-        fs.writeFileSync(PATHS.helpData, JSON.stringify(data, null, 2));
-    } catch (err) {
-        console.error("Error writing helpData.json:", err.message);
         throw err;
     }
 }
@@ -1327,10 +1392,14 @@ function removeTrackedRotationTH(th) {
 
 module.exports = {
     getUserData,
+    initUserDataFromMongo,
+    flushUserDataToMongo,
+    initClanDetailsFromMongo,
+    flushClanDetailsToMongo,
+    readRawClanRoleStore,
+    writeRawClanRoleStore,
     getClanRoles,
-    getClans,
     getStrikePlayers,
-    getHelpData,
     getTicketTimers,
     getWarType,
     getRecruitingTHs,
@@ -1374,9 +1443,7 @@ module.exports = {
 
     saveUserData,
     saveClanRoles,
-    saveClans,
     saveStrikePlayers,
-    saveHelpData,
     saveTicketTimers,
     saveWarType,
     saveRecruitingTHs,

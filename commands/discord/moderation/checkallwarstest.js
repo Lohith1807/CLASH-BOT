@@ -254,8 +254,8 @@ module.exports = {
         if (!targetChannel) return interaction.editReply("❌ Target channel not found.");
 
         try {
-            const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
-            const clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf-8"));
+            const dataManager = require("../../../utils/dataManager.js");
+            const clanRoles = dataManager.getClanRoles();
             const results = [];
 
             const apiLogger = async (msg) => {

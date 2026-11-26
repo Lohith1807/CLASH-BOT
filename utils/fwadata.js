@@ -78,7 +78,6 @@ async function fwaClanData(tag, { EmbedBuilder, emoji: emojiUtils, coc, guild })
 
     let lastDate = "";
 
-    const clanRolesPath = path.join(__dirname, "../data/clanrole.json");
     const wwPath = path.join(__dirname, "../data/ww.json");
 
     let wwData = {};
@@ -255,15 +254,13 @@ async function checkFWAWeights(client) {
 
     const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
     const emojiUtils = require("./emoji.js");
+    const dataManager = require("./dataManager.js");
 
-    const clanRolesPath = path.join(__dirname, "../data/clanrole.json");
     let clanRoles = {};
-    if (fs.existsSync(clanRolesPath)) {
-        try {
-            clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf8"));
-        } catch (err) {
-            console.error("Error reading clanrole.json:", err);
-        }
+    try {
+        clanRoles = dataManager.getClanRoles();
+    } catch (err) {
+        console.error("Error loading clanRoles from dataManager:", err);
     }
 
     const lastCheckPath = path.join(__dirname, "../data/ww_last_check.json");

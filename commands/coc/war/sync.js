@@ -172,13 +172,13 @@ async function sendSyncMessage(context, message = null) {
 
     const fs = require("fs");
     const path = require("path");
-    const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
+    const dataManager = require("../../../utils/dataManager.js");
     const statePath = path.join(__dirname, "../../../data/syncState.json");
 
     let initialStarters = [];
-    if (fs.existsSync(clanRolesPath)) {
+    {
         try {
-            const clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf8"));
+            const clanRoles = dataManager.getClanRoles();
             const fwaClans = Object.entries(clanRoles).filter(([t, d]) => d.clanType && d.clanType.toLowerCase() === "fwa");
             const fetchPromises = fwaClans.map(async ([tag, data]) => {
                 const emojiStr = emojiUtils.getEmoji(data.nickName ? data.nickName.toLowerCase() : "") || "";
@@ -288,13 +288,12 @@ async function removeRoleFromAll(context) {
 
 async function sendFillCheckEmbed(context) {
     const { client, config, coc, emoji: emojiUtils, EmbedBuilder } = context;
+    const dataManager = require("../../../utils/dataManager.js");
     const SYNC_CHANNEL_ID = config.SYNC_CHANNEL_ID;
-    const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
     const statePath = path.join(__dirname, "../../../data/syncState.json");
-    if (!fs.existsSync(clanRolesPath)) return;
 
     let clanRoles = {};
-    try { clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf8")); } catch (e) { return; }
+    try { clanRoles = dataManager.getClanRoles(); } catch (e) { return; }
 
     const fwaClans = Object.entries(clanRoles).filter(([, d]) => d.clanType && d.clanType.toLowerCase() === "fwa");
     if (fwaClans.length === 0) return;
@@ -509,12 +508,11 @@ async function cleanSyncChannel(context) {
 
 async function storeAllFwaWarRosters(context) {
     const { coc } = context;
-    const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
+    const dataManager = require("../../../utils/dataManager.js");
     const scanClanCmd = require("./scan-clan.js");
 
     try {
-        if (!fs.existsSync(clanRolesPath)) return;
-        const clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf8"));
+        const clanRoles = dataManager.getClanRoles();
         
         const fwaClans = Object.entries(clanRoles).filter(([t, d]) => d.clanType && d.clanType.toLowerCase() === "fwa");
         
@@ -670,8 +668,8 @@ module.exports = {
         const fs = require("fs");
         const path = require("path");
         const { EmbedBuilder } = require("discord.js");
+        const dataManager = require("../../../utils/dataManager.js");
         const statePath = path.join(__dirname, "../../../data/syncState.json");
-        const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
 
         let state = { messageId: null, starters: [], voteCounts: {} };
         if (fs.existsSync(statePath)) {
@@ -686,9 +684,7 @@ module.exports = {
         const member = interaction.member;
         const CUSTOM_ROLE_ID = "1407320183760224347";
         let clanRoles = {};
-        if (fs.existsSync(clanRolesPath)) {
-            try { clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf8")); } catch (e) { }
-        }
+        try { clanRoles = dataManager.getClanRoles(); } catch (e) { }
 
         const emojiUtils = context.emoji;
         const tickEmoji = emojiUtils.getEmoji("gtick") || "✅";

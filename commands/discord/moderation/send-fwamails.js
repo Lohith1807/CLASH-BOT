@@ -375,8 +375,8 @@ module.exports = {
         try { await interaction.deferReply({ flags: MessageFlags.Ephemeral }); } catch (err) { if (err.code !== 10062) console.error(err); return true; }
 
         try {
-            const clanRolesPath = path.join(__dirname, "../../../data/clanrole.json");
-            const clanRoles = JSON.parse(fs.readFileSync(clanRolesPath, "utf-8"));
+            const dataManager = require("../../../utils/dataManager.js");
+            const clanRoles = dataManager.getClanRoles();
             let successCount = 0;
             let failCount = 0;
             const results = [];
@@ -423,8 +423,8 @@ module.exports = {
 
     async startAutoMonitoring(client, config, emojiUtils) {
         const coc = require("../../../utils/cocManager.js");
+        const dataManager = require("../../../utils/dataManager.js");
         const STATE_PATH = path.join(__dirname, "../../../data/warState.json");
-        const CLAN_ROLES_PATH = path.join(__dirname, "../../../data/clanrole.json");
         const API_LOGS_ID = process.env.API_LOGS || "1482784031954305024";
 
         const apiLogger = async (msg) => {
@@ -445,8 +445,7 @@ module.exports = {
 
         setInterval(async () => {
             try {
-                if (!fs.existsSync(CLAN_ROLES_PATH)) return;
-                const clanRoles = JSON.parse(fs.readFileSync(CLAN_ROLES_PATH, "utf-8"));
+                const clanRoles = dataManager.getClanRoles();
                 let warState = fs.existsSync(STATE_PATH) ? JSON.parse(fs.readFileSync(STATE_PATH, "utf-8")) : {};
 
                 for (const [tag, roleData] of Object.entries(clanRoles)) {

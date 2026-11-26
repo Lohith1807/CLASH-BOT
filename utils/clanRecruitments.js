@@ -6,7 +6,6 @@
 const fs = require('fs');
 const path = require('path');
 
-const CLANROLE_PATH = path.join(__dirname, '../data/clanrole.json');
 const DEFAULT_TRACKED_THS = ['TH19', 'TH18'];
 const ROTATION_LIMIT = 1;
 
@@ -67,7 +66,7 @@ function formatAssignmentDate(isoString) {
 }
 
 /**
- * Safely read recruitment data from unified data/clanrole.json
+ * Safely read recruitment data from unified MongoDB-backed clan details store
  */
 function getRecruitmentData() {
     const defaultMetadata = {
@@ -76,16 +75,8 @@ function getRecruitmentData() {
     };
 
     try {
-        if (!fs.existsSync(CLANROLE_PATH)) {
-            return { _metadata: defaultMetadata };
-        }
-
-        const rawText = fs.readFileSync(CLANROLE_PATH, 'utf8');
-        if (!rawText || !rawText.trim()) {
-            return { _metadata: defaultMetadata };
-        }
-
-        const rawStore = JSON.parse(rawText);
+        const dataManager = require('./dataManager');
+        const rawStore = dataManager.readRawClanRoleStore();
         const data = {
             _metadata: rawStore._metadata ? JSON.parse(JSON.stringify(rawStore._metadata)) : { ...defaultMetadata }
         };
@@ -108,23 +99,18 @@ function getRecruitmentData() {
 
         return data;
     } catch (err) {
-        console.error('[ClanRecruitments] Error reading clanrole.json:', err.message);
+        console.error('[ClanRecruitments] Error reading clan details:', err.message);
         return { _metadata: defaultMetadata };
     }
 }
 
 /**
- * Safely save recruitment data into unified data/clanrole.json
+ * Safely save recruitment data into unified MongoDB-backed clan details store
  */
 function saveRecruitmentData(data) {
     try {
-        let rawStore = {};
-        if (fs.existsSync(CLANROLE_PATH)) {
-            const rawText = fs.readFileSync(CLANROLE_PATH, 'utf8');
-            if (rawText && rawText.trim()) {
-                rawStore = JSON.parse(rawText);
-            }
-        }
+        const dataManager = require('./dataManager');
+        const rawStore = dataManager.readRawClanRoleStore();
 
         if (data && data._metadata) {
             rawStore._metadata = data._metadata;
@@ -150,10 +136,10 @@ function saveRecruitmentData(data) {
             }
         }
 
-        fs.writeFileSync(CLANROLE_PATH, JSON.stringify(rawStore, null, 2), 'utf8');
+        dataManager.writeRawClanRoleStore(rawStore);
         return true;
     } catch (err) {
-        console.error('[ClanRecruitments] Error writing clanrole.json:', err.message);
+        console.error('[ClanRecruitments] Error writing clan details:', err.message);
         return false;
     }
 }

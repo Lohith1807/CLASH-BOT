@@ -811,15 +811,7 @@ client.on(Events.GuildMemberAdd, async (member) => {
 
 
 
-const clanRolesData = require('./data/clanrole.json');
 const { log } = require("console");
-const roleIdMap = {};
-for (const [clanTag, data] of Object.entries(clanRolesData)) {
-  roleIdMap[data.roleId] = {
-    clanTag,
-    channelId: data.channelId
-  };
-}
 
 async function getClanName(clanTag) {
   try {

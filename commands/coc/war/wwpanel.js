@@ -1,14 +1,10 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, StringSelectMenuBuilder, PermissionFlagsBits , MessageFlags } = require('discord.js');
 const { checkPermission } = require('../../../utils/checkPermission.js');
-const fs = require('fs');
-const path = require('path');
-
-const clanRolesPath = path.join(__dirname, '../../../data/clanrole.json');
+const dataManager = require('../../../utils/dataManager.js');
 
 function getClanRoles() {
     try {
-        const raw = fs.readFileSync(clanRolesPath, 'utf8');
-        return JSON.parse(raw);
+        return dataManager.getClanRoles();
     } catch {
         return {};
     }
