@@ -146,7 +146,7 @@ module.exports = {
                         .setColor(0xE74C3C)
                         .setDescription(
                             `You lost this recruitment because you didn't reply in 1 hour, so we sent this player to another clan.\n\n` +
-                            `Please be online when you get pinged. You only get pinged for important things, not silly things.\n\n` +
+                            `Please be online when you get pinged. You only get pinged for important things, not for silly things or reasons.\n\n` +
                             `**Player Details :**\n` +
                             `• **Player Name :** **${playerName}**\n` +
                             `• **Player Tag :** \`${playerTag || 'N/A'}\`\n` +
