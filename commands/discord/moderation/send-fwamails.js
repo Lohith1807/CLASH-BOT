@@ -176,17 +176,26 @@ async function dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clan
                 ? "bl"
                 : (matchType === "Mismatch" ? "mis" : (isWin ? "win" : "lose"));
             const decisionLabel = decisionKey === "win" ? "WIN" : (decisionKey === "lose" ? "LOSE" : (decisionKey === "mis" ? "MISMATCH" : "BLACKLISTED"));
-            const { warCopy, pinMessage } = await dataManager.getClanWarCopyAndPin(clanTag, decisionKey, opponentName);
+            const { warCopy, warCopies, pinMessage, pinMessages } = await dataManager.getClanWarCopyAndPin(clanTag, decisionKey, opponentName);
 
             const leadChannel = await client.channels.fetch(leadChannelId).catch(() => null);
             if (leadChannel && leadChannel.isTextBased()) {
-                if (warCopy) {
-                    await leadChannel.send(`📋 **War Copy (${decisionLabel}) — vs ${opponentName}**`).catch(() => null);
-                    await leadChannel.send(`\`\`\`\n${warCopy}\n\`\`\``).catch(() => null);
+                const mailsToSend = Array.isArray(warCopies) && warCopies.length > 0 ? warCopies : (warCopy ? [warCopy] : []);
+                for (let i = 0; i < mailsToSend.length; i++) {
+                    const label = mailsToSend.length > 1
+                        ? `📋 **War Copy ${i + 1} (${decisionLabel}) — vs ${opponentName}**`
+                        : `📋 **War Copy (${decisionLabel}) — vs ${opponentName}**`;
+                    await leadChannel.send(label).catch(() => null);
+                    await leadChannel.send(`\`\`\`\n${mailsToSend[i]}\n\`\`\``).catch(() => null);
                 }
-                if (pinMessage) {
-                    await leadChannel.send(`📌 **Pin Message (${decisionLabel}) — vs ${opponentName}**`).catch(() => null);
-                    await leadChannel.send(`\`\`\`\n${pinMessage}\n\`\`\``).catch(() => null);
+
+                const pinsToSend = Array.isArray(pinMessages) && pinMessages.length > 0 ? pinMessages : (pinMessage ? [pinMessage] : []);
+                for (let i = 0; i < pinsToSend.length; i++) {
+                    const label = pinsToSend.length > 1
+                        ? `📌 **Pin Message ${i + 1} (${decisionLabel}) — vs ${opponentName}**`
+                        : `📌 **Pin Message (${decisionLabel}) — vs ${opponentName}**`;
+                    await leadChannel.send(label).catch(() => null);
+                    await leadChannel.send(`\`\`\`\n${pinsToSend[i]}\n\`\`\``).catch(() => null);
                 }
             }
         }

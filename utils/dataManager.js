@@ -1676,12 +1676,38 @@ async function getClanWarCopyAndPin(clanTag, decisionKey, opponentName = "Oppone
     }
 
     const warCopyTpl = clanEntry?.warcopy?.[key] || null;
-    const pinTpl = clanEntry?.pinmessage?.[key] || null;
+    const rawPin = clanEntry?.pinmessage?.[key] ?? null;
 
     const replaceOpp = (str) => String(str).replace(/\{oppo(?:n)?entclanname\}/gi, opponentName || "Opponent");
+
+    const extractTemplates = (val) => {
+        if (!val) return [];
+        if (typeof val === "string") return val.trim() ? [replaceOpp(val)] : [];
+        if (Array.isArray(val)) {
+            return val.filter(v => typeof v === "string" && v.trim()).map(replaceOpp);
+        }
+        if (typeof val === "object") {
+            return Object.keys(val)
+                .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+                .map(k => val[k])
+                .filter(v => typeof v === "string" && v.trim())
+                .map(replaceOpp);
+        }
+        return [];
+    };
+
+    const pinMessages = extractTemplates(rawPin);
+    // Also support sibling pinmessage2[key] if defined on the clan record
+    if (clanEntry?.pinmessage2?.[key]) {
+        pinMessages.push(...extractTemplates(clanEntry.pinmessage2[key]));
+    }
+
+    const warCopies = extractTemplates(warCopyTpl);
     return {
-        warCopy: warCopyTpl ? replaceOpp(warCopyTpl) : null,
-        pinMessage: pinTpl ? replaceOpp(pinTpl) : null
+        warCopy: warCopies[0] || null,
+        warCopies,
+        pinMessage: pinMessages[0] || null,
+        pinMessages
     };
 }
 
