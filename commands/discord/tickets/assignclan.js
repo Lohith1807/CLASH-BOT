@@ -705,8 +705,42 @@ module.exports = {
             });
         }
 
-        // 5. Validate Clan from Database
+        // 4.5 Prevent re-assigning if this ticket already has an assigned clan (must use /unassign first)
         const clanRoles = dataManager.getClanRoles();
+        const existingTicketRecord = ticketDataStore.findByChannelId(ticketChannel.id);
+        const ticketRec = existingTicketRecord?.record;
+        const existingAssignedTag = ticketRec?.assignedClanTag || ticketRec?.assignedClan;
+        let existingRotationClanTag = null;
+        if (!existingAssignedTag) {
+            const recData = clanRecruitments.getRecruitmentData();
+            const trackedTHs = clanRecruitments.getTrackedRotationTHs(recData);
+            const tId = existingTicketRecord?.ticketId;
+            for (const [cTag, cData] of Object.entries(recData)) {
+                if (cTag.startsWith('_') || !cData?.presentRotation) continue;
+                for (const thKey of trackedTHs) {
+                    const players = cData.presentRotation[thKey]?.players;
+                    if (Array.isArray(players) && players.some(p => (tId && p.ticketId === tId) || p.channelId === ticketChannel.id)) {
+                        existingRotationClanTag = cTag;
+                        break;
+                    }
+                }
+                if (existingRotationClanTag) break;
+            }
+        }
+        if (existingAssignedTag || existingRotationClanTag) {
+            const existingTag = existingAssignedTag || existingRotationClanTag;
+            const existingClanName = ticketRec?.assignedClanName
+                || ticketRec?.assignedClan
+                || clanRoles?.[existingTag]?.name
+                || clanRoles?.[existingTag]?.nickName
+                || existingTag;
+            return interaction.reply({
+                content: `❌ You can't use \`/assignclan\` again in this ticket — **${existingClanName}** (\`${existingTag}\`) is already assigned.\nTo use this again, you must do \`/unassign\` first and then try again.`,
+                flags: [MessageFlags.Ephemeral]
+            });
+        }
+
+        // 5. Validate Clan from Database
         let clanTag = clanInput.startsWith('#') ? clanInput : '#' + clanInput;
         let clanConfig = clanRoles[clanTag];
 
@@ -988,6 +1022,7 @@ module.exports = {
                         {
                             playerName: player.name,
                             playerTh: player.townHallLevel,
+                            assignedTh: effectiveTh,
                             appliedTag: player.tag
                         }
                     );

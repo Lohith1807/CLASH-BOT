@@ -371,6 +371,25 @@ async function runCheck(cleanTag, playerName, targetUser, message, clanroles, co
                 }
             }
 
+            // Assign TH role based on selected account's Town Hall level
+            if (playerData && playerData.townHallLevel && data && typeof data.getThRoles === "function") {
+                const thRoles = data.getThRoles();
+                const thRoleId = thRoles[String(playerData.townHallLevel)];
+                if (thRoleId) {
+                    let thRole = message.guild.roles.cache.get(thRoleId);
+                    if (!thRole) {
+                        thRole = await message.guild.roles.fetch(thRoleId).catch(() => null);
+                    }
+                    if (thRole) {
+                        await targetMember.roles.add(thRole)
+                            .then(() => results.push(`${tickEmoji} Added TH${playerData.townHallLevel} role (**${thRole.name}**).`))
+                            .catch(() => results.push(`⚠️ Failed to add TH${playerData.townHallLevel} role.`));
+                    } else {
+                        results.push(`⚠️ TH${playerData.townHallLevel} role not found.`);
+                    }
+                }
+            }
+
             if (targetMember.roles.cache.has(GLOBAL_ROLE_ID)) {
                 await targetMember.roles.remove(GLOBAL_ROLE_ID)
                     .then(() => results.push(`${tickEmoji} Removed Global role.`))

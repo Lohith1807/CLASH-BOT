@@ -167,6 +167,30 @@ async function dispatchWarEmbed(client, coc, emojiUtils, clanTag, roleData, clan
     if (channel) {
         const ping = roleData.roleId ? `<@&${roleData.roleId}>` : "";
         await channel.send({ content: ping, embeds: [embed] }).catch(() => null);
+
+        // Send warcopy & pinmessage to clan lead chat ONLY for FWA clans
+        const isFwaClan = (roleData.clanType || "fwa").toLowerCase() === "fwa";
+        const leadChannelId = roleData.leadChannelId && roleData.leadChannelId.trim() !== "" ? roleData.leadChannelId.trim() : null;
+        if (isFwaClan && leadChannelId && typeof dataManager.getClanWarCopyAndPin === "function") {
+            const decisionKey = matchType === "Blacklisted Match"
+                ? "bl"
+                : (matchType === "Mismatch" ? "mis" : (isWin ? "win" : "lose"));
+            const decisionLabel = decisionKey === "win" ? "WIN" : (decisionKey === "lose" ? "LOSE" : (decisionKey === "mis" ? "MISMATCH" : "BLACKLISTED"));
+            const { warCopy, pinMessage } = await dataManager.getClanWarCopyAndPin(clanTag, decisionKey, opponentName);
+
+            const leadChannel = await client.channels.fetch(leadChannelId).catch(() => null);
+            if (leadChannel && leadChannel.isTextBased()) {
+                if (warCopy) {
+                    await leadChannel.send(`📋 **War Copy (${decisionLabel}) — vs ${opponentName}**`).catch(() => null);
+                    await leadChannel.send(`\`\`\`\n${warCopy}\n\`\`\``).catch(() => null);
+                }
+                if (pinMessage) {
+                    await leadChannel.send(`📌 **Pin Message (${decisionLabel}) — vs ${opponentName}**`).catch(() => null);
+                    await leadChannel.send(`\`\`\`\n${pinMessage}\n\`\`\``).catch(() => null);
+                }
+            }
+        }
+
         return true;
     }
     return false;

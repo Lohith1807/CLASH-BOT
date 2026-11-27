@@ -268,6 +268,7 @@ function setAssignedClan(channelId, clanTag, clanName, assignedBy = null, catego
         const store = loadStore();
 
         let playerTh = null;
+        let assignedTh = null;
         let playerName = null;
         let appliedTag = null;
 
@@ -279,10 +280,12 @@ function setAssignedClan(channelId, clanTag, clanName, assignedBy = null, catego
             category = opts.category;
             userId = opts.userId;
             playerTh = opts.playerTh !== undefined ? opts.playerTh : (opts.playerth !== undefined ? opts.playerth : (opts.townHallLevel !== undefined ? opts.townHallLevel : null));
+            assignedTh = opts.assignedTh !== undefined ? opts.assignedTh : null;
             playerName = opts.playerName || opts.name || opts.appliedName || null;
             appliedTag = opts.appliedTag || opts.playerTag || null;
         } else if (extra && typeof extra === 'object') {
             playerTh = extra.playerTh !== undefined ? extra.playerTh : (extra.playerth !== undefined ? extra.playerth : (extra.townHallLevel !== undefined ? extra.townHallLevel : null));
+            assignedTh = extra.assignedTh !== undefined ? extra.assignedTh : null;
             playerName = extra.playerName || extra.name || extra.appliedName || null;
             appliedTag = extra.appliedTag || extra.playerTag || null;
         }
@@ -295,6 +298,11 @@ function setAssignedClan(channelId, clanTag, clanName, assignedBy = null, catego
                     record.assignedClanName = clanName;
                     record.assignedAt = new Date().toISOString();
                     if (assignedBy) record.assignedBy = assignedBy;
+                    if (assignedTh !== null && assignedTh !== undefined) {
+                        record.assignedTh = assignedTh;
+                    } else {
+                        delete record.assignedTh;
+                    }
                     if (playerTh !== null && playerTh !== undefined) {
                         record.playerTh = playerTh;
                         record.playerth = playerTh;
@@ -335,6 +343,7 @@ function setAssignedClan(channelId, clanTag, clanName, assignedBy = null, catego
                 assignedClan: clanName,
                 assignedClanTag: clanTag,
                 assignedClanName: clanName,
+                assignedTh: assignedTh || null,
                 assignedAt: new Date().toISOString(),
                 assignedBy: assignedBy || null
             };
@@ -364,6 +373,7 @@ function clearAssignedClan(channelId) {
                     delete record.assignedClan;
                     delete record.assignedClanTag;
                     delete record.assignedClanName;
+                    delete record.assignedTh;
                     delete record.assignedAt;
                     delete record.assignedBy;
                     saveStore(store);

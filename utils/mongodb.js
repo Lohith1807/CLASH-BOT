@@ -38,6 +38,12 @@ const clanDetailsSchema = new mongoose.Schema({
 }, { timestamps: true });
 const ClanDetails = discordDb.model('ClanDetails', clanDetailsSchema, 'clandetails');
 
+const thRolesSchema = new mongoose.Schema({
+    th: { type: String, required: true, unique: true, index: true },
+    roleId: { type: String, required: true }
+}, { timestamps: true });
+const ThRoles = discordDb.model('ThRoles', thRolesSchema, 'throles');
+
 async function connectToDatabase() {
     if (isConnected && mongoose.connection.readyState === 1) return;
     const connectOpts = {
@@ -67,6 +73,9 @@ async function connectToDatabase() {
             if (typeof dataManager.initClanDetailsFromMongo === 'function') {
                 await dataManager.initClanDetailsFromMongo();
             }
+            if (typeof dataManager.initThRolesFromMongo === 'function') {
+                await dataManager.initThRolesFromMongo();
+            }
         } catch (initErr) {
             console.error("❌ Failed to initialize data from MongoDB:", initErr.message);
         }
@@ -79,5 +88,6 @@ module.exports = {
     connectToDatabase,
     Clan,
     UserData,
-    ClanDetails
+    ClanDetails,
+    ThRoles
 };

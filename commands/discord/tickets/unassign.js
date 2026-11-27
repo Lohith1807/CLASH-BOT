@@ -101,8 +101,9 @@ module.exports = {
 
         const playerTag = ticketData.appliedTag || ticketData.playerTag || existingAssignment?.playerEntry?.playerTag;
         const playerName = ticketData.playerName || ticketData.appliedName || ticketData.name || existingAssignment?.playerEntry?.playerName || "Unknown";
-        const rawTh = ticketData.playerTh || ticketData.playerth || existingAssignment?.thKey;
-        const thKey = rawTh ? clanRecruitments.normalizeTh(rawTh) : (existingAssignment?.thKey || null);
+        const rawTh = ticketData.playerTh || ticketData.playerth;
+        const assignedThKey = ticketData.assignedTh ? clanRecruitments.normalizeTh(ticketData.assignedTh) : null;
+        const thKey = existingAssignment?.thKey || assignedThKey || (rawTh ? clanRecruitments.normalizeTh(rawTh) : null);
         const ticketId = ticketRecord?.ticketId || existingAssignment?.playerEntry?.ticketId || channel.id;
         const reason = interaction.options.getString("reason");
 

@@ -36,6 +36,60 @@ function getStrikePlayers() {
 let userDataCache = null;
 let userDataLoadedFromMongo = false;
 let pendingMongoSync = Promise.resolve();
+let userDataChangeStream = null;
+const userDataIdMap = new Map();
+
+/**
+ * Start a MongoDB Change Stream on discord.userdata so external/live DB edits
+ * immediately update userDataCache in memory.
+ */
+function startUserDataWatch() {
+    if (userDataChangeStream) return;
+    try {
+        const { UserData } = require("./mongodb");
+        const stream = UserData.watch([], { fullDocument: "updateLookup" });
+        userDataChangeStream = stream;
+
+        stream.on("change", (change) => {
+            if (!userDataCache) userDataCache = {};
+            const op = change.operationType;
+            const docId = change.documentKey && change.documentKey._id ? String(change.documentKey._id) : null;
+
+            if (op === "delete") {
+                const uid = docId ? userDataIdMap.get(docId) : null;
+                if (uid) {
+                    delete userDataCache[uid];
+                    userDataIdMap.delete(docId);
+                } else {
+                    initUserDataFromMongo().catch(() => {});
+                }
+                return;
+            }
+
+            const doc = change.fullDocument;
+            if (doc && doc.userId) {
+                if (docId) userDataIdMap.set(docId, doc.userId);
+                userDataCache[doc.userId] = Array.isArray(doc.accounts) ? doc.accounts : [];
+            }
+        });
+
+        stream.on("error", (err) => {
+            console.warn("⚠️ UserData Change Stream error (reconnecting in 5s):", err.message);
+            if (userDataChangeStream === stream) userDataChangeStream = null;
+            stream.close().catch(() => {});
+            const t = setTimeout(() => {
+                initUserDataFromMongo().catch(() => {});
+            }, 5000);
+            if (t.unref) t.unref();
+        });
+
+        stream.on("close", () => {
+            if (userDataChangeStream === stream) userDataChangeStream = null;
+        });
+    } catch (err) {
+        console.warn("⚠️ Could not start UserData Change Stream:", err.message);
+    }
+}
 
 /**
  * Load all user records from MongoDB (discord.userdata) into the in-memory cache.
@@ -44,16 +98,19 @@ let pendingMongoSync = Promise.resolve();
 async function initUserDataFromMongo() {
     try {
         const { UserData } = require("./mongodb");
-        const docs = await UserData.find({}, { _id: 0, userId: 1, accounts: 1 }).lean();
+        const docs = await UserData.find({}, { _id: 1, userId: 1, accounts: 1 }).lean();
         const nextCache = {};
+        userDataIdMap.clear();
         for (const doc of docs) {
             if (doc && doc.userId) {
+                if (doc._id) userDataIdMap.set(String(doc._id), doc.userId);
                 nextCache[doc.userId] = Array.isArray(doc.accounts) ? doc.accounts : [];
             }
         }
         userDataCache = nextCache;
         userDataLoadedFromMongo = true;
         console.log(`✅ Loaded ${docs.length} user records from MongoDB (discord.userdata)`);
+        startUserDataWatch();
     } catch (err) {
         console.error("Error loading userData from MongoDB:", err.message);
     }
@@ -64,6 +121,138 @@ async function initUserDataFromMongo() {
  */
 function flushUserDataToMongo() {
     return pendingMongoSync;
+}
+
+let thRolesCache = null;
+let thRolesChangeStream = null;
+const thRolesIdMap = new Map();
+
+/**
+ * Start a MongoDB Change Stream on discord.throles so external/live DB edits
+ * immediately update thRolesCache in memory.
+ */
+function startThRolesWatch() {
+    if (thRolesChangeStream) return;
+    try {
+        const { ThRoles } = require("./mongodb");
+        const stream = ThRoles.watch([], { fullDocument: "updateLookup" });
+        thRolesChangeStream = stream;
+
+        stream.on("change", (change) => {
+            if (!thRolesCache) thRolesCache = {};
+            const op = change.operationType;
+            const docId = change.documentKey && change.documentKey._id ? String(change.documentKey._id) : null;
+
+            if (op === "delete") {
+                const thKey = docId ? thRolesIdMap.get(docId) : null;
+                if (thKey) {
+                    delete thRolesCache[thKey];
+                    thRolesIdMap.delete(docId);
+                } else {
+                    initThRolesFromMongo().catch(() => {});
+                }
+                return;
+            }
+
+            const doc = change.fullDocument;
+            if (doc && doc.th && doc.roleId) {
+                const thKey = String(doc.th).replace(/^TH/i, "").trim();
+                if (docId) thRolesIdMap.set(docId, thKey);
+                thRolesCache[thKey] = String(doc.roleId).trim();
+            }
+        });
+
+        stream.on("error", (err) => {
+            console.warn("⚠️ ThRoles Change Stream error (reconnecting in 5s):", err.message);
+            if (thRolesChangeStream === stream) thRolesChangeStream = null;
+            stream.close().catch(() => {});
+            const t = setTimeout(() => {
+                initThRolesFromMongo().catch(() => {});
+            }, 5000);
+            if (t.unref) t.unref();
+        });
+
+        stream.on("close", () => {
+            if (thRolesChangeStream === stream) thRolesChangeStream = null;
+        });
+    } catch (err) {
+        console.warn("⚠️ Could not start ThRoles Change Stream:", err.message);
+    }
+}
+
+/**
+ * Load all TH role mappings from MongoDB (discord.throles) into the in-memory cache.
+ */
+async function initThRolesFromMongo() {
+    try {
+        const { ThRoles } = require("./mongodb");
+        const docs = await ThRoles.find({}, { _id: 1, th: 1, roleId: 1 }).lean();
+        const nextCache = {};
+        thRolesIdMap.clear();
+        for (const doc of docs) {
+            if (doc && doc.th && doc.roleId) {
+                const thKey = String(doc.th).replace(/^TH/i, "").trim();
+                if (doc._id) thRolesIdMap.set(String(doc._id), thKey);
+                nextCache[thKey] = String(doc.roleId).trim();
+            }
+        }
+        thRolesCache = nextCache;
+        console.log(`✅ Loaded ${docs.length} TH role records from MongoDB (discord.throles)`);
+        startThRolesWatch();
+    } catch (err) {
+        console.error("Error loading thRoles from MongoDB:", err.message);
+    }
+}
+
+/**
+ * Get TH -> Discord roleId map from MongoDB-backed cache
+ * @returns {Object} e.g. { "19": "1575763435403218975", ... }
+ */
+function getThRoles() {
+    if (thRolesCache !== null) {
+        return { ...thRolesCache };
+    }
+    return {};
+}
+
+/**
+ * Add or update a TH role mapping in MongoDB (discord.throles) and live cache
+ */
+async function setThRole(th, roleId) {
+    const thKey = String(th).replace(/^TH/i, "").replace(/[^0-9]/g, "").trim();
+    const cleanRoleId = String(roleId).replace(/[^0-9]/g, "").trim();
+    if (!thKey || !cleanRoleId) return false;
+
+    const mongoose = require("mongoose");
+    const { ThRoles, connectToDatabase } = require("./mongodb");
+    if (mongoose.connection.readyState !== 1) {
+        await connectToDatabase();
+    }
+    await ThRoles.updateOne(
+        { th: thKey },
+        { $set: { th: thKey, roleId: cleanRoleId } },
+        { upsert: true }
+    );
+    if (!thRolesCache) thRolesCache = {};
+    thRolesCache[thKey] = cleanRoleId;
+    return true;
+}
+
+/**
+ * Remove a TH role mapping from MongoDB (discord.throles) and live cache
+ */
+async function removeThRole(th) {
+    const thKey = String(th).replace(/^TH/i, "").replace(/[^0-9]/g, "").trim();
+    if (!thKey) return false;
+
+    const mongoose = require("mongoose");
+    const { ThRoles, connectToDatabase } = require("./mongodb");
+    if (mongoose.connection.readyState !== 1) {
+        await connectToDatabase();
+    }
+    const res = await ThRoles.deleteOne({ th: thKey });
+    if (thRolesCache) delete thRolesCache[thKey];
+    return res.deletedCount > 0;
 }
 
 /**
@@ -79,6 +268,60 @@ function getUserData() {
 
 let clanDetailsCache = null;
 let pendingClanDetailsSync = Promise.resolve();
+let clanDetailsChangeStream = null;
+const clanDetailsIdMap = new Map();
+
+/**
+ * Start a MongoDB Change Stream on discord.clandetails so external/live DB edits
+ * immediately update clanDetailsCache in memory.
+ */
+function startClanDetailsWatch() {
+    if (clanDetailsChangeStream) return;
+    try {
+        const { ClanDetails } = require("./mongodb");
+        const stream = ClanDetails.watch([], { fullDocument: "updateLookup" });
+        clanDetailsChangeStream = stream;
+
+        stream.on("change", (change) => {
+            if (!clanDetailsCache) clanDetailsCache = {};
+            const op = change.operationType;
+            const docId = change.documentKey && change.documentKey._id ? String(change.documentKey._id) : null;
+
+            if (op === "delete") {
+                const key = docId ? clanDetailsIdMap.get(docId) : null;
+                if (key) {
+                    delete clanDetailsCache[key];
+                    clanDetailsIdMap.delete(docId);
+                } else {
+                    initClanDetailsFromMongo().catch(() => {});
+                }
+                return;
+            }
+
+            const doc = change.fullDocument;
+            if (doc && doc.key) {
+                if (docId) clanDetailsIdMap.set(docId, doc.key);
+                clanDetailsCache[doc.key] = doc.data;
+            }
+        });
+
+        stream.on("error", (err) => {
+            console.warn("⚠️ ClanDetails Change Stream error (reconnecting in 5s):", err.message);
+            if (clanDetailsChangeStream === stream) clanDetailsChangeStream = null;
+            stream.close().catch(() => {});
+            const t = setTimeout(() => {
+                initClanDetailsFromMongo().catch(() => {});
+            }, 5000);
+            if (t.unref) t.unref();
+        });
+
+        stream.on("close", () => {
+            if (clanDetailsChangeStream === stream) clanDetailsChangeStream = null;
+        });
+    } catch (err) {
+        console.warn("⚠️ Could not start ClanDetails Change Stream:", err.message);
+    }
+}
 
 /**
  * Load all clan details from MongoDB (discord.clandetails) into the in-memory cache.
@@ -87,15 +330,18 @@ let pendingClanDetailsSync = Promise.resolve();
 async function initClanDetailsFromMongo() {
     try {
         const { ClanDetails } = require("./mongodb");
-        const docs = await ClanDetails.find({}, { _id: 0, key: 1, data: 1 }).lean();
+        const docs = await ClanDetails.find({}, { _id: 1, key: 1, data: 1 }).lean();
         const nextCache = {};
+        clanDetailsIdMap.clear();
         for (const doc of docs) {
             if (doc && doc.key) {
+                if (doc._id) clanDetailsIdMap.set(String(doc._id), doc.key);
                 nextCache[doc.key] = doc.data;
             }
         }
         clanDetailsCache = nextCache;
         console.log(`✅ Loaded ${docs.length} clan detail records from MongoDB (discord.clandetails)`);
+        startClanDetailsWatch();
     } catch (err) {
         console.error("Error loading clanDetails from MongoDB:", err.message);
     }
@@ -1390,6 +1636,55 @@ function removeTrackedRotationTH(th) {
     }
 }
 
+const DEFAULT_WAR_COPY = {
+    win: "✅WIN WAR against {opponentclanname}✅\n1st attack: mirror for 3 stars.\n2nd attack: any for 1 star.\nLast 12h: every base is free for 3 stars.\n1st attack on MIRROR ONLY even if it is already 3 starred.\n🔥💪Make sure we hit 150 STARS💪🔥",
+    lose: "❌LOSE WAR against {opponentclanname}❌\n1st attack: mirror for 2 stars.\n2nd attack: any for 1 star.\nLast 12hrs: every base free for 2 stars.\n1st attack on MIRROR ONLY even if it is already 2 starred.\n⛔️🚨NO 3 STARS🚨⛔️",
+    mis: ":orange_circle:Mismatch War:crossed_swords:{opponentclanname}\n:white_check_mark:<c5>Use your WAR base</c>\n:punch_tone1:Attack bases you can 3:star:️\n:dart:Let’s win this war!",
+    bl: ":purple_circle:Blacklisted War:crossed_swords:{opponentclanname}\n:white_check_mark:<c5>Use your WAR base</c>\n:punch_tone1:Attack bases you can 3:star:️\n:dart:Let’s win this war!"
+};
+
+const DEFAULT_PIN_MESSAGES = {
+    win: "✅️<c70de00>WIN WAR </c> against <c70de00>{opponentclanname}</c>✅️",
+    lose: "❌️<cff6e78>LOSE WAR </c> against <cff6e78>{opponentclanname}</c>❌️",
+    mis: "🟠<cff9800>MISMATCH WAR </c> against <cff9800>{opponentclanname}</c>🟠",
+    bl: "🟣<c9c27b0>BLACKLISTED WAR </c> against <c9c27b0>{opponentclanname}</c>🟣"
+};
+
+/**
+ * Resolve warcopy and pinmessage strictly from that clan's DB record (discord.clandetails)
+ * and replace only the opponent clan name placeholder.
+ */
+async function getClanWarCopyAndPin(clanTag, decisionKey, opponentName = "Opponent") {
+    const key = ["win", "lose", "mis", "bl"].includes(decisionKey) ? decisionKey : "lose";
+    const normTag = clanTag ? (clanTag.trim().startsWith("#") ? clanTag.trim().toUpperCase() : `#${clanTag.trim().toUpperCase()}`) : null;
+
+    let clanEntry = null;
+    try {
+        const mongoose = require("mongoose");
+        const { ClanDetails } = require("./mongodb");
+        if (mongoose.connection.readyState === 1 && normTag) {
+            const doc = await ClanDetails.findOne({ key: normTag }, { _id: 0, data: 1 }).lean();
+            if (doc && doc.data) clanEntry = doc.data;
+        }
+    } catch (_) {
+        // Fallback to live cache below
+    }
+
+    if (!clanEntry) {
+        const store = readRawClanRoleStore();
+        clanEntry = (normTag && store[normTag]) || (clanTag && store[clanTag]) || null;
+    }
+
+    const warCopyTpl = clanEntry?.warcopy?.[key] || null;
+    const pinTpl = clanEntry?.pinmessage?.[key] || null;
+
+    const replaceOpp = (str) => String(str).replace(/\{oppo(?:n)?entclanname\}/gi, opponentName || "Opponent");
+    return {
+        warCopy: warCopyTpl ? replaceOpp(warCopyTpl) : null,
+        pinMessage: pinTpl ? replaceOpp(pinTpl) : null
+    };
+}
+
 module.exports = {
     getUserData,
     initUserDataFromMongo,
@@ -1455,6 +1750,14 @@ module.exports = {
     updateMailRule,
     addClanRuleEntry,
     removeClanRuleEntry,
+
+    initThRolesFromMongo,
+    getThRoles,
+    setThRole,
+    removeThRole,
+    DEFAULT_WAR_COPY,
+    DEFAULT_PIN_MESSAGES,
+    getClanWarCopyAndPin,
 
     PATHS
 };

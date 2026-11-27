@@ -136,14 +136,17 @@ module.exports = {
         }
 
         let playerName = targetMember.displayName || targetMember.user.username;
+        let playerTh = null;
         if (linkedAccounts && linkedAccounts.length > 0) {
             const mainAccount = linkedAccounts[0];
             playerName = mainAccount.name;
+            playerTh = mainAccount.townHallLevel || mainAccount.thLevel || null;
             try {
                 const cocPlayer = await coc.getPlayer(mainAccount.tag);
                 if (cocPlayer && cocPlayer.name) playerName = cocPlayer.name;
+                if (cocPlayer && cocPlayer.townHallLevel) playerTh = cocPlayer.townHallLevel;
             } catch (e) {
-                // fallback to linked name
+                // fallback to linked name & TH
             }
         }
 
@@ -169,6 +172,25 @@ module.exports = {
                 .catch(() => results.push("⚠️ Failed to add clan roles."));
         } else {
             results.push("⚠️ Clan role not found in the server.");
+        }
+
+        // Assign TH role based on linked account's Town Hall level
+        if (playerTh && data && typeof data.getThRoles === "function") {
+            const thRoles = data.getThRoles();
+            const thRoleId = thRoles[String(playerTh)];
+            if (thRoleId) {
+                let thRole = message.guild.roles.cache.get(thRoleId);
+                if (!thRole) {
+                    thRole = await message.guild.roles.fetch(thRoleId).catch(() => null);
+                }
+                if (thRole) {
+                    await targetMember.roles.add(thRole)
+                        .then(() => results.push(`${tickEmoji} Added TH${playerTh} role (**${thRole.name}**).`))
+                        .catch(() => results.push(`⚠️ Failed to add TH${playerTh} role.`));
+                } else {
+                    results.push(`⚠️ TH${playerTh} role not found in the server.`);
+                }
+            }
         }
 
         const GLOBAL_ROLE_ID = config.GLOBAL_ROLE_ID;

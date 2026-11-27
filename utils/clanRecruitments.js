@@ -675,7 +675,9 @@ function unassignPlayer({ clanTag = null, playerTag = null, ticketId = null, cha
         const clanData = data[cTag];
         if (!clanData || !clanData.presentRotation) continue;
 
-        const thList = targetThKey ? [targetThKey] : tracked;
+        const thList = targetThKey
+            ? [targetThKey, ...tracked.filter(t => t !== targetThKey)]
+            : tracked;
         for (const th of thList) {
             const rot = clanData.presentRotation[th];
             if (!rot || !Array.isArray(rot.players)) continue;
